@@ -1,6 +1,6 @@
 """Per-model summaries and paired comparisons from Inspect logs of this task.
 
-Paired test as in kamiarena analysis/paired.py (Miller 2024: paired differences, clustered on the drill): per drill,
+Paired test as in the KamiArena analysis (Miller 2024: paired differences, clustered on the drill): per drill,
 each model's score is its mean over tries; a sign-flip permutation on per-drill differences, Holm-corrected across pairs.
 """
 import glob

@@ -5,7 +5,7 @@ Each drill drops a model into a real moment from a past agent run, just before t
 went wrong, replays the recorded game, and scores the next move with a fixed rule.
 No chain, no live game, no model judge.
 
-**v1.0.0-rc2** · 47 drills · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
+**v1.0.0** · 47 drills · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
 built on the [KamiBench](https://github.com/tokedo/KamiBench) stack by tokedo.
 
 ## Quickstart
@@ -22,6 +22,8 @@ It is a standard [Inspect](https://inspect.aisi.org.uk/) task; `inspect view` op
 ## Results
 
 11 models, 2 tries each, 2026-10-16. Full results: [`results/v1.0.0-rc2/`](results/v1.0.0-rc2/).
+These were run on v1.0.0-rc2, whose drills are identical to v1.0.0 (only the stamped
+`suite_version` differs), so they are the results of record for v1.0.0.
 
 | model | pass | 95% range | passed every try | approx. cost |
 |---|---|---|---|---|
@@ -57,10 +59,12 @@ How drills, scoring and provenance work: [docs/method.md](docs/method.md). Addin
 
 ## Licence and credits
 
-Code [MIT](LICENSE). Drill data CC-BY-4.0 ([DATA_LICENSE.md](DATA_LICENSE.md)): 37 drills
+Code [MIT](LICENSE); copied upstream material is listed in [third_party/](third_party/NOTICE.md). Drill data CC-BY-4.0 ([DATA_LICENSE.md](DATA_LICENSE.md)): 37 drills
 derived from KamiBench runs 004–006, 10 from KamiArena hosted runs (Coopes). Tool surface and
 prompts from [kami-harness](https://github.com/tokedo/kami-harness) and
 [kami-agent](https://github.com/tokedo/kami-agent) (MIT).
+
+Example hosted-run data: [runs/](runs/README.md).
 
 Maintained by Coopes with tokedo. Coopes works at Asphodel, the studio behind Kamigotchi, and
 runs Kamibots; its tools are hidden from every drill. This project is Coopes's personal work.

@@ -1,6 +1,6 @@
 """kami-drills: offline decision drills forked from real Kamigotchi agent transcripts."""
 
-SUITE_VERSION = "v1.0.0-rc2"  # rc until the Season 1 freeze
+SUITE_VERSION = "v1.0.0"
 STACK = {
     "kami-harness": "4.7.0 df7129f",
     "kami-agent": "0.7.5 8e444bb",

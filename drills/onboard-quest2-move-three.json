@@ -796,6 +796,6 @@
   "judge_hash": {
    "kami_drills/task.py": "sha256:308c5debe013bec6acb229289ea4a327a81096859cdf2002fef4d39f4c4a6aac"
   },
-  "suite_version": "v1.0.0-rc2"
+  "suite_version": "v1.0.0"
  }
 }

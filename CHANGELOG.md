@@ -3,9 +3,19 @@
 Suite versions name the drill set and judge together. A result is comparable to
 another only at the same suite version and stack.
 
+## 1.0.0 — first public release (2026-10-16)
+
+Promotes rc2. The 47 drills, rules, replays and oracles are byte-identical to rc2; only
+`suite_version` in each drill's `provenance` changes (`v1.0.0-rc2` -> `v1.0.0`). The published
+results in `results/v1.0.0-rc2/` were run on rc2 and stand as the results of record.
+
+- Licences: `third_party/` reproduces the kami-agent and kami-harness MIT licences verbatim,
+  with a NOTICE of what was copied and from which commit.
+- `runs/`: the two hosted GPT-6 Luna runs behind the 10 hosted-run drills, as example data.
+
 ## v1.0.0-rc2 (2026-10-16)
 
-From KamiArena tag `drills-v1.0.0-rc2` (`6d1ac51`). Four drills fixed after a hand check of
+From the KamiArena drills tag `drills-v1.0.0-rc2`. Four drills fixed after a hand check of
 every logged attempt; specs re-stamped, all else unchanged.
 
 - `repeat-collect-too-far-stop`: travelling back and stopping the harvest now passes (quest 10
@@ -26,7 +36,7 @@ every logged attempt; specs re-stamped, all else unchanged.
 ## v1.0.0-rc1 (2026-10-16)
 
 First release, extracted from KamiArena's `drills/` at tag `drills-v1.0.0-rc1`.
-Release candidate until the KamiArena Season 1 freeze.
+Release candidate until the Season 1 freeze.
 
 - 47 drills in 8 categories (onboarding 7, progression 7, levelup 1, memory 6,
   repeat_failed 10, risk 5, stale_state 10, stalling 1), forked from KamiBench runs

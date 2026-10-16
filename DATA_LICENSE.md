@@ -12,4 +12,4 @@ in its `provenance` block.
 
 Credit when reusing a drill: the drill's `provenance.credit` line and a link to this
 repository. The authoring sources in `defs/`, the code and the tool surface copied from
-the KamiBench stack are MIT (see [LICENSE](LICENSE) and `kami_drills/surface/SOURCE`).
+the KamiBench stack are MIT (see [LICENSE](LICENSE) and `kami_drills/surface/SOURCE`, [third_party/NOTICE.md](third_party/NOTICE.md)).
