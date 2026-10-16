@@ -1,0 +1,138 @@
+{
+ "id": "stale-levelup-while-harvesting",
+ "category": "stale_state",
+ "src": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0060.jsonl",
+ "fork": 68,
+ "note": "Quest 3003 needs a level-up. lens_kami (line 19) and lens_node (line 23) show kami 3149 HARVESTING at node 36; the agent called level_up_kami anyway (reverted 'kami not RESTING').",
+ "replay": [
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 3149
+    }
+   },
+   "sets": "stopped",
+   "unless": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: no active harvest exists for that kami",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2714fa0763a74fc45d7c696599de1c76c6b6227f4a6ab1e9ced69ac48a761043\",\n    \"index\": 3149,\n    \"name\": \"Kamigotchi 3149\",\n    \"state\": \"RESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 49,\n      \"total\": 110,\n      \"percent\": 45\n    },\n    \"hpRatePerHr\": \"+18.00\",\n    \"cooldownSec\": 180,\n    \"account\": {\n      \"index\": 3374,\n      \"name\": \"KamiAgent01\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-22T02:10:57.065Z\",\n    \"blockNumber\": 32430473,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "leveled"
+   ]
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2714fa0763a74fc45d7c696599de1c76c6b6227f4a6ab1e9ced69ac48a761043\",\n    \"index\": 3149,\n    \"name\": \"Kamigotchi 3149\",\n    \"state\": \"RESTING\",\n    \"level\": 2,\n    \"hp\": {\n      \"current\": 49,\n      \"total\": 115,\n      \"percent\": 43\n    },\n    \"hpRatePerHr\": \"+18.00\",\n    \"cooldownSec\": 180,\n    \"account\": {\n      \"index\": 3374,\n      \"name\": \"KamiAgent01\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-22T02:10:57.065Z\",\n    \"blockNumber\": 32430473,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "when": [
+    "leveled"
+   ]
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2714fa0763a74fc45d7c696599de1c76c6b6227f4a6ab1e9ced69ac48a761043\",\n    \"index\": 3149,\n    \"name\": \"Kamigotchi 3149\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 48,\n      \"total\": 110,\n      \"percent\": 44\n    },\n    \"hpRatePerHr\": \"-4.70\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3374,\n      \"name\": \"KamiAgent01\"\n    },\n    \"musu\": {\n      \"accrued\": 0,\n      \"spotRatePerHr\": \"+21.67\",\n      \"avgRatePerHr\": \"+21.67\"\n    },\n    \"node\": {\n      \"index\": 36,\n      \"name\": \"Parting Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-22T02:10:57.065Z\",\n    \"blockNumber\": 32430473,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "unless": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "level_up_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 3149
+   },
+   "when": [
+    "stopped"
+   ],
+   "sets": "leveled",
+   "unless": [
+    "leveled"
+   ]
+  },
+  {
+   "tool": "level_up_kami",
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not RESTING: Reverted'}",
+   "args": {
+    "kami_id": 3149
+   },
+   "is_error": true
+  },
+  {
+   "tool": "level_up_kami",
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not found: Reverted'}",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "level_up_kami",
+      "args": {
+       "kami_id": 3149
+      }
+     }
+    ],
+    "before": [
+     {
+      "tool": "harvest_stop",
+      "ok": true,
+      "args": {
+       "kami_ids": {
+        "contains": 3149
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "stopped",
+   "leveled"
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     3149
+    ]
+   }
+  ],
+  [
+   "level_up_kami",
+   {
+    "kami_id": 3149
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (sonnet5 control, session 60 line 69-70) level_up_kami reverted 'kami not RESTING' because the kami was HARVESTING per its own lens_kami/lens_node reads; it then stopped the harvest and levelled up. The pass rule is that level_up_kami never comes before a harvest_stop and that both happen.",
+ "harness": "pre-4.7 (KamiBench 006 sonnet5 control)",
+ "keep_lines": [
+  3,
+  7,
+  19,
+  23
+ ],
+ "summary": {
+  "situation": "Quest 3003 needs a level-up. Kami 3149 is harvesting at node 36 per its own reads.",
+  "mistake": "Called level_up_kami anyway; reverted 'kami not RESTING'.",
+  "correct": "Stop the harvest, then level up the kami.",
+  "pass": "Level-up never comes before a successful harvest stop, and both happen."
+ }
+}

@@ -1,0 +1,172 @@
+{
+ "id": "risk-revive-then-heal",
+ "category": "risk",
+ "src": "hosted/agent_run_d36e94ae2045/transcripts/session-0082.jsonl",
+ "fork": 37,
+ "note": "Kami 715 is DEAD (killed twice at Lost Skeleton by the same kami at 34-96/240 HP, per lens_feed). The agent holds 9 Red Ribbon Gummies, 1 Melkarth card and 1 Paeon food card. After revive_kami the kami is at 50/240 HP.",
+ "replay": [
+  {
+   "tool": "revive_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 1359911,\n  \"account\": \"main\",\n  \"kami_id\": 715,\n  \"method\": \"melkarth_spell_card\",\n  \"consumed\": \"1x item 11002 (Melkarth's Heroic Awakening Spell Card)\"\n}",
+   "args": {
+    "kami_id": 715,
+    "method": "melkarth_spell_card"
+   },
+   "unless": [
+    "revived"
+   ],
+   "sets": "revived"
+  },
+  {
+   "tool": "revive_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 1359911,\n  \"account\": \"main\",\n  \"kami_id\": 715,\n  \"method\": \"red_ribbon_gummy\",\n  \"consumed\": \"1x item 11001 (Red Ribbon Gummy)\"\n}",
+   "args": {
+    "kami_id": 715
+   },
+   "unless": [
+    "revived"
+   ],
+   "sets": "revived"
+  },
+  {
+   "tool": "revive_kami",
+   "response": "Error executing tool revive_kami: validation failed; no transaction sent: kami is not owned by account 'main' or is not DEAD",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0xdc277e3a6f3546d20a2b7619959c2f833c37158ed3bfdc4f1c2316bd7d11dce6\",\n    \"index\": 715,\n    \"name\": \"Kamigotchi 715\",\n    \"state\": \"RESTING\",\n    \"level\": 34,\n    \"xp\": 13952,\n    \"xpRequired\": 79966,\n    \"levelUpReady\": false,\n    \"levelUpBlockedBy\": \"EXPERIENCE\",\n    \"skillPoints\": 0,\n    \"hp\": {\n      \"current\": 50,\n      \"total\": 240,\n      \"percent\": 21\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 0,\n    \"cooldownUntil\": 1791810261,\n    \"account\": {\n      \"index\": 3397,\n      \"name\": \"coopdaloop\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 120,\n        \"shift\": 120,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 240\n      },\n      \"power\": {\n        \"base\": 16,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 16\n      },\n      \"harmony\": {\n        \"base\": 13,\n        \"shift\": 8,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 21\n      },\n      \"violence\": {\n        \"base\": 13,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 13\n      }\n    },\n    \"affinities\": [\n      \"NORMAL\",\n      \"NORMAL\"\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-13T00:07:34.048Z\",\n    \"blockNumber\": 34365829,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34365811,\n    \"appliedThrough\": 34365828,\n    \"asOf\": {\n      \"block\": 34365829,\n      \"projectedAtSec\": 1791850048,\n      \"clockSampleBlock\": 34365731,\n      \"clockSampleBlockTime\": 1791849779,\n      \"clockOffsetMs\": -5425,\n      \"clockSampleAgoMs\": 269623\n    }\n  }\n}",
+   "when": [
+    "revived"
+   ],
+   "unless": [
+    "healed"
+   ]
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0xdc277e3a6f3546d20a2b7619959c2f833c37158ed3bfdc4f1c2316bd7d11dce6\",\n    \"index\": 715,\n    \"name\": \"Kamigotchi 715\",\n    \"state\": \"RESTING\",\n    \"level\": 34,\n    \"xp\": 13952,\n    \"xpRequired\": 79966,\n    \"levelUpReady\": false,\n    \"levelUpBlockedBy\": \"EXPERIENCE\",\n    \"skillPoints\": 0,\n    \"hp\": {\n      \"current\": 150,\n      \"total\": 240,\n      \"percent\": 63\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 0,\n    \"cooldownUntil\": 1791810261,\n    \"account\": {\n      \"index\": 3397,\n      \"name\": \"coopdaloop\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 120,\n        \"shift\": 120,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 240\n      },\n      \"power\": {\n        \"base\": 16,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 16\n      },\n      \"harmony\": {\n        \"base\": 13,\n        \"shift\": 8,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 21\n      },\n      \"violence\": {\n        \"base\": 13,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 13\n      }\n    },\n    \"affinities\": [\n      \"NORMAL\",\n      \"NORMAL\"\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-13T00:07:34.048Z\",\n    \"blockNumber\": 34365829,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34365811,\n    \"appliedThrough\": 34365828,\n    \"asOf\": {\n      \"block\": 34365829,\n      \"projectedAtSec\": 1791850048,\n      \"clockSampleBlock\": 34365731,\n      \"clockSampleBlockTime\": 1791849779,\n      \"clockOffsetMs\": -5425,\n      \"clockSampleAgoMs\": 269623\n    }\n  }\n}",
+   "when": [
+    "revived",
+    "healed"
+   ]
+  },
+  {
+   "tool": "lens_roster",
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3397,\n      \"roomIndex\": 25,\n      \"levelUpReady\": [],\n      \"skillPoints\": []\n    },\n    \"kamis\": [\n      {\n        \"index\": 715,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          50,\n          240\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-13T00:07:27.419Z\",\n    \"blockNumber\": 34365825,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34365811,\n    \"appliedThrough\": 34365824,\n    \"asOf\": {\n      \"block\": 34365825,\n      \"projectedAtSec\": 1791850041,\n      \"clockSampleBlock\": 34365731,\n      \"clockSampleBlockTime\": 1791849779,\n      \"clockOffsetMs\": -5425,\n      \"clockSampleAgoMs\": 262994\n    }\n  }\n}",
+   "when": [
+    "revived"
+   ],
+   "unless": [
+    "healed"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 1447922,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 50,\n    \"after\": 150\n  }\n}",
+   "args": {
+    "kami_id": 715,
+    "food_item_id": 11305
+   },
+   "when": [
+    "revived"
+   ],
+   "unless": [
+    "healed"
+   ],
+   "sets": "healed"
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "wait",
+   "response": "Waited for the requested time.",
+   "sets": "healed",
+   "when": [
+    "revived"
+   ],
+   "waited_gte": 28800
+  },
+  {
+   "tool": "wait",
+   "response": "Waited for the requested time."
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "when": [
+    "revived",
+    "healed"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "when": [
+    "revived"
+   ],
+   "sets": "lowhp_harvest"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: kami #715 is DEAD; harvest_start requires RESTING",
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}"
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "revived"
+  ],
+  "forbid_flags": [
+   "lowhp_harvest"
+  ]
+ },
+ "oracle": [
+  [
+   "revive_kami",
+   {
+    "kami_id": 715,
+    "method": "red_ribbon_gummy"
+   }
+  ],
+  [
+   "feed_kami",
+   {
+    "kami_id": 715,
+    "food_item_id": 11305
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (hosted Luna d36, session 82 line 38-47): revive_kami then feed_kami (50 -> 150 HP) before harvest_start. The kill records in the prefix (lens_feed line 29) show 715 dying at 34/240 and 96/240 HP, so restarting a harvest at the revive HP of 50 is the repeat of that failure. Pass = revive, and no harvest_start until HP is restored (feed, item, or waiting out a rest). Scored on end state: the kami is revived and was never sent to harvest at the revive HP (50/240); resting instead of harvesting also passes. Resting counts cumulatively: waits add up and a revived kami reaching 28800s of total waiting is healed; waiting while still DEAD heals nothing. Relocating before harvesting is not accepted: all of the kami's deaths came at 34-96/240 HP at three different nodes, so HP, not place, is the repeat failure.",
+ "harness": "hosted GPT-6 Luna (recent harness, lens 1.0.1)",
+ "keep_lines": [
+  3,
+  15,
+  16,
+  29
+ ],
+ "summary": {
+  "situation": "Kami 715 is dead, killed twice at 34-96/240 HP. Revive returns it at 50/240; account has gummies and food.",
+  "mistake": "Live run healed first; trap is restarting the harvest at the 50/240 revive HP.",
+  "correct": "Revive the kami, then heal it by feeding, an item, or resting before any harvest.",
+  "pass": "Kami revived and never sent harvesting at the 50/240 HP; resting instead of harvesting also passes."
+ }
+}

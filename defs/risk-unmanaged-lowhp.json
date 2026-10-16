@@ -1,0 +1,225 @@
+{
+ "id": "risk-unmanaged-lowhp",
+ "category": "risk",
+ "src": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0076.jsonl",
+ "fork": 12,
+ "note": "Kami 3149 HARVESTING with no Kamibots strategy mentioned in the notes, at 22/130 HP (17%, -8.4 HP/hr); the only kami food is 1 Resin (11311). 83/100 scavenge points are banked at node 30.",
+ "replay": [
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 3149
+    }
+   },
+   "sets": [
+    "stopped",
+    "protected"
+   ]
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2714fa0763a74fc45d7c696599de1c76c6b6227f4a6ab1e9ced69ac48a761043\",\n    \"index\": 3149,\n    \"name\": \"Kamigotchi 3149\",\n    \"state\": \"RESTING\",\n    \"level\": 9,\n    \"hp\": {\n      \"current\": 22,\n      \"total\": 130,\n      \"percent\": 17\n    },\n    \"hpRatePerHr\": \"+18.00\",\n    \"cooldownSec\": 161,\n    \"account\": {\n      \"index\": 3374,\n      \"name\": \"KamiAgent01\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-24T22:30:56.281Z\",\n    \"blockNumber\": 32536320,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "when": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 3149,
+    "food_item_id": 11311
+   },
+   "sets": [
+    "fed",
+    "protected"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "use_item_batch",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 3149,
+    "item_id": 11311
+   },
+   "sets": [
+    "fed",
+    "protected"
+   ]
+  },
+  {
+   "tool": "use_item_batch",
+   "response": "Error executing tool use_item_batch: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 3149
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "sets": "restarted"
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "response": "{\n  \"claim\": {\n    \"tx_hash\": \"0x69a2faa299d92940b7f58a2882e18e0e0e2b9cd85e5b24bc17c11385d2329c40\",\n    \"status\": \"success\",\n    \"block\": 32536317,\n    \"gas_used\": 779028,\n    \"account\": \"main\",\n    \"commit_ids\": [\n      \"42544136750335820897454583778914416498372699287390671685193658649899874189663\"\n    ]\n  },\n  \"reveal\": {\n    \"tx_hash\": \"0x990e69912cecbaae4815a32964808fc3e1fdfb813013eed4ef3211b78f1cb2bd\",\n    \"status\": \"success\",\n    \"block\": 32536320,\n    \"gas_used\": 780453,\n    \"account\": \"main\"\n  },\n  \"commit_ids\": [\n    \"42544136750335820897454583778914416498372699287390671685193658649899874189663\"\n  ]\n}",
+   "when": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "response": "Error executing tool scavenge_claim_and_reveal: validation failed; no transaction sent: account 'main' has 83 scavenge points at node 30; claiming a tier requires 100",
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 16
+   },
+   "response": "{\n  \"quest_index\": 16,\n  \"entity_id\": \"0x37e1756075e90969e625f7e6d1cfb27691fd5eb7e46581e689ad50b81969ec7b\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "unless": [
+    "fed",
+    "protected",
+    "restarted",
+    "stopped"
+   ],
+   "src": "session-0075.jsonl:12 (previous session, active_blocked on burning Scrap Metal); no burn/complete after it (0075 rest, fork prefix has no actions); fork notes L7 list MSQ016 accepted, blocked"
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 2003
+   },
+   "response": "{\n  \"quest_index\": 2003,\n  \"entity_id\": \"0x50406d7449c0a51e3dd5bec4a382d945c87ee887bd593954acd3802dde1fa0a1\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "unless": [
+    "fed",
+    "protected",
+    "restarted",
+    "stopped"
+   ],
+   "src": "session-0075.jsonl:13 (previous session, active_blocked on burning Scrap Metal); no burn/complete after it; fork notes L7 list MIN003 accepted, blocked"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "harvest_start",
+       "harvest_collect",
+       "move_to_room",
+       "travel_to_room",
+       "listing_buy",
+       "auction_buy",
+       "level_up_kami",
+       "upgrade_skill",
+       "allocate_skills",
+       "level_to",
+       "level_and_allocate_batch",
+       "use_account_item",
+       "equip_item",
+       "unequip_item",
+       "list_kami",
+       "buy_kami",
+       "take_trade",
+       "create_trade",
+       "cancel_trade",
+       "complete_trade",
+       "accept_quest",
+       "complete_quest",
+       "drop_quest",
+       "burn_items",
+       "craft_item",
+       "scavenge_claim_and_reveal",
+       "pool_swap",
+       "transfer_items",
+       "transfer_kami",
+       "fund_operator",
+       "withdraw_operator",
+       "name_kami",
+       "liquidate_kami",
+       "gacha_use",
+       "portal_deposit",
+       "portal_withdraw",
+       "set_next_wake",
+       "end_session",
+       "wait",
+       "workspace_write"
+      ]
+     }
+    ],
+    "before": [
+     {
+      "tool": "harvest_stop",
+      "ok": true,
+      "args": {
+       "kami_ids": {
+        "contains": 3149
+       }
+      }
+     },
+     {
+      "tool": "feed_kami",
+      "ok": true,
+      "args": {
+       "kami_id": 3149
+      }
+     },
+     {
+      "tool": "use_item_batch",
+      "ok": true,
+      "args": {
+       "kami_id": 3149,
+       "item_id": 11311
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "stopped"
+  ],
+  "forbid_flags": [
+   "restarted"
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     3149
+    ]
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (sonnet5 control, session 76 line 13-14): harvest_stop was the first write, after which the claim and a harvestAndRest strategy followed. A weaker order (claim, travel, quests, end_session first) leaves a 17% HP kami draining; the rule requires a protective write (stop, feed, item) before any of those. The post-stop claim success is consistent with the fork: stopping banks the accrued MUSU shown in lens_kami (83 + 40 = 123). The kami must also not be sent back to harvest manually at 17% HP. Only writes are gated before protection (reading notes is fine). With 22/130 HP and a single Resin, the harvest must actually be stopped, so a feed alone does not pass.",
+ "harness": "pre-4.7 (KamiBench 006 sonnet5 control)",
+ "keep_lines": [
+  3,
+  7,
+  9,
+  11
+ ],
+ "summary": {
+  "situation": "Kami 3149 harvests at 22/130 HP (17%), losing 8.4 HP/hr, with only 1 Resin as food. 83/100 scavenge points banked.",
+  "mistake": "Live run stopped first; trap is claiming, travelling, questing or ending while the kami drains.",
+  "correct": "Stop the harvest first, before any claim or other action.",
+  "pass": "A protective stop, feed or item use precedes other writes; harvest must end stopped and not be restarted."
+ }
+}

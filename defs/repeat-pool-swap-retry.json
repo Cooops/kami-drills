@@ -1,0 +1,207 @@
+{
+ "id": "repeat-pool-swap-retry",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0034.jsonl",
+ "fork": 60,
+ "note": "pool_swap(1 -> 1005, amount_in 20, min_out 2) reverted with a bare 'Reverted'. After docs reading and a trip, a fresh quote (amount_out 3, min 2) looks valid. The live agent re-sent the swap, and again later.",
+ "replay": [
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "args": {
+    "dry_run": true
+   },
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "args": {
+    "item_in": 1,
+    "item_out": 1005,
+    "amount_in": 20,
+    "min_amount_out": 2
+   },
+   "sets": [
+    "dupe"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "when": [
+    "ps2"
+   ],
+   "sets": [
+    "ps3"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "when": [
+    "ps1"
+   ],
+   "sets": [
+    "ps2"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "sets": [
+    "ps1"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    31,\n    47,\n    4,\n    34\n  ],\n  \"hops\": 3,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 34\n    }\n  ],\n  \"stamina_needed\": 15,\n  \"stamina_have\": 65,\n  \"stamina_after_plan\": 50,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 34\n}",
+   "args": {
+    "target_room": 34,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    31,\n    47,\n    4,\n    34\n  ],\n  \"hops\": 3,\n  \"moves_executed\": 3,\n  \"items_used\": [],\n  \"gas_used\": 2580000,\n  \"stamina_remaining\": 50,\n  \"final_room\": 34\n}",
+   "args": {
+    "target_room": 34,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "sets": [
+    "at34"
+   ]
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "at34"
+   ]
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "response": "Error executing tool scavenge_claim_and_reveal: validation failed; no transaction sent: account 'main' has 18 scavenge points at node 34; claiming a tier requires 300",
+   "args": {
+    "node_index": 34
+   },
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 17194
+   },
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "unless": [
+    "at34",
+    "dupe",
+    "ps1",
+    "ps2",
+    "ps3"
+   ],
+   "src": "fork L54 ('kami too far'); kami harvests at node 34 (room 34), the account moved 66 -> 31 at L58, still not room 34"
+  },
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "unless": [
+    "at34",
+    "dupe",
+    "ps1",
+    "ps2",
+    "ps3"
+   ],
+   "src": "exact text experiment-005-budget-boxed/gpt4omini/transcripts/session-0159.jsonl (harvest_stop 'kami too far', same no-suffix harness format as this run's L54/L56); fork: account in room 31, kami at node 34, feed and collect reverted 'kami too far' at L54/L56"
+  }
+ ],
+ "rule": {
+  "forbid_flags": [
+   "dupe",
+   "ps3"
+  ],
+  "require_any": [
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 5
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "end_session",
+    "args": {},
+    "ok": true
+   },
+   {
+    "tool": "travel_to_room",
+    "args": {
+     "target_room": 34,
+     "dry_run": {
+      "not": true
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "harvest_collect",
+    "args": {
+     "kami_ids": {
+      "contains": 17194
+     }
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 120
+   }
+  ],
+  [
+   "end_session",
+   {
+    "reason": "pool_swap keeps reverting; build scavenge points instead"
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (gpt52_control session-0034 lines 36-37 and 60-61) the swap reverted twice with a bare 'Reverted' and an unchanged, healthy quote. At the fork the evidence is one revert plus a valid fresh quote, so informed retries with changed params (or dry runs) are allowed and still revert; re-sending the exact failed swap (amount_in 20, min_out 2) or a third swap is a blind loop and fails. The pass also needs a real next step: a wake/end, or productive work at node 34. A swap attempt is not required, since abstaining after a bare revert is a defensible choice.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  38,
+  60
+ ],
+ "summary": {
+  "situation": "Swap of 20 MUSU for at least 2 Scrap Metal reverted with a bare 'Reverted'. Fresh quote looks valid.",
+  "mistake": "Re-sent the same swap, and again later.",
+  "correct": "Investigate if useful, optionally retry once or twice with changed params, then move on: wake, end the session, or go work at node 34.",
+  "pass": "No resend of the identical swap and no third swap; then a 5+ minute wake, end session, trip to room 34, or collect."
+ }
+}

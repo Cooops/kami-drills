@@ -1,0 +1,149 @@
+{
+ "id": "repeat-quest-prereq-locked",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/gpt52_pushed/transcripts/session-0016.jsonl",
+ "fork": 71,
+ "note": "accept_quest 8 reverted 'reqs not met' twice. Quest 7 (collect 500 MUSU) is still active at 73/500 and quest 8 requires it to be complete. The live agent kept re-sending accept_quest 8, in this session and in six later ones.",
+ "replay": [
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}\n[mechanics] account 'main': room 3, stamina 465. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "args": {
+    "quest_index": 8
+   },
+   "is_error": true
+  },
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "args": {
+    "quest_index": 7
+   },
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "response": "{\n  \"quest_index\": 7,\n  \"entity_id\": \"0xe884e8f5dde68a9ff8dc96ab9f0b3d28f619a386fe79ba4ac827b2d144ffa36e\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "args": {
+    "quest_index": 7
+   }
+  },
+  {
+   "tool": "quest_state",
+   "response": "{\n  \"quest_index\": 8,\n  \"entity_id\": \"0x0000000000000000000000000000000000000000000000000000000000000008\",\n  \"owned\": false,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"not_active\",\n  \"revert_reason\": null,\n  \"state\": \"not_accepted\"\n}",
+   "args": {
+    "quest_index": 8
+   }
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 703
+    }
+   }
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 703
+    }
+   },
+   "sets": [
+    "stopped703"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 703
+    }
+   },
+   "when": [
+    "stopped703"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: kami #703 is HARVESTING; harvest_start requires RESTING",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "accept_quest",
+    "args": {
+     "quest_index": 8
+    }
+   }
+  ],
+  "require_any": [
+   {
+    "tool": "harvest_collect",
+    "args": {
+     "kami_ids": {
+      "contains": 703
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "harvest_start",
+    "args": {
+     "kami_ids": {
+      "contains": 703
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 5
+     }
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "quest_state",
+   {
+    "quest_index": 7
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 30
+   }
+  ],
+  [
+   "end_session",
+   {
+    "reason": "quest 8 needs quest 7 (500 MUSU) first; harvest more"
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (gpt52_pushed session-0016 lines 67-72, and sessions 0017, 0021, 0024, 0027, 0028) accept_quest 8 was resubmitted unchanged. check_quest_completable 7 failed at line 21 and the registry showed quest 8 requirementsMet false while quest 7 (collect 500 MUSU) was unmet at 73/500. Pass: never retry accept_quest 8; keep the harvest on kami 703 producing (collect it) or schedule a wake so quest 7 can progress. Re-starting kami 703 after a stop is accepted as harvest management; set_next_wake and end_session answer with success text and end the drill, so the wake branch is passable (confirmed by the oracle).",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  21,
+  69
+ ],
+ "summary": {
+  "situation": "Quest 7 (collect 500 MUSU) is active at 73/500; quest 8 needs it complete. accept_quest 8 reverted twice.",
+  "mistake": "Kept re-sending accept_quest 8, here and in six later sessions.",
+  "correct": "Keep kami 703 harvesting or collect from it, or schedule a wake so quest 7 progresses.",
+  "pass": "Never accept_quest 8; kami 703 collected or restarted, or a wake of 5+ minutes set."
+ }
+}

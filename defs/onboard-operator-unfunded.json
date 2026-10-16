@@ -1,0 +1,176 @@
+{
+ "id": "onboard-operator-unfunded",
+ "category": "onboarding",
+ "src": "experiment-004-budget-boxed/gpt4omini/transcripts/session-0007.jsonl",
+ "fork": 11,
+ "note": "Five accept_quest calls refused: the operator wallet holds 0 ETH. The owner wallet holds ETH.",
+ "replay": [
+  {
+   "tool": "get_gas_balance",
+   "response": "{\"balances\": {\"main\": {\"owner_eth\": \"0.0195\", \"operator_eth\": \"0\"}}}"
+  },
+  {
+   "tool": "fund_operator",
+   "response": "Error executing tool fund_operator: Owner balance 0.0195 ETH cannot cover that amount + the 6.25E-7 ETH gas provision (250000 gas at the flat price).",
+   "args": {
+    "amount_eth": {
+     "gt": 0.0194993
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "fund_operator",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\", \"direction\": \"owner->operator\"}",
+   "args": {
+    "amount_eth": {
+     "gte": 3.75e-06,
+     "lte": 0.0194993
+    }
+   },
+   "sets": [
+    "funded"
+   ]
+  },
+  {
+   "tool": "fund_operator",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\", \"direction\": \"owner->operator\"}",
+   "sets": [
+    "dust"
+   ]
+  },
+  {
+   "tool": "accept_quest",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "quest_index": 1
+   },
+   "when": [
+    "funded"
+   ],
+   "sets": [
+    "accepted"
+   ]
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: operator wallet 0x2780263cF502a7873C18ea3a670Da62EF1478C28 holds only dust; the transaction requires 0.00000375 ETH (gas limit 1500000 at the flat price)",
+   "args": {
+    "quest_index": 1
+   },
+   "when": [
+    "dust"
+   ],
+   "unless": [
+    "funded"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: operator wallet 0x2780263cF502a7873C18ea3a670Da62EF1478C28 holds 0 ETH; the transaction requires 0.00000375 ETH (gas limit 1500000 at the flat price)",
+   "args": {
+    "quest_index": 1
+   },
+   "unless": [
+    "funded"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "when": [
+    "funded"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: operator wallet 0x2780263cF502a7873C18ea3a670Da62EF1478C28 holds 0 ETH; the transaction requires 0.00000375 ETH (gas limit 1500000 at the flat price)",
+   "is_error": true
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "src": "same run, label never resolves: experiment-004-budget-boxed/gpt4omini session-0002.jsonl:10, session-0005.jsonl:19, session-0009.jsonl:35 (brackets the fork)"
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": {
+     "in": [
+      null,
+      ""
+     ]
+    }
+   },
+   "response": "Error executing tool lens_account: BAD_ARGS: account needs an index or name",
+   "src": "same run arg validation: session-0002.jsonl:5 (no account_key), session-0001.jsonl:5 and session-0003.jsonl:5 (empty key)"
+  },
+  {
+   "tool": "lens_inventory",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_inventory: NOT_FOUND: account main not in mirror",
+   "src": "same run, label never resolves: session-0005.jsonl:15,21, session-0009.jsonl:33"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "accept_quest"
+     }
+    ],
+    "before": [
+     {
+      "tool": "fund_operator",
+      "args": {
+       "amount_eth": {
+        "gte": 3.75e-06
+       }
+      },
+      "ok": true
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "funded",
+   "accepted"
+  ]
+ },
+ "oracle": [
+  [
+   "fund_operator",
+   {
+    "amount_eth": "0.002"
+   }
+  ],
+  [
+   "accept_quest",
+   {
+    "quest_index": 1
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt4omini 004 session-0007 lines 5-10) five accept_quest calls were refused because the operator wallet held 0 ETH while the owner held 0.0195 ETH, and the error states the transaction needs 0.00000375 ETH. Pass (end state): fund_operator with at least that stated amount (and no more than the owner can cover) before any accept_quest, then quest 1 accepted. A smaller transfer leaves dust and the replay says so.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "keep_lines": [
+  7,
+  11
+ ],
+ "summary": {
+  "situation": "Operator wallet holds 0 ETH so accept_quest is refused; owner wallet has ETH. Error states 0.00000375 ETH needed.",
+  "mistake": "Retried accept_quest five times against the same refusal.",
+  "correct": "Fund the operator with at least 0.00000375 ETH, then accept quest 1.",
+  "pass": "No accept_quest before a successful fund of at least 0.00000375 ETH; operator funded, quest 1 accepted."
+ }
+}

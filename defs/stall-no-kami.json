@@ -1,0 +1,176 @@
+{
+ "id": "stall-no-kami",
+ "category": "stalling",
+ "src": "experiment-004-budget-boxed/gemini25fl/transcripts/session-0079.jsonl",
+ "fork": 13,
+ "note": "No kami, quests 1-2 handled; the live agent narrated a recommendation and ended the session without acting.",
+ "replay": [
+  {
+   "tool": "newbie_vendor_buy",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "max_price_eth": {
+     "gt": 0
+    }
+   },
+   "sets": "progress"
+  },
+  {
+   "tool": "buy_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "max_total_eth": {
+     "gt": 0
+    }
+   },
+   "sets": "progress"
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": {
+     "gte": 1
+    }
+   },
+   "sets": "progress"
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "target_room": {
+     "gte": 1
+    },
+    "dry_run": {
+     "not": true
+    }
+   },
+   "sets": "progress"
+  },
+  {
+   "tool": "newbie_vendor_buy",
+   "response": "Error executing tool newbie_vendor_buy: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not on display: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "buy_kami",
+   "response": "Error executing tool buy_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: listing not found: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "get_gas_balance",
+   "args": {},
+   "response": "{\n  \"balances\": {\n    \"main\": {\n      \"operator_address\": \"0x8f50f1cf0D3aef6bC0DD5520824a2aa29e015b4B\",\n      \"operator_eth\": \"0.008980688097499991\",\n      \"owner_address\": \"0xaC18766E972A7f747664fF2B12A89eb7343a69Cb\",\n      \"owner_eth\": \"0.000996878367499997\",\n      \"owner_mainnet_eth\": \"0.009949139632533182\"\n    }\n  }\n}",
+   "unless": [
+    "progress"
+   ],
+   "src": "experiment-004-budget-boxed/gemini25fl/transcripts/session-0078.jsonl:9; no transaction landed after it (rest of session 0078 and fork lines 1-13 have none)"
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 2
+   },
+   "response": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x5dae95ac99df6eab6cd83c699cb3c85169756a99287ed36b13a51ac47393514c\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "unless": [
+    "progress"
+   ],
+   "src": "experiment-004-budget-boxed/gemini25fl/transcripts/session-0053.jsonl:139; fork line 13 confirms quest 2 still accepted and not completed; no move_to_room/travel_to_room in sessions 0053 (after line 139) to 0079, so the Move 3 objective is still unmet"
+  },
+  {
+   "tool": "complete_quest",
+   "args": {
+    "quest_index": 2
+   },
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "unless": [
+    "progress"
+   ],
+   "src": "experiment-004-budget-boxed/gemini25fl/transcripts/session-0053.jsonl:131; same evidence as the quest_state 2 row (objectives unmet, no moves since)"
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "unless": [
+    "progress"
+   ],
+   "src": "experiment-004-budget-boxed/gemini25fl/transcripts/session-0073.jsonl:27; this run's lens daemon does not resolve the 'main' label (also lens_inventory at session-0052.jsonl:47)"
+  },
+  {
+   "tool": "lens_inventory",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_inventory: NOT_FOUND: account main not in mirror",
+   "unless": [
+    "progress"
+   ],
+   "src": "experiment-004-budget-boxed/gemini25fl/transcripts/session-0052.jsonl:47; same label behaviour as lens_account at session-0073.jsonl:27"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "end_session"
+     }
+    ],
+    "before": [
+     {
+      "tool": "newbie_vendor_buy",
+      "ok": true
+     },
+     {
+      "tool": "buy_kami",
+      "ok": true
+     },
+     {
+      "tool": "move_to_room",
+      "ok": true
+     },
+     {
+      "tool": "travel_to_room",
+      "ok": true,
+      "args": {
+       "dry_run": {
+        "not": true
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "progress"
+  ]
+ },
+ "oracle": [
+  [
+   "lens_market",
+   {}
+  ],
+  [
+   "buy_kami",
+   {
+    "kami_ids": [
+     1
+    ],
+    "max_total_eth": "0.004"
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "No kami, quests 1-2 handled; the live agent narrated a recommendation and ended the session without acting. Reads (lens_market/lens_merchant) do not count; a landed purchase or move is required before the session ends.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "summary": {
+  "situation": "Account has no kami; quests 1 and 2 are handled.",
+  "mistake": "Narrated a recommendation and ended the session without acting.",
+  "correct": "Take a concrete step: buy a kami from the vendor or market, or move rooms.",
+  "pass": "A purchase or real move succeeds before end_session; read-only calls do not count."
+ }
+}

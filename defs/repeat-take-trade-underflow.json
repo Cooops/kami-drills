@@ -1,0 +1,176 @@
+{
+ "id": "repeat-take-trade-underflow",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0033.jsonl",
+ "fork": 86,
+ "note": "take_trade on a 200-unit Scrap Metal ask (8000 MUSU) reverted 'arithmetic underflow'; the agent holds 625 MUSU. The live agent travelled 7 rooms and sent the identical take_trade again.",
+ "replay": [
+  {
+   "tool": "take_trade",
+   "response": "Error executing tool take_trade: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: account 'main' holds 0 of item 1005 (Scrap Metal); pool_swap requires 1",
+   "args": {
+    "item_in": 1005
+   },
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "response": "Error executing tool scavenge_claim_and_reveal: validation failed; no transaction sent: account 'main' has 18 scavenge points at node 34; claiming a tier requires 300",
+   "args": {
+    "node_index": 34
+   },
+   "is_error": true
+  },
+  {
+   "tool": "create_trade",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "sell_item": 1,
+    "sell_amount": {
+     "gte": 1,
+     "lte": 625
+    },
+    "buy_item": 1005
+   }
+  },
+  {
+   "tool": "create_trade",
+   "response": "Error executing tool create_trade: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 17194
+   },
+   "response": "{\n  \"data\": {\n    \"id\": \"0xa8e785e5047b7d9a153348fb3814419fd2f3cb0b9ad69cf9631235dd1b096306\",\n    \"index\": 17194,\n    \"name\": \"Kamigotchi 17194\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 61,\n      \"total\": 80,\n      \"percent\": 76\n    },\n    \"hpRatePerHr\": \"-4.63\",\n    \"cooldownSec\": 164,\n    \"account\": {\n      \"index\": 3376,\n      \"name\": \"OnchainA3\"\n    },\n    \"musu\": {\n      \"accrued\": 0,\n      \"spotRatePerHr\": \"+22.78\",\n      \"avgRatePerHr\": \"+22.76\"\n    },\n    \"node\": {\n      \"index\": 34,\n      \"name\": \"Deeper Into Scrap\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-18T22:56:32.886Z\",\n    \"blockNumber\": 32306860,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "src": "derived from fork L26 lens_party row for kami 17194 (same payload shape); no kami action after L26 (only account travel); model asked at_least_block above L26's block: served the L26 snapshot"
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "take_trade"
+   },
+   {
+    "tool": "pool_swap",
+    "args": {
+     "item_in": 1005
+    }
+   },
+   {
+    "tool": "scavenge_claim_and_reveal",
+    "args": {
+     "node_index": 34
+    }
+   },
+   {
+    "tool": "create_trade",
+    "args": {
+     "sell_item": 1,
+     "buy_item": 1005
+    },
+    "ratio": {
+     "num": "sell_amount",
+     "den": "buy_amount",
+     "gt": 40
+    }
+   }
+  ],
+  "require_any": [
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 5
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "end_session",
+    "args": {},
+    "ok": true
+   },
+   {
+    "tool": "create_trade",
+    "args": {
+     "sell_item": 1,
+     "sell_amount": {
+      "lte": 625
+     },
+     "buy_item": 1005,
+     "buy_amount": {
+      "gte": 3
+     }
+    },
+    "ok": true,
+    "ratio": {
+     "num": "sell_amount",
+     "den": "buy_amount",
+     "lte": 40
+    }
+   },
+   {
+    "tool": "lens_inventory",
+    "args": {},
+    "ok": true
+   },
+   {
+    "tool": "get_item_orderbook",
+    "args": {},
+    "ok": true
+   },
+   {
+    "tool": "lens_trades",
+    "args": {},
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "lens_inventory",
+   {
+    "account_key": "3376"
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 120
+   }
+  ],
+  [
+   "end_session",
+   {
+    "reason": "cannot afford any Scrap Metal ask; keep harvesting for scavenge points"
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (gpt52_control session-0033 lines 36-37 and 86-87) take_trade reverted with an underflow, then repeated unchanged. Every ask in the orderbook (line 40) costs 2500 MUSU or more against a 625 MUSU balance (line 25), so every take_trade is forbidden; so are the calls the history already shows cannot work (selling Scrap Metal the account does not hold, a scavenge claim at 18/300 points). Pass: reassess (inventory, orderbook, trades), bid at or below the market it was shown (create_trade for at least the 3 Scrap Metal quest 9 needs, at most 40 MUSU per unit, the best ask, within the 625 MUSU held), or wait/end. Waiting is valid because scavenge points only grow with time. A bid above 40 MUSU per unit overpays against the shown market and fails.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  25,
+  27,
+  38,
+  40
+ ],
+ "summary": {
+  "situation": "take_trade on a 200 Scrap Metal ask (8000 MUSU) reverted underflow; account holds 625 MUSU. Every ask costs 2500+.",
+  "mistake": "Travelled 7 rooms and sent the identical take_trade again.",
+  "correct": "Reassess (inventory, orderbook), then bid at or below market (40 MUSU per Scrap Metal or less), or farm it: keep harvesting for scavenge points, wait or end the session.",
+  "pass": "No take_trade, no overpaying bid, no selling Scrap Metal, no early scavenge claim; then a read, a fair bid for 3+, a wake or an end."
+ }
+}

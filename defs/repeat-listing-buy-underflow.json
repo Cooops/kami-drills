@@ -1,0 +1,228 @@
+{
+ "id": "repeat-listing-buy-underflow",
+ "category": "repeat_failed",
+ "src": "experiment-005-budget-boxed/gpt4omini/transcripts/session-0130.jsonl",
+ "fork": 21,
+ "note": "listing_buy of items [11301, 23100] reverted 'arithmetic underflow or overflow'. Item 23100 (Spice Grinder) costs 2500 MUSU in the merchant listing that is in the history; the live agent sent the identical basket again, then succeeded with [11301, 11001].",
+ "replay": [
+  {
+   "tool": "listing_buy",
+   "response": "Error executing tool listing_buy: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "args": {
+    "item_indices": {
+     "contains": 23100
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "listing_buy",
+   "response": "Error executing tool listing_buy: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "args": {
+    "item_indices": {
+     "contains": 23101
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 11301
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "sets": [
+    "bought"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 11303
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "sets": [
+    "bought"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 11001
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "sets": [
+    "bought"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 21201
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "sets": [
+    "bought"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "Error executing tool listing_buy: validation failed; no transaction sent: no matching listing for that basket",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": {
+     "in": [
+      9,
+      10
+     ]
+    }
+   },
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0106.jsonl:50 (same run, accept_quest reqs-not-met revert, text has no quest id); fork lens_quests L5 shows quests 9 and 10 not accepted, requirementsMet false"
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 6
+   },
+   "response": "{\n  \"quest_index\": 6,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'Reverted'}\"\n}",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0109.jsonl:17 (same run); quest 6 not accepted, reqs met at 0109 (lens_quests 0109:9) and at fork (L5); no quest action in sessions 0110-0129"
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 8
+   },
+   "response": "{\n  \"quest_index\": 8,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'Reverted'}\"\n}",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0109.jsonl:18 (same run); quest 8 not accepted, reqs met at 0109 (lens_quests 0109:9) and at fork (L5); no quest action in sessions 0110-0129"
+  },
+  {
+   "tool": "complete_quest",
+   "args": {
+    "quest_index": 8
+   },
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: quest 8 is not accepted by account 'main'; complete_quest requires an accepted quest",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0106.jsonl:38 (same run, same quest: 'not accepted' validation); fork lens_quests L5 shows quest 8 not accepted"
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0012.jsonl:21; this run's lens resolves no 'main' label: lens_account 'main' NOT_FOUND in sessions 0002-0012, lens_inventory 'main' NOT_FOUND through 0104"
+  },
+  {
+   "tool": "lens_inventory",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_inventory: NOT_FOUND: account main not in mirror",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0104.jsonl:21 (latest pre-fork); 'main' label NOT_FOUND consistently in this run (sessions 0002-0104)"
+  },
+  {
+   "tool": "list_accounts",
+   "args": {},
+   "response": "{\n  \"accounts\": {\n    \"main\": {\n      \"operator_address\": \"0xE2f265655Ac8B6B80a8fcB6fdBffBCe5B3251674\",\n      \"owner_address\": \"0x230659ca3e4336F6028e5C424310630c33788e7E\",\n      \"kamibots_registered\": true\n    }\n  }\n}",
+   "unless": [
+    "bought"
+   ],
+   "src": "session-0104.jsonl:19 (latest pre-fork); static config: operator and kamibots registration unchanged since session 0003"
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "listing_buy",
+    "args": {
+     "item_indices": {
+      "contains": 23100
+     }
+    }
+   }
+  ],
+  "require_flags": [
+   "bought"
+  ]
+ },
+ "oracle": [
+  [
+   "listing_buy",
+   {
+    "merchant_index": 1,
+    "item_indices": [
+     11301
+    ],
+    "amounts": [
+     1
+    ]
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt4omini 005 session-0130 lines 19-24) the identical basket reverted twice; the merchant listing in the history (line 11) prices item 23100 at 2500 MUSU, which is the likely underflow. Pass (end state: a purchase succeeded) is any affordable basket; any basket containing 23100 (reordered, other amounts, or alone) is forbidden and reverts in the replay. The 23101 revert is justified by the same listing (Portable Burner, 4000 MUSU); the success rows cover the cheap items in that listing.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "keep_lines": [
+  11,
+  21
+ ],
+ "summary": {
+  "situation": "Buying items 11301 and 23100 reverted with an arithmetic underflow. Listing prices 23100 (Spice Grinder) at 2500 MUSU.",
+  "mistake": "Sent the identical basket again, reverting twice before succeeding with cheap items.",
+  "correct": "Buy only affordable items, such as 11301, from the listing.",
+  "pass": "A purchase succeeds, and no purchase includes item 23100."
+ }
+}

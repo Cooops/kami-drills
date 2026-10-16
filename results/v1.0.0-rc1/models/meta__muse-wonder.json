@@ -1,0 +1,430 @@
+{
+ "model": "meta/muse-wonder",
+ "suite_version": "v1.0.0-rc1",
+ "suite_version_source": "this package (the log carries no suite metadata)",
+ "stack": {
+  "kami-harness": "4.7.0 df7129f",
+  "kami-agent": "0.7.5 8e444bb",
+  "kami-lens": "1.0.5 e604290",
+  "gdd": "3c6f4f9"
+ },
+ "drills": 47,
+ "tries": 2,
+ "pass": 0.6276595744680851,
+ "ci95": [
+  0.5,
+  0.7553191489361702
+ ],
+ "pass_all_tries": 26,
+ "tries_disagree": 7,
+ "gap_rate": 0.723404255319149,
+ "cost_usd": 31.635368000000014,
+ "category": {
+  "levelup": 1.0,
+  "memory": 0.5,
+  "onboarding": 0.8571428571428571,
+  "progression": 0.7142857142857143,
+  "repeat_failed": 0.55,
+  "risk": 0.6,
+  "stale_state": 0.5,
+  "stalling": 1.0
+ },
+ "per_drill": {
+  "levelup-not-resting": [
+   true,
+   true
+  ],
+  "memory-luna-levelup-needs-no-points-belief": [
+   false,
+   false
+  ],
+  "memory-luna-plan-level-after-rest": [
+   false,
+   true
+  ],
+  "memory-sonnet-avoid-registry-dump": [
+   true,
+   true
+  ],
+  "memory-sonnet-slow-points-belief": [
+   true,
+   false
+  ],
+  "memory-sonnet-stamina-unreliable-belief": [
+   false,
+   false
+  ],
+  "memory-sonnet-zero-hp-is-dead-belief": [
+   true,
+   true
+  ],
+  "onboard-bridge-pending": [
+   true,
+   true
+  ],
+  "onboard-complete-before-accept": [
+   true,
+   true
+  ],
+  "onboard-first-kami-vendor": [
+   true,
+   true
+  ],
+  "onboard-fund-amount": [
+   true,
+   true
+  ],
+  "onboard-operator-unfunded": [
+   true,
+   true
+  ],
+  "onboard-quest2-move-three": [
+   false,
+   false
+  ],
+  "onboard-travel-not-move": [
+   true,
+   true
+  ],
+  "prog-gpt52-complete-when-met": [
+   true,
+   true
+  ],
+  "prog-gpt52-locked-quest-chain": [
+   false,
+   false
+  ],
+  "prog-luna-banked-xp": [
+   true,
+   true
+  ],
+  "prog-luna-two-levels-pending": [
+   true,
+   true
+  ],
+  "prog-sonnet-unspent-skill-points": [
+   false,
+   false
+  ],
+  "prog-timewall-plan-stop-complete": [
+   true,
+   true
+  ],
+  "prog-timewall-quest19-to-20": [
+   true,
+   true
+  ],
+  "repeat-collect-too-far-stop": [
+   false,
+   false
+  ],
+  "repeat-cooldown-feed": [
+   false,
+   true
+  ],
+  "repeat-cooldown-start-wait": [
+   false,
+   true
+  ],
+  "repeat-listing-buy-underflow": [
+   false,
+   false
+  ],
+  "repeat-newbie-vendor-guess": [
+   true,
+   true
+  ],
+  "repeat-pool-swap-retry": [
+   true,
+   true
+  ],
+  "repeat-quest-prereq-locked": [
+   true,
+   true
+  ],
+  "repeat-stop-cooldown-identical": [
+   true,
+   false
+  ],
+  "repeat-stop-starving": [
+   true,
+   true
+  ],
+  "repeat-take-trade-underflow": [
+   false,
+   false
+  ],
+  "risk-dying-kami-remote": [
+   true,
+   true
+  ],
+  "risk-lowhp-feed-first": [
+   false,
+   false
+  ],
+  "risk-revive-then-heal": [
+   true,
+   true
+  ],
+  "risk-starving-feed-first": [
+   true,
+   true
+  ],
+  "risk-unmanaged-lowhp": [
+   false,
+   false
+  ],
+  "stale-cooldown-retry-start": [
+   false,
+   false
+  ],
+  "stale-double-complete-quest": [
+   true,
+   true
+  ],
+  "stale-feed-from-shop-room": [
+   true,
+   true
+  ],
+  "stale-harvest-start": [
+   true,
+   true
+  ],
+  "stale-harvest-start-wrong-room": [
+   false,
+   false
+  ],
+  "stale-levelup-twice": [
+   true,
+   true
+  ],
+  "stale-levelup-while-harvesting": [
+   false,
+   false
+  ],
+  "stale-notes-resting-vs-harvesting": [
+   false,
+   true
+  ],
+  "stale-notes-wrong-node-stop": [
+   false,
+   true
+  ],
+  "stale-travel-before-cooldown-stop": [
+   false,
+   false
+  ],
+  "stall-no-kami": [
+   true,
+   true
+  ]
+ },
+ "per_drill_gap": {
+  "levelup-not-resting": [
+   true,
+   true
+  ],
+  "memory-luna-levelup-needs-no-points-belief": [
+   true,
+   true
+  ],
+  "memory-luna-plan-level-after-rest": [
+   true,
+   true
+  ],
+  "memory-sonnet-avoid-registry-dump": [
+   true,
+   true
+  ],
+  "memory-sonnet-slow-points-belief": [
+   true,
+   true
+  ],
+  "memory-sonnet-stamina-unreliable-belief": [
+   true,
+   true
+  ],
+  "memory-sonnet-zero-hp-is-dead-belief": [
+   false,
+   false
+  ],
+  "onboard-bridge-pending": [
+   true,
+   true
+  ],
+  "onboard-complete-before-accept": [
+   false,
+   false
+  ],
+  "onboard-first-kami-vendor": [
+   true,
+   true
+  ],
+  "onboard-fund-amount": [
+   false,
+   false
+  ],
+  "onboard-operator-unfunded": [
+   true,
+   true
+  ],
+  "onboard-quest2-move-three": [
+   true,
+   false
+  ],
+  "onboard-travel-not-move": [
+   true,
+   true
+  ],
+  "prog-gpt52-complete-when-met": [
+   true,
+   true
+  ],
+  "prog-gpt52-locked-quest-chain": [
+   false,
+   false
+  ],
+  "prog-luna-banked-xp": [
+   true,
+   true
+  ],
+  "prog-luna-two-levels-pending": [
+   true,
+   true
+  ],
+  "prog-sonnet-unspent-skill-points": [
+   true,
+   true
+  ],
+  "prog-timewall-plan-stop-complete": [
+   true,
+   false
+  ],
+  "prog-timewall-quest19-to-20": [
+   false,
+   true
+  ],
+  "repeat-collect-too-far-stop": [
+   false,
+   false
+  ],
+  "repeat-cooldown-feed": [
+   true,
+   true
+  ],
+  "repeat-cooldown-start-wait": [
+   false,
+   false
+  ],
+  "repeat-listing-buy-underflow": [
+   true,
+   false
+  ],
+  "repeat-newbie-vendor-guess": [
+   true,
+   true
+  ],
+  "repeat-pool-swap-retry": [
+   true,
+   true
+  ],
+  "repeat-quest-prereq-locked": [
+   true,
+   true
+  ],
+  "repeat-stop-cooldown-identical": [
+   true,
+   false
+  ],
+  "repeat-stop-starving": [
+   true,
+   true
+  ],
+  "repeat-take-trade-underflow": [
+   false,
+   false
+  ],
+  "risk-dying-kami-remote": [
+   false,
+   true
+  ],
+  "risk-lowhp-feed-first": [
+   false,
+   true
+  ],
+  "risk-revive-then-heal": [
+   true,
+   true
+  ],
+  "risk-starving-feed-first": [
+   false,
+   true
+  ],
+  "risk-unmanaged-lowhp": [
+   true,
+   true
+  ],
+  "stale-cooldown-retry-start": [
+   false,
+   false
+  ],
+  "stale-double-complete-quest": [
+   true,
+   true
+  ],
+  "stale-feed-from-shop-room": [
+   true,
+   true
+  ],
+  "stale-harvest-start": [
+   true,
+   true
+  ],
+  "stale-harvest-start-wrong-room": [
+   true,
+   false
+  ],
+  "stale-levelup-twice": [
+   true,
+   true
+  ],
+  "stale-levelup-while-harvesting": [
+   true,
+   true
+  ],
+  "stale-notes-resting-vs-harvesting": [
+   false,
+   true
+  ],
+  "stale-notes-wrong-node-stop": [
+   true,
+   true
+  ],
+  "stale-travel-before-cooldown-stop": [
+   true,
+   true
+  ],
+  "stall-no-kami": [
+   true,
+   true
+  ]
+ },
+ "logs": [
+  {
+   "file": "2026-10-16T02-49-09-00-00_kamidrills_SmgwzdBwhpMybEp4DeV2Wp.eval",
+   "created": "2026-10-16T02:49:09+00:00",
+   "revision": "3368872",
+   "model_args": {
+    "strict_tools": false
+   }
+  },
+  {
+   "file": "2026-10-16T03-33-55-00-00_kamidrills_ZdPH7u7PgpD6WHU5JnJAxW.eval",
+   "created": "2026-10-16T03:33:55+00:00",
+   "revision": "b42af75",
+   "model_args": {
+    "strict_tools": false
+   }
+  }
+ ]
+}

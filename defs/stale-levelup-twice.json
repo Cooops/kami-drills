@@ -1,0 +1,198 @@
+{
+ "id": "stale-levelup-twice",
+ "category": "stale_state",
+ "src": "hosted/agent_run_b7929f61d557/transcripts/session-0033.jsonl",
+ "fork": 43,
+ "note": "level_up_kami just succeeded (line 43); the earlier lens_kami (line 22) still says levelUpReady true / xp 504 of 503. The agent called level_up_kami a second time (reverted 'PetLevel: need more experience').",
+ "replay": [
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 13,\n    \"xp\": 1,\n    \"xpRequired\": 634,\n    \"levelUpReady\": false,\n    \"skillPoints\": 1,\n    \"hp\": {\n      \"current\": 37,\n      \"total\": 80,\n      \"percent\": 46\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 170,\n    \"cooldownUntil\": 1791694216,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 37,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ],\n    \"equipment\": {\n      \"capacity\": 1,\n      \"slots\": [\n        {\n          \"slot\": \"Head_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Body_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Hands_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Passport_slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Kami_Pet_Slot\",\n          \"item\": null\n        }\n      ]\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-11T04:47:23.851Z\",\n    \"blockNumber\": 34300878,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34300849,\n    \"appliedThrough\": 34300877,\n    \"asOf\": {\n      \"block\": 34300878,\n      \"projectedAtSec\": 1791694041,\n      \"clockSampleBlock\": 34300734,\n      \"clockSampleBlockTime\": 1791693782,\n      \"clockOffsetMs\": -2348,\n      \"clockSampleAgoMs\": 259503\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [],\n      \"skillPoints\": [\n        21340\n      ]\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          37,\n          80\n        ],\n        \"stats\": {\n          \"health\": {\n            \"base\": 80,\n            \"shift\": 0,\n            \"boost\": 0,\n            \"sync\": 37,\n            \"total\": 80\n          },\n          \"power\": {\n            \"base\": 18,\n            \"shift\": 0,\n            \"boost\": 0,\n            \"sync\": 0,\n            \"total\": 18\n          },\n          \"harmony\": {\n            \"base\": 12,\n            \"shift\": 0,\n            \"boost\": 0,\n            \"sync\": 0,\n            \"total\": 12\n          },\n          \"violence\": {\n            \"base\": 15,\n            \"shift\": 0,\n            \"boost\": 0,\n            \"sync\": 0,\n            \"total\": 15\n          }\n        },\n        \"affinities\": [\n          \"EERIE\",\n          \"NORMAL\"\n        ]\n      }\n    ],\n    \"kamisTotal\": 1,\n    \"kamisServed\": 1\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-11T04:47:19.550Z\",\n    \"blockNumber\": 34300876,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34300849,\n    \"appliedThrough\": 34300875,\n    \"asOf\": {\n      \"block\": 34300876,\n      \"projectedAtSec\": 1791694037,\n      \"clockSampleBlock\": 34300734,\n      \"clockSampleBlockTime\": 1791693782,\n      \"clockOffsetMs\": -2348,\n      \"clockSampleAgoMs\": 255202\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 1,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      },\n      {\n        \"index\": 422,\n        \"name\": \"Side Hustles\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-11T04:47:23.876Z\",\n    \"blockNumber\": 34300878,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34300849,\n    \"appliedThrough\": 34300877,\n    \"asOf\": {\n      \"block\": 34300878,\n      \"projectedAtSec\": 1791694041,\n      \"clockSampleBlock\": 34300734,\n      \"clockSampleBlockTime\": 1791693782,\n      \"clockOffsetMs\": -2348,\n      \"clockSampleAgoMs\": 259528\n    }\n  }\n}"
+  },
+  {
+   "tool": "level_up_kami",
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: PetLevel: need more experience: Reverted'}",
+   "is_error": true,
+   "args": {
+    "kami_id": 21340
+   }
+  },
+  {
+   "tool": "upgrade_skill",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 1045928,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      321,
+      322,
+      323,
+      411,
+      412,
+      421,
+      422,
+      423
+     ]
+    }
+   },
+   "unless": [
+    "spent"
+   ],
+   "sets": [
+    "spent",
+    "resolved"
+   ]
+  },
+  {
+   "tool": "upgrade_skill",
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: not enough skill points: Reverted'}",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      321,
+      322,
+      323,
+      411,
+      412,
+      421,
+      422,
+      423
+     ]
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "upgrade_skill",
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: max level reached: Reverted'}",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      313,
+      413
+     ]
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "upgrade_skill",
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "allocate_skills",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 21340
+   },
+   "unless": [
+    "spent"
+   ],
+   "sets": [
+    "spent",
+    "resolved"
+   ]
+  },
+  {
+   "tool": "set_next_wake",
+   "response": "Next session scheduled.",
+   "args": {
+    "minutes_from_now": {
+     "gte": 3
+    }
+   },
+   "sets": "resolved"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    },
+    "node_index": 29
+   },
+   "waited_gte": 180,
+   "sets": "resolved"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "level_up_kami",
+    "args": {
+     "kami_id": 21340
+    }
+   }
+  ],
+  "require_flags": [
+   "resolved"
+  ]
+ },
+ "oracle": [
+  [
+   "lens_kami",
+   {
+    "kami_index": 21340
+   }
+  ],
+  [
+   "upgrade_skill",
+   {
+    "kami_id": 21340,
+    "skill_index": 421
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (hosted Luna b79, session 33 line 44-47): the repeated level_up_kami reverted because one level consumed the XP (504 vs 503 needed); the unspent skill point was then used with upgrade_skill 421. A pass does not level up again and moves on: spends the point on any skill the agent's own skills.csv read (line 37) shows valid at the fork (tier/tree requirement met by points already invested, below max; 16 skills), or schedules a wake, or waits out the post-level cooldown (180s cumulative) and resumes harvesting.",
+ "harness": "hosted GPT-6 Luna (recent harness, lens 1.0.1)",
+ "keep_lines": [
+  11,
+  22,
+  23
+ ],
+ "summary": {
+  "situation": "Kami 21340 just leveled up; one level used up the XP (504 of 503 needed). A skill point is unspent.",
+  "mistake": "Called level_up_kami a second time; reverted 'need more experience'.",
+  "correct": "Spend the new skill point, or schedule a wake, or wait out the 180 second cooldown and resume harvesting.",
+  "pass": "No further level_up_kami on kami 21340, and it moves on by one of those options."
+ }
+}

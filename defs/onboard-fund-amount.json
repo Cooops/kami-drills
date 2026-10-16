@@ -1,0 +1,124 @@
+{
+ "id": "onboard-fund-amount",
+ "category": "onboarding",
+ "src": "experiment-005-budget-boxed/gpt4omini/transcripts/session-0006.jsonl",
+ "fork": 13,
+ "note": "Operator wallet has 0 ETH so accept_quest is refused. fund_operator 0.01 failed: the owner holds 0.0099975 ETH and needs 0.01 + a 6.25E-7 gas provision. The live agent then tried to bridge and gave up.",
+ "replay": [
+  {
+   "tool": "get_gas_balance",
+   "response": "{\n  \"balances\": {\n    \"main\": {\n      \"operator_address\": \"0xE2f265655Ac8B6B80a8fcB6fdBffBCe5B3251674\",\n      \"operator_eth\": \"0\",\n      \"owner_address\": \"0x230659ca3e4336F6028e5C424310630c33788e7E\",\n      \"owner_eth\": \"0.009997513104999999\",\n      \"owner_mainnet_eth\": \"0.00993727165012301\"\n    }\n  }\n}"
+  },
+  {
+   "tool": "fund_operator",
+   "response": "Error executing tool fund_operator: Owner balance 0.009997513104999999 ETH cannot cover that ETH + the 6.25E-7 ETH gas provision (250000 gas at the flat price).",
+   "args": {
+    "amount_eth": {
+     "gt": 0.0099968
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "fund_operator",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\", \"direction\": \"owner->operator\", \"operator_eth\": \"funded\"}",
+   "args": {
+    "amount_eth": {
+     "gte": 3.75e-06,
+     "lte": 0.0099968
+    }
+   },
+   "sets": [
+    "funded"
+   ]
+  },
+  {
+   "tool": "fund_operator",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\", \"direction\": \"owner->operator\"}",
+   "sets": [
+    "dust"
+   ]
+  },
+  {
+   "tool": "bridge_eth_from_mainnet",
+   "response": "Error executing tool bridge_eth_from_mainnet: {'code': -32000, 'message': 'failed with 16777216 gas: insufficient funds for gas * price + value: address 0x230659ca3e4336F6028e5C424310630c33788e7E have 9937271650123010 want 10010370491620622'}",
+   "args": {
+    "amount_eth": {
+     "gt": 0.00992
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "bridge_eth_from_mainnet",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"submitted\", \"account\": \"main\"}",
+   "args": {
+    "dry_run": {
+     "not": true
+    }
+   }
+  },
+  {
+   "tool": "accept_quest",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "quest_index": 1
+   },
+   "when": [
+    "funded"
+   ],
+   "sets": [
+    "accepted"
+   ]
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: operator wallet 0xE2f265655Ac8B6B80a8fcB6fdBffBCe5B3251674 holds only dust; the transaction requires 0.00000375 ETH (gas limit 1500000 at the flat price)",
+   "when": [
+    "dust"
+   ],
+   "unless": [
+    "funded"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: operator wallet 0xE2f265655Ac8B6B80a8fcB6fdBffBCe5B3251674 holds 0 ETH; the transaction requires 0.00000375 ETH (gas limit 1500000 at the flat price)",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "funded",
+   "accepted"
+  ]
+ },
+ "oracle": [
+  [
+   "fund_operator",
+   {
+    "amount_eth": "0.005"
+   }
+  ],
+  [
+   "accept_quest",
+   {
+    "quest_index": 1
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt4omini 005 session-0006 lines 11-21) the refusal said the owner (0.0099975 ETH) could not cover 0.01 ETH plus gas, yet the agent bridged from mainnet (also failing) and ended with the operator at 0. Pass (end state): fund_operator with an amount the owner can actually cover (above dust, below about 0.00999 ETH; larger values, including 0.01 in any padding, revert) and then quest 1 accepted. Funding at least the stated 0.00000375 ETH per transaction unlocks quest 1; a smaller amount leaves the operator in dust and the replay says so.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "keep_lines": [
+  11,
+  13
+ ],
+ "summary": {
+  "situation": "Operator wallet has 0 ETH so quests are refused. Owner holds 0.0099975 ETH, not enough for 0.01 plus gas.",
+  "mistake": "Tried to fund exactly 0.01 ETH and failed, then tried bridging and gave up.",
+  "correct": "Fund the operator with a smaller amount the owner can cover (oracle uses 0.005), then accept quest 1.",
+  "pass": "Operator funded with an affordable amount, then quest 1 accepted."
+ }
+}

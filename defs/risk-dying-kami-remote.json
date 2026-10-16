@@ -1,0 +1,290 @@
+{
+ "id": "risk-dying-kami-remote",
+ "category": "risk",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0059.jsonl",
+ "fork": 16,
+ "note": "Two kamis were at 13/90 and 2/110 HP. 9787 (same room) has just been fed. Kami 20699 sits HARVESTING at node 6 (room 6) at 2 HP, -11.8 HP/hr; the account is in room 29.",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    29,\n    2,\n    3,\n    30,\n    4,\n    47,\n    31,\n    5,\n    32,\n    6\n  ],\n  \"hops\": 9,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 2\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 30\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 5\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 32\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 6\n    }\n  ],\n  \"stamina_needed\": 45,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 55,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 6\n}",
+   "args": {
+    "target_room": 6,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 2
+   },
+   "unless": [
+    "p29",
+    "p2",
+    "p3",
+    "p30",
+    "p4",
+    "p47",
+    "p31",
+    "p5",
+    "p32",
+    "p6"
+   ],
+   "sets": [
+    "p2"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 3
+   },
+   "when": [
+    "p2"
+   ],
+   "sets": [
+    "p3"
+   ],
+   "clears": [
+    "p2"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 30
+   },
+   "when": [
+    "p3"
+   ],
+   "sets": [
+    "p30"
+   ],
+   "clears": [
+    "p3"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 4
+   },
+   "when": [
+    "p30"
+   ],
+   "sets": [
+    "p4"
+   ],
+   "clears": [
+    "p30"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 47
+   },
+   "when": [
+    "p4"
+   ],
+   "sets": [
+    "p47"
+   ],
+   "clears": [
+    "p4"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 31
+   },
+   "when": [
+    "p47"
+   ],
+   "sets": [
+    "p31"
+   ],
+   "clears": [
+    "p47"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 5
+   },
+   "when": [
+    "p31"
+   ],
+   "sets": [
+    "p5"
+   ],
+   "clears": [
+    "p31"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 32
+   },
+   "when": [
+    "p5"
+   ],
+   "sets": [
+    "p32"
+   ],
+   "clears": [
+    "p5"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 6
+   },
+   "when": [
+    "p32"
+   ],
+   "sets": [
+    "p6",
+    "at6"
+   ],
+   "clears": [
+    "p32"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    29,\n    2,\n    3,\n    30,\n    4,\n    47,\n    31,\n    5,\n    32,\n    6\n  ],\n  \"hops\": 9,\n  \"moves_executed\": 9,\n  \"items_used\": [],\n  \"gas_used\": 7899887,\n  \"stamina_remaining\": 10,\n  \"final_room\": 6,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 2,\n      \"tx_hash\": \"0xa937921cb95f8fec40c91ec4bc16448e1362086595477cc280c86da5f317e69b\",\n      \"status\": \"success\",\n      \"block\": 32539682,\n      \"gas_used\": 860279\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 3,\n      \"tx_hash\": \"0x142da5aa4dccd34f597dd358f48777d6e5f11b9c9cba7e7ffea07ffccc791433\",\n      \"status\": \"success\",\n      \"block\": 32539688,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 30,\n      \"tx_hash\": \"0x78307dce113792ec9e400e0ff2dd202992f5c2e8b3b54a384ceeb5fd82ffd2e6\",\n      \"status\": \"success\",\n      \"block\": 32539690,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 4,\n      \"tx_hash\": \"0xd59fe38bc19b057791495f992d403d3343e0a078cf27ef687e5b173f0e985b21\",\n      \"status\": \"success\",\n      \"block\": 32539692,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 47,\n      \"tx_hash\": \"0xbfd3cac3ca4f3e566b0c1cb68594c2a34f0ba8bf8345e14900ae083d7ff664d9\",\n      \"status\": \"success\",\n      \"block\": 32539696,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0xf4500a60439b4ae23efd2665c7152a4989c203e75f56b80d202b84a385161c2f\",\n      \"status\": \"success\",\n      \"block\": 32539698,\n      \"gas_used\": 1017227\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 5,\n      \"tx_hash\": \"0x810586ad25b7f72764b501fa969f00c2a4d4c0f10fffcb7c693ab6ddb8d0e0d7\",\n      \"status\": \"success\",\n      \"block\": 32539704,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 32,\n      \"tx_hash\": \"0x388245a7353d23428e4e0dc2159ddadee615a949a5667e11a9375d79ffd61014\",\n      \"status\": \"success\",\n      \"block\": 32539706,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 6,\n      \"tx_hash\": \"0x93896dd820a0cd7a7eeb7e3cc67ac3be7f1c7e84e617907f1286a05c936490ca\",\n      \"status\": \"success\",\n      \"block\": 32539708,\n      \"gas_used\": 860719\n    }\n  ]\n}",
+   "args": {
+    "target_room": 6,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "unless": [
+    "at6"
+   ],
+   "sets": [
+    "p6",
+    "at6"
+   ],
+   "clears": [
+    "p29",
+    "p2",
+    "p3",
+    "p30",
+    "p4",
+    "p47",
+    "p31",
+    "p5",
+    "p32"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: that room is not connected to the account's current room; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 1893527,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": {
+     "in": [
+      11301,
+      11302,
+      11305,
+      11311
+     ]
+    }
+   },
+   "when": [
+    "at6"
+   ],
+   "sets": "saved"
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "args": {
+    "kami_id": 20699
+   },
+   "unless": [
+    "at6"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2250806,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 20699
+    }
+   },
+   "when": [
+    "at6"
+   ],
+   "sets": "saved"
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "at6",
+   "saved"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 6,
+    "use_items": false
+   }
+  ],
+  [
+   "feed_kami",
+   {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (sonnet5 pushed, session 59 line 17-22): the agent travelled 9 hops to room 6 and fed 20699, saving it. Feeding only works in the kami's room, so the pass is travel_to_room then feed_kami on 20699 (a feed attempted first just reverts 'kami too far'). Accepted saves for the 2-HP kami: a landed feed or a landed harvest_stop (both stop the drain), both only possible in room 6.",
+ "harness": "pre-4.7 (KamiBench 006 sonnet5 pushed)",
+ "keep_lines": [
+  3,
+  9,
+  14
+ ],
+ "summary": {
+  "situation": "Kami 20699 harvests at node 6 with 2 HP, losing 11.8 HP/hr. Account is in room 29.",
+  "mistake": "Live run saved it; trap is feeding from afar, which reverts 'kami too far'.",
+  "correct": "Travel to room 6, then feed kami 20699 (a landed harvest stop also saves it).",
+  "pass": "Account reaches room 6 and kami 20699 is saved by a feed or stop."
+ }
+}

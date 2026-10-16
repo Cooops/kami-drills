@@ -1,0 +1,235 @@
+{
+ "id": "risk-lowhp-feed-first",
+ "category": "risk",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0110.jsonl",
+ "fork": 11,
+ "note": "Kami 17194 is HARVESTING at 10/80 HP (13%, -7.3 HP/hr) and the inventory holds 3 Maple-Flavor Ghost Gum (11301). The live agent spent about ten reads on docs before feeding.",
+ "replay": [
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 17194,
+    "food_item_id": 11301
+   },
+   "when": [
+    "fed2"
+   ],
+   "unless": [
+    "fed3"
+   ],
+   "sets": [
+    "fed3",
+    "fed",
+    "protected"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 17194,
+    "food_item_id": 11301
+   },
+   "when": [
+    "fed"
+   ],
+   "unless": [
+    "fed2"
+   ],
+   "sets": [
+    "fed2",
+    "fed",
+    "protected"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 17194,
+    "food_item_id": 11301
+   },
+   "unless": [
+    "fed"
+   ],
+   "sets": [
+    "fed",
+    "protected"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: account 'main' holds 0 of item 11301 (Maple-Flavor Ghost Gum); feed_kami requires 1",
+   "args": {
+    "kami_id": 17194,
+    "food_item_id": 11301
+   },
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0xa8e785e5047b7d9a153348fb3814419fd2f3cb0b9ad69cf9631235dd1b096306\",\n    \"index\": 17194,\n    \"name\": \"Kamigotchi 17194\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 35,\n      \"total\": 80,\n      \"percent\": 44\n    },\n    \"hpRatePerHr\": \"-7.28\",\n    \"cooldownSec\": 180,\n    \"account\": {\n      \"index\": 3376,\n      \"name\": \"OnchainA3\"\n    },\n    \"musu\": {\n      \"accrued\": 79,\n      \"spotRatePerHr\": \"+35.82\",\n      \"avgRatePerHr\": \"+32.82\"\n    },\n    \"node\": {\n      \"index\": 6,\n      \"name\": \"Labs Entrance\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-23T04:00:16.221Z\",\n    \"blockNumber\": 32470091,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "when": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "sets": [
+    "stopped",
+    "protected"
+   ]
+  },
+  {
+   "tool": "use_item_batch",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 17194,
+    "item_id": 11301
+   },
+   "sets": [
+    "fed",
+    "protected"
+   ]
+  },
+  {
+   "tool": "use_item_batch",
+   "response": "Error executing tool use_item_batch: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 11
+   },
+   "response": "{\n  \"quest_index\": 11,\n  \"entity_id\": \"0x414ed3f112c47bc52cb5d1944883ef146af06da8428975a8a3a5a50150999da0\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "unless": [
+    "fed",
+    "fed2",
+    "fed3",
+    "protected",
+    "stopped"
+   ],
+   "src": "session-0108.jsonl:38 (same account, active_blocked objs_not_met); fork lens_quests L7 shows quest 11 accepted, not complete, objectivesMet false (2/3)"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "harvest_start",
+       "harvest_collect",
+       "move_to_room",
+       "travel_to_room",
+       "listing_buy",
+       "auction_buy",
+       "level_up_kami",
+       "upgrade_skill",
+       "allocate_skills",
+       "level_to",
+       "level_and_allocate_batch",
+       "use_account_item",
+       "equip_item",
+       "unequip_item",
+       "list_kami",
+       "buy_kami",
+       "take_trade",
+       "create_trade",
+       "cancel_trade",
+       "complete_trade",
+       "accept_quest",
+       "complete_quest",
+       "drop_quest",
+       "burn_items",
+       "craft_item",
+       "scavenge_claim_and_reveal",
+       "pool_swap",
+       "transfer_items",
+       "transfer_kami",
+       "fund_operator",
+       "withdraw_operator",
+       "name_kami",
+       "liquidate_kami",
+       "gacha_use",
+       "portal_deposit",
+       "portal_withdraw",
+       "set_next_wake",
+       "end_session",
+       "wait",
+       "workspace_write",
+       "workspace_read",
+       "workspace_list",
+       "search_reference"
+      ]
+     }
+    ],
+    "before": [
+     {
+      "tool": "feed_kami",
+      "ok": true,
+      "args": {
+       "kami_id": 17194
+      }
+     },
+     {
+      "tool": "harvest_stop",
+      "ok": true,
+      "args": {
+       "kami_ids": {
+        "contains": 17194
+       }
+      }
+     },
+     {
+      "tool": "use_item_batch",
+      "ok": true,
+      "args": {
+       "kami_id": 17194,
+       "item_id": 11301
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "protected"
+  ]
+ },
+ "oracle": [
+  [
+   "feed_kami",
+   {
+    "kami_id": 17194,
+    "food_item_id": 11301
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt52 control, session 110 line 12-25): the agent read scavenging docs and rooms for a dozen calls with the kami at 13% HP before feed_kami at line 24. The prefix already has the HP and the food; the first write must protect the kami (feed or stop) before travelling, claiming, quests or ending the session. Before the first protective write only state reads are allowed (no docs browsing and no other writes).",
+ "harness": "pre-4.7 (KamiBench 006 gpt-5.2 control)",
+ "keep_lines": [
+  3,
+  8,
+  9
+ ],
+ "summary": {
+  "situation": "Kami 17194 is harvesting at 10/80 HP (13%), losing 7.3 HP/hr. Inventory has 3 Ghost Gum.",
+  "mistake": "Spent about ten reads on docs and rooms before feeding.",
+  "correct": "Feed the kami now (or stop its harvest) before anything else.",
+  "pass": "First action is feeding or stopping that kami; travel, docs reads and other writes are forbidden before it."
+ }
+}

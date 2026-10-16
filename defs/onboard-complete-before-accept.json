@@ -1,0 +1,139 @@
+{
+ "id": "onboard-complete-before-accept",
+ "category": "onboarding",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0002.jsonl",
+ "fork": 85,
+ "note": "Quest 2 is completable now (check_quest_completable true) but still open; accept_quest 3 'Your First Kami' reverted 'reqs not met' because quest 3 requires quest 2 to be completed first.",
+ "replay": [
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest alr completed: Reverted'}",
+   "args": {
+    "quest_index": 2
+   },
+   "when": [
+    "q2done"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "complete_quest",
+   "response": "{\"tx_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000002\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "quest_index": 2
+   },
+   "sets": [
+    "q2done"
+   ]
+  },
+  {
+   "tool": "accept_quest",
+   "response": "{\"tx_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000003\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "quest_index": 3
+   },
+   "when": [
+    "q2done"
+   ],
+   "sets": [
+    "q3acc"
+   ]
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}\n[mechanics] account 'main': room 3, stamina 76. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "args": {
+    "quest_index": 3
+   },
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "response": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x703a88c58df4dac7bc11af574f70b094cf19feccbe5a2fbc877efd503e40ced1\",\n  \"owned\": true,\n  \"completed\": true,\n  \"completable_now\": false,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"completed\"\n}",
+   "args": {
+    "quest_index": 2
+   },
+   "when": [
+    "q2done"
+   ]
+  },
+  {
+   "tool": "quest_state",
+   "response": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x703a88c58df4dac7bc11af574f70b094cf19feccbe5a2fbc877efd503e40ced1\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": true,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"active_ready\"\n}",
+   "args": {
+    "quest_index": 2
+   }
+  },
+  {
+   "tool": "check_quest_completable",
+   "response": "{\"quest_index\": 2, \"completable\": true}",
+   "args": {
+    "quest_index": 2
+   },
+   "unless": [
+    "q2done"
+   ]
+  },
+  {
+   "tool": "check_quest_completable",
+   "response": "{\"quest_index\": 2, \"completable\": false, \"reason\": \"{'code': -32000, 'message': 'revert: quest alr completed: Reverted'}\"}",
+   "args": {
+    "quest_index": 2
+   }
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "accept_quest",
+      "args": {
+       "quest_index": 3
+      }
+     }
+    ],
+    "before": [
+     {
+      "tool": "complete_quest",
+      "args": {
+       "quest_index": 2
+      },
+      "ok": true
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "q2done",
+   "q3acc"
+  ]
+ },
+ "oracle": [
+  [
+   "complete_quest",
+   {
+    "quest_index": 2
+   }
+  ],
+  [
+   "accept_quest",
+   {
+    "quest_index": 3
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (sonnet5_pushed session-0002 lines 82-93) quest 3 was refused until complete_quest 2 landed (line 86); the agent then spent six reads before the accept at line 92. Pass (end state): quest 2 completed and quest 3 accepted, with no accept_quest 3 attempt before complete_quest 2 succeeded.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  84,
+  85
+ ],
+ "summary": {
+  "situation": "Quest 2 is completable but still open. Quest 3 'Your First Kami' requires quest 2 to be completed.",
+  "mistake": "Tried accept_quest 3 first; reverted 'reqs not met'.",
+  "correct": "Complete quest 2, then accept quest 3.",
+  "pass": "Quest 2 completed and quest 3 accepted, with no quest 3 accept attempt before quest 2 completes."
+ }
+}

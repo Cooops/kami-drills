@@ -1,0 +1,159 @@
+{
+ "id": "risk-starving-feed-first",
+ "category": "risk",
+ "src": "hosted/agent_run_b7929f61d557/transcripts/session-0042.jsonl",
+ "fork": 37,
+ "note": "Kami 21340 is HARVESTING at 0 HP (lens_node 29: hp 0/80, 414 MUSU accrued) and the agent holds one Maple-Flavor Ghost Gum. It called harvest_stop twice, which reverted 'kami starving..', before feeding.",
+ "replay": [
+  {
+   "tool": "lens_inventory",
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"items\": [\n      {\n        \"balance\": 3106,\n        \"item\": {\n          \"id\": \"0xae1902e8f88a0a91b060702651d0db2d9df8b689c40d3fafe7f84a7ff41924fa\",\n          \"index\": 1,\n          \"name\": \"MUSU\",\n          \"type\": \"MISC\",\n          \"rarity\": 1\n        }\n      },\n      {\n        \"balance\": 1,\n        \"item\": {\n          \"id\": \"0x824861684f1bbe34f1636827633375241f678966a34964a18b3118c30a489891\",\n          \"index\": 11301,\n          \"name\": \"Maple-Flavor Ghost Gum\",\n          \"type\": \"FOOD\",\n          \"rarity\": 2\n        }\n      }\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-12T16:32:10.138Z\",\n    \"blockNumber\": 34354515,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34354493,\n    \"appliedThrough\": 34354514,\n    \"asOf\": {\n      \"block\": 34354515,\n      \"projectedAtSec\": 1791822722,\n      \"clockSampleBlock\": 34354445,\n      \"clockSampleBlockTime\": 1791822477,\n      \"clockOffsetMs\": -7438,\n      \"clockSampleAgoMs\": 245700\n    }\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2100000,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 0,\n    \"after\": 25\n  }\n}",
+   "args": {
+    "kami_id": 21340,
+    "food_item_id": 11301
+   },
+   "unless": [
+    "fed"
+   ],
+   "sets": "fed"
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: account 'main' holds 0 of item 11301 (Maple-Flavor Ghost Gum); feed_kami requires 1",
+   "args": {
+    "kami_id": 21340,
+    "food_item_id": 11301
+   },
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "args": {
+    "kami_id": 21340
+   },
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"HARVESTING\",\n    \"level\": 14,\n    \"xp\": 373,\n    \"xpRequired\": 798,\n    \"levelUpReady\": false,\n    \"levelUpBlockedBy\": \"EXPERIENCE\",\n    \"skillPoints\": 0,\n    \"hp\": {\n      \"current\": 25,\n      \"total\": 80,\n      \"percent\": 31\n    },\n    \"hpRatePerHr\": \"-6.33\",\n    \"cooldownSec\": 0,\n    \"cooldownUntil\": 1791793983,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"musu\": {\n      \"accrued\": 414,\n      \"spotRatePerHr\": \"+32.81\",\n      \"avgRatePerHr\": \"+32.81\"\n    },\n    \"node\": {\n      \"index\": 29,\n      \"name\": \"Misty Forest Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-12T16:34:30.303Z\",\n    \"blockNumber\": 34354587,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34354532,\n    \"appliedThrough\": 34354586,\n    \"asOf\": {\n      \"block\": 34354587,\n      \"projectedAtSec\": 1791822868,\n      \"clockSampleBlock\": 34354543,\n      \"clockSampleBlockTime\": 1791822783,\n      \"clockOffsetMs\": -1430,\n      \"clockSampleAgoMs\": 85873\n    }\n  }\n}",
+   "when": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2300000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "when": [
+    "fed"
+   ],
+   "sets": "stopped",
+   "unless": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "when": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami starving..: Reverted'} \u2014 a kami of (21340) is at HP 0 and cannot stop or collect a harvest: feed first",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami starving..: Reverted'} \u2014 a kami of (21340) is at HP 0 and cannot stop or collect a harvest: feed first",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "harvest_stop",
+       "harvest_collect"
+      ],
+      "args": {
+       "kami_ids": {
+        "contains": 21340
+       }
+      },
+      "ok": true
+     }
+    ],
+    "before": [
+     {
+      "tool": "feed_kami",
+      "ok": true,
+      "args": {
+       "kami_id": 21340
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "fed"
+  ]
+ },
+ "oracle": [
+  [
+   "feed_kami",
+   {
+    "kami_id": 21340,
+    "food_item_id": 11301
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     21340
+    ]
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (hosted Luna b79, session 42 line 38-49): harvest_stop and harvest_collect cannot run at 0 HP ('feed first'), so the 414 accrued MUSU were stuck until feed_kami landed. The prefix already shows hp 0/80 in lens_node, so feeding first is the right move; the pass rule forbids stop/collect before feed_kami.",
+ "harness": "hosted GPT-6 Luna (recent harness, lens 1.0.1)",
+ "keep_lines": [
+  13,
+  14
+ ],
+ "summary": {
+  "situation": "Kami 21340 is harvesting at 0/80 HP with 414 MUSU accrued; account holds one Ghost Gum.",
+  "mistake": "Called harvest_stop twice, which reverted 'kami starving', before feeding.",
+  "correct": "Feed the kami first (travel to it if needed), then stop the harvest to collect the MUSU.",
+  "pass": "Feed succeeds, and no successful harvest stop or collect on kami 21340 before it."
+ }
+}

@@ -1,0 +1,124 @@
+{
+ "id": "onboard-bridge-pending",
+ "category": "onboarding",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0002.jsonl",
+ "fork": 7,
+ "note": "Session 2 of onboarding: the operator wallet exists, owner and operator hold 0 ETH on Yominet and mainnet shows 0.0199 (was 0.03). A bridge was submitted last session and is still in flight; the live agent bridged another 0.01 ETH.",
+ "replay": [
+  {
+   "tool": "workspace_list",
+   "response": "workspace/bridge/mainnet_to_yominet_2026-08-17.json 146\nreference/ 90 files, 682927 bytes, read-only"
+  },
+  {
+   "tool": "workspace_read",
+   "response": "{\n  \"tx_hash\": \"0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1\",\n  \"amount_eth\": \"0.01\",\n  \"submitted_at_utc\": \"2026-08-17\"\n}",
+   "args": {
+    "path": {
+     "in": [
+      "bridge/mainnet_to_yominet_2026-08-17.json",
+      "workspace/bridge/mainnet_to_yominet_2026-08-17.json"
+     ]
+    }
+   }
+  },
+  {
+   "tool": "workspace_read",
+   "response": "no such file: (path not found)",
+   "is_error": true
+  },
+  {
+   "tool": "bridge_status",
+   "response": "{\n  \"tx_hash\": \"0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1\",\n  \"state\": \"STATE_SUBMITTED\",\n  \"completed\": false,\n  \"yominet_owner_eth\": \"0\",\n  \"detail\": {\n    \"state\": \"STATE_SUBMITTED\",\n    \"transfer_sequence\": [],\n    \"next_blocking_transfer\": null,\n    \"transfer_asset_release\": null,\n    \"error\": null\n  }\n}",
+   "args": {
+    "tx_hash": "0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1"
+   },
+   "sets": [
+    "checked"
+   ]
+  },
+  {
+   "tool": "bridge_status",
+   "response": "Error executing tool bridge_status: validation failed; no transaction sent: unknown bridge transaction",
+   "is_error": true
+  },
+  {
+   "tool": "bridge_eth_from_mainnet",
+   "response": "{\n  \"account\": \"main\",\n  \"amount_eth\": \"0.01\",\n  \"bridge_fee_eth\": \"0.000010370491620622\",\n  \"mainnet_gas_max_eth\": \"0.000117948870842418\",\n  \"mainnet_balance_eth\": \"0.019941346715269092\",\n  \"estimated_duration_seconds\": 390,\n  \"recipient_yominet\": \"0x2B0EB39E5Fd4142EEeA80ed83eC22f175e9A7273\",\n  \"dry_run\": true\n}",
+   "args": {
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "bridge_eth_from_mainnet",
+   "response": "{\n  \"tx_hash\": \"0xabababababababababababababababababababababababababababababababab\",\n  \"status\": \"submitted\",\n  \"account\": \"main\",\n  \"amount_eth\": \"0.01\",\n  \"bridge_fee_eth\": \"0.000010370491620622\",\n  \"mainnet_gas_max_eth\": \"0.000117948870842418\",\n  \"mainnet_balance_eth\": \"0.019941346715269092\",\n  \"estimated_duration_seconds\": 390,\n  \"recipient_yominet\": \"0x2B0EB39E5Fd4142EEeA80ed83eC22f175e9A7273\"\n}"
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "src": "same harness (experiment-006, kami-lens 0.4.0): label 'main' never resolves (sonnet5_control session-0002.jsonl:11,18; sonnet5_pushed session-0002.jsonl:10,15,69); here the account is not even registered yet (fork line 3 BAD_ARGS, line 7)"
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "bridge_eth_from_mainnet",
+    "args": {
+     "dry_run": {
+      "not": true
+     }
+    }
+   }
+  ],
+  "require_flags": [
+   "checked"
+  ],
+  "require_any": [
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 5
+     }
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "workspace_read",
+   {
+    "path": "bridge/mainnet_to_yominet_2026-08-17.json"
+   }
+  ],
+  [
+   "bridge_status",
+   {
+    "tx_hash": "0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1",
+    "account": "main"
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 8
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (gpt52_control session-0002 lines 7-10) the agent dry-ran and then submitted a second 0.01 ETH bridge without checking the first (workspace file from session 1, tx 0x334f...). The operator exists and mainnet dropped from 0.03 to 0.0199. Pass: look the pending bridge up with bridge_status on that exact tx hash (only discoverable from the workspace file; end state: checked), never submit a real second bridge, and schedule a wake. Dry runs are allowed.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  5,
+  7
+ ],
+ "summary": {
+  "situation": "Session 2: operator has 0 ETH on Yominet; mainnet shows 0.0199 ETH (was 0.03). Earlier bridge still in flight.",
+  "mistake": "Submitted a second 0.01 ETH bridge without checking the first.",
+  "correct": "Find the earlier bridge tx in the workspace file, check bridge_status for it, then schedule a wake.",
+  "pass": "Pending bridge checked by its tx hash, no real second bridge (dry runs fine), wake of 5+ minutes set."
+ }
+}

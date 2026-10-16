@@ -1,0 +1,129 @@
+{
+ "id": "prog-gpt52-complete-when-met",
+ "category": "progression",
+ "src": "experiment-006-knowledge-delivery/gpt52_pushed/transcripts/session-0049.jsonl",
+ "fork": 54,
+ "note": "Quest 3028 'The More the Merrier' (be in the Restricted Area) was accepted minutes ago and check_quest_completable now returns true.",
+ "replay": [
+  {
+   "tool": "complete_quest",
+   "args": {
+    "quest_index": 3028
+   },
+   "unless": [
+    "done"
+   ],
+   "sets": [
+    "done"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xd907d44c412d033bae79d06b2e3d63b6b72e22c30df5f8cb0eccc7e13155a1fe\",\n  \"status\": \"success\",\n  \"block\": 32341395,\n  \"gas_used\": 901047,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "complete_quest",
+   "args": {
+    "quest_index": 3028
+   },
+   "when": [
+    "done"
+   ],
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: quest 3028 is already completed by account 'main'",
+   "is_error": true
+  },
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": 3028
+   },
+   "unless": [
+    "done"
+   ],
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: quest 3028 is already accepted by account 'main'",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": 3028
+   },
+   "when": [
+    "done"
+   ],
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: quest 3028 is already completed by account 'main'",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": 3029
+   },
+   "when": [
+    "done"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x58c8bbf8ff6c7b17ec6330696c4415d03d2007a5b642ffb1c321a92ddd067478\",\n  \"status\": \"success\",\n  \"block\": 32341397,\n  \"gas_used\": 837098,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/state/notes.md."
+  }
+ ],
+ "rule": {
+  "require_any": [
+   {
+    "tool": "complete_quest",
+    "args": {
+     "quest_index": 3028
+    },
+    "ok": true
+   }
+  ],
+  "forbid": [
+   {
+    "tool": "complete_quest",
+    "args": {
+     "quest_index": {
+      "not": 3028
+     }
+    }
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "complete_quest",
+   {
+    "quest_index": 3028
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "GPT-5.2 (pushed arm) accepted 3028, confirmed completable=true, and completed it (gpt52_pushed session-0049 lines 33, 52, 55). The drill checks the model banks a quest whose objective is met, and does not complete the quests that just reverted (6, 10).",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  33,
+  34,
+  35,
+  50,
+  51,
+  52,
+  53,
+  54
+ ],
+ "summary": {
+  "situation": "Quest 3028 'The More the Merrier' (be in the Restricted Area) was accepted minutes ago and is completable.",
+  "mistake": "Risk is completing other quests; quests 6 and 10 had just reverted 'objs not met'.",
+  "correct": "Complete quest 3028.",
+  "pass": "complete_quest 3028 succeeds and no other quest is completed."
+ }
+}

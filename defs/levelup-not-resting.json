@@ -1,0 +1,166 @@
+{
+ "id": "levelup-not-resting",
+ "category": "levelup",
+ "src": "experiment-005-budget-boxed/gpt4omini/transcripts/session-0074.jsonl",
+ "fork": 19,
+ "note": "level_up_kami reverted 'kami not RESTING' while harvesting. Recovery is stop, then level up.",
+ "replay": [
+  {
+   "tool": "harvest_stop",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "sets": "stopped",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "unless": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: no active harvest exists for kami #9811; its harvest entity state is 'INACTIVE'",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "when": "stopped",
+   "response": "{\"data\": {\"index\": 9811, \"name\": \"Kamigotchi 9811\", \"state\": \"RESTING\", \"level\": 1, \"hp\": {\"current\": 51, \"total\": 70, \"percent\": 73}, \"cooldownSec\": 0, \"account\": {\"index\": 3370}}}",
+   "args": {
+    "kami_index": 9811
+   }
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\"data\": {\"index\": 9811, \"name\": \"Kamigotchi 9811\", \"state\": \"HARVESTING\", \"level\": 1, \"hp\": {\"current\": 51, \"total\": 70, \"percent\": 73}, \"cooldownSec\": 0, \"account\": {\"index\": 3370}}}",
+   "args": {
+    "kami_index": 9811
+   }
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "unless": [
+    "stopped"
+   ],
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   }
+  },
+  {
+   "tool": "harvest_collect",
+   "when": [
+    "stopped"
+   ],
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: no active harvest exists for kami #9811; its harvest entity state is 'INACTIVE'",
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "response": "{\"state\": \"active_blocked\", \"completable\": false, \"revert_kind\": \"reqs\", \"revert_reason\": \"reqs not met\"}"
+  },
+  {
+   "tool": "level_up_kami",
+   "when": "stopped",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_id": 9811
+   }
+  },
+  {
+   "tool": "level_up_kami",
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not RESTING: Reverted'}",
+   "is_error": true,
+   "args": {
+    "kami_id": 9811
+   }
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": 8
+   },
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "unless": [
+    "stopped"
+   ],
+   "src": "revert text from experiment-005-budget-boxed/gpt4omini/transcripts/session-0009.jsonl:10 (same run, accept_quest reqs not met; text carries no quest id); fork line 7 lens_quests shows quest 8 accepted=false, requirementsMet=false"
+  },
+  {
+   "tool": "harvest_start",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: kami #9811 is HARVESTING; harvest_start requires RESTING",
+   "unless": [
+    "stopped"
+   ],
+   "src": "exact text from experiment-005-budget-boxed/gpt4omini/transcripts/session-0068.jsonl:13 (same run, same kami); fork lines 3 and 9 show kami 9811 HARVESTING, later fork calls (lines 16-19) all reverted"
+  },
+  {
+   "tool": "list_accounts",
+   "args": {},
+   "response": "{\n  \"accounts\": {\n    \"main\": {\n      \"operator_address\": \"0xE2f265655Ac8B6B80a8fcB6fdBffBCe5B3251674\",\n      \"owner_address\": \"0x230659ca3e4336F6028e5C424310630c33788e7E\",\n      \"kamibots_registered\": true\n    }\n  }\n}",
+   "src": "latest pre-fork list_accounts, experiment-005-budget-boxed/gpt4omini/transcripts/session-0024.jsonl:11; static wallet config (operator/owner addresses match fork line 5 lens_account, registration settled since session-0003)"
+  }
+ ],
+ "rule": {
+  "require_sequence": [
+   {
+    "tool": "harvest_stop",
+    "args": {
+     "kami_ids": {
+      "contains": 9811
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "level_up_kami",
+    "args": {
+     "kami_id": 9811
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     9811
+    ]
+   }
+  ],
+  [
+   "level_up_kami",
+   {
+    "kami_id": 9811
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "level_up_kami reverted 'kami not RESTING' while harvesting. Recovery is stop, then level up.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "keep_lines": [],
+ "summary": {
+  "situation": "Level 1 kami 9811 (51/70 HP) is still harvesting; leveling up reverts 'kami not RESTING'.",
+  "mistake": "Tried liquidate_kami and level_up_kami on a harvesting kami; both reverted.",
+  "correct": "Stop the harvest so the kami rests, then level it up.",
+  "pass": "Harvest stop succeeds, then level-up succeeds."
+ }
+}

@@ -1,0 +1,167 @@
+{
+ "id": "stale-harvest-start-wrong-room",
+ "category": "stale_state",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0096.jsonl",
+ "fork": 42,
+ "note": "Session notes say the account is in room 3 (Torii Gate); lens_account (line 9) shows roomIndex 2. After feeding, the agent called harvest_start at node 3 without moving (reverted 'not in same room').",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    2,\n    3\n  ],\n  \"hops\": 1,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    }\n  ],\n  \"stamina_needed\": 5,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 95,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 3\n}",
+   "args": {
+    "target_room": 3,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 3
+   },
+   "unless": [
+    "p2",
+    "p3"
+   ],
+   "sets": [
+    "p3",
+    "at3"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    3\n  ],\n  \"hops\": 1,\n  \"moves_executed\": 1,\n  \"items_used\": [],\n  \"gas_used\": 860000,\n  \"stamina_remaining\": 60,\n  \"final_room\": 3,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 3,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    }\n  ]\n}",
+   "args": {
+    "target_room": 3,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "unless": [
+    "at3"
+   ],
+   "sets": [
+    "p3",
+    "at3"
+   ],
+   "clears": [
+    "p2"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: that room is not connected to the account's current room; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_account",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2b0eb39e5fd4142eeea80ed83ec22f175e9a7273\",\n    \"index\": 3376,\n    \"name\": \"OnchainA3\",\n    \"ownerAddress\": \"0x2B0EB39E5Fd4142EEeA80ed83eC22f175e9A7273\",\n    \"operatorAddress\": \"0x0da4C7883308ce0e0cDdBBf094a52645300E9315\",\n    \"roomIndex\": 3,\n    \"musu\": 622,\n    \"stamina\": {\n      \"current\": 100,\n      \"total\": 100\n    },\n    \"reputation\": {\n      \"agency\": 28,\n      \"mina\": 0,\n      \"nursery\": 0\n    },\n    \"kamis\": [\n      {\n        \"id\": \"0xa8e785e5047b7d9a153348fb3814419fd2f3cb0b9ad69cf9631235dd1b096306\",\n        \"index\": 17194,\n        \"name\": \"Kamigotchi 17194\",\n        \"state\": \"RESTING\"\n      }\n    ]\n  },\n  \"untrusted\": [\n    \"kamis[].name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-22T07:35:13.409Z\",\n    \"blockNumber\": 32439684,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "when": [
+    "at3"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not RESTING: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "harvest3"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    },
+    "node_index": 3
+   },
+   "when": [
+    "at3"
+   ],
+   "sets": "harvest3"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: not in same room: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    },
+    "node_index": 3
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    },
+    "node_index": 2
+   },
+   "unless": [
+    "at3"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: not in same room: Reverted'}",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "harvest3"
+  ],
+  "forbid": [
+   {
+    "tool": "harvest_start",
+    "args": {
+     "node_index": {
+      "not": 3
+     }
+    }
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "move_to_room",
+   {
+    "room_index": 3
+   }
+  ],
+  [
+   "harvest_start",
+   {
+    "kami_ids": [
+     17194
+    ],
+    "node_index": 3
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (gpt52 control, session 96 line 43-47): harvest_start at node 3 reverted 'not in same room' because the account was in room 2, as lens_account/lens_roster showed and the stale note contradicted; one move_to_room 3 fixed it. Node 3 holds the 87/100 scavenge points the plan targets. Node 3 (87/100 points toward the tier) is the target; the end state must be a harvest running at node 3.",
+ "harness": "pre-4.7 (KamiBench 006 gpt-5.2 control)",
+ "keep_lines": [
+  3,
+  7,
+  9,
+  21
+ ],
+ "summary": {
+  "situation": "Notes say account is in room 3 (Torii Gate); it is in room 2. Node 3 holds 87/100 scavenge points.",
+  "mistake": "Called harvest_start at node 3 without moving; reverted 'not in same room'.",
+  "correct": "Move to room 3, then start kami 17194 harvesting at node 3.",
+  "pass": "Kami harvesting at node 3, and no harvest started at any other node."
+ }
+}

@@ -1,0 +1,637 @@
+{
+ "id": "prog-timewall-quest19-to-20",
+ "category": "progression",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0059.jsonl",
+ "fork": 22,
+ "note": "Quest 19 (12h harvest at Labs Entrance) is past its 12 hours; the quest only registers on harvest_stop. Next quest 20 needs 12h at node 37 and the kami is at 27/110 HP.",
+ "replay": [
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 20699
+    }
+   },
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "stopped"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x6c34261d5f6dd5c339db978c762ec004c0123091a3820ab19558b77fe64d818e\",\n  \"status\": \"success\",\n  \"block\": 32539721,\n  \"gas_used\": 2250806,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 20699
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x5606f27e332f79d0febf943fbfa3d51c0fb611978df9133203221300ef1cce75\",\n    \"index\": 20699,\n    \"name\": \"Kamigotchi 20699\",\n    \"state\": \"RESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 27,\n      \"total\": 110,\n      \"percent\": 25\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 114,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T01:03:13.903Z\",\n    \"blockNumber\": 32539772,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 20699
+   },
+   "response": "{\n  \"data\": {\n    \"id\": \"0x5606f27e332f79d0febf943fbfa3d51c0fb611978df9133203221300ef1cce75\",\n    \"index\": 20699,\n    \"name\": \"Kamigotchi 20699\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 27,\n      \"total\": 110,\n      \"percent\": 25\n    },\n    \"hpRatePerHr\": \"-11.83\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    },\n    \"musu\": {\n      \"accrued\": 538,\n      \"spotRatePerHr\": \"+58.26\",\n      \"avgRatePerHr\": \"+43.78\"\n    },\n    \"node\": {\n      \"index\": 6,\n      \"name\": \"Labs Entrance\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T01:01:37.016Z\",\n    \"blockNumber\": 32539708,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 9787
+   },
+   "response": "{\n  \"data\": {\n    \"id\": \"0x28c344ab163e85b58af6e4d27d5ab61c48b6058cf75b20803ccbe2caecc6a8f5\",\n    \"index\": 9787,\n    \"name\": \"Kamigotchi 9787\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 55,\n      \"total\": 90,\n      \"percent\": 61\n    },\n    \"hpRatePerHr\": \"-9.54\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    },\n    \"musu\": {\n      \"accrued\": 375,\n      \"spotRatePerHr\": \"+46.95\",\n      \"avgRatePerHr\": \"+32.51\"\n    },\n    \"node\": {\n      \"index\": 29,\n      \"name\": \"Misty Forest Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T01:00:11.932Z\",\n    \"blockNumber\": 32539644,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 19
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"quest_index\": 19,\n  \"entity_id\": \"0xf97b6386e2ec6f9ceb16b45db9912cafd99cd86541ba50b7dbbef6337c9559f9\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": true,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"active_ready\"\n}"
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 19
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"quest_index\": 19,\n  \"completable\": true\n}"
+  },
+  {
+   "tool": "complete_quest",
+   "args": {
+    "quest_index": 19
+   },
+   "when": [
+    "stopped"
+   ],
+   "sets": [
+    "q19"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xbaae58723e73184752260d6889741cee9f520cd3c28b3bc814482e20e2a0c384\",\n  \"status\": \"success\",\n  \"block\": 32539725,\n  \"gas_used\": 987420,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": 20
+   },
+   "when": [
+    "q19"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x48da84ff28e8594447db35e99f6902df49af25149747e3ed297bb06de54d6c0f\",\n  \"status\": \"success\",\n  \"block\": 32539729,\n  \"gas_used\": 837086,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "get_expected_objective",
+   "args": {
+    "quest_index": 20
+   },
+   "when": [
+    "q19"
+   ],
+   "response": "{\n  \"quest_index\": 20,\n  \"title\": \"Harvesting Data III\",\n  \"objectives\": [\n    {\n      \"description\": \"Harvest for >720 minutes at the Hollow Path\",\n      \"type\": \"HARVEST_TIME\",\n      \"delta_type\": \"INC\",\n      \"operator\": \"MIN\",\n      \"index\": 37,\n      \"value\": 43200\n    }\n  ],\n  \"rewards\": \"4x Agency Reputation,1x \u201cPaeon\u2019s Field of Flowers\u201d Spell Card,1x \u201cMelkarth\u2019s Heroic Awakening\u201d Spell Card\"\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "dry_run": true
+   },
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    6,\n    32,\n    5,\n    31,\n    33,\n    9,\n    36,\n    25,\n    37\n  ],\n  \"hops\": 8,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 32\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 5\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 33\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 9\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 36\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 25\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 37\n    }\n  ],\n  \"stamina_needed\": 40,\n  \"stamina_have\": 55,\n  \"stamina_after_plan\": 15,\n  \"feasible\": true,\n  \"gated_hops\": [],\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 37\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "target_room": 37
+   },
+   "sets": [
+    "at37"
+   ],
+   "clears": [
+    "pos6",
+    "pos32",
+    "pos5",
+    "pos31",
+    "pos33",
+    "pos9",
+    "pos36",
+    "pos25",
+    "pos37"
+   ],
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    6,\n    32,\n    5,\n    31,\n    33,\n    9,\n    36,\n    25,\n    37\n  ],\n  \"hops\": 8,\n  \"moves_executed\": 8,\n  \"items_used\": [],\n  \"gas_used\": 6900000,\n  \"stamina_remaining\": 15,\n  \"final_room\": 37,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 32,\n      \"tx_hash\": \"0x0e672985a8cef65c76206062344e7bc804b36f544e7e74a24df6519097780110\",\n      \"status\": \"success\",\n      \"block\": 32539730,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 5,\n      \"tx_hash\": \"0xafea94fa01175283f9008f8e7f515a09ff5e3d4bedbaeacdf49412999a254827\",\n      \"status\": \"success\",\n      \"block\": 32539731,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0x9cbd4a4314e42b7ca96792f62372500a4671fe24fe9080c86b8f921bbb1a4db9\",\n      \"status\": \"success\",\n      \"block\": 32539732,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 33,\n      \"tx_hash\": \"0xe43044a072f8bfa162c9146b8eeb53a98722110aedb6c31dd5c80827e6cfd90f\",\n      \"status\": \"success\",\n      \"block\": 32539733,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 9,\n      \"tx_hash\": \"0xd25f026c8726d322bb747e2e25abf9cf34ed0097643b87a2dca1cd93b0419533\",\n      \"status\": \"success\",\n      \"block\": 32539734,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 36,\n      \"tx_hash\": \"0x08a7fe4a068a285bfae126bb6f752135c8d5877ddabf8291471d3596345013ca\",\n      \"status\": \"success\",\n      \"block\": 32539735,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 25,\n      \"tx_hash\": \"0xdaae0bcacbc23ed75225b708897c796b5fab41d07a52def8a7ccc97c52813515\",\n      \"status\": \"success\",\n      \"block\": 32539736,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 37,\n      \"tx_hash\": \"0xbee42e55c66f75c391def0fd4ab8f5bd2756c21eb9b8eac26ee3c629867ef2c5\",\n      \"status\": \"success\",\n      \"block\": 32539737,\n      \"gas_used\": 860277\n    }\n  ]\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 32
+   },
+   "unless": [
+    "pos32",
+    "pos5",
+    "pos31",
+    "pos33",
+    "pos9",
+    "pos36",
+    "pos25",
+    "pos37"
+   ],
+   "sets": [
+    "pos32"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x41e1f94005d419c823bb5639d5b4fd4fc48fd3d2227068064c6acec766886d08\",\n  \"status\": \"success\",\n  \"block\": 32500001,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 5
+   },
+   "when": [
+    "pos32"
+   ],
+   "sets": [
+    "pos5"
+   ],
+   "clears": [
+    "pos32"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xa6172a6540efc10f257aaa05197008f44a88e8091e94bef863637bff80af8c29\",\n  \"status\": \"success\",\n  \"block\": 32500002,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 31
+   },
+   "when": [
+    "pos5"
+   ],
+   "sets": [
+    "pos31"
+   ],
+   "clears": [
+    "pos5"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x58e3c499846107bca97d0c3d0fcf65822fd34180e3f3da8dec7d12dea7bf6690\",\n  \"status\": \"success\",\n  \"block\": 32500003,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 33
+   },
+   "when": [
+    "pos31"
+   ],
+   "sets": [
+    "pos33"
+   ],
+   "clears": [
+    "pos31"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xfcba5f4e3b754be1706e39d66539033362bbc894e8599015061ba256c70ef6e5\",\n  \"status\": \"success\",\n  \"block\": 32500004,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 9
+   },
+   "when": [
+    "pos33"
+   ],
+   "sets": [
+    "pos9"
+   ],
+   "clears": [
+    "pos33"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x1bc57d455d0f0fb0ff15cff59c6e1a42ae7558ff24fffa3377351efab16fc34c\",\n  \"status\": \"success\",\n  \"block\": 32500005,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 36
+   },
+   "when": [
+    "pos9"
+   ],
+   "sets": [
+    "pos36"
+   ],
+   "clears": [
+    "pos9"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x50b5e950f6f543f77a7ce3a3f843a40db7ad3c4c6e80047d985a252e55ebb1b7\",\n  \"status\": \"success\",\n  \"block\": 32500006,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 25
+   },
+   "when": [
+    "pos36"
+   ],
+   "sets": [
+    "pos25"
+   ],
+   "clears": [
+    "pos36"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x7c3bf1c926f17dbcf59adc7048cbc31be1694c197d68fdec8550873f39fa5cef\",\n  \"status\": \"success\",\n  \"block\": 32500007,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 37
+   },
+   "when": [
+    "pos25"
+   ],
+   "sets": [
+    "pos37",
+    "at37"
+   ],
+   "clears": [
+    "pos25"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x179738099dd9bc1a486a42e51bdbb31055ccc4514d3b2f82026b8a6c8fb9a514\",\n  \"status\": \"success\",\n  \"block\": 32500008,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_start",
+   "waited_gte": 120,
+   "args": {
+    "node_index": 37,
+    "kami_ids": {
+     "contains": 20699
+    }
+   },
+   "when": [
+    "at37",
+    "stopped"
+   ],
+   "sets": [
+    "harvest37"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x9cb60066c25b477c08e81d96d2281b673e011a8307013995a051eae531368870\",\n  \"status\": \"success\",\n  \"block\": 32539819,\n  \"gas_used\": 1268372,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_start",
+   "args": {
+    "node_index": 37
+   },
+   "when": [
+    "at37"
+   ],
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "args": {
+    "node_index": 37
+   },
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "waited_gte": 120,
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11305
+   },
+   "when": [
+    "stopped"
+   ],
+   "sets": [
+    "hp_ok"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xdc0be13826faa9753402ba4b3340d02e8d3403228a43df8c82dc9c83dc076876\",\n  \"status\": \"success\",\n  \"block\": 32539787,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 27,\n    \"after\": 110\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11305
+   },
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "hp_ok"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xdc0be13826faa9753402ba4b3340d02e8d3403228a43df8c82dc9c83dc076876\",\n  \"status\": \"success\",\n  \"block\": 32539787,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 27,\n    \"after\": 110\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "waited_gte": 300,
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "when": [
+    "gg2",
+    "stopped"
+   ],
+   "sets": [
+    "hp_ok"
+   ],
+   "clears": [
+    "gg2"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xfc22f591d51be182c5f71b2be66b2869a48f4d3a0a9d7d15d10f6cf358128934\",\n  \"status\": \"success\",\n  \"block\": 32539837,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 77,\n    \"after\": 102\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "waited_gte": 300,
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "when": [
+    "gg2"
+   ],
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "hp_ok"
+   ],
+   "clears": [
+    "gg2"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xfc22f591d51be182c5f71b2be66b2869a48f4d3a0a9d7d15d10f6cf358128934\",\n  \"status\": \"success\",\n  \"block\": 32539837,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 77,\n    \"after\": 102\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "waited_gte": 150,
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "when": [
+    "gg1",
+    "stopped"
+   ],
+   "sets": [
+    "gg2"
+   ],
+   "clears": [
+    "gg1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xa0f8b859831588ca9d9f5fd669cd9ff4f4f0613d71aba28dd598c8c39972bff9\",\n  \"status\": \"success\",\n  \"block\": 32539812,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 52,\n    \"after\": 77\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "waited_gte": 150,
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "when": [
+    "gg1"
+   ],
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "gg2"
+   ],
+   "clears": [
+    "gg1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xa0f8b859831588ca9d9f5fd669cd9ff4f4f0613d71aba28dd598c8c39972bff9\",\n  \"status\": \"success\",\n  \"block\": 32539812,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 52,\n    \"after\": 77\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "waited_gte": 120,
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "gg1"
+   ],
+   "sets": [
+    "gg1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x2b3664bab06d87c1ececb6bc6b56f814469b0d44f1c57366add2998eb330983f\",\n  \"status\": \"success\",\n  \"block\": 32539787,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 27,\n    \"after\": 52\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "unless": [
+    "gg1",
+    "stopped"
+   ],
+   "sets": [
+    "gg1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x2b3664bab06d87c1ececb6bc6b56f814469b0d44f1c57366add2998eb330983f\",\n  \"status\": \"success\",\n  \"block\": 32539787,\n  \"gas_used\": 1893527,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 27,\n    \"after\": 52\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": {
+     "in": [
+      11301,
+      11305,
+      11311,
+      11302
+     ]
+    }
+   },
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699
+   },
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: account 'main' holds 0 of that item; feed_kami requires 1",
+   "is_error": true
+  },
+  {
+   "tool": "use_item_batch",
+   "args": {
+    "kami_id": 20699,
+    "item_id": 11301,
+    "count": {
+     "gte": 3
+    }
+   },
+   "sets": [
+    "hp_ok"
+   ],
+   "response": "{\n  \"kami_id\": 20699,\n  \"item_id\": 11301,\n  \"count\": 3,\n  \"success\": true,\n  \"used\": 3\n}"
+  },
+  {
+   "tool": "use_item_batch",
+   "args": {
+    "kami_id": 20699,
+    "item_id": 11305
+   },
+   "sets": [
+    "hp_ok"
+   ],
+   "response": "{\n  \"kami_id\": 20699,\n  \"item_id\": 11305,\n  \"count\": 1,\n  \"success\": true,\n  \"used\": 1\n}"
+  },
+  {
+   "tool": "get_status",
+   "response": "{\n  \"current_time_utc\": \"2026-08-25T01:00:06.517+00:00\",\n  \"session_number\": 59,\n  \"workspace_bytes_used\": 15200,\n  \"workspace_quota_bytes\": 10485760\n}"
+  },
+  {
+   "tool": "wait",
+   "waited_gte": 10000,
+   "when": [
+    "stopped"
+   ],
+   "sets": [
+    "hp_ok"
+   ],
+   "response": "Waited 3600 seconds."
+  },
+  {
+   "tool": "wait",
+   "response": "Waited 120 seconds."
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/progress.md."
+  }
+ ],
+ "rule": {
+  "require_sequence": [
+   {
+    "tool": "harvest_stop",
+    "args": {
+     "kami_ids": {
+      "contains": 20699
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "complete_quest",
+    "args": {
+     "quest_index": 19
+    },
+    "ok": true
+   },
+   {
+    "tool": "accept_quest",
+    "args": {
+     "quest_index": 20
+    },
+    "ok": true
+   }
+  ],
+  "require_flags": [
+   "harvest37",
+   "hp_ok"
+  ]
+ },
+ "oracle": [
+  [
+   "feed_kami",
+   {
+    "kami_id": 20699,
+    "food_item_id": 11305
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     20699
+    ]
+   }
+  ],
+  [
+   "complete_quest",
+   {
+    "quest_index": 19
+   }
+  ],
+  [
+   "accept_quest",
+   {
+    "quest_index": 20
+   }
+  ],
+  [
+   "travel_to_room",
+   {
+    "target_room": 37
+   }
+  ],
+  [
+   "wait",
+   {
+    "seconds": 150
+   }
+  ],
+  [
+   "harvest_start",
+   {
+    "kami_ids": [
+     20699
+    ],
+    "node_index": 37
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Sonnet 5 stopped the harvest, completed 19, accepted 20 and restarted at node 37 with 27/110 HP and no further feed (sonnet5_pushed session-0059 lines 23-77); next session found the kami at 0 HP (session-0060 line 10). The drill requires the chain plus HP prep before the new 12h harvest. The rule scores the end state: kami 20699 harvesting node 37 AND healed (the 100-HP spell card, three Ghost Gums, or about 3h of cumulative waiting); a wake or unrelated feed does not count.",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22
+ ],
+ "summary": {
+  "situation": "Quest 19 (12h harvest) is done; quest 20 needs 12h at node 37. Kami 20699 at 27/110 HP.",
+  "mistake": "Restarted at node 37 at 27/110 HP with no feeding; kami was at 0 HP next session.",
+  "correct": "Feed the kami, stop harvest, complete 19, accept 20, travel to node 37 and restart harvest healed.",
+  "pass": "Stop, complete 19, accept 20 in order, then harvesting at node 37 with HP restored."
+ }
+}

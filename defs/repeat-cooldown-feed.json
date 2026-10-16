@@ -1,0 +1,126 @@
+{
+ "id": "repeat-cooldown-feed",
+ "category": "repeat_failed",
+ "src": "experiment-004-budget-boxed/gpt4omini/transcripts/session-0161.jsonl",
+ "fork": 27,
+ "note": "feed_kami reverted 'kami on cooldown'; the live agent sent the identical call again.",
+ "replay": [
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_id": 20375
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 20375
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: kami #20375 is RESTING; harvest_stop requires HARVESTING",
+   "is_error": true,
+   "args": {
+    "kami_ids": {
+     "contains": 20375
+    }
+   }
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: kami #20375 is RESTING; harvest_collect requires HARVESTING",
+   "is_error": true,
+   "args": {
+    "kami_ids": {
+     "contains": 20375
+    }
+   }
+  },
+  {
+   "tool": "quest_state",
+   "response": "{\n  \"quest_index\": 4,\n  \"entity_id\": \"0x0000000000000000000000000000000000000000000000000000000000000004\",\n  \"owned\": true,\n  \"completed\": true,\n  \"completable_now\": false,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"completed\"\n}",
+   "args": {
+    "quest_index": 4
+   }
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": "main"
+   },
+   "response": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "src": "experiment-004-budget-boxed/gpt4omini/transcripts/session-0147.jsonl:11 (latest pre-fork); this run returns the same NOT_FOUND for account_key main in all 16 recorded calls, sessions 2-147 (account name is 'operator')"
+  },
+  {
+   "tool": "lens_account",
+   "args": {
+    "account_key": {
+     "in": [
+      null,
+      ""
+     ]
+    }
+   },
+   "response": "Error executing tool lens_account: BAD_ARGS: account needs an index or name",
+   "src": "experiment-004-budget-boxed/gpt4omini/transcripts/session-0002.jsonl:5 (no account_key -> BAD_ARGS; same for empty key at session-0001:5, 0003:5); argument validation, state-independent"
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "feed_kami",
+    "args": {
+     "kami_id": 20375
+    }
+   },
+   {
+    "tool": "harvest_start",
+    "args": {
+     "kami_ids": {
+      "contains": 20375
+     }
+    }
+   }
+  ],
+  "require_any": [
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 5
+     }
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 30
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt4omini 004 session-0161 lines 25-28) feed_kami on kami 20375 reverted 'kami on cooldown' (the kami was just stopped, line 21) and was sent again unchanged. The cooldown length is not shown, so the pass is no further feed_kami for kami 20375 plus a scheduled wake (the 5-minute minimum), which is the only way time passes. Feeding a different kami is not blocked.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "keep_lines": [
+  21,
+  25,
+  27
+ ],
+ "summary": {
+  "situation": "Kami 20375 was just stopped; feed_kami reverted 'kami on cooldown'. Cooldown length not shown.",
+  "mistake": "Sent the identical feed_kami call again.",
+  "correct": "Stop retrying and schedule a wake of at least 5 minutes.",
+  "pass": "No feed_kami or harvest_start for kami 20375, and a wake of 5+ minutes is set."
+ }
+}

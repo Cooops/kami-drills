@@ -1,0 +1,242 @@
+{
+ "id": "repeat-collect-too-far-stop",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0089.jsonl",
+ "fork": 102,
+ "note": "harvest_collect reverted 'kami too far' because the account walked from node 34 to room 2. The live agent then sent harvest_stop, which has the same location requirement.",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    2,\n    3,\n    30,\n    4,\n    34\n  ],\n  \"hops\": 4,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 30\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 34\n    }\n  ],\n  \"stamina_needed\": 20,\n  \"stamina_have\": 30,\n  \"stamina_after_plan\": 10,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 34\n}",
+   "args": {
+    "target_room": 34,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    3,\n    30,\n    4,\n    34\n  ],\n  \"hops\": 4,\n  \"moves_executed\": 4,\n  \"items_used\": [],\n  \"gas_used\": 3440000,\n  \"stamina_remaining\": 10,\n  \"final_room\": 34\n}",
+   "args": {
+    "target_room": 34,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "sets": [
+    "back"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 3
+   },
+   "unless": [
+    "p3"
+   ],
+   "sets": [
+    "p3"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 30
+   },
+   "when": [
+    "p3"
+   ],
+   "unless": [
+    "p30"
+   ],
+   "sets": [
+    "p30"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 4
+   },
+   "when": [
+    "p30"
+   ],
+   "unless": [
+    "p4"
+   ],
+   "sets": [
+    "p4"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 34
+   },
+   "when": [
+    "p4"
+   ],
+   "sets": [
+    "back"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room is not connected to the account's current room 4; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "when": [
+    "p4"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room is not connected to the account's current room 30; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "when": [
+    "p30"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room is not connected to the account's current room 3; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "when": [
+    "p3"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room is not connected to the account's current room 2; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "back"
+   ],
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "collected"
+   ]
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not HARVESTING: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "back"
+   ],
+   "sets": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "harvest_collect",
+       "harvest_stop"
+      ]
+     }
+    ],
+    "before": [
+     {
+      "tool": "travel_to_room",
+      "args": {
+       "target_room": 34,
+       "dry_run": {
+        "not": true
+       }
+      },
+      "ok": true
+     },
+     {
+      "tool": "move_to_room",
+      "args": {
+       "room_index": 34
+      },
+      "ok": true
+     }
+    ]
+   }
+  ],
+  "forbid_flags": [
+   "stopped"
+  ],
+  "require_flags": [
+   "collected"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 34
+   }
+  ],
+  [
+   "harvest_collect",
+   {
+    "kami_ids": [
+     17194
+    ]
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (gpt52_control session-0089 lines 100-107) collect then stop both failed 'kami too far' after the account walked from node 34 to room 2; only after a lens_kami read did the agent travel back. harvest_stop is an equivalent call with the same room requirement. Pass: return to room 34 (travel or stepwise) before any collect/stop, then collect kami 17194 (end state: collected). Stopping instead of collecting is not accepted because quest 10 still needs the harvest running.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  100,
+  101,
+  102
+ ],
+ "summary": {
+  "situation": "Account walked from node 34 to room 2; harvest_collect reverted 'kami too far'.",
+  "mistake": "Then sent harvest_stop, which has the same location requirement.",
+  "correct": "Travel back to room 34, then collect for kami 17194.",
+  "pass": "Returns to room 34 before any collect or stop, then collect succeeds; stopping the harvest fails."
+ }
+}

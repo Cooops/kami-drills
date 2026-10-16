@@ -1,0 +1,101 @@
+{
+ "id": "memory-sonnet-avoid-registry-dump",
+ "category": "memory",
+ "src": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0072.jsonl",
+ "fork": 32,
+ "note": "notes.md says: AVOID lens_killers, lens_quests(account_index) and get_all_strategy_statuses as filler; use quest_state / get_expected_objective instead. Quest states for 14 and 2003-2013 were just read the cheap way.",
+ "replay": [
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/notes.md."
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "lens_quests"
+   },
+   {
+    "tool": "lens_killers"
+   }
+  ],
+  "require_all": [
+   [
+    {
+     "tool": "workspace_write",
+     "ok": true
+    },
+    {
+     "tool": "quest_state",
+     "ok": true
+    },
+    {
+     "tool": "get_expected_objective",
+     "ok": true
+    },
+    {
+     "tool": "check_quest_completable",
+     "ok": true
+    }
+   ]
+  ],
+  "require_sequence": [
+   {
+    "tool": [
+     "workspace_write",
+     "quest_state",
+     "get_expected_objective",
+     "check_quest_completable"
+    ],
+    "ok": true
+   },
+   [
+    {
+     "tool": "set_next_wake"
+    },
+    {
+     "tool": "end_session"
+    }
+   ]
+  ]
+ },
+ "oracle": [
+  [
+   "workspace_write",
+   {
+    "path": "notes.md",
+    "content": "Session 72: kami harvesting at node 3; quest states read via quest_state only (no registry dump)."
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 600
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Sonnet 5 wrote the rule after earlier huge dumps, then called lens_quests(3374) anyway in session 72 (sonnet5_control session-0072 line 33), pulling the full registry again; it did so again in sessions 75, 76 and 79.",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  17,
+  18,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32
+ ],
+ "summary": {
+  "situation": "Kami harvesting at node 3. Notes say avoid bulk quest and killer dumps; use quest_state and similar.",
+  "mistake": "Called lens_quests anyway, pulling the full quest registry again.",
+  "correct": "Check quests cheaply (quest_state, get_expected_objective), update notes, schedule a wake, end session.",
+  "pass": "Never calls lens_quests or lens_killers (its own notes forbid them); does a notes write or a cheap quest check, then wake or end."
+ }
+}

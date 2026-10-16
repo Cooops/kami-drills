@@ -1,0 +1,306 @@
+{
+ "id": "onboard-travel-not-move",
+ "category": "onboarding",
+ "src": "hosted/agent_run_d36e94ae2045/transcripts/session-0001.jsonl",
+ "fork": 62,
+ "note": "After stopping the harvest in room 36 the agent wants to reach room 11. A travel_to_room dry run (line 52) already showed the 3-hop path 36 -> 25 -> 37 -> 11. The live agent called move_to_room 11 and got 'unreachable room'.",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    36,\n    25,\n    37,\n    11\n  ],\n  \"hops\": 3,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 25\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 37\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 11\n    }\n  ],\n  \"stamina_needed\": 15,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 85,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": true
+   },
+   "unless": [
+    "p25",
+    "off9"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    37,\n    11\n  ],\n  \"hops\": 1,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 11\n    }\n  ],\n  \"stamina_needed\": 5,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 95,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": true
+   },
+   "when": [
+    "p37"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    25,\n    37,\n    11\n  ],\n  \"hops\": 2,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 37\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 11\n    }\n  ],\n  \"stamina_needed\": 10,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 90,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": true
+   },
+   "when": [
+    "p25"
+   ],
+   "unless": [
+    "p37"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    37,\n    11\n  ],\n  \"hops\": 1,\n  \"moves_executed\": 1,\n  \"items_used\": [],\n  \"gas_used\": 860000,\n  \"stamina_remaining\": 80,\n  \"final_room\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "when": [
+    "p37"
+   ],
+   "sets": [
+    "at11"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    25,\n    37,\n    11\n  ],\n  \"hops\": 2,\n  \"moves_executed\": 2,\n  \"items_used\": [],\n  \"gas_used\": 1720000,\n  \"stamina_remaining\": 80,\n  \"final_room\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "when": [
+    "p25"
+   ],
+   "unless": [
+    "p37"
+   ],
+   "sets": [
+    "at11"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    9,\n    36,\n    25,\n    37,\n    11\n  ],\n  \"hops\": 4,\n  \"moves_executed\": 4,\n  \"items_used\": [],\n  \"gas_used\": 3440000,\n  \"stamina_remaining\": 70,\n  \"final_room\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "when": [
+    "off9"
+   ],
+   "sets": [
+    "at11"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    36,\n    25,\n    37,\n    11\n  ],\n  \"hops\": 3,\n  \"moves_executed\": 3,\n  \"items_used\": [],\n  \"gas_used\": 2580000,\n  \"stamina_remaining\": 85,\n  \"final_room\": 11\n}",
+   "args": {
+    "target_room": 11,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "sets": [
+    "at11"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 25
+   },
+   "unless": [
+    "p25",
+    "p37",
+    "off9"
+   ],
+   "sets": [
+    "p25"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 37
+   },
+   "when": [
+    "p25"
+   ],
+   "unless": [
+    "p37"
+   ],
+   "sets": [
+    "p37"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 11
+   },
+   "when": [
+    "p37"
+   ],
+   "sets": [
+    "at11"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 9
+   },
+   "unless": [
+    "p25",
+    "off9"
+   ],
+   "sets": [
+    "off9"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "room_index": 36
+   },
+   "when": [
+    "off9"
+   ],
+   "clears": [
+    "off9"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room that is not connected to the account's current room 37; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "when": [
+    "p37"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room that is not connected to the account's current room 25; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "when": [
+    "p25"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room that is not connected to the account's current room 9; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "when": [
+    "off9"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room 11 is not connected to the account's current room 36; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "args": {
+    "room_index": 11
+   },
+   "is_error": true
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: room that is not connected to the account's current room 36; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 12
+   },
+   "response": "{\n  \"quest_index\": 12,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\"\n}",
+   "unless": [
+    "at11",
+    "off9",
+    "p25",
+    "p37"
+   ],
+   "src": "derived from fork line 23 (hosted/agent_run_d36e94ae2045/transcripts/session-0001.jsonl:23, quest_state 12 active_blocked, revert_reason quoted verbatim); no scavenge claim between line 23 and the fork; shape as check_quest_completable in the same run"
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 2003
+   },
+   "response": "{\n  \"quest_index\": 2003,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\"\n}",
+   "unless": [
+    "at11",
+    "off9",
+    "p25",
+    "p37"
+   ],
+   "src": "derived from fork line 24 (hosted/agent_run_d36e94ae2045/transcripts/session-0001.jsonl:24, quest_state 2003 active_blocked, revert_reason quoted verbatim); no item burn between line 24 and the fork; shape as check_quest_completable in the same run"
+  },
+  {
+   "tool": "harvest_start",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "waited_lt": 160,
+   "unless": [
+    "at11",
+    "off9",
+    "p25",
+    "p37"
+   ],
+   "src": "harvest_stop landed at fork line 60; in this run lens_kami reads 166-177 s of cooldown a few seconds after a stop (sessions 0008, 0011, 0014, 0020, 0027, 0033), so the start reverts while under 160 s have been waited; text from hosted/agent_run_d36e94ae2045/transcripts/session-0014.jsonl:30 (same kami, same revert; a dry_run start gives the same text at session-0004.jsonl:63)"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 715,
+    "food_item_id": 11301
+   },
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "waited_lt": 160,
+   "unless": [
+    "at11",
+    "off9",
+    "p25",
+    "p37"
+   ],
+   "src": "post-stop cooldown as for the harvest_start row (fork line 60); 6 x item 11301 held at fork line 13 with nothing consumed since, so the balance pre-check passes; revert text from hosted/agent_run_d36e94ae2045/transcripts/session-0065.jsonl:78 (feed on kami 715 during cooldown)"
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "at11"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 11
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (hosted d36e session-0001 lines 47-63) the agent had the 3-hop path 36 -> 25 -> 37 -> 11 in a dry run (line 53) and the room 36 exits in lens_room (line 52), then sent move_to_room 11 which reverted 'AccMove: unreachable room'. Pass (end state: the account is in room 11): travel_to_room 11 (non-dry), or stepping 25, 37, 11 in order. Wandering to another exit does not reach room 11. The replay tracks the account's position: errors cite the real current room and travel starts from wherever the account stands.",
+ "harness": "4.1 hosted",
+ "keep_lines": [
+  52,
+  53,
+  60
+ ],
+ "summary": {
+  "situation": "Harvest just stopped in room 36; goal is room 11. A dry run showed the path 36, 25, 37, 11.",
+  "mistake": "Sent move_to_room 11 directly; reverted 'unreachable room'.",
+  "correct": "Travel to room 11 (or step 25, 37, 11 in order).",
+  "pass": "Account ends up in room 11."
+ }
+}

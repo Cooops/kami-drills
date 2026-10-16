@@ -1,0 +1,7132 @@
+{
+ "id": "memory-luna-plan-level-after-rest",
+ "category": "memory",
+ "src": "hosted/agent_run_b7929f61d557/transcripts/session-0005.jsonl",
+ "fork": 14,
+ "note": "plan.md says: 'cannot level while harvesting; once RESTING consider level-up (XP 102 > 40 required)'. The kami is HARVESTING at the fork.",
+ "replay": [
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "sets": [
+    "stopped"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x35d2a0ebbeb5a8a6ab731d289a08d47888ee44ca2f11825a616a56c32f3f2d38\",\n  \"status\": \"success\",\n  \"block\": 34174402,\n  \"gas_used\": 2343967,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_collect",
+   "args": {
+    "kami_ids": {
+     "contains": 21340
+    }
+   },
+   "unless": [
+    "stopped"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x46d0486fa3df8bcca0eecb7eb61c6b93c143e9875016753df0b70a370255c903\",\n  \"status\": \"success\",\n  \"block\": 34174398,\n  \"gas_used\": 2100000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_collect",
+   "when": [
+    "stopped"
+   ],
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: no active harvest exists for kami #21340; its harvest entity state is 'INACTIVE'",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 1,\n    \"xp\": 164,\n    \"xpRequired\": 40,\n    \"levelUpReady\": true,\n    \"skillPoints\": 0,\n    \"hp\": {\n      \"current\": 45,\n      \"total\": 80,\n      \"percent\": 56\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 175,\n    \"cooldownUntil\": 1791424551,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 45,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.018Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185485\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_node",
+   "args": {
+    "node_index": 29
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"data\": {\n    \"index\": 29,\n    \"name\": \"Misty Forest Path\",\n    \"type\": \"HARVEST\",\n    \"affinity\": [\n      \"INSECT\"\n    ],\n    \"roomIndex\": 29,\n    \"attacker\": {\n      \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n      \"index\": 21340,\n      \"name\": \"Kamigotchi 21340\",\n      \"cooldownSec\": 175,\n      \"cooldownUntil\": 1791424551,\n      \"blocked\": \"ATTACKER_COOLDOWN\"\n    },\n    \"harvestsTotal\": 0,\n    \"harvestsServed\": 0,\n    \"harvests\": []\n  },\n  \"untrusted\": [\n    \"attacker.name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.063Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185530\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3",
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv3"
+   ],
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: PetLevel: need more experience: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv1"
+   ],
+   "sets": [
+    "lv2"
+   ],
+   "clears": [
+    "lv1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x06f9255d4337de082775eadddc5c801575bb4abe0e4d3d8197c325bcf285f204\",\n  \"status\": \"success\",\n  \"block\": 34174425,\n  \"gas_used\": 819732,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "sets": [
+    "lv3"
+   ],
+   "clears": [
+    "lv2"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xa898f08ca6bef11087c1cef7b7e887545edd8c48e5e5b375bca9200dc0d6a724\",\n  \"status\": \"success\",\n  \"block\": 34174435,\n  \"gas_used\": 819732,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3"
+   ],
+   "sets": [
+    "lv1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x9cb953db2078240911c7aa915a05f2e190ecd6d1d1735460c548fb764dc8b8f4\",\n  \"status\": \"success\",\n  \"block\": 34174415,\n  \"gas_used\": 819732,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv3"
+   ],
+   "response": "Error executing tool level_to: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: PetLevel: need more experience: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": 2
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3"
+   ],
+   "sets": [
+    "lv1"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 1,\n  \"reached_level\": 2,\n  \"target_level\": 2,\n  \"levels_gained\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x9d6a7a43065957a0a5462f108f938007214849447f2795d8834f83547fd3f63a\",\n      \"status\": \"success\",\n      \"block\": 34174415,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 2,\n    \"xp\": 124,\n    \"skill_points\": 1\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": 3
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3"
+   ],
+   "sets": [
+    "lv2"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 1,\n  \"reached_level\": 3,\n  \"target_level\": 3,\n  \"levels_gained\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x911885a58e4da39e6ea8680d39287d4a54a0410e8d5b3f1b82386e02c19ba1dc\",\n      \"status\": \"success\",\n      \"block\": 34174415,\n      \"gas_used\": 819732\n    },\n    {\n      \"tx_hash\": \"0x0d5784d52a16784056fff87cd8709bdd1dfc98bf955031e63520ec4d19c9c488\",\n      \"status\": \"success\",\n      \"block\": 34174418,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 3,\n    \"xp\": 74,\n    \"skill_points\": 2\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": {
+     "gte": 4
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3"
+   ],
+   "sets": [
+    "lv3"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 1,\n  \"reached_level\": 4,\n  \"target_level\": 4,\n  \"levels_gained\": 3,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x5db183e3b8559f7c89e901e6a03c5e29a7fa23643e6e9b7f14bd8cbc1a2bc598\",\n      \"status\": \"success\",\n      \"block\": 34174415,\n      \"gas_used\": 819732\n    },\n    {\n      \"tx_hash\": \"0x62783e740476432a8429e56fa83921b7ce2446cbcfce995cd74f96055f88f901\",\n      \"status\": \"success\",\n      \"block\": 34174418,\n      \"gas_used\": 819732\n    },\n    {\n      \"tx_hash\": \"0xd9d727bb48780fd2434eda26fadd849e32253198d5f2d684a7b0f8d0bdc61ec7\",\n      \"status\": \"success\",\n      \"block\": 34174421,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 4,\n    \"xp\": 11,\n    \"skill_points\": 3\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": 3
+   },
+   "when": [
+    "lv1"
+   ],
+   "sets": [
+    "lv2"
+   ],
+   "clears": [
+    "lv1"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 2,\n  \"reached_level\": 3,\n  \"target_level\": 3,\n  \"levels_gained\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xa3bb45687e206ec674d12bdefcab7792808efff085ae950b4b61555b7e4862a7\",\n      \"status\": \"success\",\n      \"block\": 34174415,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 3,\n    \"xp\": 74,\n    \"skill_points\": 2\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": {
+     "gte": 4
+    }
+   },
+   "when": [
+    "lv1"
+   ],
+   "sets": [
+    "lv3"
+   ],
+   "clears": [
+    "lv1"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 2,\n  \"reached_level\": 4,\n  \"target_level\": 4,\n  \"levels_gained\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xc4a62ad93ddeceeea60032dd56f8cd2249eb36631f1270ff4b29eee27bbd8fa0\",\n      \"status\": \"success\",\n      \"block\": 34174415,\n      \"gas_used\": 819732\n    },\n    {\n      \"tx_hash\": \"0xf089a67379170c25f3d6358688758d9c6d0ba8116d00ad1fb9d48c5607497eed\",\n      \"status\": \"success\",\n      \"block\": 34174418,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 4,\n    \"xp\": 11,\n    \"skill_points\": 3\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": {
+     "gte": 4
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "sets": [
+    "lv3"
+   ],
+   "clears": [
+    "lv2"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 3,\n  \"reached_level\": 4,\n  \"target_level\": 4,\n  \"levels_gained\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x6ed5ab056cf45b52e408c163aa93b2c6f95941a3ab2a72eea416af7b7adc59e9\",\n      \"status\": \"success\",\n      \"block\": 34174415,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 4,\n    \"xp\": 11,\n    \"skill_points\": 3\n  }\n}"
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not RESTING: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool level_to: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami not RESTING: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv1"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 2,\n    \"xp\": 124,\n    \"xpRequired\": 50,\n    \"levelUpReady\": true,\n    \"skillPoints\": 1,\n    \"hp\": {\n      \"current\": 45,\n      \"total\": 80,\n      \"percent\": 56\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 175,\n    \"cooldownUntil\": 1791424551,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 45,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.018Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185485\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "when": [
+    "lv1"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [\n        21340\n      ],\n      \"skillPoints\": [\n        21340\n      ]\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          45,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:52:16.794Z\",\n    \"blockNumber\": 34174388,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174343,\n    \"appliedThrough\": 34174387,\n    \"asOf\": {\n      \"block\": 34174388,\n      \"projectedAtSec\": 1791424332,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 142261\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 3,\n    \"xp\": 74,\n    \"xpRequired\": 63,\n    \"levelUpReady\": true,\n    \"skillPoints\": 2,\n    \"hp\": {\n      \"current\": 45,\n      \"total\": 80,\n      \"percent\": 56\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 175,\n    \"cooldownUntil\": 1791424551,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 45,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.018Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185485\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "when": [
+    "lv2"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [\n        21340\n      ],\n      \"skillPoints\": [\n        21340\n      ]\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          45,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:52:16.794Z\",\n    \"blockNumber\": 34174388,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174343,\n    \"appliedThrough\": 34174387,\n    \"asOf\": {\n      \"block\": 34174388,\n      \"projectedAtSec\": 1791424332,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 142261\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv3"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 4,\n    \"xp\": 11,\n    \"xpRequired\": 79,\n    \"levelUpReady\": false,\n    \"skillPoints\": 3,\n    \"hp\": {\n      \"current\": 45,\n      \"total\": 80,\n      \"percent\": 56\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 175,\n    \"cooldownUntil\": 1791424551,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 45,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ],\n    \"levelUpBlockedBy\": \"EXPERIENCE\"\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.018Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185485\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "when": [
+    "lv3"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [],\n      \"skillPoints\": [\n        21340\n      ]\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          45,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:52:16.794Z\",\n    \"blockNumber\": 34174388,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174343,\n    \"appliedThrough\": 34174387,\n    \"asOf\": {\n      \"block\": 34174388,\n      \"projectedAtSec\": 1791424332,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 142261\n    }\n  }\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "not_in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: unmet prerequisites: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "when": [
+    "lv1"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x3f438e867681f19bcf0b16c9bae7b9b7935d49db60dc148d25b38cdf0f56f852\",\n  \"status\": \"success\",\n  \"block\": 34174435,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv1"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x7b7e76af6009c8cf798445f9fb16599efff053e0d082a0aecc6eb80ffec1f64a\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x5c11cf107226bc91490a2093e5e2ad9efe2ddf4fbc0bcedecbb7e594fb53975f\",\n  \"status\": \"success\",\n  \"block\": 34174435,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "when": [
+    "lv2",
+    "sp1"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x7eb0638145faa3d3c3f8ea8ef1880a5ae046e85cb56733942bd63696a593ea95\",\n  \"status\": \"success\",\n  \"block\": 34174436,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x91cf2dd04ae39e99794f490b86c080ed335d0f707fcbac2c2c5ab78a4ec9c055\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 2,\n  \"total_planned\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x554f55d497650b84fae5b9d0da3a2517bd7312ae34ff86dc9b5bf52635eed720\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    },\n    {\n      \"tx_hash\": \"0x595125f553a19d83b15a1aa243c8f80e245783381d76409350d3ee5f7e22bae0\",\n      \"status\": \"success\",\n      \"block\": 34174536,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv2",
+    "sp1"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "sp1",
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x4b3bb5d46d7d9527dbaf238c66bced67df77960b425482997a83f6fc3d39c5b6\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "when": [
+    "lv3"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x432d4a77b50f7f8c527eafcf99eb4dc2389b655906acb883a638561c83039b4a\",\n  \"status\": \"success\",\n  \"block\": 34174435,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "when": [
+    "lv3",
+    "sp1"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x1b12facfd0482bd3942a341c05d00b1067deb4583e9da46c05220b593777c631\",\n  \"status\": \"success\",\n  \"block\": 34174436,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412,
+      413
+     ]
+    }
+   },
+   "when": [
+    "lv3",
+    "sp2"
+   ],
+   "sets": [
+    "sp3"
+   ],
+   "clears": [
+    "sp2"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xfc19ad9412efbc4a1c35a002ac0383fd2df01247e487d8b4f11b9a89c0ed274a\",\n  \"status\": \"success\",\n  \"block\": 34174437,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv3"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x803a9d7a869f2b31a98c31ff57ddcc6b2b01e3020f8755b1852d5fa32205bd74\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv3"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 2,\n  \"total_planned\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x4f7e8d84534facc5f9f7fe8b2e9f25a09043d8cb094ffde6a439c0d5d42b9554\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    },\n    {\n      \"tx_hash\": \"0xd038eba27a0a8ab720e6899b9f8df08453e54944e0b954f50f55356a89a6b529\",\n      \"status\": \"success\",\n      \"block\": 34174536,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 3
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv3"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3"
+   ],
+   "sets": [
+    "sp3"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 3,\n  \"total_planned\": 3,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xb5bc789eb0601a1ddf1672f0fa4873ec7ef1c423b361845c6c187af58272fc31\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    },\n    {\n      \"tx_hash\": \"0x789b210489b23085fba2130aec1275f1aed47303637cc485812dcab4aa2c8539\",\n      \"status\": \"success\",\n      \"block\": 34174536,\n      \"gas_used\": 953133\n    },\n    {\n      \"tx_hash\": \"0x3758f106fe6a4c20da5f3953107691f862b3cd2e9c8cd62904e98bf21949f4a6\",\n      \"status\": \"success\",\n      \"block\": 34174537,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv3",
+    "sp1"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "sp1",
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x54f026bb9318b513dd09fd10c4a604bb95e43e5625b169febcad9e204e0176c2\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv3",
+    "sp1"
+   ],
+   "sets": [
+    "sp3"
+   ],
+   "clears": [
+    "sp1",
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 2,\n  \"total_planned\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xfe3a3998301e8a9a07eda1421ec489d9b3a4beb984f06de8e3d65345891f84e4\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    },\n    {\n      \"tx_hash\": \"0x9f105dc8dcadf59902a83fcb81542056ba2272643f49f0473a909257ef7f80ff\",\n      \"status\": \"success\",\n      \"block\": 34174536,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 413,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv3",
+    "sp2"
+   ],
+   "sets": [
+    "sp3"
+   ],
+   "clears": [
+    "sp2",
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x0bb8715cdc052e900df51ab0514c825c9625478ad7125a71dbafeb7733a445ff\",\n      \"status\": \"success\",\n      \"block\": 34174535,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: unmet prerequisites: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool allocate_skills: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: unmet prerequisites: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv1"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 1,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv1",
+    "sp1"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 2,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2",
+    "sp1"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 1,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2",
+    "sp2"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv3"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 3,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv3",
+    "sp1"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 2,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv3",
+    "sp2"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 1,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv3",
+    "sp3"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [\n        21340\n      ],\n      \"skillPoints\": []\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          45,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:52:16.794Z\",\n    \"blockNumber\": 34174388,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174343,\n    \"appliedThrough\": 34174387,\n    \"asOf\": {\n      \"block\": 34174388,\n      \"projectedAtSec\": 1791424332,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 142261\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "stopped"
+   ],
+   "unless": [
+    "lv1",
+    "lv2",
+    "lv3",
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-08T01:53:00.043Z\",\n    \"blockNumber\": 34174402,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34174396,\n    \"appliedThrough\": 34174402,\n    \"asOf\": {\n      \"block\": 34174402,\n      \"projectedAtSec\": 1791424375,\n      \"clockSampleBlock\": 34174333,\n      \"clockSampleBlockTime\": 1791424190,\n      \"clockOffsetMs\": -4533,\n      \"clockSampleAgoMs\": 185510\n    }\n  }\n}"
+  },
+  {
+   "tool": "harvest_start",
+   "waited_gte": 180,
+   "response": "{\n  \"tx_hash\": \"0x44a54c0e15edcd21757865cfb86ef9681ae1471cc17fee05ddffaa0172b3712a\",\n  \"status\": \"success\",\n  \"block\": 34174615,\n  \"gas_used\": 1391701,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/plan.md."
+  }
+ ],
+ "rule": {
+  "require_sequence": [
+   {
+    "tool": "harvest_stop",
+    "args": {
+     "kami_ids": {
+      "contains": 21340
+     }
+    },
+    "ok": true
+   },
+   [
+    {
+     "tool": "level_up_kami",
+     "args": {
+      "kami_id": 21340
+     },
+     "ok": true
+    },
+    {
+     "tool": "level_to",
+     "args": {
+      "kami_id": 21340
+     },
+     "ok": true
+    }
+   ]
+  ],
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "level_up_kami",
+       "level_to"
+      ],
+      "args": {
+       "kami_id": 21340
+      }
+     }
+    ],
+    "before": [
+     {
+      "tool": "harvest_stop",
+      "args": {
+       "kami_ids": {
+        "contains": 21340
+       }
+      },
+      "ok": true
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "lv3"
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     21340
+    ]
+   }
+  ],
+  [
+   "level_to",
+   {
+    "kami_id": 21340,
+    "target_level": 4,
+    "allow_partial": true
+   }
+  ],
+  [
+   "upgrade_skill",
+   {
+    "kami_id": 21340,
+    "skill_index": 413
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Luna's plan.md set up the two-step (stop, then level) and the live run followed it (hosted/agent_run_b7929f61d557 session-0005 lines 7, 15, 21, 27). The drill checks the planned step is acted on in the right order: levelling before stopping reverts 'kami not RESTING'. The rule also scores the end state: all three banked levels (XP 164) claimed.",
+ "harness": "4.7-era hosted agent run (GPT-6 Luna)",
+ "keep_lines": [
+  6,
+  7,
+  10,
+  11,
+  12,
+  13,
+  14
+ ],
+ "summary": {
+  "situation": "Kami 21340 is harvesting; notes plan stop-then-level. Three levels are banked.",
+  "mistake": "Live run followed the plan; trap is leveling before stopping, which reverts 'kami not RESTING'.",
+  "correct": "Stop the harvest, then level up all three banked levels.",
+  "pass": "Harvest stop first, no level-up before it, then all three levels claimed."
+ }
+}

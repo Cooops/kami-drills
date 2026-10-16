@@ -1,0 +1,229 @@
+{
+ "id": "stale-travel-before-cooldown-stop",
+ "category": "stale_state",
+ "src": "hosted/agent_run_d36e94ae2045/transcripts/session-0062.jsonl",
+ "fork": 63,
+ "note": "Kami 715 is HARVESTING at node 25 (lens_kami: cooldown 48s, harvest_stop just reverted 'on cooldown'). The agent travelled 8 hops away to room 12, then harvest_start reverted 'is HARVESTING; requires RESTING'.",
+ "replay": [
+  {
+   "tool": "wait",
+   "response": "Waited for the requested time."
+  },
+  {
+   "tool": "set_next_wake",
+   "response": "Next session scheduled.",
+   "args": {
+    "minutes_from_now": {
+     "gte": 1
+    }
+   },
+   "sets": [
+    "resolved"
+   ]
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0xdc277e3a6f3546d20a2b7619959c2f833c37158ed3bfdc4f1c2316bd7d11dce6\",\n    \"index\": 715,\n    \"name\": \"Kamigotchi 715\",\n    \"state\": \"HARVESTING\",\n    \"level\": 34,\n    \"xp\": 10815,\n    \"xpRequired\": 79966,\n    \"levelUpReady\": false,\n    \"levelUpBlockedBy\": \"EXPERIENCE\",\n    \"skillPoints\": 0,\n    \"hp\": {\n      \"current\": 239,\n      \"total\": 240,\n      \"percent\": 100\n    },\n    \"hpRatePerHr\": \"-5.17\",\n    \"cooldownSec\": 0,\n    \"cooldownUntil\": 1791664419,\n    \"account\": {\n      \"index\": 3397,\n      \"name\": \"coopdaloop\"\n    },\n    \"musu\": {\n      \"accrued\": 1,\n      \"spotRatePerHr\": \"+32.62\",\n      \"avgRatePerHr\": \"+32.37\"\n    },\n    \"node\": {\n      \"index\": 25,\n      \"name\": \"Lost Skeleton\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-10T20:32:51.781Z\",\n    \"blockNumber\": 34289360,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34289350,\n    \"appliedThrough\": 34289359,\n    \"asOf\": {\n      \"block\": 34289360,\n      \"projectedAtSec\": 1791664370,\n      \"clockSampleBlock\": 34289286,\n      \"clockSampleBlockTime\": 1791664193,\n      \"clockOffsetMs\": -1740,\n      \"clockSampleAgoMs\": 177041\n    }\n  }\n}",
+   "when": null,
+   "waited_gte": 48
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "waited_gte": 48,
+   "sets": [
+    "stopped",
+    "resolved"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    25,\n    36,\n    9,\n    33,\n    31,\n    47,\n    4,\n    34,\n    12\n  ],\n  \"hops\": 8,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 36\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 9\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 33\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 34\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 12\n    }\n  ],\n  \"stamina_needed\": 40,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 60,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 12\n}",
+   "args": {
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    25,\n    36,\n    9,\n    33,\n    31,\n    47,\n    4,\n    34,\n    12\n  ],\n  \"hops\": 8,\n  \"moves_executed\": 8,\n  \"items_used\": [],\n  \"gas_used\": 7041550,\n  \"stamina_remaining\": 60,\n  \"final_room\": 12,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 36,\n      \"tx_hash\": \"0x858d4afe0b079488e69f917caa26d93b6d7f68216d1c5f9c09ea7895df723cd6\",\n      \"status\": \"success\",\n      \"block\": 34289375,\n      \"gas_used\": 860736\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 9,\n      \"tx_hash\": \"0xc9faedf52f6a42d97a9436c84046e94146f4bc0a8b4df84defb3753e0c67d5d3\",\n      \"status\": \"success\",\n      \"block\": 34289377,\n      \"gas_used\": 860484\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 33,\n      \"tx_hash\": \"0x44cd7a8e18da382f33e96f52d8e3c286d625308a00d31d14dc885f85c8daf67d\",\n      \"status\": \"success\",\n      \"block\": 34289379,\n      \"gas_used\": 860734\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0xeea0ab50e6d8cd4830e237156ebe99142c29e4c9b78034ad431373bb78288129\",\n      \"status\": \"success\",\n      \"block\": 34289381,\n      \"gas_used\": 1017160\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 47,\n      \"tx_hash\": \"0x2473a59573813184c525233adf2ec598e0dafe421761ba3175651ae08dda6349\",\n      \"status\": \"success\",\n      \"block\": 34289385,\n      \"gas_used\": 860484\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 4,\n      \"tx_hash\": \"0x01f89276bd76dd204626892c5103bfb8b7922124a7e951a2d352968917b44160\",\n      \"status\": \"success\",\n      \"block\": 34289388,\n      \"gas_used\": 860484\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 34,\n      \"tx_hash\": \"0xa9623c5d2d4849df654a84c361112de9c02d86bed14ca73362865d66f0c55933\",\n      \"status\": \"success\",\n      \"block\": 34289392,\n      \"gas_used\": 860734\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 12,\n      \"tx_hash\": \"0x0a6a637dfd8e09ba6be6f4d455ae1af7e1dff26bfd18814b9d3835a5f9581d1a\",\n      \"status\": \"success\",\n      \"block\": 34289394,\n      \"gas_used\": 860734\n    }\n  ]\n}",
+   "args": {
+    "dry_run": {
+     "not": true
+    }
+   },
+   "unless": [
+    "stopped"
+   ],
+   "sets": "stranded"
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    25,\n    36,\n    9,\n    33,\n    31,\n    47,\n    4,\n    34,\n    12\n  ],\n  \"hops\": 8,\n  \"moves_executed\": 8,\n  \"items_used\": [],\n  \"gas_used\": 7041550,\n  \"stamina_remaining\": 60,\n  \"final_room\": 12,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 36,\n      \"tx_hash\": \"0x858d4afe0b079488e69f917caa26d93b6d7f68216d1c5f9c09ea7895df723cd6\",\n      \"status\": \"success\",\n      \"block\": 34289375,\n      \"gas_used\": 860736\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 9,\n      \"tx_hash\": \"0xc9faedf52f6a42d97a9436c84046e94146f4bc0a8b4df84defb3753e0c67d5d3\",\n      \"status\": \"success\",\n      \"block\": 34289377,\n      \"gas_used\": 860484\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 33,\n      \"tx_hash\": \"0x44cd7a8e18da382f33e96f52d8e3c286d625308a00d31d14dc885f85c8daf67d\",\n      \"status\": \"success\",\n      \"block\": 34289379,\n      \"gas_used\": 860734\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0xeea0ab50e6d8cd4830e237156ebe99142c29e4c9b78034ad431373bb78288129\",\n      \"status\": \"success\",\n      \"block\": 34289381,\n      \"gas_used\": 1017160\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 47,\n      \"tx_hash\": \"0x2473a59573813184c525233adf2ec598e0dafe421761ba3175651ae08dda6349\",\n      \"status\": \"success\",\n      \"block\": 34289385,\n      \"gas_used\": 860484\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 4,\n      \"tx_hash\": \"0x01f89276bd76dd204626892c5103bfb8b7922124a7e951a2d352968917b44160\",\n      \"status\": \"success\",\n      \"block\": 34289388,\n      \"gas_used\": 860484\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 34,\n      \"tx_hash\": \"0xa9623c5d2d4849df654a84c361112de9c02d86bed14ca73362865d66f0c55933\",\n      \"status\": \"success\",\n      \"block\": 34289392,\n      \"gas_used\": 860734\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 12,\n      \"tx_hash\": \"0x0a6a637dfd8e09ba6be6f4d455ae1af7e1dff26bfd18814b9d3835a5f9581d1a\",\n      \"status\": \"success\",\n      \"block\": 34289394,\n      \"gas_used\": 860734\n    }\n  ]\n}",
+   "args": {
+    "dry_run": {
+     "not": true
+    }
+   },
+   "when": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "unless": [
+    "stopped"
+   ],
+   "sets": "stranded"
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "when": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "clears": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: kami #715 is HARVESTING; harvest_start requires RESTING",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "args": {
+    "kami_ids": {
+     "contains": 715
+    }
+   },
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "waited_lt": 48,
+   "unless": [
+    "d",
+    "e",
+    "l",
+    "o",
+    "r",
+    "resolved",
+    "s",
+    "stopped",
+    "stranded",
+    "v"
+   ],
+   "src": "fork line 59 (lens_kami cooldownSec 48, same 48 s the drill's harvest_stop rows use); revert text identical to this run's harvest_stop cooldown revert at fork line 56 apart from the tool name, recorded verbatim for harvest_collect at experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0011.jsonl:51"
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "stopped"
+  ],
+  "forbid_flags": [
+   "stranded"
+  ],
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "travel_to_room",
+       "move_to_room"
+      ],
+      "args": {
+       "dry_run": {
+        "not": true
+       }
+      },
+      "ok": true
+     }
+    ],
+    "before": [
+     {
+      "tool": "harvest_stop",
+      "ok": true,
+      "args": {
+       "kami_ids": {
+        "contains": 715
+       }
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "wait",
+   {
+    "seconds": 48
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     715
+    ]
+   }
+  ],
+  [
+   "travel_to_room",
+   {
+    "target_room": 12
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (hosted Luna d36, session 62 line 64-67): after harvest_stop failed on cooldown, the agent left the kami harvesting at node 25 and walked to room 12, so harvest_start there could only revert and the kami was stranded out of reach. Right: wait out the 48s cooldown, harvest_stop, then travel. The cooldown is the 48s the agent read in lens_kami (line 59); waits are cumulative, so wait(48) (or two waits summing to 48) then harvest_stop passes, and set_next_wake(>=1 min) also passes because the session ends with the kami untouched. Travelling before a landed stop strands the kami and fails. Human audit (2026-10-15): sleeping is not a pass; the stop has to land (wait, stop, then travel).",
+ "harness": "hosted GPT-6 Luna (recent harness, lens 1.0.1)",
+ "keep_lines": [
+  3,
+  56,
+  59,
+  61
+ ],
+ "summary": {
+  "situation": "Kami 715 is harvesting at node 25 with a 48 second cooldown; harvest_stop just reverted 'on cooldown'.",
+  "mistake": "Walked 8 rooms away to room 12, stranding the harvesting kami; harvest_start there reverted.",
+  "correct": "Wait out the 48 seconds, stop the harvest, then travel. Sleeping first doesn't finish the job, since the stop still has to happen.",
+  "pass": "Waits out the 48s cooldown and lands harvest_stop on kami 715; no real travel or move before that stop. Sleeping alone doesn't count."
+ },
+ "audit": {
+  "verdict": "change",
+  "applied": "require the landed stop; a wake alone no longer passes; restart-then-travel strands",
+  "by": "domain expert"
+ }
+}

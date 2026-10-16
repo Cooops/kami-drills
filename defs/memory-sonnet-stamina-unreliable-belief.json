@@ -1,0 +1,166 @@
+{
+ "id": "memory-sonnet-stamina-unreliable-belief",
+ "category": "memory",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0062.jsonl",
+ "fork": 22,
+ "note": "progress.md says travel_to_room's stamina reporting is UNRELIABLE (real stamina is usually higher) and to just call it again. The latest call stopped at stamina_remaining 0 after exactly the moves the starting stamina (65) pays for.",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "dry_run": true
+   },
+   "unless": [
+    "never"
+   ],
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    31,\n    26\n  ],\n  \"hops\": 1,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 26\n    }\n  ],\n  \"stamina_needed\": 5,\n  \"stamina_have\": 0,\n  \"stamina_after_plan\": -5,\n  \"feasible\": false,\n  \"gated_hops\": [],\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 31\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "waited_gte": 300,
+   "args": {
+    "use_items": {
+     "not": true
+    }
+   },
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    31,\n    26\n  ],\n  \"hops\": 1,\n  \"moves_executed\": 1,\n  \"items_used\": [],\n  \"gas_used\": 1017227,\n  \"stamina_remaining\": 0,\n  \"final_room\": 26,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 26,\n      \"tx_hash\": \"0xb4a27d4782ab323c9ff1f99db770cbf5776346380c4bef72649e1352b971ab71\",\n      \"status\": \"success\",\n      \"block\": 32559400,\n      \"gas_used\": 1017227\n    }\n  ]\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "use_items": true
+   },
+   "sets": [
+    "blind_retry"
+   ],
+   "response": "{\n  \"reached_target\": false,\n  \"path\": [\n    31,\n    26\n  ],\n  \"final_room\": 31,\n  \"moves_executed\": 0,\n  \"items_used\": [],\n  \"gas_used\": 0,\n  \"stamina_remaining\": 0,\n  \"remainder\": [\n    31,\n    26\n  ],\n  \"stamina_needed_for_remainder\": 5,\n  \"eta_to_recover_min\": 5,\n  \"partial_reason\": \"insufficient stamina (use_items=False)\",\n  \"error\": null,\n  \"txs\": []\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "sets": [
+    "blind_retry"
+   ],
+   "response": "{\n  \"reached_target\": false,\n  \"path\": [\n    31,\n    26\n  ],\n  \"final_room\": 31,\n  \"moves_executed\": 0,\n  \"items_used\": [],\n  \"gas_used\": 0,\n  \"stamina_remaining\": 0,\n  \"remainder\": [\n    31,\n    26\n  ],\n  \"stamina_needed_for_remainder\": 5,\n  \"eta_to_recover_min\": 5,\n  \"partial_reason\": \"insufficient stamina (use_items=False)\",\n  \"error\": null,\n  \"txs\": []\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "waited_gte": 300,
+   "response": "{\n  \"tx_hash\": \"0xc1c132b3e7bc9ff26f7c590ec00cfe720d5682cb3c1386c4623991fb3a3c9516\",\n  \"status\": \"success\",\n  \"block\": 32559400,\n  \"gas_used\": 1017227,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "sets": [
+    "blind_retry"
+   ],
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: account 'main' has 0 stamina; move_to_room requires 5"
+  },
+  {
+   "tool": "wait",
+   "response": "Waited 60 seconds."
+  },
+  {
+   "tool": "use_account_item",
+   "args": {
+    "item_id": 21204
+   },
+   "response": "Error executing tool use_account_item: validation failed; no transaction sent: account 'main' holds 0 of item 21204 (\u201cNeith\u2019s River of Life\u201d Spell Card); use_account_item requires 1",
+   "is_error": true
+  },
+  {
+   "tool": "use_account_item",
+   "response": "Error executing tool use_account_item: validation failed; no transaction sent: account 'main' holds 0 of item; use_account_item requires 1",
+   "is_error": true
+  },
+  {
+   "tool": "lens_account",
+   "response": "{\n  \"data\": {\n    \"id\": \"0xf130f9f4b905f48b207b7127a027270b25a0b18e\",\n    \"index\": 3375,\n    \"name\": \"Kamitron\",\n    \"ownerAddress\": \"0xf130f9f4B905f48B207B7127A027270b25a0B18e\",\n    \"operatorAddress\": \"0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\",\n    \"roomIndex\": 31,\n    \"musu\": 667,\n    \"stamina\": {\n      \"current\": 0,\n      \"total\": 100\n    },\n    \"reputation\": {\n      \"agency\": 66,\n      \"mina\": 8,\n      \"nursery\": 0\n    },\n    \"kamis\": [\n      {\n        \"id\": \"0x28c344ab163e85b58af6e4d27d5ab61c48b6058cf75b20803ccbe2caecc6a8f5\",\n        \"index\": 9787,\n        \"name\": \"Kamigotchi 9787\",\n        \"state\": \"HARVESTING\"\n      },\n      {\n        \"id\": \"0x5606f27e332f79d0febf943fbfa3d51c0fb611978df9133203221300ef1cce75\",\n        \"index\": 20699,\n        \"name\": \"Kamigotchi 20699\",\n        \"state\": \"HARVESTING\"\n      }\n    ],\n    \"room\": {\n      \"index\": 31,\n      \"name\": \"Scrapyard Exit\"\n    }\n  },\n  \"untrusted\": [\n    \"kamis[].name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T14:25:18.976Z\",\n    \"blockNumber\": 32559244,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 9787
+   },
+   "response": "{\n  \"data\": {\n    \"id\": \"0x28c344ab163e85b58af6e4d27d5ab61c48b6058cf75b20803ccbe2caecc6a8f5\",\n    \"index\": 9787,\n    \"name\": \"Kamigotchi 9787\",\n    \"state\": \"RESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 48,\n      \"total\": 90,\n      \"percent\": 53\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 170,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    },\n    \"musu\": {\n      \"accrued\": 34,\n      \"spotRatePerHr\": \"+29.28\",\n      \"avgRatePerHr\": \"+27.72\"\n    },\n    \"node\": {\n      \"index\": 29,\n      \"name\": \"Misty Forest Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T14:25:18.945Z\",\n    \"blockNumber\": 32559244,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "workspace_write",
+   "args": {
+    "path": {
+     "regex": "(^|/)(progress|notes|plan)\\.md$"
+    },
+    "content": {
+     "regex": "^(?!.*call it again)(?=.*stamina)(?=.*(?<!not )(?<!un)(?<!in)\\b(reliable|accurate|exact|exactly|precise|matched|matches|consistent|correct)\\b)"
+    }
+   },
+   "sets": [
+    "corrected"
+   ],
+   "response": "Wrote 17558 bytes to workspace/progress.md."
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 17558 bytes to workspace/progress.md."
+  }
+ ],
+ "rule": {
+  "forbid_flags": [
+   "blind_retry"
+  ],
+  "require_flags": [
+   "corrected"
+  ]
+ },
+ "oracle": [
+  [
+   "workspace_write",
+   {
+    "path": "progress.md",
+    "content": "Correction (session 62): travel_to_room stamina accounting matched lens_account exactly (65 -> 40 -> 30 -> 0), so it is reliable. Do not blind-retry; wait for regen (1/min)."
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 10
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "In this run the note was wrong: stamina 65 -> 40 after 5 hops -> 30 after 2 -> 0 after 6 matched the tool's own counts exactly (sonnet5_pushed session-0062 lines 11-22). The live agent rewrote the note as 'MOSTLY RELIABLE now (session 62 correction)' (line 42); the drill needs that correction and no blind re-call. The correction must be a progress.md write that mentions stamina and says the accounting is reliable/accurate/matched; a real travel before 5 minutes of cumulative waiting only returns the stuck result and flags a blind retry (the account holds no stamina item, per the notes).",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22
+ ],
+ "summary": {
+  "situation": "Notes call travel stamina unreliable and say to re-call. Travel stopped at 0 after the 65 stamina paid for.",
+  "mistake": "Notes said the stamina count was wrong; blind re-calls only repeat the stuck result.",
+  "correct": "Rewrite progress.md: stamina accounting matched exactly and is reliable. Wait for regen instead of retrying.",
+  "pass": "A progress, notes or plan note says stamina accounting is reliable, and no travel retry before about 5 minutes of waiting."
+ },
+ "audit": {
+  "verdict": "fair",
+  "applied": "correction accepted in progress.md, notes.md or plan.md (consistency with slow-points audit)",
+  "by": "domain expert"
+ }
+}

@@ -1,0 +1,298 @@
+{
+ "id": "stale-notes-resting-vs-harvesting",
+ "category": "stale_state",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0102.jsonl",
+ "fork": 58,
+ "note": "Notes (session 98) say kami 17194 RESTING; lens_roster/lens_kami this session say HARVESTING at node 5, and the agent just travelled to room 2. It called harvest_start at node 2 (reverted 'is HARVESTING; requires RESTING').",
+ "replay": [
+  {
+   "tool": "wait",
+   "response": "Waited for the requested time."
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    2,\n    3,\n    30,\n    4,\n    47,\n    31,\n    5\n  ],\n  \"hops\": 6,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 30\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 5\n    }\n  ],\n  \"stamina_needed\": 30,\n  \"stamina_have\": 71,\n  \"stamina_after_plan\": 41,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 5\n}",
+   "args": {
+    "target_room": 5,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 3
+   },
+   "unless": [
+    "p2",
+    "p3",
+    "p30",
+    "p4",
+    "p47",
+    "p31",
+    "p5"
+   ],
+   "sets": [
+    "p3"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 30
+   },
+   "when": [
+    "p3"
+   ],
+   "sets": [
+    "p30"
+   ],
+   "clears": [
+    "p3"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 4
+   },
+   "when": [
+    "p30"
+   ],
+   "sets": [
+    "p4"
+   ],
+   "clears": [
+    "p30"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 47
+   },
+   "when": [
+    "p4"
+   ],
+   "sets": [
+    "p47"
+   ],
+   "clears": [
+    "p4"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 31
+   },
+   "when": [
+    "p47"
+   ],
+   "sets": [
+    "p31"
+   ],
+   "clears": [
+    "p47"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 5
+   },
+   "when": [
+    "p31"
+   ],
+   "sets": [
+    "p5",
+    "at5"
+   ],
+   "clears": [
+    "p31"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    3,\n    30,\n    4,\n    47,\n    31,\n    5\n  ],\n  \"hops\": 6,\n  \"moves_executed\": 6,\n  \"items_used\": [],\n  \"gas_used\": 5160000,\n  \"stamina_remaining\": 41,\n  \"final_room\": 5,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 3,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 30,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 4,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 47,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 5,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    }\n  ]\n}",
+   "args": {
+    "target_room": 5,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "unless": [
+    "at5"
+   ],
+   "sets": [
+    "p5",
+    "at5"
+   ],
+   "clears": [
+    "p2",
+    "p3",
+    "p30",
+    "p4",
+    "p47",
+    "p31"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: that room is not connected to the account's current room; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "at5"
+   ],
+   "sets": "stopped",
+   "waited_gte": 100
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": null,
+   "unless": [
+    "at5"
+   ],
+   "is_error": true,
+   "waited_gte": 100
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: kami #17194 is HARVESTING; harvest_start requires RESTING",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 10
+   },
+   "response": "{\n  \"quest_index\": 10,\n  \"entity_id\": \"0x6e02ca8c2975f824802c7e2940827abb9f3a4043058ed119eb686a9e4d00f60e\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "unless": [
+    "at5",
+    "p3",
+    "p30",
+    "p31",
+    "p4",
+    "p47",
+    "p5",
+    "stopped"
+   ],
+   "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0095.jsonl:44; fork line 34 (lens_quests) shows quest 10 accepted, not complete, objectives 2/3 not met, so the same active_blocked/objs_not_met payload holds"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "harvest_start",
+      "args": {
+       "kami_ids": {
+        "contains": 17194
+       }
+      }
+     }
+    ],
+    "before": [
+     {
+      "tool": "harvest_stop",
+      "ok": true,
+      "args": {
+       "kami_ids": {
+        "contains": 17194
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "stopped"
+  ]
+ },
+ "oracle": [
+  [
+   "wait",
+   {
+    "seconds": 100
+   }
+  ],
+  [
+   "travel_to_room",
+   {
+    "target_room": 5
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     17194
+    ]
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (gpt52 control, session 102 line 59-62): harvest_start reverted because the kami was still HARVESTING at node 5 (lens_roster line 3, lens_kami line 20), contradicting the stale note; the agent's next harvest_stop also failed. Correct is to stop the harvest where the kami is (go back to room 5) or wait, never harvest_start first. Cooldown: lens_kami (line 20) read 180s just after the collect at line 18, so the stop needs both arrival at room 5 and a wait of ~100s.",
+ "harness": "pre-4.7 (KamiBench 006 gpt-5.2 control)",
+ "keep_lines": [
+  3,
+  7,
+  9,
+  20,
+  40
+ ],
+ "summary": {
+  "situation": "Notes say kami 17194 is resting; live reads show it harvesting at node 5. Account walked to room 2.",
+  "mistake": "Called harvest_start at node 2; reverted 'is HARVESTING; requires RESTING'.",
+  "correct": "Wait out the cooldown (about 100 seconds), go back to room 5 and stop the harvest.",
+  "pass": "Harvest on kami 17194 stopped, with no harvest_start before the stop."
+ }
+}

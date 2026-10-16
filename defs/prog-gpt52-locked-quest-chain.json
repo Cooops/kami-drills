@@ -1,0 +1,118 @@
+{
+ "id": "prog-gpt52-locked-quest-chain",
+ "category": "progression",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0129.jsonl",
+ "fork": 29,
+ "note": "Quest 12 (3 insect scavenge rolls) is active at 0/3; quests 13-17 are not accepted and all chain behind it. Node 29 scavenge points are 36/100.",
+ "replay": [
+  {
+   "tool": "harvest_collect",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "sets": [
+    "banked"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x7caf2d752ac5c1c70b1a81d34f13a443f37c4423c836fdc6f24e3f2aebbaf56e\",\n  \"status\": \"success\",\n  \"block\": 32498700,\n  \"gas_used\": 2263215,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "get_scavenge_points",
+   "args": {
+    "node_index": 29
+   },
+   "unless": [
+    "banked"
+   ],
+   "response": "{\n  \"node_index\": 29,\n  \"account\": \"main\",\n  \"points\": 36,\n  \"tier_cost\": 100,\n  \"claimable_tiers\": 0,\n  \"remainder\": 36,\n  \"instance_entity\": \"0x720129b1ca41795cc63ae0ddf611f47acd948958d3736b68d22dc1c89ea60450\"\n}"
+  },
+  {
+   "tool": "get_scavenge_points",
+   "args": {
+    "node_index": 29
+   },
+   "when": [
+    "banked"
+   ],
+   "response": "{\n  \"node_index\": 29,\n  \"account\": \"main\",\n  \"points\": 91,\n  \"tier_cost\": 100,\n  \"claimable_tiers\": 0,\n  \"remainder\": 91,\n  \"instance_entity\": \"0x720129b1ca41795cc63ae0ddf611f47acd948958d3736b68d22dc1c89ea60450\"\n}"
+  },
+  {
+   "tool": "accept_quest",
+   "args": {
+    "quest_index": 12
+   },
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: quest 12 is already accepted by account 'main'",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/notes/session122.md."
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "accept_quest"
+   },
+   {
+    "tool": "complete_quest"
+   }
+  ],
+  "require_flags": [
+   "banked"
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_collect",
+   {
+    "kami_ids": [
+     17194
+    ]
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 60
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "GPT-5.2 (control arm) tried accept_quest on 14, 15, 13, 16 and 17 in a row and every call reverted 'reqs not met' (gpt52_control session-0129 lines 30-46) although the registry in the prefix lists the prerequisites; the reachable move is to bank points for quest 12. A wake alone no longer passes: the reachable move is to bank scavenge points with a successful harvest_collect.",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  8,
+  12,
+  13,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29
+ ],
+ "summary": {
+  "situation": "Quest 12 (scavenge rolls in 3 rooms) is at 0/3; quests 13-17 chain behind it. Node 29 scavenge points 36/100.",
+  "mistake": "Tried accepting quests 14, 15, 13, 16 and 17 in turn; all reverted 'reqs not met'.",
+  "correct": "Bank scavenge points with harvest_collect, working toward quest 12.",
+  "pass": "No accept_quest or complete_quest calls at all, and a successful harvest_collect banks points."
+ }
+}

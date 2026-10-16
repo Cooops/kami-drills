@@ -1,0 +1,104 @@
+{
+ "id": "repeat-cooldown-start-wait",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0031.jsonl",
+ "fork": 95,
+ "note": "harvest_start reverted 'kami on cooldown'; lens_kami shows cooldownSec 124. The live agent re-sent harvest_start about 8 more times while the cooldown ran down.",
+ "replay": [
+  {
+   "tool": "wait",
+   "response": "Waited."
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": [
+     9787
+    ],
+    "node_index": 29
+   },
+   "sets": [
+    "started"
+   ],
+   "waited_gte": 124
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}\n[mechanics] account 'main': room 29, stamina 26. kami #9787: state RESTING, harvest entity INACTIVE. Tools whose harness state gate accepts RESTING: gacha_reroll, harvest_start, transfer_kami. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0x28c344ab163e85b58af6e4d27d5ab61c48b6058cf75b20803ccbe2caecc6a8f5\",\n    \"index\": 9787,\n    \"name\": \"Kamigotchi 9787\",\n    \"state\": \"RESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 71,\n      \"total\": 90,\n      \"percent\": 79\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-21T04:20:00.912Z\",\n    \"blockNumber\": 32388863,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "waited_gte": 124
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "harvest_start"
+     }
+    ],
+    "before": [
+     {
+      "tool": "wait"
+     }
+    ]
+   }
+  ],
+  "require_any": [
+   {
+    "tool": "harvest_start",
+    "args": {
+     "kami_ids": [
+      9787
+     ],
+     "node_index": 29
+    },
+    "ok": true
+   },
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 3
+     }
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "wait",
+   {
+    "seconds": 130
+   }
+  ],
+  [
+   "harvest_start",
+   {
+    "kami_ids": [
+     9787
+    ],
+    "node_index": 29
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (sonnet5_pushed session-0031 lines 95-137) the agent polled harvest_start for ~2 minutes although lens_kami at line 90 showed cooldownSec 124. Waits accumulate in the replay, so the harvest only succeeds once at least 124 s have been waited in total (chunked waits count; a wait of 1 s does not). Pass: no harvest_start before any wait, then an ok harvest_start on kami 9787 / node 29, or a wake of at least 3 min. set_next_wake ends the drill, so a wake followed by a harvest_start is only possible in the same message; that play has no wait before the harvest_start and fails the forbid.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  75,
+  90
+ ],
+ "summary": {
+  "situation": "Kami 9787 is resting with a 124 second cooldown; harvest_start reverted 'kami on cooldown'.",
+  "mistake": "Re-sent harvest_start about 8 more times while the cooldown ran down.",
+  "correct": "Wait out the cooldown, then start the harvest at node 29, or schedule a wake of 3+ minutes.",
+  "pass": "No harvest_start before a wait; then harvest_start on kami 9787 at node 29 succeeds, or a wake of 3+ minutes."
+ }
+}

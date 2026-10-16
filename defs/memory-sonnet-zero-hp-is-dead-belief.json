@@ -1,0 +1,163 @@
+{
+ "id": "memory-sonnet-zero-hp-is-dead-belief",
+ "category": "memory",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0060.jsonl",
+ "fork": 13,
+ "note": "progress.md warns that a kami hitting 0 HP dies (DEAD) and needs a revive item. lens_roster shows 20699 'HARVESTING' at hp 0/110 and the account holds food.",
+ "replay": [
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11305
+   },
+   "unless": [
+    "fed"
+   ],
+   "sets": [
+    "fed",
+    "fed_card"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x8a5072f63e3aefbf6d28edb0fc8618d3b5783aed77cbb24fb48b371706f6f9f9\",\n  \"status\": \"success\",\n  \"block\": 32548092,\n  \"gas_used\": 1891538,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 0,\n    \"after\": 100\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11301
+   },
+   "unless": [
+    "fed"
+   ],
+   "sets": [
+    "fed",
+    "fed_gum"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xdc3f1cedbff0f86b199e65a3b8cf55639e34ed1d760d157dcd08fba28ea18769\",\n  \"status\": \"success\",\n  \"block\": 32548092,\n  \"gas_used\": 1891538,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 0,\n    \"after\": 25\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": 11311
+   },
+   "unless": [
+    "fed"
+   ],
+   "sets": [
+    "fed",
+    "fed_resin"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xa1cdd689bd3f851b22d6bb89fdab82824acc3326514a2c15e077d2e2187b217d\",\n  \"status\": \"success\",\n  \"block\": 32548092,\n  \"gas_used\": 1891538,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 0,\n    \"after\": 35\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699,
+    "food_item_id": {
+     "not_in": [
+      11305,
+      11301,
+      11311
+     ]
+    }
+   },
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: account 'main' holds 0 of that item; feed_kami requires 1",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 20699
+   },
+   "when": [
+    "fed_card"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x5606f27e332f79d0febf943fbfa3d51c0fb611978df9133203221300ef1cce75\",\n    \"index\": 20699,\n    \"name\": \"Kamigotchi 20699\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 100,\n      \"total\": 110,\n      \"percent\": 91\n    },\n    \"hpRatePerHr\": \"-5.42\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    },\n    \"musu\": {\n      \"accrued\": 136,\n      \"spotRatePerHr\": \"+26.70\",\n      \"avgRatePerHr\": \"+26.73\"\n    },\n    \"node\": {\n      \"index\": 37,\n      \"name\": \"Hollow Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T06:40:55.965Z\",\n    \"blockNumber\": 32548092,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 20699
+   },
+   "when": [
+    "fed_gum"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x5606f27e332f79d0febf943fbfa3d51c0fb611978df9133203221300ef1cce75\",\n    \"index\": 20699,\n    \"name\": \"Kamigotchi 20699\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 25,\n      \"total\": 110,\n      \"percent\": 23\n    },\n    \"hpRatePerHr\": \"-5.42\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    },\n    \"musu\": {\n      \"accrued\": 136,\n      \"spotRatePerHr\": \"+26.70\",\n      \"avgRatePerHr\": \"+26.73\"\n    },\n    \"node\": {\n      \"index\": 37,\n      \"name\": \"Hollow Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T06:40:55.965Z\",\n    \"blockNumber\": 32548092,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 20699
+   },
+   "when": [
+    "fed_resin"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x5606f27e332f79d0febf943fbfa3d51c0fb611978df9133203221300ef1cce75\",\n    \"index\": 20699,\n    \"name\": \"Kamigotchi 20699\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 35,\n      \"total\": 110,\n      \"percent\": 32\n    },\n    \"hpRatePerHr\": \"-5.42\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3375,\n      \"name\": \"Kamitron\"\n    },\n    \"musu\": {\n      \"accrued\": 136,\n      \"spotRatePerHr\": \"+26.70\",\n      \"avgRatePerHr\": \"+26.73\"\n    },\n    \"node\": {\n      \"index\": 37,\n      \"name\": \"Hollow Path\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-25T06:40:55.965Z\",\n    \"blockNumber\": 32548092,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 20699
+    }
+   },
+   "when": [
+    "fed"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xdcff4bc0d2279064f96acc8b253201a150d32f562871a5adb06f43f0c13d268b\",\n  \"status\": \"success\",\n  \"block\": 32548200,\n  \"gas_used\": 2330674,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami starving..: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami starving..: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "revive_kami",
+   "response": "Error executing tool revive_kami: validation failed; no transaction sent: kami #20699 is HARVESTING; revive_kami requires DEAD",
+   "is_error": true
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/progress.md."
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "fed"
+  ]
+ },
+ "oracle": [
+  [
+   "feed_kami",
+   {
+    "kami_id": 20699,
+    "food_item_id": 11305
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "State said HARVESTING, not DEAD, so the note's belief did not apply: feed_kami worked at 0 HP and restored the kami to 100/110 (sonnet5_pushed session-0060 lines 3, 14-19). A revive_kami call would only revert 'requires DEAD'.",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13
+ ],
+ "summary": {
+  "situation": "Kami 20699 shows HARVESTING at 0/110 HP; notes say 0 HP means dead, needing a revive item. Food held.",
+  "mistake": "Stale note treats 0 HP as dead, tempting a revive. A kami at 0 HP that is still HARVESTING is alive; only a 0 HP kami that is no longer harvesting is DEAD.",
+  "correct": "Feed the kami; feeding works at 0 HP while harvesting and restores it. Revive would revert 'requires DEAD'.",
+  "pass": "Feed succeeds on the kami."
+ }
+}

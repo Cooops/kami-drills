@@ -1,0 +1,1936 @@
+{
+ "id": "prog-luna-two-levels-pending",
+ "category": "progression",
+ "src": "hosted/agent_run_b7929f61d557/transcripts/session-0018.jsonl",
+ "fork": 31,
+ "note": "Kami RESTING at 2/80 HP after harvest_stop, level 9 with 604 XP (252 required): two levels are banked. The live agent browsed the skill registry and ended the session.",
+ "replay": [
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "response": "Error executing tool level_up_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: PetLevel: need more experience: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv1"
+   ],
+   "sets": [
+    "lv2"
+   ],
+   "clears": [
+    "lv1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x6f9bdbf04728c59f56c69e08a3ad0e04e8f11bee9ca38c7a11403c31dac9aaeb\",\n  \"status\": \"success\",\n  \"block\": 34252280,\n  \"gas_used\": 819732,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "level_up_kami",
+   "args": {
+    "kami_id": 21340
+   },
+   "unless": [
+    "lv1",
+    "lv2"
+   ],
+   "sets": [
+    "lv1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x9df08603d9bd325357d97b3bd9e04800d67e7977a1dd62590ee2a7342651aae4\",\n  \"status\": \"success\",\n  \"block\": 34252270,\n  \"gas_used\": 819732,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "response": "Error executing tool level_to: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: PetLevel: need more experience: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": 10
+   },
+   "unless": [
+    "lv1",
+    "lv2"
+   ],
+   "sets": [
+    "lv1"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 9,\n  \"reached_level\": 10,\n  \"target_level\": 10,\n  \"levels_gained\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x0b2c090c95b18d339dc942c8b79ee2e69fa29e9754a9a6fe9e2b377888df798a\",\n      \"status\": \"success\",\n      \"block\": 34252270,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 10,\n    \"xp\": 352,\n    \"skill_points\": 1\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": {
+     "gte": 11
+    }
+   },
+   "unless": [
+    "lv1",
+    "lv2"
+   ],
+   "sets": [
+    "lv2"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 9,\n  \"reached_level\": 11,\n  \"target_level\": 11,\n  \"levels_gained\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xe0a94e2b824ad97bf1b6b724883eadb78ab2889377d13811512a70fa16b11aa3\",\n      \"status\": \"success\",\n      \"block\": 34252270,\n      \"gas_used\": 819732\n    },\n    {\n      \"tx_hash\": \"0x807c97bfef82310a9e2d9199208d5622c75428f296741106c9d32a602d3ba5da\",\n      \"status\": \"success\",\n      \"block\": 34252273,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 11,\n    \"xp\": 35,\n    \"skill_points\": 2\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340,
+    "target_level": {
+     "gte": 11
+    }
+   },
+   "when": [
+    "lv1"
+   ],
+   "sets": [
+    "lv2"
+   ],
+   "clears": [
+    "lv1"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"from_level\": 10,\n  \"reached_level\": 11,\n  \"target_level\": 11,\n  \"levels_gained\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x77be34fc6647f129dc27125b886678e510f061c8510f0f75f98d3356e50c1145\",\n      \"status\": \"success\",\n      \"block\": 34252270,\n      \"gas_used\": 819732\n    }\n  ],\n  \"chain\": {\n    \"level\": 11,\n    \"xp\": 35,\n    \"skill_points\": 2\n  }\n}"
+  },
+  {
+   "tool": "level_to",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool level_to: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: PetLevel: need more experience: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv1"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 10,\n    \"xp\": 352,\n    \"xpRequired\": 317,\n    \"levelUpReady\": true,\n    \"skillPoints\": 1,\n    \"hp\": {\n      \"current\": 2,\n      \"total\": 80,\n      \"percent\": 3\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 196,\n    \"cooldownUntil\": 1791583005,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 3,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ],\n    \"equipment\": {\n      \"capacity\": 1,\n      \"slots\": [\n        {\n          \"slot\": \"Head_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Body_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Hands_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Passport_slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Kami_Pet_Slot\",\n          \"item\": null\n        }\n      ]\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:50.230Z\",\n    \"blockNumber\": 34252260,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252259,\n    \"asOf\": {\n      \"block\": 34252260,\n      \"projectedAtSec\": 1791582808,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 235526\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "when": [
+    "lv1"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [\n        21340\n      ],\n      \"skillPoints\": [\n        21340\n      ]\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          2,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:21.857Z\",\n    \"blockNumber\": 34252242,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252241,\n    \"asOf\": {\n      \"block\": 34252242,\n      \"projectedAtSec\": 1791582780,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 207153\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 11,\n    \"xp\": 35,\n    \"xpRequired\": 400,\n    \"levelUpReady\": false,\n    \"skillPoints\": 2,\n    \"hp\": {\n      \"current\": 2,\n      \"total\": 80,\n      \"percent\": 3\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 196,\n    \"cooldownUntil\": 1791583005,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 3,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ],\n    \"equipment\": {\n      \"capacity\": 1,\n      \"slots\": [\n        {\n          \"slot\": \"Head_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Body_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Hands_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Passport_slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Kami_Pet_Slot\",\n          \"item\": null\n        }\n      ]\n    },\n    \"levelUpBlockedBy\": \"EXPERIENCE\"\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:50.230Z\",\n    \"blockNumber\": 34252260,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252259,\n    \"asOf\": {\n      \"block\": 34252260,\n      \"projectedAtSec\": 1791582808,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 235526\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "when": [
+    "lv2"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [],\n      \"skillPoints\": [\n        21340\n      ]\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          2,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:21.857Z\",\n    \"blockNumber\": 34252242,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252241,\n    \"asOf\": {\n      \"block\": 34252242,\n      \"projectedAtSec\": 1791582780,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 207153\n    }\n  }\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "not_in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412
+     ]
+    }
+   },
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: unmet prerequisites: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412
+     ]
+    }
+   },
+   "when": [
+    "lv1"
+   ],
+   "unless": [
+    "sp1",
+    "sp2"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xe3ca0ffe8f902f1b22957f3509b3fbc9a0b35e8b261019630fdc7df4634d6db8\",\n  \"status\": \"success\",\n  \"block\": 34252290,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv1"
+   ],
+   "unless": [
+    "sp1",
+    "sp2"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xa9d926a20a2e0767bfa493fa828c860608964e14e78eea4ec2f43c70172b149e\",\n      \"status\": \"success\",\n      \"block\": 34252390,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412
+     ]
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x3efacb4720602c0de2a6f1670fdabce9cbd03cfa18baf48432a66015559ff079\",\n  \"status\": \"success\",\n  \"block\": 34252290,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340,
+    "skill_index": {
+     "in": [
+      111,
+      112,
+      113,
+      211,
+      212,
+      213,
+      311,
+      312,
+      313,
+      411,
+      412
+     ]
+    }
+   },
+   "when": [
+    "lv2",
+    "sp1"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "sp1"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xe78e90001854c6611d80493375c4c349c3c33c41f56794625a878d984f099cd4\",\n  \"status\": \"success\",\n  \"block\": 34252291,\n  \"gas_used\": 953133,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2"
+   ],
+   "sets": [
+    "sp1"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xc2d4597cbb2491db3558d2a9d79a6990c1920c086471f7765dea4149a7066b91\",\n      \"status\": \"success\",\n      \"block\": 34252390,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 2
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       },
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       },
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 2,\n  \"total_planned\": 2,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0x925183582ae8f59a3eaddd1c62ef3a72d2a2b2467b936e0640e765966208ea4e\",\n      \"status\": \"success\",\n      \"block\": 34252390,\n      \"gas_used\": 953133\n    },\n    {\n      \"tx_hash\": \"0xc56de95e3880d3054a0b25d7087cf615555699e750a51219d5084475974e3d21\",\n      \"status\": \"success\",\n      \"block\": 34252391,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340,
+    "skill_plan": {
+     "in": [
+      [
+       {
+        "skill_index": 111,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 112,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 113,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 211,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 212,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 213,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 311,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 312,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 313,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 411,
+        "points": 1
+       }
+      ],
+      [
+       {
+        "skill_index": 412,
+        "points": 1
+       }
+      ]
+     ]
+    }
+   },
+   "when": [
+    "lv2",
+    "sp1"
+   ],
+   "sets": [
+    "sp2"
+   ],
+   "clears": [
+    "sp1",
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "response": "{\n  \"kami_id\": 21340,\n  \"allocated\": 1,\n  \"total_planned\": 1,\n  \"success\": true,\n  \"txs\": [\n    {\n      \"tx_hash\": \"0xb9cff7ee07d31469422be8daece454c99ebe6358e7e71dbc5a8e9ba0c591e05b\",\n      \"status\": \"success\",\n      \"block\": 34252390,\n      \"gas_used\": 953133\n    }\n  ]\n}"
+  },
+  {
+   "tool": "upgrade_skill",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool upgrade_skill: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: unmet prerequisites: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "allocate_skills",
+   "args": {
+    "kami_id": 21340
+   },
+   "response": "Error executing tool allocate_skills: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: SkillUpgrade: unmet prerequisites: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv1"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 1,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 3\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:54:07.103Z\",\n    \"blockNumber\": 34252270,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252269,\n    \"asOf\": {\n      \"block\": 34252270,\n      \"projectedAtSec\": 1791582825,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 252399\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv1",
+    "sp1"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 3\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:54:07.103Z\",\n    \"blockNumber\": 34252270,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252269,\n    \"asOf\": {\n      \"block\": 34252270,\n      \"projectedAtSec\": 1791582825,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 252399\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2"
+   ],
+   "unless": [
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 2,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 3\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:54:07.103Z\",\n    \"blockNumber\": 34252270,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252269,\n    \"asOf\": {\n      \"block\": 34252270,\n      \"projectedAtSec\": 1791582825,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 252399\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2",
+    "sp1"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 1,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 3\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:54:07.103Z\",\n    \"blockNumber\": 34252270,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252269,\n    \"asOf\": {\n      \"block\": 34252270,\n      \"projectedAtSec\": 1791582825,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 252399\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "when": [
+    "lv2",
+    "sp2"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 3\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:54:07.103Z\",\n    \"blockNumber\": 34252270,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252269,\n    \"asOf\": {\n      \"block\": 34252270,\n      \"projectedAtSec\": 1791582825,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 252399\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_roster",
+   "unless": [
+    "lv1",
+    "lv2"
+   ],
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"roomIndex\": 29,\n      \"levelUpReady\": [\n        21340\n      ],\n      \"skillPoints\": []\n    },\n    \"kamis\": [\n      {\n        \"index\": 21340,\n        \"state\": \"RESTING\",\n        \"hp\": [\n          2,\n          80\n        ]\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:21.857Z\",\n    \"blockNumber\": 34252242,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252241,\n    \"asOf\": {\n      \"block\": 34252242,\n      \"projectedAtSec\": 1791582780,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 207153\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_skills",
+   "args": {
+    "kami_index": 21340
+   },
+   "unless": [
+    "lv1",
+    "lv2",
+    "sp1",
+    "sp2",
+    "sp3",
+    "sp4",
+    "sp5",
+    "sp6",
+    "sp7"
+   ],
+   "response": "{\n  \"data\": {\n    \"skillsTotal\": 72,\n    \"kami\": {\n      \"index\": 21340\n    },\n    \"unspent\": 0,\n    \"invested\": [\n      {\n        \"index\": 313,\n        \"name\": \"Patience\",\n        \"type\": \"Guardian\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 3\n      },\n      {\n        \"index\": 413,\n        \"name\": \"Greed\",\n        \"type\": \"Harvester\",\n        \"tier\": 0,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 5\n      },\n      {\n        \"index\": 421,\n        \"name\": \"Wide Portfolio\",\n        \"type\": \"Harvester\",\n        \"tier\": 1,\n        \"cost\": 1,\n        \"max\": 5,\n        \"points\": 1\n      }\n    ]\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:54:07.103Z\",\n    \"blockNumber\": 34252270,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252269,\n    \"asOf\": {\n      \"block\": 34252270,\n      \"projectedAtSec\": 1791582825,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 252399\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_node",
+   "args": {
+    "node_index": 29
+   },
+   "response": "{\n  \"data\": {\n    \"index\": 29,\n    \"name\": \"Misty Forest Path\",\n    \"type\": \"HARVEST\",\n    \"affinity\": [\n      \"INSECT\"\n    ],\n    \"roomIndex\": 29,\n    \"description\": \"placeholder\",\n    \"attacker\": {\n      \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n      \"index\": 21340,\n      \"name\": \"Kamigotchi 21340\",\n      \"cooldownSec\": 196,\n      \"cooldownUntil\": 1791583005,\n      \"blocked\": \"ATTACKER_COOLDOWN\"\n    },\n    \"harvestsTotal\": 0,\n    \"harvestsServed\": 0,\n    \"harvests\": []\n  },\n  \"untrusted\": [\n    \"attacker.name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:50.241Z\",\n    \"blockNumber\": 34252260,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252259,\n    \"asOf\": {\n      \"block\": 34252260,\n      \"projectedAtSec\": 1791582808,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 235537\n    }\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 21340
+   },
+   "unless": [
+    "lv1",
+    "lv2"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x16dc7a56a67aefc386f742803432c5dca578da24a2f8521b3c4682273b5e713d\",\n    \"index\": 21340,\n    \"name\": \"Kamigotchi 21340\",\n    \"state\": \"RESTING\",\n    \"level\": 9,\n    \"xp\": 604,\n    \"xpRequired\": 252,\n    \"levelUpReady\": true,\n    \"skillPoints\": 0,\n    \"hp\": {\n      \"current\": 2,\n      \"total\": 80,\n      \"percent\": 3\n    },\n    \"hpRatePerHr\": \"+19.20\",\n    \"cooldownSec\": 196,\n    \"cooldownUntil\": 1791583005,\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"stats\": {\n      \"health\": {\n        \"base\": 80,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 3,\n        \"total\": 80\n      },\n      \"power\": {\n        \"base\": 18,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 18\n      },\n      \"harmony\": {\n        \"base\": 12,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 12\n      },\n      \"violence\": {\n        \"base\": 15,\n        \"shift\": 0,\n        \"boost\": 0,\n        \"sync\": 0,\n        \"total\": 15\n      }\n    },\n    \"affinities\": [\n      \"EERIE\",\n      \"NORMAL\"\n    ],\n    \"equipment\": {\n      \"capacity\": 1,\n      \"slots\": [\n        {\n          \"slot\": \"Head_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Body_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Hands_Slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Passport_slot\",\n          \"item\": null\n        },\n        {\n          \"slot\": \"Kami_Pet_Slot\",\n          \"item\": null\n        }\n      ]\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-09T21:53:50.230Z\",\n    \"blockNumber\": 34252260,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34252217,\n    \"appliedThrough\": 34252259,\n    \"asOf\": {\n      \"block\": 34252260,\n      \"projectedAtSec\": 1791582808,\n      \"clockSampleBlock\": 34252057,\n      \"clockSampleBlockTime\": 1791582573,\n      \"clockOffsetMs\": -21704,\n      \"clockSampleAgoMs\": 235526\n    }\n  }\n}"
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: no active harvest exists for kami #21340; its harvest entity state is 'INACTIVE'",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "waited_gte": 180,
+   "response": "{\n  \"tx_hash\": \"0x1dbe70a8f3c78fe74596550ec08f54f06aebee957243b8aa2e398ec6aef711ec\",\n  \"status\": \"success\",\n  \"block\": 34252470,\n  \"gas_used\": 1391701,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/plan.md."
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "lv2"
+  ]
+ },
+ "oracle": [
+  [
+   "level_to",
+   {
+    "kami_id": 21340,
+    "target_level": 11,
+    "allow_partial": true
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Luna stopped a depleted harvest, read levelUpReady true (XP 604/252) and lens_skills for the whole registry, then wrote notes and slept without levelling (hosted/agent_run_b7929f61d557 session-0018 lines 18-37); levels came only in session 21 via level_to.",
+ "harness": "4.7-era hosted agent run (GPT-6 Luna)",
+ "keep_lines": [
+  6,
+  7,
+  10,
+  11,
+  15,
+  16,
+  17,
+  18,
+  19,
+  22,
+  23,
+  27,
+  30
+ ],
+ "summary": {
+  "situation": "Kami 21340 resting at 2/80 HP, level 9, 604 XP against 252 required: two levels banked.",
+  "mistake": "Browsed the whole skill registry, wrote notes and slept without leveling.",
+  "correct": "Level the kami up twice (to level 11).",
+  "pass": "Both banked levels claimed."
+ }
+}

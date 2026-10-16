@@ -1,0 +1,253 @@
+{
+ "id": "stale-notes-wrong-node-stop",
+ "category": "stale_state",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0055.jsonl",
+ "fork": 35,
+ "note": "The account is in room 34 and the notes say the kami harvests at node 34, but lens_kami/lens_node show kami 17194 HARVESTING at node 31. The agent called harvest_stop from room 34 (reverted 'kami too far').",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    34,\n    4,\n    47,\n    31\n  ],\n  \"hops\": 3,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    }\n  ],\n  \"stamina_needed\": 15,\n  \"stamina_have\": 32,\n  \"stamina_after_plan\": 17,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 31\n}",
+   "args": {
+    "target_room": 31,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 4
+   },
+   "unless": [
+    "p34",
+    "p4",
+    "p47",
+    "p31"
+   ],
+   "sets": [
+    "p4"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 47
+   },
+   "when": [
+    "p4"
+   ],
+   "sets": [
+    "p47"
+   ],
+   "clears": [
+    "p4"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 31
+   },
+   "when": [
+    "p47"
+   ],
+   "sets": [
+    "p31",
+    "at31"
+   ],
+   "clears": [
+    "p47"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    34,\n    4,\n    47,\n    31\n  ],\n  \"hops\": 3,\n  \"moves_executed\": 3,\n  \"items_used\": [],\n  \"gas_used\": 2580000,\n  \"stamina_remaining\": 17,\n  \"final_room\": 31,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 4,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 47,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    }\n  ]\n}",
+   "args": {
+    "target_room": 31,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "unless": [
+    "at31"
+   ],
+   "sets": [
+    "p31",
+    "at31"
+   ],
+   "clears": [
+    "p34",
+    "p4",
+    "p47"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: that room is not connected to the account's current room; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "at31"
+   ],
+   "sets": "stopped"
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "when": [
+    "at31"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 17194
+   },
+   "when": [
+    "at31"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "pool_swap",
+   "args": {
+    "item_in": 1,
+    "item_out": 1005,
+    "amount_in": {
+     "lte": 333
+    },
+    "min_amount_out": {
+     "gt": 0
+    },
+    "dry_run": {
+     "not": true
+    }
+   },
+   "response": "Error executing tool pool_swap: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'Reverted'}",
+   "unless": [
+    "at31",
+    "p31",
+    "p4",
+    "p47",
+    "stopped"
+   ],
+   "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0054.jsonl:111 (previous session, same swap); every MUSU->Scrap Metal pool_swap in this run with balance and a positive floor reverted 'Reverted' (72 of 82, none succeeded); fork line 8 shows 333 MUSU"
+  },
+  {
+   "tool": "take_trade",
+   "args": {
+    "trade_id": "0x7df0b9bb68b0287e6a84fa0c0605193c9e1b7521e22b18e92a85234b306e2002"
+   },
+   "response": "Error executing tool take_trade: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "unless": [
+    "at31",
+    "p31",
+    "p4",
+    "p47",
+    "stopped"
+   ],
+   "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0054.jsonl:93; fork line 14 lists 0x7df0b9 as a bid for 1 Scrap Metal and fork line 8 shows 0 Scrap Metal held, so filling it underflows (all 14 take_trade calls in this run reverted with this text)"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "harvest_stop",
+       "harvest_collect",
+       "feed_kami"
+      ],
+      "ok": true
+     }
+    ],
+    "before": [
+     {
+      "tool": "travel_to_room",
+      "args": {
+       "target_room": 31,
+       "dry_run": {
+        "not": true
+       }
+      },
+      "ok": true
+     },
+     {
+      "tool": "move_to_room",
+      "args": {
+       "room_index": 31
+      },
+      "ok": true
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "at31",
+   "stopped"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 31
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     17194
+    ]
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (gpt52 control, session 55 line 36-39): harvest_stop from room 34 reverted 'kami too far'; lens_kami (line 18) and lens_node 31 (line 19) already showed the kami at node 31 (Scrapyard Exit). Any kami-targeted write (stop, collect, feed) needs the account in the kami's room, so travel to 31 must precede it.",
+ "harness": "pre-4.7 (KamiBench 006 gpt-5.2 control)",
+ "keep_lines": [
+  3,
+  18,
+  19,
+  33
+ ],
+ "summary": {
+  "situation": "Account is in room 34 and notes say the kami harvests there, but kami 17194 is harvesting at node 31.",
+  "mistake": "Called harvest_stop from room 34; reverted 'kami too far'.",
+  "correct": "Travel to room 31, then stop the harvest.",
+  "pass": "No successful stop, collect or feed before reaching room 31; ends in room 31 with the harvest stopped."
+ }
+}

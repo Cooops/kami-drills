@@ -1,0 +1,69 @@
+{
+ "id": "stale-double-complete-quest",
+ "category": "stale_state",
+ "src": "experiment-006-knowledge-delivery/gpt52_pushed/transcripts/session-0053.jsonl",
+ "fork": 43,
+ "note": "complete_quest for quest 10 just succeeded (line 41) and lens_quests (line 43) lists it complete. The agent called complete_quest 10 again (reverted 'already completed').",
+ "replay": [
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: quest 10 is already completed by account 'main'",
+   "args": {
+    "quest_index": 10
+   },
+   "is_error": true
+  },
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "accept_quest",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "quest_index": 11
+   },
+   "sets": "q11"
+  },
+  {
+   "tool": "accept_quest",
+   "response": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "forbid": [
+   {
+    "tool": "complete_quest",
+    "args": {
+     "quest_index": 10
+    }
+   }
+  ],
+  "require_flags": [
+   "q11"
+  ]
+ },
+ "oracle": [
+  [
+   "accept_quest",
+   {
+    "quest_index": 11
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt52 pushed, session 53 line 44-45): complete_quest 10 was repeated right after it succeeded and reverted 'quest 10 is already completed'. The next step is accept_quest 11 (what the agent did afterwards), never completing 10 again.",
+ "harness": "pre-4.7 (KamiBench 006 gpt-5.2 pushed)",
+ "keep_lines": [
+  41,
+  43
+ ],
+ "summary": {
+  "situation": "complete_quest for quest 10 just succeeded and the quest list shows it complete.",
+  "mistake": "Called complete_quest 10 again; reverted 'already completed'.",
+  "correct": "Move on to accept quest 11.",
+  "pass": "Never complete quest 10 again, and quest 11 accepted."
+ }
+}

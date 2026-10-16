@@ -1,0 +1,138 @@
+{
+ "id": "stale-harvest-start",
+ "category": "stale_state",
+ "src": "experiment-005-budget-boxed/gpt4omini/transcripts/session-0068.jsonl",
+ "fork": 11,
+ "note": "The agent's own summary says kami 9811 is HARVESTING; it then called harvest_start.",
+ "replay": [
+  {
+   "tool": "harvest_collect",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "sets": "acted"
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "acted",
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_start",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "clears": "stopped"
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: kami #9811 is HARVESTING; harvest_start requires RESTING",
+   "args": {
+    "kami_ids": {
+     "contains": 9811
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "kami_id": 9811
+   },
+   "sets": "acted"
+  },
+  {
+   "tool": "set_next_wake",
+   "response": "Next session scheduled.",
+   "sets": "acted"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 9811
+   },
+   "response": "{\n  \"data\": {\n    \"id\": \"0x1d2c3cc47ad560b89510bd51171a2292ffb7dfdc09f54ad530c1bda85687b661\",\n    \"index\": 9811,\n    \"name\": \"Kamigotchi 9811\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 27,\n      \"total\": 70,\n      \"percent\": 39\n    },\n    \"hpRatePerHr\": \"-5.09\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3370,\n      \"name\": \"MyAccount\"\n    },\n    \"musu\": {\n      \"accrued\": 27,\n      \"spotRatePerHr\": \"+26.62\",\n      \"avgRatePerHr\": \"+25.29\"\n    },\n    \"node\": {\n      \"index\": 3,\n      \"name\": \"Torii Gate\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-09T23:20:10.700Z\",\n    \"blockNumber\": 31904808,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "unless": [
+    "acted",
+    "stopped"
+   ],
+   "src": "derived from fork line 5 (lens_party kamis[9811], same daemon payload shape and meta); no stats block when stats=true is asked"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "harvest_start",
+      "args": {
+       "kami_ids": {
+        "contains": 9811
+       }
+      }
+     }
+    ],
+    "before": [
+     {
+      "tool": "harvest_stop",
+      "ok": true,
+      "args": {
+       "kami_ids": {
+        "contains": 9811
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "acted"
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_collect",
+   {
+    "kami_ids": [
+     9811
+    ]
+   }
+  ],
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 60
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "The agent's own summary says kami 9811 is HARVESTING; it then called harvest_start. Scored on end state: a collect or stop on the harvesting kami must land; harvest_start is only legal after a successful stop (the kami is HARVESTING). A feed, a collect/stop, or a scheduled wake (leave the harvest running) all count as acting on the true state; only harvest_start while HARVESTING is wrong.",
+ "harness": "pre-4.7 (KamiBench 004/005)",
+ "summary": {
+  "situation": "Agent's own summary says kami 9811 is HARVESTING.",
+  "mistake": "Called harvest_start on a kami that is already harvesting.",
+  "correct": "Act on the true state: collect, stop, feed, or just schedule a wake and leave the harvest running.",
+  "pass": "No harvest_start on kami 9811 before a successful stop, and some action taken on it."
+ }
+}

@@ -1,0 +1,160 @@
+{
+ "id": "repeat-stop-cooldown-identical",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0054.jsonl",
+ "fork": 143,
+ "note": "harvest_stop reverted 'kami on cooldown' (lens_kami earlier showed cooldownSec 193); the live agent immediately sent the identical call, then a third time.",
+ "replay": [
+  {
+   "tool": "wait",
+   "response": "Waited."
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "sets": [
+    "stopped"
+   ],
+   "waited_gte": 193
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_collect",
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "harvest_start",
+   "response": "Error executing tool harvest_start: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami on cooldown: Reverted'}",
+   "args": {
+    "kami_ids": {
+     "contains": 17194
+    }
+   },
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "response": "{\n  \"data\": {\n    \"id\": \"0xa8e785e5047b7d9a153348fb3814419fd2f3cb0b9ad69cf9631235dd1b096306\",\n    \"index\": 17194,\n    \"name\": \"Kamigotchi 17194\",\n    \"state\": \"HARVESTING\",\n    \"level\": 1,\n    \"hp\": {\n      \"current\": 63,\n      \"total\": 80,\n      \"percent\": 79\n    },\n    \"hpRatePerHr\": \"-3.90\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3376,\n      \"name\": \"OnchainA3\"\n    },\n    \"musu\": {\n      \"accrued\": -1,\n      \"spotRatePerHr\": \"+19.18\",\n      \"avgRatePerHr\": \"+19.20\"\n    },\n    \"node\": {\n      \"index\": 31,\n      \"name\": \"Scrapyard Exit\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-20T14:53:17.706Z\",\n    \"blockNumber\": 32368090,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "waited_gte": 193
+  },
+  {
+   "tool": "take_trade",
+   "args": {
+    "trade_id": {
+     "in": [
+      "0x347d0f3b269fd5067bc3771286ec747a6158d5cf2a0d91b33fd89376afa72d46",
+      "0xaafcded7b21537e81b6c4545005ba83e04fec3d1623ce511dc1a7ae0d5cb02bb"
+     ]
+    }
+   },
+   "response": "Error executing tool take_trade: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "unless": [
+    "stopped"
+   ],
+   "src": "fork L93 (underflow revert); fork L25 orderbook prices these asks at 6500 and 2500 MUSU, inventory L9 holds 277 MUSU; all four take_trade attempts on asks above the balance reverted the same (L81-L93); 0xaafc... also reverted identically in session-0044:57"
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 9
+   },
+   "response": "{\n  \"quest_index\": 9,\n  \"entity_id\": \"0x1a25ca20bb0a52d6b75ec7ea6a8483421c39002db53132f613bb9489d983781\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+   "unless": [
+    "stopped"
+   ],
+   "src": "session-0034.jsonl:11 (same account, active_blocked objs_not_met); fork lens_quests L7 shows quest 9 accepted, not complete, objectivesMet false (1/3 burned)"
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": [
+       "harvest_stop",
+       "harvest_collect",
+       "harvest_start"
+      ],
+      "args": {
+       "kami_ids": {
+        "contains": 17194
+       }
+      }
+     }
+    ],
+    "before": [
+     {
+      "tool": "wait"
+     }
+    ]
+   }
+  ],
+  "require_any": [
+   {
+    "tool": "harvest_stop",
+    "args": {
+     "kami_ids": [
+      17194
+     ]
+    },
+    "ok": true
+   },
+   {
+    "tool": "set_next_wake",
+    "args": {
+     "minutes_from_now": {
+      "gte": 4
+     }
+    },
+    "ok": true
+   }
+  ]
+ },
+ "oracle": [
+  [
+   "set_next_wake",
+   {
+    "minutes_from_now": 5
+   }
+  ],
+  [
+   "end_session",
+   {
+    "reason": "kami on cooldown; retry harvest_stop after wake"
+   }
+  ]
+ ],
+ "difficulty": "easy",
+ "rationale": "Live (gpt52_control session-0054 lines 141-148) harvest_stop was sent three times in seconds; lens_kami at line 125 showed cooldownSec 193. Waits accumulate, so the stop succeeds once at least 193 s have been waited in total. Pass: no harvest_stop/collect/start on kami 17194 before any wait, then an ok harvest_stop, or a wake of at least 4 min (240 s covers the cooldown; the tool floor is 5 min anyway). Other kamis are not blocked.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  125,
+  143
+ ],
+ "summary": {
+  "situation": "Kami 17194's harvest_stop reverted 'kami on cooldown'; lens_kami showed 193 seconds left.",
+  "mistake": "Immediately sent the identical stop, then a third time.",
+  "correct": "Wait out the cooldown, then stop, or schedule a wake of 4+ minutes.",
+  "pass": "No stop, collect or start on kami 17194 before a wait; then stop succeeds or a 4+ minute wake."
+ }
+}

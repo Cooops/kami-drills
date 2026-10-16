@@ -1,0 +1,232 @@
+{
+ "id": "memory-sonnet-slow-points-belief",
+ "category": "memory",
+ "src": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0073.jsonl",
+ "fork": 12,
+ "note": "notes.md says scavenge points 'do NOT accrue at the full rate' (blamed on the bot strategy) and session 72 left an unmanaged harvest as the test. Now: 327 MUSU accrued, scavenge points still 11.",
+ "replay": [
+  {
+   "tool": "harvest_collect",
+   "args": {
+    "kami_ids": {
+     "contains": 3149
+    }
+   },
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "banked"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x8150422135569fc867972f198c7e0cff3992e552dd5f49e00847bbd28eb10822\",\n  \"status\": \"success\",\n  \"block\": 32525752,\n  \"gas_used\": 2115966,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_collect",
+   "args": {
+    "kami_ids": {
+     "contains": 3149
+    }
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "Error executing tool harvest_collect: validation failed; no transaction sent: no active harvest exists for kami #3149; its harvest entity state is 'INACTIVE'",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 3149
+    }
+   },
+   "unless": [
+    "stopped"
+   ],
+   "sets": [
+    "banked",
+    "stopped"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x323e099bccc8b93c11f628bf99185b08051b021401f75131a6d23f64e5af8f47\",\n  \"status\": \"success\",\n  \"block\": 32525800,\n  \"gas_used\": 2419243,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "get_scavenge_points",
+   "args": {
+    "node_index": 3
+   },
+   "when": [
+    "claimed"
+   ],
+   "response": "{\n  \"node_index\": 3,\n  \"account\": \"main\",\n  \"points\": 38,\n  \"tier_cost\": 100,\n  \"claimable_tiers\": 0,\n  \"remainder\": 38,\n  \"instance_entity\": \"0x8e87b9c829be61c5897a8e27b5037551d25110569f54b0737ebbdd433ac99469\"\n}",
+   "sets": [
+    "checked"
+   ]
+  },
+  {
+   "tool": "get_scavenge_points",
+   "args": {
+    "node_index": 3
+   },
+   "when": [
+    "banked"
+   ],
+   "response": "{\n  \"node_index\": 3,\n  \"account\": \"main\",\n  \"points\": 338,\n  \"tier_cost\": 100,\n  \"claimable_tiers\": 3,\n  \"remainder\": 38,\n  \"instance_entity\": \"0x8e87b9c829be61c5897a8e27b5037551d25110569f54b0737ebbdd433ac99469\"\n}",
+   "sets": [
+    "checked"
+   ]
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "args": {
+    "node_index": 3
+   },
+   "when": [
+    "banked"
+   ],
+   "unless": [
+    "claimed"
+   ],
+   "sets": [
+    "checked",
+    "claimed"
+   ],
+   "response": "{\n  \"claim\": {\n    \"tx_hash\": \"0x60b9eb3e96c423fc653ead3b9d2edea942fb7c7521cd681b8679175a36016bc5\",\n    \"status\": \"success\",\n    \"block\": 32525763,\n    \"gas_used\": 779040,\n    \"account\": \"main\",\n    \"commit_ids\": [\n      \"46462259630325548582777757401242399480727961580152793219079544676886317344262\"\n    ]\n  },\n  \"reveal\": {\n    \"tx_hash\": \"0xa9c53f20d10bf283642dbb73e4c364af09d7e805ee837dba3101efdc441b63a2\",\n    \"status\": \"success\",\n    \"block\": 32525765,\n    \"gas_used\": 885957,\n    \"account\": \"main\"\n  },\n  \"commit_ids\": [\n    \"46462259630325548582777757401242399480727961580152793219079544676886317344262\"\n  ]\n}"
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "args": {
+    "node_index": 3
+   },
+   "when": [
+    "claimed"
+   ],
+   "response": "Error executing tool scavenge_claim_and_reveal: validation failed; no transaction sent: account 'main' has 38 scavenge points at node 3; claiming a tier requires 100",
+   "is_error": true
+  },
+  {
+   "tool": "scavenge_claim_and_reveal",
+   "response": "Error executing tool scavenge_claim_and_reveal: validation failed; no transaction sent: account 'main' has 11 scavenge points at node 3; claiming a tier requires 100",
+   "is_error": true
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 3149
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2714fa0763a74fc45d7c696599de1c76c6b6227f4a6ab1e9ced69ac48a761043\",\n    \"index\": 3149,\n    \"name\": \"Kamigotchi 3149\",\n    \"state\": \"RESTING\",\n    \"level\": 8,\n    \"hp\": {\n      \"current\": 49,\n      \"total\": 120,\n      \"percent\": 41\n    },\n    \"hpRatePerHr\": \"+18.00\",\n    \"cooldownSec\": 170,\n    \"account\": {\n      \"index\": 3374,\n      \"name\": \"KamiAgent01\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-24T16:05:16.899Z\",\n    \"blockNumber\": 32525743,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "lens_kami",
+   "args": {
+    "kami_index": 3149
+   },
+   "when": [
+    "banked"
+   ],
+   "response": "{\n  \"data\": {\n    \"id\": \"0x2714fa0763a74fc45d7c696599de1c76c6b6227f4a6ab1e9ced69ac48a761043\",\n    \"index\": 3149,\n    \"name\": \"Kamigotchi 3149\",\n    \"state\": \"HARVESTING\",\n    \"level\": 8,\n    \"hp\": {\n      \"current\": 49,\n      \"total\": 120,\n      \"percent\": 41\n    },\n    \"hpRatePerHr\": \"-9.76\",\n    \"cooldownSec\": 0,\n    \"account\": {\n      \"index\": 3374,\n      \"name\": \"KamiAgent01\"\n    },\n    \"musu\": {\n      \"accrued\": 0,\n      \"spotRatePerHr\": \"+45.04\",\n      \"avgRatePerHr\": \"+32.46\"\n    },\n    \"node\": {\n      \"index\": 3,\n      \"name\": \"Torii Gate\"\n    }\n  },\n  \"untrusted\": [\n    \"account.name\",\n    \"name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-24T16:05:16.899Z\",\n    \"blockNumber\": 32525743,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+  },
+  {
+   "tool": "workspace_write",
+   "args": {
+    "path": {
+     "regex": "(^|/)(notes|plan)\\.md$"
+    },
+    "content": {
+     "regex": "^(?!.*(not (wrong|incorrect|disprov\\w*|false)|still (right|correct|true)|was right|confirmed the (bot|theory)))(?=.*(collect|stop))(?=.*(bank|only|trigger|land|add))(?=.*((bot|strategy|theory|hypothes\\w*|earlier|previous|old note).{0,120}(not |no longer|wrong|incorrect|isn.t|wasn.t|didn.t|false|disprov|contra|myth)|(not |no longer|wrong|incorrect|isn.t|wasn.t|didn.t|false|disprov|contra|myth).{0,80}(bot|strategy|theory|hypothes\\w*|earlier|previous|old note)))"
+    }
+   },
+   "sets": [
+    "corrected"
+   ],
+   "response": "Wrote 9625 bytes to workspace/notes.md.",
+   "when": [
+    "checked"
+   ]
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 9625 bytes to workspace/notes.md."
+  },
+  {
+   "tool": "burn_items",
+   "args": {
+    "item_indices": [
+     1001
+    ],
+    "amounts": [
+     5
+    ]
+   },
+   "response": "Error executing tool burn_items: validation failed; no transaction sent: account 'main' holds 4 of item 1001 (Wooden Stick); burn_items requires 5",
+   "unless": [
+    "banked",
+    "checked",
+    "claimed",
+    "corrected",
+    "stopped"
+   ],
+   "src": "harness balance-check template (experiment-006-knowledge-delivery/gpt52_control/transcripts/session-0035.jsonl:149 burn_items, session-0022.jsonl:39 nonzero 'holds 110 ... requires 450'), numbers adapted; fork line 12 lens_inventory shows 4 Wooden Stick (1001)"
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "banked",
+   "corrected"
+  ]
+ },
+ "oracle": [
+  [
+   "harvest_collect",
+   {
+    "kami_ids": [
+     3149
+    ]
+   }
+  ],
+  [
+   "get_scavenge_points",
+   {
+    "node_index": 3
+   }
+  ],
+  [
+   "scavenge_claim_and_reveal",
+   {
+    "node_index": 3
+   }
+  ],
+  [
+   "workspace_write",
+   {
+    "path": "notes.md",
+    "content": "Correction: harvest_collect or harvest_stop is what banks scavenge points; the bot strategy theory was wrong, it did not slow accrual. Collect first, then claim."
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Sonnet 5's session-71 note blamed the bot for 9-10 points in 11 hours; the session-72 test (unmanaged harvest) then showed points only land on collect/stop: harvest_collect took the node from 11 to 338 points (sonnet5_control session-0073 lines 9-17) and the notes were corrected (line 84). Scored on the end state: points banked (collect or stop) and a notes.md write that says collect/stop banks the points and that the bot theory was wrong; claiming the tiers is the natural follow-up but not required. Human audit (2026-10-15): the correction must follow reading the points after banking (evidence before belief), may go in notes.md or plan.md, and must not reaffirm the old theory.",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12
+ ],
+ "summary": {
+  "situation": "Kami 3149 harvesting at node 3 with 327 MUSU accrued but scavenge points still 11. Its notes hold a wrong theory about why.",
+  "mistake": "Notes held a wrong theory about slow points, though points only land on collect or stop.",
+  "correct": "Collect (or stop), read the scavenge points (11 \u2192 338), then correct notes.md or plan.md: the earlier theory was wrong.",
+  "pass": "Points banked, points read after banking, then notes.md or plan.md says collect/stop banks points and the old theory was wrong."
+ },
+ "audit": {
+  "verdict": "change",
+  "applied": "check-before-write; notes.md or plan.md; negation guard",
+  "by": "domain expert"
+ }
+}

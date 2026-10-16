@@ -1,0 +1,414 @@
+{
+ "id": "prog-timewall-plan-stop-complete",
+ "category": "progression",
+ "src": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0061.jsonl",
+ "fork": 13,
+ "note": "progress.md: kami 20699 has harvested node 37 for quest 20 (12h timer) since ~01:05 UTC; 'at ~13:05 it is READY: travel to room 37, harvest_stop, then complete_quest'. The account is in room 29 and it is now past 13:05.",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "dry_run": true
+   },
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    29,\n    2,\n    3,\n    30,\n    4,\n    47,\n    31,\n    33,\n    9,\n    36,\n    25,\n    37\n  ],\n  \"hops\": 11,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 2\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 30\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 33\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 9\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 36\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 25\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 37\n    }\n  ],\n  \"stamina_needed\": 55,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 45,\n  \"feasible\": true,\n  \"gated_hops\": [],\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 37\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "target_room": 37
+   },
+   "when": [
+    "part"
+   ],
+   "sets": [
+    "at37"
+   ],
+   "clears": [
+    "part"
+   ],
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    36,\n    25,\n    37\n  ],\n  \"hops\": 2,\n  \"moves_executed\": 2,\n  \"items_used\": [],\n  \"gas_used\": 1720996,\n  \"stamina_remaining\": 45,\n  \"final_room\": 37,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 25,\n      \"tx_hash\": \"0xe74dbdebf62d3196c61d80dc2a199d5bb29acf46b657b32b1ec3b0b06d96d112\",\n      \"status\": \"success\",\n      \"block\": 32557250,\n      \"gas_used\": 860719\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 37,\n      \"tx_hash\": \"0xe1e64bb820973ea2c201427dfc98c8ce143e3089a96e41a1436bf0e7bfffe731\",\n      \"status\": \"success\",\n      \"block\": 32557252,\n      \"gas_used\": 860277\n    }\n  ]\n}"
+  },
+  {
+   "tool": "travel_to_room",
+   "args": {
+    "target_room": 37
+   },
+   "unless": [
+    "at37"
+   ],
+   "sets": [
+    "part",
+    "pos36"
+   ],
+   "response": "{\n  \"reached_target\": false,\n  \"path\": [\n    29,\n    2,\n    3,\n    30,\n    4,\n    47,\n    31,\n    33,\n    9,\n    36,\n    25,\n    37\n  ],\n  \"final_room\": 36,\n  \"moves_executed\": 9,\n  \"items_used\": [],\n  \"gas_used\": 7900329,\n  \"stamina_remaining\": 0,\n  \"remainder\": [\n    36,\n    25,\n    37\n  ],\n  \"stamina_needed_for_remainder\": 10,\n  \"eta_to_recover_min\": 10,\n  \"partial_reason\": \"insufficient stamina (use_items=False)\",\n  \"error\": null,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 2,\n      \"tx_hash\": \"0x57f3f5f222028a8f53586c815a7c0aae108026ee5861093c50e9c25f6b9f387f\",\n      \"status\": \"success\",\n      \"block\": 32557226,\n      \"gas_used\": 860279\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 3,\n      \"tx_hash\": \"0xebc7d2b682d95489453245f814e6b093074f317c33c6479d534e67c409afd69f\",\n      \"status\": \"success\",\n      \"block\": 32557230,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 30,\n      \"tx_hash\": \"0x53c713e4ddd7093f03a3f87e89e1b7080d623dbd913512666151ae73c14197cc\",\n      \"status\": \"success\",\n      \"block\": 32557232,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 4,\n      \"tx_hash\": \"0x8d0e26e6ecd53547712ab3196fdde0a5b49d329d6201c8ed68059cef0bc4f930\",\n      \"status\": \"success\",\n      \"block\": 32557234,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 47,\n      \"tx_hash\": \"0xafddb2e080b809c46be1c227ff2ee0ae4dfc1b67cd1cfa3b1d837615b4c8814e\",\n      \"status\": \"success\",\n      \"block\": 32557236,\n      \"gas_used\": 860277\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 31,\n      \"tx_hash\": \"0x6a133799d65fc5726e071a16c8e9061c6ad73f3c0aacb5153a6c55b6894e4e94\",\n      \"status\": \"success\",\n      \"block\": 32557240,\n      \"gas_used\": 1017227\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 33,\n      \"tx_hash\": \"0x9a381e5ab1d9dfe2aa0662ee3fd466fc50318a4276393993d0195bb834e20eac\",\n      \"status\": \"success\",\n      \"block\": 32557242,\n      \"gas_used\": 860719\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 9,\n      \"tx_hash\": \"0xc7c79fbf491b221e1bc4fc2e21c86eb298ac41e1104dee802d39ab3d8c173563\",\n      \"status\": \"success\",\n      \"block\": 32557244,\n      \"gas_used\": 860719\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 36,\n      \"tx_hash\": \"0x73cead46f3d7b0e1d96324a343e8275a50f813d1a0db728afcb273703580e189\",\n      \"status\": \"success\",\n      \"block\": 32557246,\n      \"gas_used\": 860277\n    }\n  ]\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 2
+   },
+   "unless": [
+    "pos2",
+    "pos3",
+    "pos30",
+    "pos4",
+    "pos47",
+    "pos31",
+    "pos33",
+    "pos9",
+    "pos36",
+    "pos25",
+    "pos37"
+   ],
+   "sets": [
+    "pos2"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xf79816cf0d2867a4d8a8baade08503a1dc443a3fb4253cc6bff63e484a8158ab\",\n  \"status\": \"success\",\n  \"block\": 32500001,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 3
+   },
+   "when": [
+    "pos2"
+   ],
+   "sets": [
+    "pos3"
+   ],
+   "clears": [
+    "pos2"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x200607ed3186158a45adba50bae779099f047109193146f9eb8bd3314e5d8042\",\n  \"status\": \"success\",\n  \"block\": 32500002,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 30
+   },
+   "when": [
+    "pos3"
+   ],
+   "sets": [
+    "pos30"
+   ],
+   "clears": [
+    "pos3"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x0eb1af4868fb0143a1bec5b4759d311f69f7289cde8dccb2e5adf23b3a2f2cb6\",\n  \"status\": \"success\",\n  \"block\": 32500003,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 4
+   },
+   "when": [
+    "pos30"
+   ],
+   "sets": [
+    "pos4"
+   ],
+   "clears": [
+    "pos30"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x4fd8d2a1038aa81fb35f882be3edaa135d3394e18f1c1558620ce0a5bf7696cb\",\n  \"status\": \"success\",\n  \"block\": 32500004,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 47
+   },
+   "when": [
+    "pos4"
+   ],
+   "sets": [
+    "pos47"
+   ],
+   "clears": [
+    "pos4"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x248453cc7c599e43757249d7c8f806f06e4c4f29e7597edd889a20c1d05d9db8\",\n  \"status\": \"success\",\n  \"block\": 32500005,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 31
+   },
+   "when": [
+    "pos47"
+   ],
+   "sets": [
+    "pos31"
+   ],
+   "clears": [
+    "pos47"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x77d991d5b93df6125ae4324be164b852b1d92615d4ee4f1faaa43a8c3b30b27b\",\n  \"status\": \"success\",\n  \"block\": 32500006,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 33
+   },
+   "when": [
+    "pos31"
+   ],
+   "sets": [
+    "pos33"
+   ],
+   "clears": [
+    "pos31"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x85347e60f41fd4a8bd4ca38753c40ee9659946fce098e1f39ff2e3a1a4b630f6\",\n  \"status\": \"success\",\n  \"block\": 32500007,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 9
+   },
+   "when": [
+    "pos33"
+   ],
+   "sets": [
+    "pos9"
+   ],
+   "clears": [
+    "pos33"
+   ],
+   "response": "{\n  \"tx_hash\": \"0xbe1addfefe262823939c4547aa3b7bac9f834da44ea0b5ab94f53a0b1653e290\",\n  \"status\": \"success\",\n  \"block\": 32500008,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 36
+   },
+   "when": [
+    "pos9"
+   ],
+   "sets": [
+    "pos36"
+   ],
+   "clears": [
+    "pos9"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x874bf3f081e19d44827b522610cde25696cd0883b94845c7ff8d6916df870c81\",\n  \"status\": \"success\",\n  \"block\": 32500009,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 25
+   },
+   "when": [
+    "pos36"
+   ],
+   "sets": [
+    "pos25"
+   ],
+   "clears": [
+    "pos36"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x06ad6e03f8f8133b0445562b5294d0f4727f30c1eaf6b0b033c183da98cd9937\",\n  \"status\": \"success\",\n  \"block\": 32500010,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "move_to_room",
+   "args": {
+    "room_index": 37
+   },
+   "when": [
+    "pos25"
+   ],
+   "sets": [
+    "pos37",
+    "at37"
+   ],
+   "clears": [
+    "pos25"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x864acbdad3aef509de24fd1de64d72c3859e69ed61db7abb2ca58d27eccf72f4\",\n  \"status\": \"success\",\n  \"block\": 32500011,\n  \"gas_used\": 860000,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 9787
+    }
+   },
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "args": {
+    "kami_ids": {
+     "contains": 20699
+    }
+   },
+   "when": [
+    "at37"
+   ],
+   "sets": [
+    "stopped"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x3d72bbf6d3baf7f977ff2e59be934bd92b5950bd2fece69b26644b27731b4c61\",\n  \"status\": \"success\",\n  \"block\": 32557256,\n  \"gas_used\": 2330674,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 20
+   },
+   "when": [
+    "q20"
+   ],
+   "response": "{\n  \"quest_index\": 20,\n  \"entity_id\": \"0x6fa70f8e53ca630e7e81e16bd81690bde0f05deae545c1db6e95c46613d46c24\",\n  \"owned\": true,\n  \"completed\": true,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}"
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 20
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"quest_index\": 20,\n  \"entity_id\": \"0x6fa70f8e53ca630e7e81e16bd81690bde0f05deae545c1db6e95c46613d46c24\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": true,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"active_ready\"\n}"
+  },
+  {
+   "tool": "quest_state",
+   "args": {
+    "quest_index": 20
+   },
+   "response": "{\n  \"quest_index\": 20,\n  \"entity_id\": \"0x6fa70f8e53ca630e7e81e16bd81690bde0f05deae545c1db6e95c46613d46c24\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}"
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 20
+   },
+   "when": [
+    "stopped"
+   ],
+   "response": "{\n  \"quest_index\": 20,\n  \"completable\": true\n}"
+  },
+  {
+   "tool": "check_quest_completable",
+   "args": {
+    "quest_index": 20
+   },
+   "response": "{\n  \"quest_index\": 20,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\"\n}"
+  },
+  {
+   "tool": "complete_quest",
+   "args": {
+    "quest_index": 20
+   },
+   "when": [
+    "stopped"
+   ],
+   "sets": [
+    "q20"
+   ],
+   "response": "{\n  \"tx_hash\": \"0x9f95df69758f2d1303ab1bad3843418615efdd44dacf0513a4ac74e50a09f948\",\n  \"status\": \"success\",\n  \"block\": 32557266,\n  \"gas_used\": 1235003,\n  \"account\": \"main\"\n}"
+  },
+  {
+   "tool": "complete_quest",
+   "response": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "get_status",
+   "response": "{\n  \"current_time_utc\": \"2026-08-25T13:10:06.486+00:00\",\n  \"session_number\": 61,\n  \"workspace_bytes_used\": 15530,\n  \"workspace_quota_bytes\": 10485760\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 20699
+   },
+   "response": "{\n  \"tx_hash\": \"0x24b910cd2bbc8d9cafe7957e5e3fd86530ec6875b2b3a47c739b557f455e3bf2\",\n  \"status\": \"success\",\n  \"block\": 32557220,\n  \"gas_used\": 1877551,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 54,\n    \"after\": 110\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "args": {
+    "kami_id": 9787
+   },
+   "response": "{\n  \"tx_hash\": \"0x8ee00ffd4ca4d86c25e91a2bf4e57bc4320a7c739e861e1057c4b3df5df49c25\",\n  \"status\": \"success\",\n  \"block\": 32557221,\n  \"gas_used\": 1877551,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 55,\n    \"after\": 90\n  }\n}"
+  },
+  {
+   "tool": "workspace_write",
+   "response": "Wrote 1400 bytes to workspace/progress.md."
+  }
+ ],
+ "rule": {
+  "require_sequence": [
+   {
+    "tool": "harvest_stop",
+    "args": {
+     "kami_ids": {
+      "contains": 20699
+     }
+    },
+    "ok": true
+   },
+   {
+    "tool": "complete_quest",
+    "args": {
+     "quest_index": 20
+    },
+    "ok": true
+   }
+  ],
+  "require_flags": [
+   "q20"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 37
+   }
+  ],
+  [
+   "travel_to_room",
+   {
+    "target_room": 37
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     20699
+    ]
+   }
+  ],
+  [
+   "complete_quest",
+   {
+    "quest_index": 20
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "The quest counter only advances on harvest_stop at the node. The live agent travelled, stopped 20699, saw completable_now and completed quest 20 (sonnet5_pushed session-0061 lines 19-32); completing before the stop reverts 'objs not met' and stopping from room 29 reverts 'kami too far'. The replay uses the real two-call trip from room 29 (stamina forces a partial first call).",
+ "harness": "KamiBench 006 (scaffold 0.7.5)",
+ "keep_lines": [
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13
+ ],
+ "summary": {
+  "situation": "Kami 20699 has harvested node 37 for quest 20 (12h timer); account is in room 29 and past 13:05 UTC.",
+  "mistake": "Live run did it right; traps: completing before the stop, or stopping from room 29 ('kami too far').",
+  "correct": "Travel to room 37 (two travel calls), stop the harvest, then complete quest 20.",
+  "pass": "Harvest stop succeeds, then quest 20 completed, in that order."
+ }
+}

@@ -1,0 +1,332 @@
+{
+ "id": "repeat-stop-starving",
+ "category": "repeat_failed",
+ "src": "experiment-006-knowledge-delivery/gpt52_pushed/transcripts/session-0110.jsonl",
+ "fork": 15,
+ "note": "harvest_stop reverted 'kami starving..' (HP is 0, lens_kami shows null vitals). The inventory holds no food. Recovery is multi-step: buy food at Mina in room 13, return to the node room, feed, then stop.",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    31,\n    47,\n    4,\n    30,\n    3,\n    2,\n    13\n  ],\n  \"hops\": 6,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 30\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 2\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 13\n    }\n  ],\n  \"stamina_needed\": 30,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 70,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 13\n}",
+   "args": {
+    "target_room": 13,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    13,\n    2,\n    3,\n    30,\n    4,\n    47,\n    31\n  ],\n  \"hops\": 6,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 2\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 3\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 30\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 4\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 47\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 31\n    }\n  ],\n  \"stamina_needed\": 30,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 70,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 31\n}",
+   "args": {
+    "target_room": 31,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    31,\n    47,\n    4,\n    30,\n    3,\n    2,\n    13\n  ],\n  \"hops\": 6,\n  \"moves_executed\": 6,\n  \"items_used\": [],\n  \"gas_used\": 5160000,\n  \"stamina_remaining\": 62,\n  \"final_room\": 13\n}",
+   "args": {
+    "target_room": 13,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "sets": [
+    "at13"
+   ],
+   "clears": [
+    "back"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    13,\n    2,\n    3,\n    30,\n    4,\n    47,\n    31\n  ],\n  \"hops\": 6,\n  \"moves_executed\": 6,\n  \"items_used\": [],\n  \"gas_used\": 5160000,\n  \"stamina_remaining\": 50,\n  \"final_room\": 31\n}",
+   "args": {
+    "target_room": 31,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "sets": [
+    "back"
+   ],
+   "clears": [
+    "at13"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 11301
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "when": [
+    "at13"
+   ],
+   "sets": [
+    "b11301"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 11303
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "when": [
+    "at13"
+   ],
+   "sets": [
+    "b11303"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "merchant_index": 1,
+    "item_indices": {
+     "contains": 11304
+    },
+    "amounts": {
+     "not": [
+      0
+     ]
+    }
+   },
+   "when": [
+    "at13"
+   ],
+   "sets": [
+    "b11304"
+   ]
+  },
+  {
+   "tool": "listing_buy",
+   "response": "Error executing tool listing_buy: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: must be in same room as npc: Reverted'}\n[mechanics] account 'main': room 31, stamina 145. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "unless": [
+    "at13"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "listing_buy",
+   "response": "Error executing tool listing_buy: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_id": 703,
+    "food_item_id": 11301
+   },
+   "when": [
+    "b11301",
+    "back"
+   ],
+   "sets": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}\n[mechanics] account 'main': room 13, stamina 62. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "args": {
+    "food_item_id": 11301
+   },
+   "when": [
+    "b11301"
+   ],
+   "unless": [
+    "back"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_id": 703,
+    "food_item_id": 11303
+   },
+   "when": [
+    "b11303",
+    "back"
+   ],
+   "sets": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}\n[mechanics] account 'main': room 13, stamina 62. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "args": {
+    "food_item_id": 11303
+   },
+   "when": [
+    "b11303"
+   ],
+   "unless": [
+    "back"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_id": 703,
+    "food_item_id": 11304
+   },
+   "when": [
+    "b11304",
+    "back"
+   ],
+   "sets": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}\n[mechanics] account 'main': room 13, stamina 62. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "args": {
+    "food_item_id": 11304
+   },
+   "when": [
+    "b11304"
+   ],
+   "unless": [
+    "back"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: account 'main' does not hold that food item; feed_kami requires 1",
+   "is_error": true
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}",
+   "args": {
+    "kami_ids": {
+     "contains": 703
+    }
+   },
+   "when": [
+    "fed"
+   ],
+   "sets": [
+    "stopped"
+   ]
+  },
+  {
+   "tool": "harvest_stop",
+   "response": "Error executing tool harvest_stop: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami starving..: Reverted'}\n[mechanics] account 'main': room 31, stamina 145. kami #703: state HARVESTING, harvest entity ACTIVE. Tools whose harness state gate accepts HARVESTING: liquidate_kami. Tools whose harness state gate accepts harvest ACTIVE: harvest_collect, harvest_stop, liquidate_kami. Not read by the harness for this call: cooldowns, HP, node/room match, XP.",
+   "is_error": true
+  },
+  {
+   "tool": "lens_inventory",
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3377,\n      \"name\": \"KAMIAI\"\n    },\n    \"items\": [\n      {\n        \"balance\": 208,\n        \"item\": {\n          \"id\": \"0xae1902e8f88a0a91b060702651d0db2d9df8b689c40d3fafe7f84a7ff41924fa\",\n          \"index\": 1,\n          \"name\": \"MUSU\",\n          \"type\": \"MISC\",\n          \"description\": \"Kamigotchi kurrency\",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 138,\n        \"item\": {\n          \"id\": \"0x620c842b1dbd64dfc188ebb39a56375fe2898fc8a41eb27b41a5c526371d8513\",\n          \"index\": 2,\n          \"name\": \"VIPP\",\n          \"type\": \"CONSUMABLE\",\n          \"description\": \"Sacred paper which can be sacrificed for VIP status. \",\n          \"effects\": {\n            \"use\": [\n              {\n                \"type\": \"VIP\",\n                \"index\": 0,\n                \"value\": 1,\n                \"entries\": [\n                  {\n                    \"name\": \"VIP\",\n                    \"description\": \"+1 VIP\"\n                  }\n                ]\n              }\n            ],\n            \"equip\": []\n          },\n          \"requirements\": [\n            {\n              \"type\": \"ROOM\",\n              \"index\": 64,\n              \"value\": 0,\n              \"text\": \"At Burning Room\"\n            }\n          ]\n        }\n      },\n      {\n        \"balance\": 2,\n        \"item\": {\n          \"id\": \"0xf015cd88002b6300d7ff35946b491ea16f3ee085e7da6cd167a95dfef976c388\",\n          \"index\": 1001,\n          \"name\": \"Wooden Stick\",\n          \"type\": \"MATERIAL\",\n          \"description\": \"Wood in its unprocessed form. Grows on trees. \",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 9,\n        \"item\": {\n          \"id\": \"0xb6bb5a536ee5062e878e0025a6c1ef86faecb03230e2c67f18fb66ebbe6df95a\",\n          \"index\": 1002,\n          \"name\": \"Stone\",\n          \"type\": \"MATERIAL\",\n          \"description\": \"It\\u2019s just a stone. Can be used to get Stone. \",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 1,\n        \"item\": {\n          \"id\": \"0xac7540f188626d7e56d55178e0d02a61e88aaf94089f98ef093b8e4715196e58\",\n          \"index\": 1003,\n          \"name\": \"Plastic Bottle\",\n          \"type\": \"MATERIAL\",\n          \"description\": \"Can be reprocessed into valuable raw Microplastics. \",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 21,\n        \"item\": {\n          \"id\": \"0x464d0223d62ced8e2349b5e3076058c96bf7960c79b74a6d029bde2e13ec4389\",\n          \"index\": 1005,\n          \"name\": \"Scrap Metal\",\n          \"type\": \"MATERIAL\",\n          \"description\": \"A small chunk of scrap metal. Maybe useful if processed.\",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 1,\n        \"item\": {\n          \"id\": \"0xc0caa586dd705aa03f0a99373ec7a7a65fa84a123da39f885ec5282735a120d7\",\n          \"index\": 1015,\n          \"name\": \"Obol\",\n          \"type\": \"MISC\",\n          \"description\": \"An ancient coin. Despite a worn and dull finish, it still glitters in the light. Valuable to certain individuals. \",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 3,\n        \"item\": {\n          \"id\": \"0xc82a29fb5e6a4b4bd06689e9cfb9ed40cfd0655c9cd38cb60560873521a1d8ac\",\n          \"index\": 11001,\n          \"name\": \"Red Ribbon Gummy\",\n          \"type\": \"REVIVE\",\n          \"description\": \"This candy ribbon is so delicious that it can bring a Kami back after it\\u2019s been liquidated. They can\\u2019t say no to the flavor.\",\n          \"effects\": {\n            \"use\": [\n              {\n                \"type\": \"STATE\",\n                \"index\": 1,\n                \"value\": 0,\n                \"entries\": [\n                  {\n                    \"name\": \"Resting\",\n                    \"description\": \"Revive\"\n                  }\n                ]\n              },\n              {\n                \"type\": \"STAT\",\n                \"index\": 1,\n                \"value\": 10,\n                \"entries\": [\n                  {\n                    \"name\": \"Health\",\n                    \"description\": \"+10 HP\"\n                  }\n                ]\n              }\n            ],\n            \"equip\": []\n          },\n          \"requirements\": [\n            {\n              \"type\": \"STATE\",\n              \"index\": 3,\n              \"value\": 0,\n              \"text\": \"Is  DEAD \"\n            }\n          ]\n        }\n      },\n      {\n        \"balance\": 1,\n        \"item\": {\n          \"id\": \"0x24692263f65ccc799670ee8e84574fe3b6a8b154becd965b8a66bc5715ed561f\",\n          \"index\": 11011,\n          \"name\": \"Holy Dust\",\n          \"type\": \"MISC\",\n          \"description\": \"This sacred dust can be used to rename Kamigotchi\\u2026 At the proper place.\",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 2,\n        \"item\": {\n          \"id\": \"0xacdac333c62bc1996d36946e8215e09da365ac9a06dd4e179be7bed6b17c8470\",\n          \"index\": 21204,\n          \"name\": \"\\u201cNeith\\u2019s River of Life\\u201d Spell Card\",\n          \"type\": \"FOOD\",\n          \"description\": \"The card depicts a flooding river beneath the night sky. The magical waters grant a bounty of stamina, and the reeds grow nearly as tall as the pyramids. Activating this Spell Card on an Operator will restore 80 Stamina.\",\n          \"effects\": {\n            \"use\": [\n              {\n                \"type\": \"STAT\",\n                \"index\": 5,\n                \"value\": 80,\n                \"entries\": [\n                  {\n                    \"name\": \"Stamina\",\n                    \"description\": \"+80 Stamina\"\n                  }\n                ]\n              }\n            ],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      },\n      {\n        \"balance\": 3,\n        \"item\": {\n          \"id\": \"0x824861684f1bbe34f1636827633375241f678966a34964a18b3118c30a489891\",\n          \"index\": 11301,\n          \"name\": \"Maple-Flavor Ghost Gum\",\n          \"type\": \"FOOD\",\n          \"description\": \"The most basic form of food available in this world - restores 25 Health to a Kamigotchi. \",\n          \"effects\": {\n            \"use\": [],\n            \"equip\": []\n          },\n          \"requirements\": []\n        }\n      }\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-08-23T01:00:12.683Z\",\n    \"blockNumber\": 32466140,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+   "when": [
+    "bought"
+   ]
+  }
+ ],
+ "rule": {
+  "forbid_before": [
+   {
+    "forbid": [
+     {
+      "tool": "harvest_stop"
+     }
+    ],
+    "before": [
+     {
+      "tool": "feed_kami",
+      "args": {
+       "kami_id": 703
+      },
+      "ok": true
+     }
+    ]
+   }
+  ],
+  "require_flags": [
+   "fed",
+   "stopped"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 13
+   }
+  ],
+  [
+   "listing_buy",
+   {
+    "merchant_index": 1,
+    "item_indices": [
+     11301
+    ],
+    "amounts": [
+     3
+    ]
+   }
+  ],
+  [
+   "travel_to_room",
+   {
+    "target_room": 31
+   }
+  ],
+  [
+   "feed_kami",
+   {
+    "kami_id": 703,
+    "food_item_id": 11301
+   }
+  ],
+  [
+   "harvest_stop",
+   {
+    "kami_ids": [
+     703
+    ]
+   }
+  ]
+ ],
+ "difficulty": "hard",
+ "rationale": "Live (gpt52_pushed session-0110 lines 13-66) harvest_stop failed 'kami starving..' (HP 0, no food in the inventory at line 10) and the agent eventually bought food, travelled back, fed kami 703 (line 64) and only then stopped (line 66). Pass (end state): kami 703 was fed and the harvest then stopped; no harvest_stop before a successful feed. The replay only lets feed succeed after food is bought at Mina (room 13) and the account returned to room 31.",
+ "harness": "pre-4.7 (KamiBench 006)",
+ "keep_lines": [
+  7,
+  10,
+  13,
+  15
+ ],
+ "summary": {
+  "situation": "Kami 703 is harvesting at 0 HP; harvest_stop reverted 'kami starving'. Inventory has no food.",
+  "mistake": "Live run eventually did this; trap is retrying the stop instead of getting food and feeding.",
+  "correct": "Buy food from Mina in room 13, travel back to room 31, feed the kami, then stop the harvest.",
+  "pass": "Kami 703 fed successfully, then harvest stopped, with no stop attempted before the feed."
+ }
+}

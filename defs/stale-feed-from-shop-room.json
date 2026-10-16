@@ -1,0 +1,157 @@
+{
+ "id": "stale-feed-from-shop-room",
+ "category": "stale_state",
+ "src": "hosted/agent_run_b7929f61d557/transcripts/session-0042.jsonl",
+ "fork": 33,
+ "note": "Kami 21340 sits HARVESTING at 0 HP in room 29. The agent travelled to room 13 to buy food, then called feed_kami from room 13 (reverted 'kami too far').",
+ "replay": [
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"dry_run\": true,\n  \"path\": [\n    13,\n    2,\n    29\n  ],\n  \"hops\": 2,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 2\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 29\n    }\n  ],\n  \"stamina_needed\": 10,\n  \"stamina_have\": 90,\n  \"stamina_after_plan\": 80,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 29\n}",
+   "args": {
+    "target_room": 29,
+    "dry_run": true
+   }
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 2
+   },
+   "unless": [
+    "p13",
+    "p2",
+    "p29"
+   ],
+   "sets": [
+    "p2"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2000000,\n  \"account\": \"main\"\n}",
+   "args": {
+    "room_index": 29
+   },
+   "when": [
+    "p2"
+   ],
+   "sets": [
+    "p29",
+    "at29"
+   ],
+   "clears": [
+    "p2"
+   ]
+  },
+  {
+   "tool": "travel_to_room",
+   "response": "{\n  \"reached_target\": true,\n  \"path\": [\n    13,\n    2,\n    29\n  ],\n  \"hops\": 2,\n  \"moves_executed\": 2,\n  \"items_used\": [],\n  \"gas_used\": 1720000,\n  \"stamina_remaining\": 80,\n  \"final_room\": 29,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 2,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 29,\n      \"tx_hash\": \"0xd1d1d1\",\n      \"status\": \"success\",\n      \"block\": 0,\n      \"gas_used\": 860000\n    }\n  ]\n}",
+   "args": {
+    "target_room": 29,
+    "dry_run": {
+     "not": true
+    }
+   },
+   "unless": [
+    "at29"
+   ],
+   "sets": [
+    "p29",
+    "at29"
+   ],
+   "clears": [
+    "p13",
+    "p2"
+   ]
+  },
+  {
+   "tool": "move_to_room",
+   "response": "Error executing tool move_to_room: validation failed; no transaction sent: that room is not connected to the account's current room; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}",
+   "is_error": true
+  },
+  {
+   "tool": "lens_inventory",
+   "response": "{\n  \"data\": {\n    \"account\": {\n      \"index\": 3407,\n      \"name\": \"asdasd2\"\n    },\n    \"items\": [\n      {\n        \"balance\": 3106,\n        \"item\": {\n          \"id\": \"0xae1902e8f88a0a91b060702651d0db2d9df8b689c40d3fafe7f84a7ff41924fa\",\n          \"index\": 1,\n          \"name\": \"MUSU\",\n          \"type\": \"MISC\",\n          \"rarity\": 1\n        }\n      },\n      {\n        \"balance\": 1,\n        \"item\": {\n          \"id\": \"0x824861684f1bbe34f1636827633375241f678966a34964a18b3118c30a489891\",\n          \"index\": 11301,\n          \"name\": \"Maple-Flavor Ghost Gum\",\n          \"type\": \"FOOD\",\n          \"rarity\": 2\n        }\n      }\n    ]\n  },\n  \"untrusted\": [\n    \"account.name\"\n  ],\n  \"meta\": {\n    \"servedAt\": \"2026-10-12T16:32:10.138Z\",\n    \"blockNumber\": 34354515,\n    \"stale\": false,\n    \"mode\": \"daemon\",\n    \"reconciledThrough\": 34354493,\n    \"appliedThrough\": 34354514,\n    \"asOf\": {\n      \"block\": 34354515,\n      \"projectedAtSec\": 1791822722,\n      \"clockSampleBlock\": 34354445,\n      \"clockSampleBlockTime\": 1791822477,\n      \"clockOffsetMs\": -7438,\n      \"clockSampleAgoMs\": 245700\n    }\n  }\n}"
+  },
+  {
+   "tool": "feed_kami",
+   "response": "{\n  \"tx_hash\": \"0xd1d1d1\",\n  \"status\": \"success\",\n  \"block\": 0,\n  \"gas_used\": 2100000,\n  \"account\": \"main\",\n  \"hp\": {\n    \"last_synced_before\": 0,\n    \"after\": 25\n  }\n}",
+   "args": {
+    "kami_id": 21340,
+    "food_item_id": 11301
+   },
+   "when": [
+    "at29"
+   ],
+   "unless": [
+    "fed"
+   ],
+   "sets": [
+    "fed"
+   ]
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: kami too far: Reverted'}",
+   "args": {
+    "kami_id": 21340
+   },
+   "unless": [
+    "at29"
+   ],
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: account 'main' holds 0 of item 11301 (Maple-Flavor Ghost Gum); feed_kami requires 1",
+   "args": {
+    "kami_id": 21340,
+    "food_item_id": 11301
+   },
+   "is_error": true
+  },
+  {
+   "tool": "feed_kami",
+   "response": "Error executing tool feed_kami: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: Item: requirements not met: Reverted'}",
+   "is_error": true
+  }
+ ],
+ "rule": {
+  "require_flags": [
+   "at29",
+   "fed"
+  ]
+ },
+ "oracle": [
+  [
+   "travel_to_room",
+   {
+    "target_room": 29,
+    "use_items": false,
+    "allow_partial": true
+   }
+  ],
+  [
+   "feed_kami",
+   {
+    "kami_id": 21340,
+    "food_item_id": 11301
+   }
+  ]
+ ],
+ "difficulty": "mid",
+ "rationale": "Live (hosted Luna b79, session 42 line 34-37): feed_kami in the shop room reverted 'kami too far', the agent then travelled back to room 29 and fed successfully. Feeding needs the account in the kami's room (lens_node 29 in the prefix shows the harvest there), so travel must precede feed_kami. A feed attempted from room 13 only reverts (harmless probe); the pass is the end state: at room 29 and fed.",
+ "harness": "hosted GPT-6 Luna (recent harness, lens 1.0.1)",
+ "keep_lines": [
+  13,
+  14
+ ],
+ "summary": {
+  "situation": "Kami 21340 is harvesting at 0 HP in room 29. Account went to room 13 to buy food.",
+  "mistake": "Called feed_kami from room 13; reverted 'kami too far'.",
+  "correct": "Travel back to room 29, then feed the kami.",
+  "pass": "Account ends in room 29 and kami 21340 fed."
+ }
+}
