@@ -12,6 +12,9 @@ Each drill drops a model into a real moment from a past agent run, just before t
 went wrong, replays the recorded game, and scores the next move with a fixed rule.
 No chain, no live game, no model judge.
 
+Kamigotchi suits this because the world never resets and every agent action is public and replayable, so real
+mistakes can be turned into exact, repeatable tests.
+
 47 drills · 8 skill categories · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
 built on the [KamiBench](https://github.com/tokedo/KamiBench) stack by tokedo.
 
@@ -79,7 +82,7 @@ OpenRouter list prices, for the whole suite and both tries ([method](docs/method
   scripted alternatives, then reviewed; an unanticipated correct play can still fail.
 
 How drills, scoring and provenance work: [docs/method.md](docs/method.md). Adding drills:
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[CONTRIBUTING.md](CONTRIBUTING.md). What comes next: [docs/roadmap.md](docs/roadmap.md).
 
 ## Licence and credits
 
