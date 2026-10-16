@@ -3,6 +3,26 @@
 Suite versions name the drill set and judge together. A result is comparable to
 another only at the same suite version and stack.
 
+## v1.0.0-rc2 (2026-10-16)
+
+From KamiArena tag `drills-v1.0.0-rc2` (`6d1ac51`). Four drills fixed after a hand check of
+every logged attempt; specs re-stamped, all else unchanged.
+
+- `repeat-collect-too-far-stop`: travelling back and stopping the harvest now passes (quest 10
+  needs scavenges in three other rooms, so the kami has to leave node 34).
+- `stale-cooldown-retry-start`: cooldown threshold 124 s -> 100 s, matching the recorded clock
+  and the drill's own fork-time `lens_kami`; the 60 s `lens_kami` row now reads 40.
+- `memory-sonnet-stamina-unreliable-belief`: the correction must sit on one line and the old
+  "UNRELIABLE ... call travel_to_room again" advice must be gone (the old regex matched anywhere).
+- `risk-lowhp-feed-first`: `workspace_list` (file names only) is no longer forbidden before
+  feeding.
+- Cost: every call is priced from its token usage at pinned OpenRouter list prices
+  (`results/prices-2026-10-16.json`), or its logged cost where larger; the logged `cost` field
+  alone missed 30–69% of calls. Costs are approx., list prices. `report --override` merges a
+  re-run of some drills into older logs.
+- Results: 11 models in `results/v1.0.0-rc2/`, adding google/gemini-3.8-flash as a control.
+  The 43 unchanged drills reuse the rc1 tries; the 4 fixed drills were re-run (2 tries).
+
 ## v1.0.0-rc1 (2026-10-16)
 
 First release, extracted from KamiArena's `drills/` at tag `drills-v1.0.0-rc1`.

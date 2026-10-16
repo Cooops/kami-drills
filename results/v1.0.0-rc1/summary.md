@@ -1,5 +1,7 @@
 # kami-drills v1.0.0-rc1: 10 models × 47 drills × 2 tries
 
+> **Costs below are under-counted** (they sum OpenRouter's per-call `cost` field, missing on 30–69% of calls). Corrected costs and the current results: [v1.0.0-rc2](../v1.0.0-rc2/summary.md).
+
 Stack: kami-harness 4.7.0 df7129f, kami-agent 0.7.5 8e444bb, kami-lens 1.0.5 e604290, gdd 3c6f4f9.
 
 | model | mean pass | 95% CI (bootstrap over drills) | pass on every try | drills where tries disagree | gap rate | cost |

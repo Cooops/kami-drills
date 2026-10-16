@@ -1,6 +1,6 @@
 [project]
 name = "kami-drills"
-version = "1.0.0rc1"
+version = "1.0.0rc2"
 description = "Offline decision drills forked from real Kamigotchi agent transcripts, scored by deterministic rules (Inspect)."
 readme = "README.md"
 license = "MIT"

@@ -5,7 +5,7 @@ Each drill drops a model into a real moment from a past agent run, just before t
 went wrong, replays the recorded game, and scores the next move with a fixed rule.
 No chain, no live game, no model judge.
 
-**v1.0.0-rc1** · 47 drills · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
+**v1.0.0-rc2** · 47 drills · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
 built on the [KamiBench](https://github.com/tokedo/KamiBench) stack by tokedo.
 
 ## Quickstart
@@ -21,23 +21,26 @@ It is a standard [Inspect](https://inspect.aisi.org.uk/) task; `inspect view` op
 
 ## Results
 
-10 models, 2 tries each, 2026-10-16. Full results: [`results/v1.0.0-rc1/`](results/v1.0.0-rc1/).
+11 models, 2 tries each, 2026-10-16. Full results: [`results/v1.0.0-rc2/`](results/v1.0.0-rc2/).
 
-| model | pass | 95% range | passed every try | cost |
+| model | pass | 95% range | passed every try | approx. cost |
 |---|---|---|---|---|
-| google/gemini-4-argon | 71% | 60–83% | 30/47 | $10.51 |
-| openai/gpt-6.1-sol | 64% | 50–78% | 29/47 | $13.49 |
-| anthropic/claude-opus-5.5 | 63% | 50–76% | 26/47 | $76.95 |
-| meta/muse-wonder | 63% | 50–76% | 26/47 | $31.64 |
-| anthropic/claude-haiku-5.5 | 60% | 47–72% | 25/47 | $6.00 |
-| openai/gpt-6-luna | 59% | 46–70% | 22/47 | $0.80 |
-| google/gemini-3.6-flash | 54% | 40–67% | 23/47 | $3.68 |
-| anthropic/claude-sonnet-5.5 | 54% | 41–68% | 23/47 | $34.47 |
-| x-ai/grok-4.7 | 52% | 40–64% | 17/47 | $15.19 |
-| deepseek/deepseek-v4-pro-0813 | 47% | 35–59% | 14/47 | $5.26 |
+| google/gemini-4-argon | 74% | 63–85% | 31/47 | $14.01 |
+| openai/gpt-6.1-sol | 69% | 56–82% | 31/47 | $15.00 |
+| anthropic/claude-opus-5.5 | 67% | 55–79% | 27/47 | $135.48 |
+| google/gemini-3.8-flash (control) | 65% | 52–78% | 29/47 | $9.83 |
+| meta/muse-wonder | 64% | 51–76% | 26/47 | $56.32 |
+| anthropic/claude-haiku-5.5 | 62% | 49–74% | 26/47 | $8.91 |
+| openai/gpt-6-luna | 61% | 49–72% | 23/47 | $0.98 |
+| anthropic/claude-sonnet-5.5 | 59% | 46–71% | 25/47 | $50.30 |
+| google/gemini-3.6-flash | 54% | 40–67% | 23/47 | $7.04 |
+| x-ai/grok-4.7 | 53% | 41–65% | 17/47 | $25.03 |
+| deepseek/deepseek-v4-pro-0813 | 48% | 36–60% | 15/47 | $9.19 |
 
-Most neighbours overlap. One pair holds after correcting for 45 comparisons:
-Gemini 4 Argon over DeepSeek V4 Pro.
+Most neighbours overlap. One pair holds after correcting for 55 comparisons:
+Gemini 4 Argon over DeepSeek V4 Pro. The control, 3.8 Flash, beat 3.6 Flash by +10.6 points
+(11 drills better, 5 worse; p≈0.08 one-sided): suggestive, not conclusive. Cost is approx., at
+OpenRouter list prices, for the whole suite and both tries ([method](docs/method.md#cost)).
 
 ## Limitations
 

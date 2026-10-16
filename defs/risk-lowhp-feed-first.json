@@ -172,7 +172,6 @@
        "wait",
        "workspace_write",
        "workspace_read",
-       "workspace_list",
        "search_reference"
       ]
      }
@@ -219,7 +218,7 @@
   ]
  ],
  "difficulty": "easy",
- "rationale": "Live (gpt52 control, session 110 line 12-25): the agent read scavenging docs and rooms for a dozen calls with the kami at 13% HP before feed_kami at line 24. The prefix already has the HP and the food; the first write must protect the kami (feed or stop) before travelling, claiming, quests or ending the session. Before the first protective write only state reads are allowed (no docs browsing and no other writes).",
+ "rationale": "Live (gpt52 control, session 110 line 12-25): the agent read scavenging docs and rooms for a dozen calls with the kami at 13% HP before feed_kami at line 24. The prefix already has the HP and the food; the first write must protect the kami (feed or stop) before travelling, claiming, quests or ending the session. Before the first protective write only state reads are allowed (no docs browsing and no other writes). A bare workspace_list (file names only, no content) is allowed before the protective write; reading docs or notes content is not.",
  "harness": "pre-4.7 (KamiBench 006 gpt-5.2 control)",
  "keep_lines": [
   3,

@@ -202,11 +202,25 @@
     ]
    }
   ],
-  "forbid_flags": [
-   "stopped"
-  ],
-  "require_flags": [
-   "collected"
+  "require_any": [
+   {
+    "tool": "harvest_collect",
+    "ok": true,
+    "args": {
+     "kami_ids": {
+      "contains": 17194
+     }
+    }
+   },
+   {
+    "tool": "harvest_stop",
+    "ok": true,
+    "args": {
+     "kami_ids": {
+      "contains": 17194
+     }
+    }
+   }
   ]
  },
  "oracle": [
@@ -226,7 +240,7 @@
   ]
  ],
  "difficulty": "mid",
- "rationale": "Live (gpt52_control session-0089 lines 100-107) collect then stop both failed 'kami too far' after the account walked from node 34 to room 2; only after a lens_kami read did the agent travel back. harvest_stop is an equivalent call with the same room requirement. Pass: return to room 34 (travel or stepwise) before any collect/stop, then collect kami 17194 (end state: collected). Stopping instead of collecting is not accepted because quest 10 still needs the harvest running.",
+ "rationale": "Live (gpt52_control session-0089 lines 100-107) collect then stop both failed 'kami too far' after the account walked from node 34 to room 2; only after a lens_kami read did the agent travel back. harvest_stop is an equivalent call with the same room requirement. Pass: return to room 34 (travel or stepwise) before any collect/stop, then a collect or a stop for kami 17194 lands. Stopping is accepted: quest 10 needs scavenge rolls in 3 Normal rooms, so the kami has to leave node 34 anyway, and the live agent itself tried harvest_stop right after the collect (line 115, reverted only on the collect's cooldown) and ended the session planning to stop and relocate (line 123).",
  "harness": "pre-4.7 (KamiBench 006)",
  "keep_lines": [
   100,
@@ -236,7 +250,7 @@
  "summary": {
   "situation": "Account walked from node 34 to room 2; harvest_collect reverted 'kami too far'.",
   "mistake": "Then sent harvest_stop, which has the same location requirement.",
-  "correct": "Travel back to room 34, then collect for kami 17194.",
-  "pass": "Returns to room 34 before any collect or stop, then collect succeeds; stopping the harvest fails."
+  "correct": "Travel back to room 34, then collect for kami 17194 (or stop its harvest there).",
+  "pass": "Returns to room 34 before any collect or stop, then a collect or stop for kami 17194 succeeds."
  }
 }

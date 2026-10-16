@@ -94,7 +94,7 @@
      "regex": "(^|/)(progress|notes|plan)\\.md$"
     },
     "content": {
-     "regex": "^(?!.*call it again)(?=.*stamina)(?=.*(?<!not )(?<!un)(?<!in)\\b(reliable|accurate|exact|exactly|precise|matched|matches|consistent|correct)\\b)"
+     "regex": "(?m)\\A(?!.*\\bcall (it|travel_to_room) again\\b)(?!.*stamina reporting is UNRELIABLE)(?=.*?^(?-s:(?!.*\\bunreliable\\b)(?=.*stamina).*(?<!not )(?<!un)(?<!in)\\b(reliable|accurate|exact|exactly|precise|matched|matches|consistent|correct)\\b))"
     }
    },
    "sets": [
@@ -131,7 +131,7 @@
   ]
  ],
  "difficulty": "hard",
- "rationale": "In this run the note was wrong: stamina 65 -> 40 after 5 hops -> 30 after 2 -> 0 after 6 matched the tool's own counts exactly (sonnet5_pushed session-0062 lines 11-22). The live agent rewrote the note as 'MOSTLY RELIABLE now (session 62 correction)' (line 42); the drill needs that correction and no blind re-call. The correction must be a progress.md write that mentions stamina and says the accounting is reliable/accurate/matched; a real travel before 5 minutes of cumulative waiting only returns the stuck result and flags a blind retry (the account holds no stamina item, per the notes).",
+ "rationale": "In this run the note was wrong: stamina 65 -> 40 after 5 hops -> 30 after 2 -> 0 after 6 matched the tool's own counts exactly (sonnet5_pushed session-0062 lines 11-22). The live agent rewrote the note as 'MOSTLY RELIABLE now (session 62 correction)' (line 42); the drill needs that correction and no blind re-call. The correction must be a progress.md write that mentions stamina and says the accounting is reliable/accurate/matched; a real travel before 5 minutes of cumulative waiting only returns the stuck result and flags a blind retry (the account holds no stamina item, per the notes). The correction is matched on one line (stamina and the reliability word together, the line not calling it unreliable) and the file must no longer carry the old advice ('stamina reporting is UNRELIABLE', 'call travel_to_room again'): a full rewrite that keeps the wrong paragraph does not correct the belief.",
  "harness": "KamiBench 006 (scaffold 0.7.5)",
  "keep_lines": [
   6,

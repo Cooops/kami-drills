@@ -36,6 +36,31 @@ every try), and gap rate (attempts that met at least one unrecorded call). Model
 compared pairwise on the same drills with a sign-flip permutation test on per-drill
 differences, Holm-adjusted across all pairs.
 
+## Cost
+
+Costs are approximate, at list prices. OpenRouter's per-call `cost` field is missing on
+30–69% of calls in the published logs, so summing it under-counts (rc1 did). Instead every
+model call is priced from its token usage (Inspect's `ModelEvent.output.usage`) against a
+pinned table, [`results/prices-2026-10-16.json`](../results/prices-2026-10-16.json): OpenRouter's
+`/api/v1/models` `pricing` for the 11 models, fetched 2026-10-16.
+
+    input_tokens × prompt + input_tokens_cache_read × input_cache_read
+      + input_tokens_cache_write × input_cache_write + output_tokens × completion
+
+`input_tokens` excludes cache reads and writes; `output_tokens` already includes reasoning
+tokens (OpenRouter's `completion_tokens` does), so reasoning is not priced twice. Long-prompt
+tiers (`overrides` with `min_prompt_tokens`) apply on the call's total prompt tokens. A missing
+cache-write price is 1.25 × prompt for an `anthropic/*` model (Anthropic's 5-minute write rate)
+and prompt otherwise; no model in the 2026-10-16 table needed the Anthropic fallback. Where a
+call also logged a `cost`, the larger of the two counts. `kami_drills.report.price_call` does
+this; `tests/test_prices.py` checks it against a logged call.
+
+On calls that logged a cost, token pricing matches it exactly for 9 of 11 models. Two differ:
+gemini-3.8-flash was billed 10% under the table's list price (the list price is used), and
+deepseek-v4-pro-0813 is served by several upstream providers whose prices differ from the
+listed one in both directions; its listed UTC peak-hour windows are not applied (the base
+price is). A model missing from the table falls back to logged costs only.
+
 ## Provenance
 
 Every drill carries a `provenance` block:
@@ -66,32 +91,36 @@ Every drill carries a `provenance` block:
 kami-drills list [--json]                     # drills with category, difficulty, situation
 kami-drills check                             # exits 1 if any check fails
 kami-drills run --model M [--epochs N] [--drills id,id] [--log-dir DIR] [--json] [-v]
-kami-drills report LOGDIR... [--out DIR] [--json] [-v]
+kami-drills report LOGDIR... [--override LOG...] [--out DIR] [--json] [-v]
 ```
 
 `run` is quiet by default and prints one summary when the eval ends; `-v` shows
 Inspect's progress display. For `openai/*` and `meta/*` models it passes
 `-M strict_tools=false`: their strict tool mode requires every parameter to be present,
-and the harness tool surface has optional parameters. `report --out DIR` writes the
+and the harness tool surface has optional parameters. `report --override` takes logs of a re-run of some drills (for
+example drills fixed in a new suite version): for each model, their results and costs replace
+those drills' in the base logs, try k for try k. `results/v1.0.0-rc2/` was written with
+`kami-drills report stepC stepD rc2_gem38 --override rc2_fixed --out results/v1.0.0-rc2`
+(KamiArena `logs/`). A log run with `--epochs N` counts as N tries. `report --out DIR` writes the
 `summary.md`, `paired.txt` and `models/*.json` found under [`results/`](../results/).
 Exit codes: 0 ok, 1 checks or eval failed, 2 usage error. Colour only on a terminal,
 and never with `NO_COLOR` set.
 
 ```
 $ kami-drills report logs/
-model                          pass  95% range  consistency  gap rate    cost  tries
-google/gemini-4-argon           71%    60%–83%        30/47       70%  $10.51      2
-openai/gpt-6.1-sol              64%    50%–78%        29/47       62%  $13.49      2
+model                          pass  95% range  consistency  gap rate  approx. cost  tries
+google/gemini-4-argon           74%    63%–85%        31/47       71%        $14.01      2
+openai/gpt-6.1-sol              69%    56%–82%        31/47       63%        $15.00      2
 ...
 
 by category                    level (1)  memory (6)  onboard (7)  progress (7)  repeat (10)  risk (5)  stale (10)  stall (1)
-google/gemini-4-argon                50%         58%          79%           93%          50%       80%         75%       100%
+google/gemini-4-argon                50%         58%          79%           93%          50%      100%         80%       100%
 ...
 
-paired comparison: 45 pairs, 1 with Holm q < .05
-  google/gemini-4-argon vs deepseek/deepseek-v4-pro-0813  +24.5%  p=0.0009  q=0.043
+paired comparison: 55 pairs, 1 with Holm q < .05
+  google/gemini-4-argon vs deepseek/deepseek-v4-pro-0813  +26.6%  p=0.0006  q=0.033
 
-suite v1.0.0-rc1  stack kami-harness 4.7.0 df7129f, kami-agent 0.7.5 8e444bb, kami-lens 1.0.5 e604290, gdd 3c6f4f9
+suite v1.0.0-rc2  stack kami-harness 4.7.0 df7129f, kami-agent 0.7.5 8e444bb, kami-lens 1.0.5 e604290, gdd 3c6f4f9
 ```
 
 ## What's in here

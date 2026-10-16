@@ -14,6 +14,7 @@ EXAMPLES = """examples:
   kami-drills check
   kami-drills run --model openrouter/anthropic/claude-haiku-5.5 --epochs 2
   kami-drills report logs/
+  kami-drills report old_logs/ --override fixed_drill_logs/
 """
 CATS = {"levelup": "level", "memory": "memory", "onboarding": "onboard", "progression": "progress",
         "repeat_failed": "repeat", "risk": "risk", "stale_state": "stale", "stalling": "stall"}
@@ -67,7 +68,7 @@ def cmd_check(args):
 
 def show(summaries, verbose=False, pairs=()):
     pct = lambda x: f"{x:.0%}"
-    table(["model", "pass", "95% range", "consistency", "gap rate", "cost", "tries"],
+    table(["model", "pass", "95% range", "consistency", "gap rate", "approx. cost", "tries"],
           [[s["model"], pct(s["pass"]), f"{s['ci95'][0]:.0%}–{s['ci95'][1]:.0%}",
             f"{s['pass_all_tries']}/{s['drills']}" if s["tries"] > 1 else "-", pct(s["gap_rate"]),
             f"${s['cost_usd']:.2f}" if s["cost_usd"] is not None else "-", s["tries"]] for s in summaries])
@@ -82,7 +83,8 @@ def show(summaries, verbose=False, pairs=()):
         for p in shown:
             print(f"  {p['a']} vs {p['b']}  {p['diff']:+.1%}  p={p['p']:.4f}  q={p['q']:.3f}")
     print(f"\nsuite {summaries[0]['suite_version']}  stack " + ", ".join(f"{k} {v}" for k, v in summaries[0]["stack"].items()))
-    print("consistency = drills passed on every try; gap rate = attempts that met a call with no recorded response")
+    print("consistency = drills passed on every try; gap rate = attempts that met a call with no recorded response; "
+          "cost = approx., OpenRouter list prices (docs/method.md)")
 
 
 def cmd_run(args):
@@ -123,7 +125,10 @@ def cmd_report(args):
 
     if not log_files(args.logs):
         fail(f"no .eval logs in {' '.join(args.logs)}")
-    summaries = load(args.logs)
+    try:
+        summaries = load(args.logs, args.override or ())
+    except ValueError as e:
+        fail(str(e))
     pairs = paired(summaries)
     if args.out:
         write_results(Path(args.out), summaries, pairs)
@@ -141,7 +146,7 @@ def write_results(out, summaries, pairs):
     tries = max(s["tries"] for s in summaries)
     md = [f"# kami-drills {s0['suite_version']}: {len(summaries)} models × {s0['drills']} drills × {tries} tries", "",
           "Stack: " + ", ".join(f"{k} {v}" for k, v in s0["stack"].items()) + ".", "",
-          "| model | mean pass | 95% CI (bootstrap over drills) | pass on every try | drills where tries disagree | gap rate | cost |",
+          "| model | mean pass | 95% CI (bootstrap over drills) | pass on every try | drills where tries disagree | gap rate | approx. cost |",
           "|---|---|---|---|---|---|---|"]
     for s in summaries:
         cost = f"${s['cost_usd']:.2f}" if s["cost_usd"] is not None else "–"
@@ -154,7 +159,9 @@ def write_results(out, summaries, pairs):
            f"{sum(p['q'] < .05 for p in pairs)} pair(s) with q < .05. Full list: [paired.txt](paired.txt).", "",
            "Mean pass: per drill, the mean over tries, then the mean over drills. 95% CI: percentile bootstrap over drills "
            "(10,000 resamples, seed 0). Gap rate: share of attempts that met at least one call with no recorded response. "
-           "Cost: OpenRouter-billed cost per call, summed from the logs. Per-model files in [models/](models/) give pass "
+           "Approx. cost: every model call priced from its token usage at pinned OpenRouter list prices "
+           "([prices-2026-10-16.json](../prices-2026-10-16.json)), or the call's logged OpenRouter cost where that is larger; "
+           "see docs/method.md. Per-model files in [models/](models/) give pass "
            "per drill per try.", "",
            "Logs: " + ", ".join(sorted({f"{l['revision']}" for s in summaries for l in s["logs"]})) + " (eval revisions)"
            + ("" if all(s["suite_from_log"] for s in summaries) else
@@ -197,6 +204,8 @@ def main(argv=None):
 
     s = sub.add_parser("report", help="summary table and paired comparison from logs")
     s.add_argument("logs", nargs="+", help=".eval files or directories of them")
+    s.add_argument("--override", nargs="+", metavar="LOG", help="logs whose drills replace those drills in the same "
+                   "model's logs, try by try (a re-run of fixed drills)")
     s.add_argument("--out", help="also write summary.md, paired.txt and models/*.json here")
     s.add_argument("--json", action="store_true", help="machine-readable output")
     s.add_argument("-v", "--verbose", action="store_true", help="list every pair, not only q < .05")

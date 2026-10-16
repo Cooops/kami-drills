@@ -1,0 +1,223 @@
+{
+ "source": "https://openrouter.ai/api/v1/models",
+ "fetched": "2026-10-16",
+ "note": "USD per token, OpenRouter list prices, verbatim (fields used for text pricing only). Cache-write price missing for an anthropic/* model: 1.25 x prompt (Anthropic 5-minute write rate); for any other provider: prompt. None of the 11 models below needs the anthropic fallback in this snapshot.",
+ "models": {
+  "google/gemini-4-argon": {
+   "canonical_slug": "google/gemini-4-argon-20261013",
+   "pricing": {
+    "prompt": "0.000002",
+    "completion": "0.00001",
+    "internal_reasoning": "0.00001",
+    "input_cache_read": "0.0000001",
+    "input_cache_write": "0.0000001875"
+   }
+  },
+  "meta/muse-wonder": {
+   "canonical_slug": "meta/muse-wonder-20261012",
+   "pricing": {
+    "prompt": "0.000004",
+    "completion": "0.00002",
+    "input_cache_read": "0.0000002"
+   }
+  },
+  "anthropic/claude-haiku-5.5": {
+   "canonical_slug": "anthropic/claude-haiku-5.5-20261007",
+   "pricing": {
+    "prompt": "0.0000001",
+    "completion": "0.0000005",
+    "input_cache_read": "0.00000001",
+    "input_cache_write": "0.000000125",
+    "overrides": [
+     {
+      "min_prompt_tokens": 100000,
+      "prompt": "0.0000005",
+      "completion": "0.0000025",
+      "input_cache_read": "0.00000005",
+      "input_cache_write": "0.000000625",
+      "input_cache_write_1h": "0.000001"
+     }
+    ]
+   }
+  },
+  "openai/gpt-6.1-sol": {
+   "canonical_slug": "openai/gpt-6.1-sol-20260929",
+   "pricing": {
+    "prompt": "0.000002",
+    "completion": "0.00001",
+    "input_cache_read": "0.0000001",
+    "input_cache_write": "0.0000025",
+    "overrides": [
+     {
+      "min_prompt_tokens": 272000,
+      "prompt": "0.000004",
+      "completion": "0.000015",
+      "input_cache_read": "0.0000002",
+      "input_cache_write": "0.000005"
+     }
+    ]
+   }
+  },
+  "anthropic/claude-sonnet-5.5": {
+   "canonical_slug": "anthropic/claude-sonnet-5.5-20260928",
+   "pricing": {
+    "prompt": "0.000002",
+    "completion": "0.00001",
+    "input_cache_read": "0.0000001",
+    "input_cache_write": "0.0000025"
+   }
+  },
+  "openai/gpt-6-luna": {
+   "canonical_slug": "openai/gpt-6-luna-20260922",
+   "pricing": {
+    "prompt": "0.0000001",
+    "completion": "0.0000005",
+    "input_cache_read": "0.00000001",
+    "input_cache_write": "0.000000125",
+    "overrides": [
+     {
+      "min_prompt_tokens": 272000,
+      "prompt": "0.0000002",
+      "completion": "0.00000075",
+      "input_cache_read": "0.00000002",
+      "input_cache_write": "0.00000025"
+     }
+    ]
+   }
+  },
+  "anthropic/claude-opus-5.5": {
+   "canonical_slug": "anthropic/claude-opus-5.5-20260921",
+   "pricing": {
+    "prompt": "0.000004",
+    "completion": "0.00002",
+    "input_cache_read": "0.0000002",
+    "input_cache_write": "0.000005"
+   }
+  },
+  "x-ai/grok-4.7": {
+   "canonical_slug": "x-ai/grok-4.7-20260916",
+   "pricing": {
+    "prompt": "0.000002",
+    "completion": "0.000006",
+    "input_cache_read": "0.0000005",
+    "overrides": [
+     {
+      "min_prompt_tokens": 200000,
+      "prompt": "0.000004",
+      "completion": "0.000012",
+      "input_cache_read": "0.000001"
+     }
+    ]
+   }
+  },
+  "google/gemini-3.8-flash": {
+   "canonical_slug": "google/gemini-3.8-flash-20260902",
+   "pricing": {
+    "prompt": "0.000000825",
+    "completion": "0.000004125",
+    "internal_reasoning": "0.000004125",
+    "input_cache_read": "0.0000000825",
+    "input_cache_write": "0.0000000416666666666667"
+   }
+  },
+  "deepseek/deepseek-v4-pro-0813": {
+   "canonical_slug": "deepseek/deepseek-v4-pro-20260813",
+   "pricing": {
+    "prompt": "0.00000066",
+    "completion": "0.00000198",
+    "input_cache_read": "0.000000022",
+    "overrides": [
+     {
+      "utc_days": [
+       "saturday",
+       "sunday"
+      ],
+      "prompt": "0.00000066",
+      "completion": "0.00000198",
+      "input_cache_read": "0.000000022"
+     },
+     {
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "utc_start": 0,
+      "utc_end": 100,
+      "prompt": "0.00000066",
+      "completion": "0.00000198",
+      "input_cache_read": "0.000000022"
+     },
+     {
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "utc_start": 100,
+      "utc_end": 400,
+      "prompt": "0.00000132",
+      "completion": "0.00000396",
+      "input_cache_read": "0.000000044"
+     },
+     {
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "utc_start": 400,
+      "utc_end": 600,
+      "prompt": "0.00000066",
+      "completion": "0.00000198",
+      "input_cache_read": "0.000000022"
+     },
+     {
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "utc_start": 600,
+      "utc_end": 1000,
+      "prompt": "0.00000132",
+      "completion": "0.00000396",
+      "input_cache_read": "0.000000044"
+     },
+     {
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "utc_start": 1000,
+      "utc_end": 0,
+      "prompt": "0.00000066",
+      "completion": "0.00000198",
+      "input_cache_read": "0.000000022"
+     }
+    ]
+   }
+  },
+  "google/gemini-3.6-flash": {
+   "canonical_slug": "google/gemini-3.6-flash-20260721",
+   "pricing": {
+    "prompt": "0.00000075",
+    "completion": "0.00000375",
+    "internal_reasoning": "0.00000375",
+    "input_cache_read": "0.000000075",
+    "input_cache_write": "0.0000000416666666666667"
+   }
+  }
+ }
+}
