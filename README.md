@@ -1,23 +1,47 @@
 # kami-drills
 
-Offline decision drills for agents that play [Kamigotchi](https://www.kamigotchi.io/).
+[![version](https://img.shields.io/badge/version-1.0.0-5b3fb8)](CHANGELOG.md)
+[![drills](https://img.shields.io/badge/drills-47-5b3fb8)](drills/)
+[![python](https://img.shields.io/badge/python-3.12-3776ab)](pyproject.toml)
+[![inspect](https://img.shields.io/badge/built%20on-Inspect-1f6feb)](https://inspect.aisi.org.uk/)
+[![code: MIT](https://img.shields.io/badge/code-MIT-2ea44f)](LICENSE)
+[![data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-2ea44f)](DATA_LICENSE.md)
+
+**Offline decision drills for agents that play [Kamigotchi](https://www.kamigotchi.io/).**
 Each drill drops a model into a real moment from a past agent run, just before that agent
 went wrong, replays the recorded game, and scores the next move with a fixed rule.
 No chain, no live game, no model judge.
 
-**v1.0.0** · 47 drills · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
+47 drills · 8 skill categories · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
 built on the [KamiBench](https://github.com/tokedo/KamiBench) stack by tokedo.
 
 ## Quickstart
 
-```
+```bash
+git clone https://github.com/Cooops/kami-drills && cd kami-drills
 uv sync
-uv run kami-drills check                      # free: correct plays pass, empty plays fail
-OPENROUTER_API_KEY=... uv run kami-drills run --model openrouter/anthropic/claude-haiku-5.5 --epochs 2
-uv run kami-drills report logs/               # table, by-category scores, paired comparison
+uv run kami-drills check        # free: every correct play passes, every empty play fails
 ```
 
-It is a standard [Inspect](https://inspect.aisi.org.uk/) task; `inspect view` opens the transcripts.
+Score a model (needs an [OpenRouter](https://openrouter.ai/) key):
+
+```bash
+export OPENROUTER_API_KEY=...
+uv run kami-drills run --model openrouter/anthropic/claude-haiku-5.5 --epochs 2
+uv run kami-drills report logs/
+```
+
+```text
+$ uv run kami-drills report logs/
+model                          pass  95% range  consistency  gap rate  approx. cost  tries
+anthropic/claude-haiku-5.5      62%    49%–74%        26/47       48%         $8.91      2
+
+by category                    level (1)  memory (6)  onboard (7)  progress (7)  repeat (10)  risk (5)  stale (10)  stall (1)
+anthropic/claude-haiku-5.5            0%         33%          86%           21%          70%      100%         65%       100%
+```
+
+It is a standard [Inspect](https://inspect.aisi.org.uk/) task: `uv run inspect view` opens every transcript,
+tool call and verdict.
 
 ## Results
 
@@ -68,3 +92,15 @@ Example hosted-run data: [runs/](runs/README.md).
 
 Maintained by Coopes with tokedo. Coopes works at Asphodel, the studio behind Kamigotchi, and
 runs Kamibots; its tools are hidden from every drill. This project is Coopes's personal work.
+
+## Citation
+
+```bibtex
+@software{kami_drills_2026,
+  title  = {kami-drills: offline decision drills for Kamigotchi agents},
+  author = {Coopes and tokedo},
+  year   = {2026},
+  version = {1.0.0},
+  url    = {https://github.com/Cooops/kami-drills}
+}
+```
