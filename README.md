@@ -82,7 +82,9 @@ OpenRouter list prices, for the whole suite and both tries ([method](docs/method
   scripted alternatives, then reviewed; an unanticipated correct play can still fail.
 
 How drills, scoring and provenance work: [docs/method.md](docs/method.md). Adding drills:
-[CONTRIBUTING.md](CONTRIBUTING.md). What comes next: [docs/roadmap.md](docs/roadmap.md).
+[CONTRIBUTING.md](CONTRIBUTING.md). What comes next ([docs/roadmap.md](docs/roadmap.md)):
+gap-free drills forked from runs that log full state, and drills for memory (repairing and relying on notes) and
+stamina (decisions late in long sessions and across sessions).
 
 ## Licence and credits
 
