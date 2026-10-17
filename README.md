@@ -11,11 +11,12 @@
 Each drill drops a model into a real moment from a past agent run, just before that agent went wrong, replays
 the recorded game, and scores the next move with a fixed rule. No chain, no live game, no model judge.
 
-| | |
-|---|---|
-| Drills | 47 across 8 skill categories: stale state, repeated failure, progression, onboarding, memory, risk, level-up, stalling |
-| Stack | [kami-harness 4.7.0](https://github.com/tokedo/kami-harness/tree/df7129f) · [kami-agent 0.7.5](https://github.com/tokedo/kami-agent/tree/8e444bb) · [kami-lens 1.0.5](https://github.com/tokedo/kami-lens/tree/e604290) |
-| Runs on | [Inspect](https://inspect.aisi.org.uk/) via [OpenRouter](https://openrouter.ai/); `kami-drills check` is free |
+- **Drills:** 47 across 8 skill categories: stale state, repeated failure, progression, onboarding, memory, risk,
+  level-up and stalling.
+- **Stack:** [kami-harness 4.7.0](https://github.com/tokedo/kami-harness/tree/df7129f) ·
+  [kami-agent 0.7.5](https://github.com/tokedo/kami-agent/tree/8e444bb) ·
+  [kami-lens 1.0.5](https://github.com/tokedo/kami-lens/tree/e604290)
+- **Runs on:** [Inspect](https://inspect.aisi.org.uk/) via [OpenRouter](https://openrouter.ai/); `kami-drills check` is free.
 
 ### Why
 
