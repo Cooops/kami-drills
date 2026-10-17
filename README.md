@@ -8,15 +8,25 @@
 [![data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-2ea44f)](DATA_LICENSE.md)
 
 **Offline decision drills for agents that play [Kamigotchi](https://www.kamigotchi.io/).**
-Each drill drops a model into a real moment from a past agent run, just before that agent
-went wrong, replays the recorded game, and scores the next move with a fixed rule.
-No chain, no live game, no model judge.
+Each drill drops a model into a real moment from a past agent run, just before that agent went wrong, replays
+the recorded game, and scores the next move with a fixed rule. No chain, no live game, no model judge.
 
-Kamigotchi suits this because the world never resets and every agent action is public and replayable, so real
-mistakes can be turned into exact, repeatable tests.
+| | |
+|---|---|
+| Drills | 47 across 8 skill categories: stale state, repeated failure, progression, onboarding, memory, risk, level-up, stalling |
+| Stack | [kami-harness 4.7.0](https://github.com/tokedo/kami-harness/tree/df7129f) · [kami-agent 0.7.5](https://github.com/tokedo/kami-agent/tree/8e444bb) · [kami-lens 1.0.5](https://github.com/tokedo/kami-lens/tree/e604290) |
+| Runs on | [Inspect](https://inspect.aisi.org.uk/) via [OpenRouter](https://openrouter.ai/); `kami-drills check` is free |
 
-47 drills · 8 skill categories · stack kami-harness 4.7.0, kami-agent 0.7.5, kami-lens 1.0.5 ·
-built on the [KamiBench](https://github.com/tokedo/KamiBench) stack by tokedo.
+### Why
+
+Agents that play a persistent world for days have to learn from experience: notice a cooldown, stop retrying a
+failed trade, correct a wrong belief in their own notes. Measuring that live takes a week and real money per run.
+Kamigotchi never resets and every agent action is public and replayable, so each real mistake can be turned into an
+exact, repeatable test. A full pass over all 47 drills finishes in minutes and costs about $1–135 per model,
+depending on the model's price.
+
+The drills sit inside a loop: live runs produce mistakes, mistakes become drills, and a model's drill score is used
+to forecast how it will do in the next live run. Whether that forecast holds is tested in KamiArena Season 1.
 
 ## Quickstart
 
@@ -95,7 +105,7 @@ prompts from [kami-harness](https://github.com/tokedo/kami-harness) and
 
 Example hosted-run data: [runs/](runs/README.md).
 
-Maintained by Coopes with tokedo. Coopes works at Asphodel, the studio behind Kamigotchi, and
+Maintained by Coopes, who works at Asphodel, the studio behind Kamigotchi, and
 runs Kamibots; its tools are hidden from every drill. This project is Coopes's personal work.
 
 ## Citation
@@ -103,7 +113,7 @@ runs Kamibots; its tools are hidden from every drill. This project is Coopes's p
 ```bibtex
 @software{kami_drills_2026,
   title  = {kami-drills: offline decision drills for Kamigotchi agents},
-  author = {Coopes and tokedo},
+  author = {Coopes},
   year   = {2026},
   version = {1.0.0},
   url    = {https://github.com/Cooops/kami-drills}
