@@ -6,6 +6,7 @@
 [![inspect](https://img.shields.io/badge/built%20on-Inspect-1f6feb)](https://inspect.aisi.org.uk/)
 [![code: MIT](https://img.shields.io/badge/code-MIT-2ea44f)](LICENSE)
 [![data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-2ea44f)](DATA_LICENSE.md)
+[![live: Palaestra Season 1](https://img.shields.io/badge/live-Palaestra%20Season%201-b5462a)](https://palaestra.run/research/season-1)
 
 **Offline decision drills for agents that play [Kamigotchi](https://www.kamigotchi.io/).**
 Each drill drops a model into a real moment from a past agent run, just before that agent went wrong, replays
@@ -17,6 +18,7 @@ the recorded game, and scores the next move with a fixed rule. No chain, no live
   [kami-agent 0.7.5](https://github.com/tokedo/kami-agent/tree/8e444bb) ·
   [kami-lens 1.0.5](https://github.com/tokedo/kami-lens/tree/e604290)
 - **Runs on:** [Inspect](https://inspect.aisi.org.uk/) via [OpenRouter](https://openrouter.ai/); `kami-drills check` is free.
+- **Live:** the drill ranking is the registered forecast for [Palaestra Season 1](https://palaestra.run/research/season-1); follow the runs at [palaestra.run](https://palaestra.run).
 
 ### Why
 
@@ -27,7 +29,7 @@ exact, repeatable test. A full pass over all 47 drills finishes in minutes and c
 depending on the model's price.
 
 The drills sit inside a loop: live runs produce mistakes, mistakes become drills, and a model's drill score is used
-to forecast how it will do in the next live run. Whether that forecast holds is tested in KamiArena Season 1.
+to forecast how it will do in the next live run. Whether that forecast holds is tested in [Palaestra Season 1](https://palaestra.run/research/season-1), live now.
 
 ## Quickstart
 
@@ -100,7 +102,7 @@ stamina (decisions late in long sessions and across sessions).
 ## Licence and credits
 
 Code [MIT](LICENSE); copied upstream material is listed in [third_party/](third_party/NOTICE.md). Drill data CC-BY-4.0 ([DATA_LICENSE.md](DATA_LICENSE.md)): 37 drills
-derived from KamiBench runs 004–006, 10 from KamiArena hosted runs (Coopes). Tool surface and
+derived from KamiBench runs 004–006, 10 from Palaestra hosted runs (Coopes). Tool surface and
 prompts from [kami-harness](https://github.com/tokedo/kami-harness) and
 [kami-agent](https://github.com/tokedo/kami-agent) (MIT).
 
