@@ -1,6 +1,6 @@
 # Example run data
 
-Two hosted agent runs (KamiArena hosted runs, Coopes), both driven by GPT-6 Luna through
+Two hosted agent runs (Palaestra hosted runs, formerly KamiArena; Coopes), both driven by GPT-6 Luna through
 OpenRouter on the kami-agent harness, one kami each, on the Kamigotchi chain. They are the
 source of the 10 hosted-run drills (`drills/` entries whose provenance credits "KamiArena hosted
 runs (Coopes)") and are published here as examples of what a long-horizon run looks like.

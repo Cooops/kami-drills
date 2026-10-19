@@ -5,7 +5,7 @@ many sessions) and memory (writing, trusting and repairing notes). These are the
 
 ## v1.1 — gap-free drills from snapshot runs
 
-KamiArena Season 1 logs a full state snapshot at every session start (account, roster, every kami, quest states,
+[Palaestra Season 1](https://palaestra.run/research/season-1) logs a full state snapshot at every session start (account, roster, every kami, quest states,
 inventory, gas, lens status) without the agent seeing it. Drills forked from those runs can answer any read truthfully,
 which removes most replay gaps. New drills come from the mistakes those runs make, mined with the same pipeline as
 v1.0 (see CONTRIBUTING.md). Low-information drills found by the item analysis are retired or replaced.

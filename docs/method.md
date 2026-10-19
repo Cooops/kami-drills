@@ -67,7 +67,7 @@ Every drill carries a `provenance` block:
 
 - **credit**: "derived from KamiBench run 004/005/006, CC-BY-4.0" for drills forked from
   the [KamiBench datasets](https://huggingface.co/KamiBench); "KamiArena hosted runs
-  (Coopes), CC-BY-4.0" for the 10 drills forked from two hosted GPT-6 Luna runs.
+  (Coopes), CC-BY-4.0" (the project is now Palaestra) for the 10 drills forked from two hosted GPT-6 Luna runs.
 - **source**: dataset, session file, and fork line (the prefix is transcript lines
   1..fork; the model acts in place of the next line).
 - **chain_block**: the block at the fork, from the last read in the prefix that states
@@ -101,7 +101,7 @@ and the harness tool surface has optional parameters. `report --override` takes 
 example drills fixed in a new suite version): for each model, their results and costs replace
 those drills' in the base logs, try k for try k. `results/v1.0.0-rc2/` was written with
 `kami-drills report stepC stepD rc2_gem38 --override rc2_fixed --out results/v1.0.0-rc2`
-(the KamiArena Season 1 working directory). A log run with `--epochs N` counts as N tries. `report --out DIR` writes the
+(the Palaestra Season 1 working directory). A log run with `--epochs N` counts as N tries. `report --out DIR` writes the
 `summary.md`, `paired.txt` and `models/*.json` found under [`results/`](../results/).
 Exit codes: 0 ok, 1 checks or eval failed, 2 usage error. Colour only on a terminal,
 and never with `NO_COLOR` set.
