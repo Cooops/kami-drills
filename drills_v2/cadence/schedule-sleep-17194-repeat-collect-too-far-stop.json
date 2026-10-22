@@ -1,0 +1,37 @@
+{
+ "format": "kami-drills-v2/cadence-schedule",
+ "kind": "nothing_due",
+ "tool": "set_next_wake",
+ "tolerance_band": null,
+ "pass_threshold": 0.7,
+ "pass_threshold_note": "ln units; 0.7 is a factor of 2 either way. A parameter, not a finding: tune before registration.",
+ "id": "schedule-sleep-17194-102-repeat-collect-too-far-stop",
+ "source_v1_id": "repeat-collect-too-far-stop",
+ "source_v1_fork_line": 102,
+ "situation": "Kami 17194 is HARVESTING with 50/80 HP, draining 4.16 HP per hour, no cooldown, 1 MUSU accrued at +20.47 per hour. You have done everything you meant to this session. Call set_next_wake with minutes_from_now.",
+ "pending_work": [],
+ "params": {
+  "hp_risk_fraction": 0.3,
+  "collect_target_musu": 250,
+  "max_wake_minutes": 1440,
+  "params_note": "hp_risk_fraction: HP below this share of hp_total is the risk line. collect_target_musu: accrued MUSU worth a session. Both are assumptions of this drill, not game facts; the drain and accrual are linear extrapolations of the recorded rates."
+ },
+ "flags": [
+  "closest_honest_case: only the kami clock is in the state; v1 sessions also have quests, feeding and other work that this drill does not model, so 'nothing due' holds for the kami alone"
+ ],
+ "state": {
+  "kami": {
+   "id": 17194,
+   "state": "HARVESTING",
+   "hp": 50,
+   "hp_total": 80,
+   "hp_drain_per_hr": 4.16,
+   "cooldown_s": 0
+  },
+  "harvest": {
+   "accrued_musu": 1,
+   "rate_per_hr": 20.47
+  }
+ },
+ "oracle_minutes": 375.0
+}

@@ -25,6 +25,28 @@ def oracle_minutes(state):
     return max(k["cooldown_s"], rest_s) / 60
 
 
+MAX_WAKE_MINUTES = 24 * 60  # harness maximum for set_next_wake
+KINDS = ("pending", "nothing_due")
+
+
+def nothing_due_oracle_minutes(state, params):
+    """Minutes until the earliest useful event when no kami needs action: harvest accrual reaching
+    params.collect_target_musu at the current rate, or HP draining to params.hp_risk_fraction * hp_total at the
+    current drain rate (both linear extrapolations). Capped at the 24 h harness maximum. Quest completion has no clock
+    in a kami state, so it is not an event here (documented limit)."""
+    k, h = state["kami"], state["harvest"]
+    events_h = [(k["hp"] - params["hp_risk_fraction"] * k["hp_total"]) / k["hp_drain_per_hr"]]
+    if h["rate_per_hr"] > 0:
+        events_h.append(max(params["collect_target_musu"] - h["accrued_musu"], 0) / h["rate_per_hr"])
+    return min(min(events_h) * 60, MAX_WAKE_MINUTES)
+
+
+def drill_oracle_minutes(drill):
+    if drill.get("kind", "pending") == "nothing_due":
+        return nothing_due_oracle_minutes(drill["state"], drill["params"])
+    return oracle_minutes(drill["state"])
+
+
 def schedule_loss(chosen_minutes, oracle, band=None):
     """|ln(chosen/oracle)|. band (a factor >= 1, default none) forgives the first ln(band): 2.0 = within 2x costs nothing."""
     if not chosen_minutes or chosen_minutes <= 0:
@@ -35,13 +57,30 @@ def schedule_loss(chosen_minutes, oracle, band=None):
 
 def score_schedule(drill, chosen_minutes):
     """Raw loss is always reported; `loss` is the banded one the threshold is applied to."""
-    oracle = oracle_minutes(drill["state"])
+    oracle = drill_oracle_minutes(drill)
     raw = schedule_loss(chosen_minutes, oracle)
     loss = schedule_loss(chosen_minutes, oracle, drill["tolerance_band"])
     return {"oracle_minutes": oracle, "raw_loss": raw, "loss": loss, "passed": loss <= drill["pass_threshold"]}
 
 
+def _validate_nothing_due(d):
+    k, h, p = d["state"].get("kami", {}), d["state"].get("harvest", {}), d.get("params")
+    if not isinstance(p, dict) or not {"hp_risk_fraction", "collect_target_musu"} <= set(p) or not 0 < p["hp_risk_fraction"] < 1:
+        raise ValueError(f"{d['id']}: nothing_due needs params.hp_risk_fraction in (0,1) and params.collect_target_musu")
+    if d["pending_work"] or not isinstance(d.get("flags"), list):
+        raise ValueError(f"{d['id']}: nothing_due needs empty pending_work and a flags list")
+    if not {"hp", "hp_total", "hp_drain_per_hr", "cooldown_s"} <= set(k) or not {"accrued_musu", "rate_per_hr"} <= set(h):
+        raise ValueError(f"{d['id']}: nothing_due state needs kami hp, hp_total, hp_drain_per_hr, cooldown_s and harvest accrued_musu, rate_per_hr")
+    if k["cooldown_s"] != 0 or k["hp_drain_per_hr"] <= 0 or k["hp"] <= p["hp_risk_fraction"] * k["hp_total"] or h["accrued_musu"] >= p["collect_target_musu"]:
+        raise ValueError(f"{d['id']}: not nothing_due: cooldown, HP at the risk line, or collect target already met")
+    if abs(d["oracle_minutes"] - nothing_due_oracle_minutes(d["state"], p)) > 0.01:
+        raise ValueError(f"{d['id']}: recorded oracle_minutes disagrees with the clock fields")
+
+
 def validate_schedule(d):
+    if d.get("kind", "pending") not in KINDS:
+        raise ValueError(f"{d.get('id')}: kind must be one of {KINDS}")
+    nothing_due = d.get("kind") == "nothing_due"
     for key, typ in {"id": str, "source_v1_id": str, "state": dict, "pending_work": list, "pass_threshold": (int, float)}.items():
         if not isinstance(d.get(key), typ):
             raise ValueError(f"{d.get('id')}: {key} missing or not {typ}")
@@ -49,8 +88,11 @@ def validate_schedule(d):
         raise ValueError(f"{d['id']}: wrong format or tool")
     if "tolerance_band" not in d or not (d["tolerance_band"] is None or d["tolerance_band"] >= 1):
         raise ValueError(f"{d['id']}: tolerance_band must be recorded as null or a factor >= 1")
-    if d["pass_threshold"] < 0 or not d["pending_work"]:
+    if d["pass_threshold"] < 0 or (not nothing_due and not d["pending_work"]):
         raise ValueError(f"{d['id']}: need pass_threshold >= 0 and non-empty pending_work")
+    if nothing_due:
+        _validate_nothing_due(d)
+        return d
     if set(d["state"].get("kami", {})) < {"hp", "hp_total", "hp_rate_per_hr", "cooldown_s"} or d["state"]["kami"]["hp_rate_per_hr"] <= 0:
         raise ValueError(f"{d['id']}: state.kami needs hp, hp_total, hp_rate_per_hr > 0, cooldown_s")
     if abs(d["oracle_minutes"] - oracle_minutes(d["state"])) > 0.01:
