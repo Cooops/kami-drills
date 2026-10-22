@@ -109,11 +109,14 @@ literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md)
   wake time against the game clock; the budget-use drill pairs a forced-budget arm with a free one.
 - **Memory** ([docs/v2-memory.md](docs/v2-memory.md), `kami_drills/memory.py`): 11 prototype drills (don't-repeat,
   stale-note with a "dated newer" variant, notes-first) from KamiBench-era v1 data, materialised as v1-shaped drills;
-  the real bank comes from Season 1 after close. A null policy (no calls) fails every one.
+  the real bank comes from Season 1 after close. They fail passive play (no calls, a bare wake, `end_session`) but
+  not always a long wake: the cooldown drills pass by waiting, because waiting is right there
+  (table in the memory doc).
 - **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 static prototype
-  variants that test robustness to earlier failures from the same source run (not the model's own errors), and
-  `own_error_variants(log)`, which builds per-model variants from a model's own clean-drill failures for a second pass
-  (the self-conditioning design); score the delta against the clean drill.
+  variants that test robustness to earlier failures from the same source run (not the model's own errors, so not
+  self-conditioning), and `own_error_variants(log)`, which builds per-model variants for every drill from the model's
+  own failures on other drills (never the scored one, no selection on outcome); score the delta against the same
+  drills' clean results. All items are prototypes.
 - **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
   over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
 

@@ -25,6 +25,15 @@ KINDS = {"dont_repeat": {"source_drill", "base_len", "failure", "note"},
          "stale_note": {"source_drill", "base_len", "notes"},
          "notes_first": {"source_drill", "base_len", "fact", "note"}}
 ARMS = {"dont_repeat": ("a", "b", "c"), "stale_note": ("plain", "dated_newer"), "notes_first": ("only",)}
+PASSIVE_TOOLS = {"set_next_wake", "end_session", "wait"}
+_READ = {"tool": "workspace_read", "args": {"path": NOTE_PATH}, "text": "{}"}
+_WAKE = lambda **a: {"tool": "set_next_wake", "args": a, "text": "{}"}
+PASSIVE_POLICIES = {"none": [], "wake-bare": [_WAKE()], "wake-5": [_WAKE(minutes_from_now=5)],
+                    "wake-30": [_WAKE(minutes_from_now=30)], "wake-60": [_WAKE(minutes_from_now=60)],
+                    "end-session": [{"tool": "end_session", "args": {}, "text": "{}"}],
+                    "read-then-wake": [_READ, _WAKE(minutes_from_now=30)]}
+
+
 def load(directory=V2):
     return [json.loads(p.read_text()) for p in sorted(Path(directory).glob("*.json"))]
 
@@ -93,41 +102,59 @@ def materialise(spec, arm):
 
 def score_dont_repeat(calls, failure, rule, flags=()):
     """Pass = the model takes the source drill's required action (v1 rule holds over the calls) AND its first
-    state-changing call does not repeat the failure (same tool, same normalised error class). Doing nothing fails."""
+    state-changing call does not repeat the failure (same tool, same normalised error class). Whether waiting passes is
+    the source rule's call: where it accepts a long enough set_next_wake (the cooldown drills) waiting is correct."""
     first = next((c for c in calls if state_changing(c["tool"])), None)
     repeat = first and first["tool"] == failure["tool"] and error_class(first["text"]) == failure["error_class"]
     return not repeat and score_stale_note(calls, rule, flags)
 
 
-def score_stale_note(calls, rule, flags=()):
-    """Pass = the source drill's v1 rule (the world's answer) holds over the calls, whatever the note said."""
+def acted(calls):
+    return any(state_changing(c["tool"]) and c["tool"] not in PASSIVE_TOOLS for c in calls)
+
+
+def score_stale_note(calls, rule, flags=(), needs_action=False):
+    """Pass = the source drill's v1 rule (the world's answer) holds over the calls, whatever the note said; with
+    needs_action (spec key, for drills where a replayed wake would also set the pass flag) it must also act."""
     trace = [{"tool": c["tool"], "args": c["args"], "ok": not kd.is_error_text(c["text"])} for c in calls]
-    return not kd.rule_failures(rule, trace, set(flags))
+    return (acted(calls) or not needs_action) and not kd.rule_failures(rule, trace, set(flags))
 
 
 def score_notes_first(calls, rule, flags=()):
     """Pass = the notes file itself is read before the first state-changing call, AND the action then taken follows the
-    fact in it (the source drill's v1 rule holds). Reading some other file, or acting without the note, fails."""
+    fact in it (the source drill's v1 rule holds), AND it actually acts: a state-changing call other than waiting or
+    ending the session. Reading some other file, acting without the note, or only waiting, fails."""
     read = next((i for i, c in enumerate(calls) if c["tool"] == "workspace_read" and c["args"].get("path") == NOTE_PATH), None)
     change = next((i for i, c in enumerate(calls) if state_changing(c["tool"])), None)
-    return read is not None and (change is None or read < change) and score_stale_note(calls, rule, flags)
+    return read is not None and acted(calls) and (change is None or read < change) and score_stale_note(calls, rule, flags)
 
 
 def null_baseline():
-    """{materialised drill id: pass} for a model that makes no calls at all, plus one that only calls set_next_wake
-    with no arguments. Every entry must be False: a pass here means the drill rewards doing nothing."""
+    """{"<materialised drill id>/<policy>": pass} for each passive policy in PASSIVE_POLICIES (no calls, bare wake, wake
+    5/30/60 min, end_session, notes read then wake). A pass means waiting is the right answer for that drill: only the
+    cooldown drills, whose source rule accepts a long enough wake. docs/v2-memory.md tabulates it."""
     out = {}
     for spec in load():
         for arm in ARMS[spec["kind"]]:
             m = materialise(spec, arm)
-            for name, calls in (("none", []), ("wake-only", [{"tool": "set_next_wake", "args": {}, "text": "{}"}])):
-                out[f"{m['id']}/{name}"] = score_calls(m, spec, calls, ())
+            for name, calls in PASSIVE_POLICIES.items():
+                out[f"{m['id']}/{name}"] = score_calls(m, spec, calls, replay_flags(m, calls))
+    return out
+
+
+def replay_flags(m, calls):
+    """Flags the replay would set for these calls (first row per call that matches tool and args; ignores when/unless/
+    waited_*, enough for the passive policies, whose rows carry none). The Inspect run uses the real engine."""
+    out = set()
+    for c in calls:
+        row = next((r for r in m["replay"] if r["tool"] == c["tool"] and kd.args_match(c["args"], r.get("args", {}))), None)
+        out |= set(kd.as_list(row.get("sets"))) if row else set()
     return out
 
 
 def score_calls(m, spec, calls, flags):
     return {"dont_repeat": lambda: score_dont_repeat(calls, spec["failure"], m["rule"], flags),
-            "stale_note": lambda: score_stale_note(calls, m["rule"], flags),
+            "stale_note": lambda: score_stale_note(calls, m["rule"], flags, spec.get("needs_action", False)),
             "notes_first": lambda: score_notes_first(calls, m["rule"], flags)}[spec["kind"]]()
 
 
