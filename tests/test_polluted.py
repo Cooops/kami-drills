@@ -9,6 +9,7 @@ import pytest
 from types import SimpleNamespace
 
 from inspect_ai.model import ChatMessageAssistant, ChatMessageTool, ChatMessageUser
+from inspect_ai.scorer import CORRECT, INCORRECT, Score
 from inspect_ai.tool import ToolCall
 
 from kami_drills import task as kd
@@ -76,6 +77,14 @@ def test_eligible_error():
     assert eligible_error("feed_kami", "Error executing tool feed_kami: ... revert: kami too far: Reverted")
 
 
+def test_replay_gap_is_not_an_own_error():
+    gap = "Error executing tool lens_kami: not available in this drill (no recorded response)."
+    assert kd.is_error_text(gap)  # v1 counts it as a failed call ...
+    assert not eligible_error("lens_kami", gap)  # ... but it is the drill's missing recording, not the model's error
+    for text in ("Off the recorded path.", "Recorded path ended.", "Episode over.", "Budget not used up (3 calls left). Keep working."):
+        assert not eligible_error("feed_kami", text)
+
+
 def test_own_error_variants_from_synthetic_log():
     drill_id = "risk-lowhp-feed-first"
     drill = gen.load_v1()[drill_id]
@@ -97,6 +106,7 @@ def test_own_error_variants_from_synthetic_log():
     v = out["risk-unmanaged-lowhp--own-error"]
     assert [i["tool"] for i in v["polluted"]["injected"]] == ["feed_kami"]  # hidden tool and the successful read dropped
     assert v["polluted"]["inserted_messages"] == 2 and v["polluted"]["family"] == "own_error"
+    assert v["polluted"]["injected_count"] == 1 and v["polluted"]["model_eligible_failures"] == 1 and v["polluted"]["model"] is None
     assert v["prefix"][0] == drill["prefix"][0] and v["prefix"][3:] == drill["prefix"][1:]
     assert v["prefix"][1]["tool_calls"][0] == {"id": "own_0", "name": "feed_kami", "args": {"kami_id": 1}}
     assert v["prefix"][2]["content"] == bad and v["prefix"][2]["tool_call_id"] == "own_0"
@@ -114,7 +124,9 @@ def test_own_error_variants_use_other_drills_and_ignore_outcome():
         err = f"Error executing tool {tool}: validation failed; no transaction sent: ... revert: from {did}: Reverted"
         msgs = [ChatMessageUser(content="start"), ChatMessageAssistant(content="", tool_calls=[tc]),
                 ChatMessageTool(content=err, tool_call_id="c1", function=tool)]
-        return SimpleNamespace(id=did, messages=msgs, metadata={"fork_len": 1}, passed=passed)
+        # the outcome lives where an Inspect log keeps it: the drill_rule score (C/I) and the sample's metadata
+        return SimpleNamespace(id=did, messages=msgs, metadata={"fork_len": 1, "passed": passed},
+                               scores={"drill_rule": Score(value=CORRECT if passed else INCORRECT)})
     log = lambda flags: SimpleNamespace(samples=[sample(d, "feed_kami", 100 + i, f) for i, (d, f) in enumerate(zip(ids, flags))])
     out = own_error_variants(log([True, True, True]), max_errors=1)
     assert set(out) == {i + "--own-error" for i in ids}  # every drill gets a variant, not just failed ones
@@ -122,6 +134,7 @@ def test_own_error_variants_use_other_drills_and_ignore_outcome():
         for inj in out[did + "--own-error"]["polluted"]["injected"]:
             assert f"from {did}:" not in inj["error"]  # never the scored drill's own failure
     assert own_error_variants(log([False, False, False]), max_errors=1) == out  # pass/fail of the log changes nothing
+    assert own_error_variants(log([True, False, True]), max_errors=1) == out
     # a donor call that the scored drill's rule forbids is skipped
     rule = drills["risk-lowhp-feed-first"]["rule"]
     forbidden = [p for p in rule.get("forbid", []) if p["tool"] == "feed_kami"]

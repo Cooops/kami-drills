@@ -115,7 +115,8 @@ literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md)
 - **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 static prototype
   variants that test robustness to earlier failures from the same source run (not the model's own errors, so not
   self-conditioning), and `own_error_variants(log)`, which builds per-model variants for every drill from the model's
-  own failures on other drills (never the scored one, no selection on outcome); score the delta against the same
+  own failures on other drills (never the scored one, no replay gaps, no selection on outcome; the injected dose per
+  model is recorded); score the delta against the same
   drills' clean results. All items are prototypes.
 - **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
   over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.

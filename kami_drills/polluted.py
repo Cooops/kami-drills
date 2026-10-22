@@ -12,13 +12,17 @@ from kami_drills import task as kd
 ROOT = Path(__file__).parent.parent
 POLLUTED = ROOT / "drills_v2" / "polluted"
 INFRA = re.compile(r"pool reached max|failed to insert tx|timed? ?out|rate.?limit|too many requests|connection", re.I)
+# Replies the drill harness writes itself, not the game: the replay gap (task.py and episode.py) and the episode's
+# path/budget notes. A gap is the drill's missing recording, not the model's error.
+HARNESS = re.compile(r"not available in this drill|no recorded response|off the recorded path|recorded path ended|"
+                     r"episode over|budget not used up", re.I)
 MAX_ERRORS, MAX_CHARS = 2, 1500  # per variant; skip bulky error replies
 
 
 def eligible_error(tool, text):
     """A failure worth injecting: the tool is on the live surface (not hidden OUTSOURCE) and the error is the agent's
-    own doing, not infrastructure (RPC pool, timeouts, rate limits)."""
-    return tool not in kd.OUTSOURCE and not INFRA.search(text) and len(text) <= MAX_CHARS
+    own doing, not infrastructure (RPC pool, timeouts, rate limits) and not a harness artefact (HARNESS: a replay gap)."""
+    return tool not in kd.OUTSOURCE and not INFRA.search(text) and not HARNESS.search(text) and len(text) <= MAX_CHARS
 
 
 def _failed_calls(smp):
@@ -43,11 +47,15 @@ def own_error_variants(clean_eval_log, drills=None, max_errors=MAX_ERRORS):
     rule forbids (it would leak the answer). A drill gets no variant only if no other drill has an eligible failure.
     Run the result as a second pass for the same model (`polluted_v2(specs=...)`) and compare with the same drills'
     clean results via `polluted_delta` (key the polluted map by variant["polluted"]["source_drill"]).
+    The dose varies by model: a model with few eligible failures gets fewer injected errors (0-2 per variant). Each
+    variant's `polluted` block records `model` (the log's), `injected_count` and `model_eligible_failures` (the
+    model's eligible failures over the whole log).
     Needs sample ids = v1 drill ids and metadata fork_len (what drill_agent logs). Reads a log; makes no model call."""
     drills = drills or {d["id"]: d for d in (json.loads(p.read_text()) for p in sorted((ROOT / "drills").glob("*.json"))
                                               if not p.name.startswith("_"))}
     fails = {smp.id: _failed_calls(smp) for smp in clean_eval_log.samples or [] if smp.id in drills}
     ids, out = sorted(fails), {}
+    model, total = getattr(getattr(clean_eval_log, "eval", None), "model", None), sum(map(len, fails.values()))
     for i, did in enumerate(ids):
         d = drills[did]
         forbidden = d["rule"].get("forbid", []) + [f for pr in d["rule"].get("forbid_before", []) for f in pr["forbid"]]
@@ -62,6 +70,7 @@ def own_error_variants(clean_eval_log, drills=None, max_errors=MAX_ERRORS):
         v = dict(d, id=d["id"] + "--own-error", prefix=d["prefix"][:1] + new + d["prefix"][1:],
                  keep_lines=[k + len(new) if k >= 1 else k for k in d.get("keep_lines", [])])
         v["polluted"] = {"family": "own_error", "source_drill": d["id"], "inserted_messages": len(new),
+                         "model": model, "injected_count": len(inj), "model_eligible_failures": total,
                          "injected": [{"tool": tc.function, "args": tc.arguments or {}, "error": text} for tc, text in inj]}
         out[v["id"]] = v
     return out

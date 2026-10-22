@@ -66,7 +66,7 @@ def test_follower_gets_ratio_one_and_never_leaves_the_path(d):
     reachable = sum(cadence.is_state_changing(c["tool"]) and not c["error"] for c in path_of(d))
     assert r["path_actions"] == reachable < d["trajectory_actions"]  # not the 13 total: reverts are skippable, not required
     assert r["matched_actions"] == {"free": reachable, "budget": reachable} and r["coverage"] == {"free": 1, "budget": 1}
-    assert r["matched_ratio"] == 1 and cadence.pooled_budget_ratio([r]) == 1
+    assert r["matched_ratio"] == 1 and cadence.pooled_budget_score([r]) == 1
     assert r["free"]["outcome"] == r["budget"]["outcome"] == "trajectory_end"
     assert r["steps"]["free"] == r["steps"]["budget"] <= d["trajectory_calls"]
 
@@ -77,8 +77,23 @@ def test_spammer_is_separated_from_follower_by_matched_actions():
     good = cadence.run_budget_pair(d, follower(d))
     assert spam["action_ratio"] == good["action_ratio"] == 1  # the raw count cannot tell them apart
     assert spam["matched_actions"] == {"free": 0, "budget": 0} and spam["coverage"] == {"free": 0, "budget": 0}
-    assert cadence.pooled_budget_ratio([spam]) is None and cadence.pooled_budget_ratio([good]) == 1
-    assert cadence.pooled_budget_ratio([good, spam]) == 1
+    assert cadence.pooled_budget_score([spam]) == 0 and cadence.pooled_budget_score([good]) == 1
+    assert cadence.pooled_budget_score([good, spam]) == .5  # pooled: the spammer's path counts against it
+
+
+def test_on_path_spammer_and_half_quitter_score_by_coverage():
+    d = DRILLS[0]
+    first = next(c for c in path_of(d) if cadence.is_state_changing(c["tool"]) and not c["error"])
+    spam = cadence.run_budget_pair(d, lambda h, arm: (first["tool"], first["args"]))  # repeats the first recorded action
+    assert spam["matched_ratio"] == 1  # diverges at the same point in both arms: the ratio alone cannot see it
+    p = spam["path_actions"]
+    assert spam["matched_actions"] == {"free": 1, "budget": 1} and cadence.pooled_budget_score([spam]) == pytest.approx(1 / p)
+    assert 1 / p < .15  # 1/9 to 1/12 on the shipped drills
+    # a follower that calls done once half the path's state changes are matched in the free arm
+    acts = [i for i, c in enumerate(path_of(d)) if cadence.is_state_changing(c["tool"]) and not c["error"]]
+    quitter, full = follower(d, acts[p // 2 - 1] + 1, ("done", {})), follower(d)
+    half = cadence.run_budget_pair(d, lambda h, arm: (quitter if arm == "free" else full)(h, arm))
+    assert half["matched_actions"]["free"] == p // 2 and cadence.pooled_budget_score([half]) == pytest.approx((p // 2) / p)
 
 
 def test_skipping_recorded_reverts_is_not_penalised_and_repeating_them_is_not_rewarded():

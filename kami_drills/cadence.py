@@ -152,11 +152,20 @@ def matched_actions(result):
     return result["matched_actions"]
 
 
-def pooled_budget_ratio(results):
-    """Headline budget metric over run_budget_pair results: matched actions in the free arm over matched actions in the budget
-    arm, pooled across drills. A one-call spammer matches nothing (None); a follower gets 1. None when the budget arms matched nothing."""
-    b = sum(matched_actions(r["budget"]) for r in results)
-    return sum(matched_actions(r["free"]) for r in results) / b if b else None
+def budget_score(free_matched, budget_matched, path_actions):
+    """Registered budget component on pooled counts: min(free/budget matched, 1) x budget-arm coverage (budget matched over
+    path_actions), which is min(free, budget) / path_actions. The coverage factor is what separates persistence from
+    diverging early: off-trajectory ends both arms, so a model that leaves the path at action k in both arms has ratio 1
+    but coverage k / path_actions. 0 when nothing was matched or the path is empty."""
+    return min(free_matched, budget_matched) / path_actions if path_actions else 0.0
+
+
+def pooled_budget_score(results):
+    """Headline budget metric over run_budget_pair results, pooled across drills (`budget_score` on the summed matched
+    actions per arm and summed path_actions). A perfect follower scores 1, an off-path spammer 0, an on-path spammer
+    (repeats the first recorded action) 1 / path_actions, a follower that quits halfway in the free arm about 0.5."""
+    return budget_score(sum(matched_actions(r["free"]) for r in results), sum(matched_actions(r["budget"]) for r in results),
+                        sum(r["path_actions"] for r in results))
 
 
 @scorer(metrics=[accuracy(), stderr()])
@@ -200,8 +209,9 @@ def run_budget_pair(drill, model):
     model(history, arm) -> (tool, args) or None; history is v1-shaped messages. Reports per arm: raw `actions` (state-changing
     calls attempted, reverts and off-path calls included), `matched_actions` (non-revert recorded state changes matched) and
     `coverage` (matched over path_actions). `path_actions` is what a perfect follower can reach: the path's non-revert state
-    changes. `matched_ratio` is free over budget matched; `action_ratio` is the raw-count ratio and can be gamed by repeating
-    a call. Also the off-trajectory rate over the two arms and the steps in each."""
+    changes. `matched_ratio` is free over budget matched, a diagnostic: a model that diverges at the same point in both arms
+    gets 1 however early, so the registered metric is `pooled_budget_score`, which multiplies in coverage. `action_ratio`
+    is the raw-count ratio and can be gamed by repeating a call. Also the off-trajectory rate over the two arms and the steps in each."""
     from kami_drills.episode import run_episode
     free, budget = (run_episode(drill, model, arm) for arm in ("free", "budget"))
     mf, mb = matched_actions(free), matched_actions(budget)

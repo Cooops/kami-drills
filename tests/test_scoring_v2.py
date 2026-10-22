@@ -1,13 +1,14 @@
 """v2 scoring checks (hand-computed): uv run pytest -q tests/test_scoring_v2.py"""
 import pytest
 
+import math
 import random
 import statistics
 
 from kami_drills.scoring_v2 import (MAX_SCHEDULE_LOSS, TIERS, cadence_score, certain_probs, choose_k,
                                     cluster_bootstrap_ci, composite, cost_per_action, default_tier_sizes, forecast,
-                                    gap_code, gap_sensitivity, heldout_split, is_heldout, item_stats, live_tiers,
-                                    mcb_set, pass_at_k, pass_hat_k, pooled_ratio, rho_cluster_ci, rps, rps_skill,
+                                    gap_code, gap_sensitivity, hedged_probs, heldout_split, is_heldout, item_stats,
+                                    live_tiers, mcb_set, pass_at_k, pass_hat_k, pooled_budget_score, rho_cluster_ci, rps, rps_skill,
                                     rps_vs_baseline, season_baseline_probs, select_items, tier_probs_bootstrap,
                                     uniform_rps)
 
@@ -53,7 +54,9 @@ def test_rps():
     assert rps(certain, "middle") == .5
     assert uniform_rps("top") == pytest.approx((4 / 9 + 1 / 9) / 2)
     assert uniform_rps("middle") == pytest.approx((1 / 9 + 1 / 9) / 2)
-    assert rps_vs_baseline(.1, .4) == pytest.approx(.75) and rps_vs_baseline(.1, 0) is None
+    assert rps_vs_baseline(.1, .4) == pytest.approx(.75)
+    # baseline RPS below 0.01: the registered rule reports the RPS difference, not an exploding ratio
+    assert rps_vs_baseline(.1, 0) == pytest.approx(-.1) and rps_vs_baseline(.002, .005) == pytest.approx(.003)
     with pytest.raises(ValueError):
         rps({"top": .5, "middle": .2, "bottom": .2}, "top")
 
@@ -69,6 +72,11 @@ def test_heldout_split():
     tune2, held2 = heldout_split(kept, cat)
     assert held2 == [d for d in held if d in kept] and tune2 == [d for d in tune if d in kept]
     assert is_heldout("d5", "A") == is_heldout("d5", "A")
+
+
+def test_item_stats_takes_binary_model_tries():
+    with pytest.raises(ValueError, match="model-try"):
+        item_stats({"a": [.5, 1, 0], "b": [1, 0, 1]})
 
 
 def test_item_stats():
@@ -183,8 +191,9 @@ def test_season_baseline_probs():
     runs = {"a": [9, 9], "b": [5, 5, 5], "c": [1, 1]}
     p = season_baseline_probs(runs, (1, 1, 1), n=100)
     assert p == certain_probs({"a": "top", "b": "middle", "c": "bottom"})
-    noisy = season_baseline_probs({"a": [0, 10], "b": [4, 6], "c": [-5, -5]}, (1, 1, 1), n=4000, seed=1)
-    assert noisy["c"]["bottom"] == 1 and .4 < noisy["a"]["top"] < .9 and all(
+    # two runs: deviations x sqrt(2 * 2 / 1) = 2, so a draws -5 / 5 / 15 and b 3 / 5 / 7; a is top in 1/2 of draws
+    noisy = season_baseline_probs({"a": [0, 10], "b": [4, 6], "c": [-50, -50]}, (1, 1, 1), n=4000, seed=1)
+    assert noisy["c"]["bottom"] == 1 and .45 < noisy["a"]["top"] < .55 and all(
         sum(v.values()) == pytest.approx(1) for v in noisy.values())
     assert live_tiers({"a": [1, 3], "b": [2, 2], "c": [0]}, (1, 1, 1)) == {"a": "top", "b": "middle", "c": "bottom"}
 
@@ -198,26 +207,28 @@ def test_rps_skill():
     assert r["skill"]["s1"] == r["skill"]["uniform"] < 0
 
 
-def _hedged(tier):
-    if tier == "middle":
-        return {"top": .15, "middle": .7, "bottom": .15}
-    return {t: (.7, .25, .05)[abs(TIERS.index(t) - TIERS.index(tier))] for t in TIERS}
+def test_hedged_probs():
+    h = hedged_probs({"a": "top", "b": "middle", "c": "bottom"})
+    assert h["a"] == {"top": .7, "middle": .25, "bottom": .05} and h["b"] == {"top": .15, "middle": .7, "bottom": .15}
+    assert h["c"] == {"top": .05, "middle": .25, "bottom": .7}
 
 
-def test_hedged_season1_copy_has_no_skill_against_calibrated_baseline():
+@pytest.mark.parametrize("runs,sd", [(2, 4), (2, 8), (3, 4), (3, 8)])
+def test_hedged_season1_copy_has_no_skill_against_calibrated_baseline(runs, sd):
     # Seasons drawn from the same per-model run distribution (no drift). A hedged copy of the Season 1 tiers carries no
-    # drill information: it beats the certain Season 1 forecast clearly, but not the bootstrap-calibrated one.
+    # drill information: it beats the certain Season 1 forecast clearly, but is not clearly positive against the
+    # calibrated one once the small-sample correction is in (the plain bootstrap gave it +0.05 to +0.10 at 2 runs).
     rng, sizes, vs_cal, vs_certain = random.Random(7), (3, 4, 3), [], []
-    for season in range(30):
-        s1 = {f"m{i}": [rng.gauss(i, 4) for _ in range(3)] for i in range(10)}
-        s2 = {m: [rng.gauss(int(m[1:]), 4) for _ in range(3)] for m in s1}
+    for season in range(60):
+        s1 = {f"m{i}": [rng.gauss(i, sd) for _ in range(runs)] for i in range(10)}
+        s2 = {m: [rng.gauss(int(m[1:]), sd) for _ in range(runs)] for m in s1}
         t1, out = live_tiers(s1, sizes), live_tiers(s2, sizes)
-        r = rps_skill({m: _hedged(t) for m, t in t1.items()}, out,
+        r = rps_skill(hedged_probs(t1), out,
                       {"calibrated": season_baseline_probs(s1, sizes, n=300, seed=season), "certain": certain_probs(t1)})
         vs_cal.append(r["skill"]["calibrated"])
         vs_certain.append(r["skill"]["certain"])
-    assert statistics.fmean(vs_certain) > .15
-    assert statistics.fmean(vs_cal) < .05
+    assert statistics.fmean(vs_certain) > .1
+    assert statistics.fmean(vs_cal) - 2 * statistics.stdev(vs_cal) / math.sqrt(len(vs_cal)) < 0
 
 
 def _synthetic(rng, ability):
@@ -227,7 +238,7 @@ def _synthetic(rng, ability):
     del dec["m4"]["d1"]  # never administered
     sched = {m: {f"s{j}": abs(rng.gauss(0, 3 - .25 * a)) for j in range(4)} for m, a in ability.items()}
     sched["m0"]["s0"] = float("inf")
-    budget = {m: {f"b{j}": (rng.randint(0, a + 2), 10) for j in range(4)} for m, a in ability.items()}
+    budget = {m: {f"b{j}": (rng.randint(0, a + 2), 10, 12) for j in range(4)} for m, a in ability.items()}
     clusters = {**{f"d{j}": f"fam{j % 4}" for j in range(24)}, **{f"s{j}": "sched" for j in range(4)},
                 **{f"b{j}": f"bfam{j % 2}" for j in range(4)}}
     return dec, sched, budget, clusters
@@ -244,7 +255,7 @@ def test_forecast_end_to_end():
     assert sum(v["top"] for v in p.values()) == pytest.approx(3)
     assert p == forecast(dec, sched, budget, sizes, n=500, seed=0, clusters=clusters)
     # pooled budget ratios as fixed inputs; no clusters (item bootstrap within each stratum)
-    fixed = {m: pooled_ratio(list(b.values())) for m, b in budget.items()}
+    fixed = {m: pooled_budget_score(list(b.values())) for m, b in budget.items()}
     q = forecast(dec, sched, fixed, sizes, n=300)
     assert q["m9"]["top"] > .5
     # graded against a live outcome with both Season 1 baselines and uniform
@@ -253,4 +264,22 @@ def test_forecast_end_to_end():
     r = rps_skill(p, live_tiers(s2, sizes), {"season1_calibrated": season_baseline_probs(s1, sizes, n=500),
                                             "season1_certain": certain_probs(live_tiers(s1, sizes))})
     assert set(r["skill"]) == {"season1_calibrated", "season1_certain", "uniform"} and r["skill"]["uniform"] > 0
-    assert pooled_ratio([(3, 10), (5, 10)]) == .4 and pooled_ratio([(2, 0)]) is None
+    assert pooled_budget_score([(3, 10, 10), (5, 10, 10)]) == .4 and pooled_budget_score([(2, 0, 10)]) == 0
+    assert pooled_budget_score([(12, 6, 12)]) == .5 and pooled_budget_score([]) == 0
+
+
+def test_model_with_no_administered_decision_item_is_dropped_with_a_warning():
+    rng = random.Random(3)
+    ability = {f"m{i}": i for i in range(10)}
+    dec, sched, budget, clusters = _synthetic(rng, ability)
+    dec["m5"] = {i: None for i in dec["m5"]}  # every item gapped before any action
+    with pytest.warns(UserWarning, match="m5"):
+        p = forecast(dec, sched, budget, default_tier_sizes(10), n=200, clusters=clusters)
+    assert "m5" not in p and sum(v["top"] for v in p.values()) == pytest.approx(default_tier_sizes(9)[0])
+    with pytest.warns(UserWarning, match="m5"):
+        assert "m5" not in tier_probs_bootstrap(dec, default_tier_sizes(10), n=100)
+    with pytest.warns(UserWarning, match="m5"):
+        assert "m5" not in mcb_set(dec, n=100)
+    # graded with uniform probabilities for the dropped model
+    out = live_tiers({m: [a] for m, a in ability.items()}, default_tier_sizes(10))
+    assert rps_skill(p, out, {})["rps"] > 0

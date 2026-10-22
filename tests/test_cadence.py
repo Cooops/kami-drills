@@ -185,10 +185,12 @@ def test_state_changing_classifies_every_harness_tool():
         assert not cadence.is_state_changing(n)
 
 
-def test_pooled_budget_ratio():
-    r = lambda f, b: {"free": {"matched_actions": f}, "budget": {"matched_actions": b}}
-    assert cadence.pooled_budget_ratio([r(6, 6), r(2, 4)]) == pytest.approx(0.8)
-    assert cadence.pooled_budget_ratio([r(0, 0)]) is None
+def test_pooled_budget_score():
+    r = lambda f, b, p: {"free": {"matched_actions": f}, "budget": {"matched_actions": b}, "path_actions": p}
+    # pooled: min(8/10, 1) x 10/12 = min(8, 10) / 12
+    assert cadence.pooled_budget_score([r(6, 6, 6), r(2, 4, 6)]) == pytest.approx(8 / 12)
+    assert cadence.pooled_budget_score([r(0, 0, 6)]) == 0 and cadence.pooled_budget_score([]) == 0
+    assert cadence.pooled_budget_score([r(6, 3, 6)]) == .5  # acting more when free than when forced is not more persistence
 
 
 def test_action_ratio():

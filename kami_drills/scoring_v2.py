@@ -6,8 +6,9 @@ import hashlib
 import math
 import random
 import statistics
+import warnings
 
-from kami_drills.cadence import STATE_CHANGING, action_count
+from kami_drills.cadence import STATE_CHANGING, action_count, budget_score
 
 TIERS = ("top", "middle", "bottom")
 
@@ -83,9 +84,13 @@ def uniform_rps(outcome_tier):
     return rps({t: 1 / len(TIERS) for t in TIERS}, outcome_tier)
 
 
+MIN_BASELINE_RPS = 0.01  # below this the skill ratio is unstable (it explodes as the baseline nears perfect)
+
+
 def rps_vs_baseline(forecast_rps, baseline_rps):
-    """Skill score 1 - rps/baseline: above 0 beats the baseline, 1 is perfect; None when the baseline is perfect."""
-    return None if baseline_rps == 0 else 1 - forecast_rps / baseline_rps
+    """Skill score 1 - rps/baseline: above 0 beats the baseline, 1 is perfect. When baseline_rps < MIN_BASELINE_RPS the
+    registered rule reports the RPS difference baseline - forecast instead (above 0 still beats the baseline)."""
+    return baseline_rps - forecast_rps if baseline_rps < MIN_BASELINE_RPS else 1 - forecast_rps / baseline_rps
 
 
 def is_heldout(drill_id, category, frac=1 / 3):
@@ -102,10 +107,14 @@ def heldout_split(drill_ids, category, frac=1 / 3):
 
 
 def item_stats(response_matrix):
-    """response_matrix: {item: [0/1 per respondent]}, respondents in the same order for every item.
+    """response_matrix: {item: [0/1 per respondent]}, respondents in the same order for every item. A respondent is one
+    model-try (a model's k-th try at every item), so items stay binary; tries of one model are not independent, so read
+    |r| against the model count, not the respondent count.
     Per item: pass rate, corrected point-biserial (correlation with the rest score, item removed; None when
     undefined), low_info (pass >= .95 or <= .05), reversed (correlation < 0)."""
     items = list(response_matrix)
+    if any(v not in (0, 1) for x in response_matrix.values() for v in x):
+        raise ValueError("item_stats takes 0/1 per model-try, not a per-model pass rate")
     totals = [sum(response_matrix[i][r] for i in items) for r in range(len(response_matrix[items[0]]))]
     out = {}
     for i in items:
@@ -123,7 +132,8 @@ def item_stats(response_matrix):
 
 def select_items(stats, size):
     """Registered selection rule (proposal 4.7): drop low_info and reversed items (reversed go to audit), then keep the
-    `size` items with the highest internal (rest-score) discrimination from item_stats. Only drill responses are used;
+    `size` items with the highest internal (rest-score) discrimination from item_stats, whose respondents are model-tries.
+    Only drill responses are used;
     correlation with live outcomes never enters selection."""
     ok = [i for i, s in stats.items() if not s["low_info"] and not s["reversed"] and s["point_biserial"] is not None]
     return sorted(sorted(ok), key=lambda i: -stats[i]["point_biserial"])[:size]
@@ -138,21 +148,20 @@ def _z(values):
 MAX_SCHEDULE_LOSS = math.log(24 * 60)  # |ln| of a 1-day wake against a 1-minute oracle: the harness range
 
 
-def cadence_score(schedule_losses, action_ratios):
-    """Cadence per model = mean of two z-scores across models: z(-median schedule loss) and z(min(action ratio, 1)).
+def cadence_score(schedule_losses, budget_scores):
+    """Cadence per model = mean of two z-scores across models: z(-median schedule loss) and z(budget score).
     schedule_losses: {model: [cadence.schedule_loss per schedule drill]}; a missing or invalid wake (inf) counts as
-    MAX_SCHEDULE_LOSS. action_ratios: {model: free/budget state-changing action ratio} (cadence.action_ratio over the
-    budget drills, pooled); capped at 1 because acting more when free than when forced is not more persistence, and
-    None (no action even under the budget) counts as 0."""
+    MAX_SCHEDULE_LOSS. budget_scores: {model: pooled budget score in [0, 1]} (cadence.pooled_budget_score /
+    `pooled_budget_score`); None counts as 0."""
     sched = _z({m: -statistics.median(min(x, MAX_SCHEDULE_LOSS) for x in ls) for m, ls in schedule_losses.items()})
-    budget = _z({m: min(r or 0.0, 1.0) for m, r in action_ratios.items()})
+    budget = _z({m: b or 0.0 for m, b in budget_scores.items()})
     return {m: (sched[m] + budget[m]) / 2 for m in sched}
 
 
 def composite(decision, cadence, form="zsum"):
     """Registered forecast score per model. zsum (registered): z(decision) + z(cadence), equal weight.
     product (exploratory only): decision * cadence, which needs both on a non-negative scale (e.g. pass@1 and the
-    capped action ratio), not the z-based cadence_score."""
+    budget score), not the z-based cadence_score."""
     if form == "zsum":
         zd, zc = _z(decision), _z(cadence)
         return {m: zd[m] + zc[m] for m in decision}
@@ -184,6 +193,17 @@ def _resample(items, clusters, rng, strata=None):
             groups = [[i] for i in groups[0]]
         pick += [i for _ in groups for i in rng.choice(groups)]
     return pick
+
+
+def _drop_unadministered(per_model_item_scores, tier_sizes=None):
+    """Models with no administered item (all absent or None) get no score: dropped with a warning. If tier_sizes was cut
+    for the full model count it is recut at default_tier_sizes of the models kept. Returns (kept, tier_sizes)."""
+    kept = {m: s for m, s in per_model_item_scores.items() if any(v is not None for v in s.values())}
+    if len(kept) < len(per_model_item_scores):
+        warnings.warn(f"no administered decision item, left out of the ranking: {sorted(set(per_model_item_scores) - set(kept))}")
+        if tier_sizes is not None and sum(tier_sizes) == len(per_model_item_scores):
+            tier_sizes = default_tier_sizes(len(kept))
+    return kept, tier_sizes
 
 
 def _mean_over(scores, pick):
@@ -222,26 +242,29 @@ def tier_probs_bootstrap(per_model_item_scores, tier_sizes=(3, 4, 3), n=10000, s
                          strata=None):
     """P(top/middle/bottom) per model: resample items (clusters if given, within strata if given), score models (mean,
     or score_fn over the resampled item ids), rank them each replicate (ties broken at random), cut the ranking into
-    tier_sizes. per_model_item_scores: {model: {item: score}}."""
+    tier_sizes. per_model_item_scores: {model: {item: score}}; a model with no administered item is dropped
+    (`_drop_unadministered`)."""
+    per_model_item_scores, tier_sizes = _drop_unadministered(per_model_item_scores, tier_sizes)
     return _tier_shares(sorted(per_model_item_scores), tier_sizes, _boot_means(per_model_item_scores, n, seed, clusters, score_fn, strata), n)
 
 
-def pooled_ratio(pairs):
-    """Pooled budget ratio of [(free_matched, budget_matched)]: total matched actions (cadence.matched_actions) in the
-    free arms over the total in the forced-budget arms, as cadence.pooled_budget_ratio; None (scored 0) when the budget
-    arms matched nothing."""
-    b = sum(p[1] for p in pairs)
-    return sum(p[0] for p in pairs) / b if b else None
+def pooled_budget_score(triples):
+    """Pooled budget score of [(free_matched, budget_matched, path_actions)] per budget drill: cadence.budget_score on
+    the sums, min(free, budget) / path_actions, the same number cadence.pooled_budget_score gives on run_budget_pair
+    results. 0 for no drills."""
+    return budget_score(*(sum(t[k] for t in triples) for k in range(3)))
 
 
 def forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000, seed=0, clusters=None):
     """Registered forecast, proposal 6.1 steps 2-5. Returns {model: {tier: P}}.
     decision_items: {model: {item: pass@1}}; an absent or None item is not administered and excluded.
     schedule_losses: {model: {drill: cadence.schedule_loss}}; absent or inf counts as MAX_SCHEDULE_LOSS.
-    budget_ratios: {model: pooled budget ratio or None}, held fixed across replicates; or {model: {drill: (free_actions,
-    budget_actions)}}, pooled per replicate over the resampled budget drills (`pooled_ratio`).
+    budget_ratios: {model: {drill: (free-arm matched, budget-arm matched, path_actions)}}, pooled per replicate over the
+    resampled budget drills (`pooled_budget_score`); or {model: pooled budget score}, held fixed across replicates.
+    A model with no administered decision item is dropped with a warning (`_drop_unadministered`).
     clusters: {item or drill id: snapshot family}. Stratified cluster bootstrap: decision, schedule and budget items are
     resampled separately (`_resample`), and both scores, the composite and the ranking are recomputed each replicate."""
+    decision_items, tier_sizes = _drop_unadministered(decision_items, tier_sizes)
     models = sorted(decision_items)
     per_model = {m: {} for m in models}
     for kind, data in (("decision", decision_items), ("schedule", schedule_losses), ("budget", budget_ratios)):
@@ -257,21 +280,32 @@ def forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000
             by[kind].append(i)
         dec = {m: _mean_over(decision_items[m], by["decision"]) for m in models}
         sched = {m: [schedule_losses[m].get(i, math.inf) for i in by["schedule"]] for m in models}
-        budget = {m: pooled_ratio([r[i] for i in by["budget"] if i in r]) if isinstance(r := budget_ratios[m], dict)
+        budget = {m: pooled_budget_score([r[i] for i in by["budget"] if i in r]) if isinstance(r := budget_ratios[m], dict)
                   else r for m in models}
         return composite(dec, cadence_score(sched, budget))
 
     return tier_probs_bootstrap(per_model, tier_sizes, n, seed, fam, score, {k: k[0] for k in ids})
 
 
+def _predictive_mean(runs, rng):
+    """One resampled mean of a model's runs with each run's deviation from the mean inflated by sqrt(2n / (n - 1)):
+    sqrt(n / (n - 1)) is Bessel's small-sample correction (the plain bootstrap's variance of the mean is (n - 1)/n of
+    s^2/n), and sqrt(2) adds the Season 2 mean's own run noise (the target is a new mean, not Season 1's). n = 1 has no
+    spread to inflate and stays a point.
+    shortcut: a single-run model is certain of its Season 1 mean; pool within-model variance if one-run models matter."""
+    m = statistics.fmean(runs)
+    f = math.sqrt(2 * len(runs) / (len(runs) - 1)) if len(runs) > 1 else 0.0
+    return m + f * (statistics.fmean(rng.choices(runs, k=len(runs))) - m)
+
+
 def season_baseline_probs(per_model_run_outcomes, tier_sizes, n=10000, seed=0):
-    """Calibrated Season 1 baseline: P(tier) per model from resampling each model's own live runs with replacement,
-    ranking the resampled means (ties at random) and cutting at tier_sizes. per_model_run_outcomes: {model: [outcome
-    per run]}. Calibrated to run-to-run noise only, not to change between seasons."""
+    """Calibrated Season 1 baseline: P(tier) per model from resampling each model's own live runs with replacement
+    (`_predictive_mean`: deviations inflated by sqrt(2n / (n - 1))), ranking the resampled means (ties at random) and
+    cutting at tier_sizes. per_model_run_outcomes: {model: [outcome per run]}. Calibrated to run-to-run noise only, not
+    to change between seasons."""
     models = sorted(per_model_run_outcomes)
     rng = random.Random(seed)
-    draws = (({m: statistics.fmean(rng.choices(r, k=len(r))) for m, r in sorted(per_model_run_outcomes.items())}, rng)
-             for _ in range(n))
+    draws = (({m: _predictive_mean(r, rng) for m, r in sorted(per_model_run_outcomes.items())}, rng) for _ in range(n))
     return _tier_shares(models, tier_sizes, draws, n)
 
 
@@ -289,17 +323,26 @@ def certain_probs(tiers):
     return {m: {t: float(t == tier) for t in TIERS} for m, tier in tiers.items()}
 
 
+def hedged_probs(season1_tiers, on=.7, adjacent=.25, far=.05, middle=(.15, .7, .15)):
+    """The hedged Season 1 copy (control, proposal 6.1 step 7): {model: tier} -> on the Season 1 tier, adjacent on the
+    next one, far on the far one; a middle-tier model gets `middle` (top, middle, bottom). No drill information."""
+    return {m: dict(zip(TIERS, middle)) if t == "middle" else
+            {u: (on, adjacent, far)[abs(TIERS.index(u) - TIERS.index(t))] for u in TIERS} for m, t in season1_tiers.items()}
+
+
 def rps_skill(forecast_probs, outcome_tiers, baselines):
     """Mean RPS over the models in outcome_tiers, and skill 1 - RPS / RPS_baseline against each named baseline
     ({name: {model: probs}}) plus "uniform". A model a baseline does not cover (new this season) gets uniform in it.
-    Returns {"rps": forecast mean RPS, "skill": {name: skill or None}}."""
+    Returns {"rps": forecast mean RPS, "skill": {name: skill}, "baseline_rps": {name: baseline mean RPS}}; where a
+    baseline's RPS is below MIN_BASELINE_RPS its "skill" is the RPS difference (`rps_vs_baseline`)."""
     uniform = {t: 1 / len(TIERS) for t in TIERS}
 
     def mean_rps(probs):
         return statistics.fmean(rps(probs.get(m, uniform), t) for m, t in outcome_tiers.items())
 
     f = mean_rps(forecast_probs)
-    return {"rps": f, "skill": {name: rps_vs_baseline(f, mean_rps(p)) for name, p in {**baselines, "uniform": {}}.items()}}
+    base = {name: mean_rps(p) for name, p in {**baselines, "uniform": {}}.items()}
+    return {"rps": f, "skill": {name: rps_vs_baseline(f, b) for name, b in base.items()}, "baseline_rps": base}
 
 
 def mcb_set(per_model_item_scores, n=10000, seed=0, clusters=None, alpha=.05):
@@ -307,6 +350,7 @@ def mcb_set(per_model_item_scores, n=10000, seed=0, clusters=None, alpha=.05):
     the best of the others in at least 1 - alpha of replicates. Returns the sorted set.
     shortcut: per-model percentile, not Hsu's simultaneous critical value; upgrade if the set is used for a claim
     beyond 'plausible winners'."""
+    per_model_item_scores, _ = _drop_unadministered(per_model_item_scores)
     models = sorted(per_model_item_scores)
     behind = dict.fromkeys(models, 0)
     for means, _ in _boot_means(per_model_item_scores, n, seed, clusters):

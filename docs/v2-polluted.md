@@ -40,7 +40,7 @@ pollution hurt.
 1. Run the model on the clean v1 drills (`kami-drills run`), keeping the Inspect eval log.
 2. `own_error_variants(log)` reads that log and builds one variant for **every** drill in it. Each variant inserts,
    after "Session start.", the model's own failed calls (call plus error reply; hidden-tool and infrastructure
-   failures dropped, duplicates removed, at most two) taken from **other** drills, never the scored one, so the model
+   failures dropped, replay gaps dropped, duplicates removed, at most two) taken from **other** drills, never the scored one, so the model
    does not see "I tried X and it failed" for the item being scored. Donor drills are taken in id order starting after
    the scored drill (wrapping); a donor call matching something the scored drill's rule forbids is skipped. Nothing
    depends on whether the model passed or failed the scored drill, so there is no selection on the outcome (building
@@ -50,10 +50,20 @@ pollution hurt.
    keying the polluted results by `variant["polluted"]["source_drill"]`. Compare against the clean results of the
    same drills, including the ones the model passed.
 
+**Replay gaps are not own errors.** v1 counts a call the replay cannot answer ("not available in this drill") as a
+failed call, but it is the drill's missing recording, not the model's mistake. `eligible_error` drops it, and any
+other text the harness writes itself (`polluted.HARNESS`: the gap reply and the budget episode's path and budget notes).
+
+**The dose varies by model.** A model with few eligible failures gets fewer injected errors: 0, 1 or 2 per variant,
+and no variant if no other drill has one. Each variant's `polluted` block records `model` (from the log),
+`injected_count` and `model_eligible_failures` (the model's eligible failures over the whole log); report them per
+model beside the delta, since a smaller delta at a smaller dose is not more robustness.
+
 Limit: a donor failure comes from a different decision, so it tests "failures earlier in my context", not "repeating
 my own mistake here". It is still the model's own behaviour, unlike the static family.
 
-It reads a log and makes no model call; `tests/test_polluted.py` checks on a synthetic log that no injected error comes from the scored drill and that the variants do not depend on pass/fail. Not yet run on a real
+It reads a log and makes no model call; `tests/test_polluted.py` checks on a synthetic log that no injected error comes from the scored drill, that the variants do not depend on the logged outcome (the
+`drill_rule` score), and that a replay gap is never injected. Not yet run on a real
 model's log.
 
 ## Regenerate

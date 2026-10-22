@@ -48,9 +48,12 @@ that excludes zero": the v2 bank is chosen and tuned on Season 1, so a bank that
 would clear that bar whenever ranks persist across seasons. Not skill against the Season 1 ranks taken as certain
 either: a hedged copy of the Season 1 tiers (0.7 on the Season 1 tier, 0.25 adjacent, 0.05 far) carries no drill
 information and still beats the certain forecast (review arithmetic: about +0.06 RPS skill with 2 of 10 tier swaps,
-+0.28 with 4). In a simulation where seasons differ only by run-to-run noise (30 seasons, 10 models, 3 runs each;
-`tests/test_scoring_v2.py`) the copy averages +0.23 skill against the certain forecast and −0.04 against the
-calibrated baseline. What positive skill would show: the drill forecast placed Season 2 models better than
++0.28 with 4). In a simulation where seasons differ only by run-to-run noise (10 models one unit apart, run noise sd 4
+or 8, 2 or 3 runs each, 200 seasons; `tests/test_scoring_v2.py` runs 60) the copy beats the certain forecast by +0.25
+to +0.30 skill. Against a plain bootstrap of Season 1 runs it still won at 2 runs (+0.07 at sd 4, +0.10 at sd 8),
+because two runs understate the spread and the Season 2 mean carries its own noise. With the registered
+small-sample correction (section 6.1 step 7) it scores +0.003 (se 0.013) and −0.019 (se 0.012) at 2 runs, −0.052
+and −0.065 at 3: not positive. The primary claim also requires beating the hedged copy itself. What positive skill would show: the drill forecast placed Season 2 models better than
 Season 1's live results did, with their run noise priced in. What it would not show: the bootstrap is calibrated to
 run-to-run noise only, not to change between seasons, so when ranks shift for other reasons any forecast hedged wider
 than run noise can beat it without drill information. That is why the hedged copy is reported beside it as a control,
@@ -99,7 +102,10 @@ Everything in this section is computed from the published v1 results
 **Signal is concentrated.** Comparing the mean of the three models the Season 1 forecast placed in the top tier
 against the other eight drilled models (seven live-cohort models and the drill-only control): risk drills separate by +0.24 (4 of 5 drills in the expected direction), memory by +0.17
 (5 of 6), progression by +0.15 (6 of 7). Onboarding separates by +0.05; repeat_failed and stale_state, 20 of the 47
-drills, by +0.11 with three and two reversed drills. Six drills rank the top tier below the rest. Thirteen are
+drills, by +0.11 with three and two reversed drills. Six drills rank the top tier below the rest (this cut: the three
+forecast-top models' mean below the other eight's). The registered item definition is different: corrected
+point-biserial r < 0 over the 22 model-tries (`item_stats`), which flags 11 drills, 9 of them confirmed by a negative
+model-level Spearman ([`v2-scoring.md`](../results/v1.0.0-rc2/v2-scoring.md)). The audit uses the registered 11. Thirteen are
 passed or failed by essentially everyone, including two no model passes, which need a rule review before
 retirement. Hand-assigned difficulty does not track empirical difficulty (mean pass: easy 0.66, mid 0.69,
 hard 0.44). Low-discrimination items are disproportionately mislabelled
@@ -121,6 +127,10 @@ about 19 drills, which roughly halves the suite's reliability.
 KamiBench drills, while Gemini 3.6 Flash flips the other way (0.70 vs 0.50). The example v2 drills now in
 `drills_v2/` are prototypes forked from KamiBench-era v1 data, built to exercise the rules and scorers; the real v2
 bank is built from 4.7-era Season 1 runs after close, so some v1-to-v2 rank movement will be source era, not capability, and should be reported as such.
+Some prototypes also come from v1 drills flagged for audit: `budget-harvest-run` and the pending schedule oracle
+(`cadence.oracle_minutes`) from `stale-cooldown-retry-start`, and `dr-listing-buy-underflow` from
+`repeat-listing-buy-underflow` (both reversed in `item_stats`, noise-level r). If the audit changes those rules, the
+prototypes change with them.
 
 **Tries disagree unevenly.** Drills where the two tries disagree range from 3 to 16 per model: the per-item
 variance needed to decide whether a third or fourth try pays (section 5).
@@ -205,7 +215,9 @@ IRT will not rescue a ten-respondent test: Rasch difficulties are stable only to
 ([rasch.org](https://www.rasch.org/rmt/rmt74m.htm)), and IRT-inspired selection "struggle[s] to meaningfully reduce
 variance" on LLM evals ([Madaan et al.](https://arxiv.org/abs/2406.10229)). The selection logic transfers with
 classical statistics, with one caution: at n = 10 models the standard error of a correlation is about 0.33, so a
-point-biserial ≥ 0.2 threshold mostly selects noise. The registered rule (`select_items`): write a bank of 80–100
+point-biserial ≥ 0.2 threshold mostly selects noise. A respondent in `item_stats` is one model-try (a model's k-th try
+at every item, scored 0/1), as in the rc2 re-analysis; tries of one model are not independent, so |r| is read against
+the model count. The registered rule (`select_items`): write a bank of 80–100
 candidates; drop low-information items (model pass rate ≥ 0.95 or ≤ 0.05) and reversed items (sent to audit); of the
 rest, administer the 40–50 with the highest *internal* discrimination (corrected point-biserial against the rest of
 the suite, from drill responses only). Correlation of an item with live outcomes is reported as exploratory and never
@@ -240,38 +252,52 @@ prospectively.
 >    hold floor(0.3 × N + 0.5) models (halves round up: (3, 4, 3) at N = 10, (5, 5, 5) at N = 15) and the middle the
 >    rest (`default_tier_sizes`).
 > 2. **Decision score.** pass@1 per decision item (mean over tries, K per `choose_k`), averaged over the selected
->    decision bank. A not-administered item (gap coding) is left out of that model's mean. pass^2 and the score-0 gap
->    bound are reported, not forecast.
+>    decision bank. A not-administered item (gap coding) is left out of that model's mean. A model with no administered
+>    decision item gets no decision score: it is left out of the forecast with a warning, the forecast's tiers are cut
+>    at `default_tier_sizes` of the models left, and it is graded with uniform probabilities (`_drop_unadministered`).
+>    pass^2 and the score-0 gap bound are reported, not forecast.
 > 3. **Cadence score.** For each model, the mean of two z-scores taken across the N models (`cadence_score`):
 >    z(−median schedule loss) over the schedule drills, loss = |ln(chosen / oracle)| with no tolerance band and an
->    invalid or missing wake counted as ln(1440); and z(min(pooled budget ratio, 1)). A model's **pooled budget ratio**
->    is its *matched* actions (recorded, non-revert state changes it reproduced: `matched_actions` from
->    `cadence.run_budget_pair`) summed over the free arms of the budget drills, divided by the same sum over the
->    forced-budget arms (`pooled_ratio`, equal to `cadence.pooled_budget_ratio`); a zero denominator counts as 0, so a
->    model that matches nothing scores lowest.
+>    invalid or missing wake counted as ln(1440); and z(pooled budget score). Over the budget drills, sum per model
+>    F = free-arm *matched* actions, B = forced-budget-arm matched actions (recorded, non-revert state changes it
+>    reproduced: `matched_actions` from `cadence.run_budget_pair`) and P = `path_actions` (what a perfect follower
+>    matches). The **pooled budget score** is min(F / B, 1) × B / P = min(F, B) / P, and 0 when B or P is 0
+>    (`scoring_v2.pooled_budget_score`, equal to `cadence.pooled_budget_score`). The ratio alone cannot tell persistence
+>    from diverging at the same point in both arms (leaving the path ends both arms); the B / P coverage factor can. A
+>    perfect follower scores 1, an off-path spammer 0, an on-path spammer that repeats the first recorded action 1 / P
+>    (0.08–0.11 on the prototypes), a follower that quits halfway in the free arm about 0.5.
 > 4. **Composite.** Equal-weight z-sum: z(decision) + z(cadence) (`composite`, form "zsum").
 > 5. **Tier probabilities.** `forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000, seed=0,
 >    clusters)`, with decision_items {model: {item: pass@1, or None if not administered}}, schedule_losses
->    {model: {drill: loss}}, budget_ratios {model: {drill: (free-arm matched actions, budget-arm matched actions)}}, tier_sizes from
+>    {model: {drill: loss}}, budget_ratios {model: {drill: (free-arm matched actions, budget-arm matched actions, path_actions)}}, tier_sizes from
 >    step 1 and clusters {item or drill: snapshot family}. P(top), P(middle), P(bottom) per model are the shares of
 >    10,000 replicates (seed 0) in which the model lands in each tier. Each replicate is a stratified cluster bootstrap:
 >    within each of three strata (decision items, schedule drills, budget drills) it draws, with replacement, as many
 >    snapshot families as the stratum holds; a stratum with a single family draws its items instead. A model's
 >    decision mean skips items it was not administered, and is its mean over all administered items if the draw holds
->    none of them. The decision score, the schedule medians, the pooled budget ratios (over the drawn budget drills),
+>    none of them. The decision score, the schedule medians, the pooled budget scores (over the drawn budget drills),
 >    the composite and the ranking are recomputed each replicate; ties are broken at random.
->    (`forecast` also accepts each model's pooled budget ratio as a number, held fixed across replicates; that form is
+>    (`forecast` also accepts each model's pooled budget score as a number, held fixed across replicates; that form is
 >    not the registered one.)
 > 6. **Outcome.** Each model's live tier is its rank by mean week-end quests over its Season 2 runs, ties broken by
 >    model id, cut at the step 1 sizes (`live_tiers`).
-> 7. **Primary metric.** Mean ranked probability score over models (`rps`, `rps_skill`). The primary claim is RPS skill
->    1 − RPS / RPS_baseline > 0 against the **calibrated Season 1 baseline** (`season_baseline_probs`, n = 10,000,
->    seed 0): over the models that ran live in both seasons, resample each model's Season 1 runs with replacement, rank
->    the resampled means (ties at random), cut at `default_tier_sizes` of that model count, and take each model's tier
->    shares. Models new in Season 2 get uniform probabilities. Secondary: skill against the **certain Season 1
->    forecast** (the same models' Season 1 `live_tiers` at probability 1, `certain_probs`; new models uniform) and
->    against **uniform**. Reported as a control: the **hedged Season 1 copy** (0.7 on the Season 1 tier, 0.25 on an
->    adjacent tier, 0.05 on the far one; 0.15 / 0.7 / 0.15 for the middle tier; new models uniform), scored the same way.
+> 7. **Primary metric.** Mean ranked probability score over models (`rps`, `rps_skill`), skill 1 − RPS / RPS_baseline;
+>    where a baseline's mean RPS is below 0.01 the RPS difference RPS_baseline − RPS is reported instead, since the
+>    ratio explodes near a perfect baseline (`rps_vs_baseline`). The primary claim is skill > 0 against **both** the
+>    **calibrated Season 1 baseline** and the **hedged Season 1 copy**. Season 1 baselines are built over the models
+>    that ran live in both seasons, with tiers at `default_tier_sizes` of that count; models new in Season 2 get
+>    uniform probabilities in every baseline. Why the returning models only: Season 2 outcome tiers say nothing about
+>    a model that is not in Season 2, so tiers cut among all Season 1 models would place returning models against
+>    absent ones and shift the cut points away from the ones the outcome uses.
+>    - Calibrated (`season_baseline_probs`, n = 10,000, seed 0): resample each model's Season 1 runs with replacement,
+>      with each run's deviation from the model's mean inflated by sqrt(2n / (n − 1)) for n runs (`_predictive_mean`):
+>      sqrt(n / (n − 1)) is Bessel's small-sample correction (a plain bootstrap's variance of the mean is (n − 1) / n of
+>      s² / n) and sqrt(2) adds the Season 2 mean's own run noise, since the target is a new mean. A one-run model
+>      stays at its mean. Rank the resampled means (ties at random), cut, and take each model's tier shares.
+>    - Hedged copy (`hedged_probs`): the same models' Season 1 `live_tiers`, with 0.7 on the Season 1 tier, 0.25 on an
+>      adjacent tier and 0.05 on the far one; 0.15 / 0.7 / 0.15 for the middle tier.
+>    Secondary: skill against the **certain Season 1 forecast** (the same `live_tiers` at probability 1,
+>    `certain_probs`) and against **uniform**.
 > 8. **Beside it.** The accuracy-only forecast (decision score alone: `tier_probs_bootstrap` over the decision items
 >    with the same clusters, n = 10,000, seed 0; graded as in steps 6–7), so Season 2 tests whether cadence adds.
 >    Spearman ρ with a model-cluster bootstrap CI (`rho_cluster_ci`) is descriptive only. Pairwise claims use a
@@ -288,9 +314,10 @@ be fitted on ten points, so they are equal and declared. The product is reported
 ranks would beat uniform and show a ρ interval above zero whenever ranks persist across seasons. Against Season 1
 ranks taken as certain, any hedge wins, drills or not. The calibrated baseline prices Season 1's own run noise the way
 the drill forecast prices item noise, so beating it means the drill forecast placed models better than Season 1's
-live results with their noise priced in. It does not price change between seasons; the hedged copy is the control for
-that, and a drill forecast that beats the calibrated baseline but not the hedged copy has shown hedging, not drill
-information.
+live results with their noise priced in. It does not price change between seasons, and with 2–3 runs per model even
+the corrected spread is a rough estimate; the hedged copy covers both, which is why the primary claim needs a win
+against it too: a drill forecast that beats the calibrated baseline but not the hedged copy has shown hedging, not
+drill information.
 
 ### 6.2 Supporting analyses
 
@@ -322,14 +349,14 @@ Items marked "after close" need Season 1 live data and wait for 2026-10-25 20:41
 | 2 | Widen the live snapshot to the tools agents ask for; align drill and live tool surfaces | Gaps | M | Season 2 gap-free at source; target < 10% |
 | 3 | Pre-register gap coding; publish gap rate and a score-0 sensitivity bound per model | Scoring | S | Gap rate tracks ability |
 | 4 | After close: across-run ICC of week-end quests, split-half seed reliability, attenuation ceiling | Validation | S | Caps achievable ρ; drills vs runs spend |
-| 5 | After close: internal item analysis of v1 (drill responses only); retire the 13 low-information drills; audit the 6 reversed and 2 universally failed; item-vs-live correlation as exploratory only | Scoring | S | Discrimination selection without IRT or live leakage |
+| 5 | After close: internal item analysis of v1 (drill responses only); retire the 13 low-information drills; audit the 11 reversed by `item_stats` (r < 0; 9 rank-confirmed) and 2 universally failed; item-vs-live correlation as exploratory only | Scoring | S | Discrimination selection without IRT or live leakage |
 | 6 | 80–100 drill bank from the 27 Season 1 runs, weighted by live action frequency, including top-tier mistakes and API-habit classes; administer the 40–50 chosen by `select_items` | Bank | L | Reliability; separates the top tier |
 | 7 | Cadence family: schedule drill and budget-use drill | New family | M | The axis v1 cannot see |
 | 8 | Memory family: don't-repeat, stale-note (with "dated newer"), notes-before-first-call | New family | M | Revision is the weakest competency |
 | 9 | Polluted-context variant of 10–15 existing drills | New family | S | Measured decay mechanism |
 | 10 | pass@1 primary, pass^2 secondary; K from try-disagreement; stratified bootstrap over snapshot families; tiers not ranks | Scoring | S | Compounding reliability; clustered SEs |
 | 11 | Register one fixed composite (decision + cadence) and the accuracy-only forecast beside it, by timestamped commit | Forecast | S | Tests whether cadence adds |
-| 12 | RPS skill vs the calibrated Season 1 baseline (primary), the certain Season 1 forecast and uniform, hedged Season 1 copy as control; ρ descriptive with cluster CI; MCB set for pairwise | Validation | S | Proper, registrable, graded at close |
+| 12 | RPS skill vs the calibrated Season 1 baseline and the hedged Season 1 copy (primary: both), the certain Season 1 forecast and uniform; ρ descriptive with cluster CI; MCB set for pairwise | Validation | S | Proper, registrable, graded at close |
 | 13 | Criterion ICC from the run-level model; hash-based held-out third; report held-out ρ | Validation | S | Noise ceiling; holdout norm |
 | 14 | After close: classify every session end (completed / slept with pending work / gave up / errored); mine requested vs clamped wake intervals; test whether day-1 loop establishment predicts the week | Mine S1 | M | METR-style labelling; Ord's hazard |
 | 15 | After close: recode v1 attempts by gap type against live rank; mine mistake families with a windowed repeat definition; diff notes against snapshots for stale beliefs | Mine S1 | M | Tests gap ignorability; seeds drills |

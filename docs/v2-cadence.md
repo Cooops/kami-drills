@@ -73,9 +73,14 @@ follower both get `action_ratio` 1, and skipping a recorded revert lowers the co
 budget metric is therefore based on **matched actions** (`matched_actions` per arm): the non-revert recorded state changes
 the model matched. `path_actions` is what a perfect follower can reach, the path's non-revert state changes (11 or 12; the
 raw 13 includes skippable reverts). Per drill: `matched_ratio` = free matched over budget matched, and `coverage` = matched
-over `path_actions` per arm. `cadence.pooled_budget_ratio(results)` pools free over budget matched across
-`run_budget_pair` results (None if the budget arms matched nothing); the spammer scores None / coverage 0, a follower 1 / 1.
-`action_ratio` and `actions` stay as raw diagnostics. Matched ratio is capped by the path: neither arm can go beyond it.
+over `path_actions` per arm. **Matched ratio alone cannot separate persistence from early divergence**: leaving the path
+ends both arms, so any model that diverges at the same action in both arms gets ratio 1, including an on-path spammer
+that repeats the first recorded action (1 matched in each arm). The registered metric,
+`cadence.pooled_budget_score(results)`, multiplies in budget-arm coverage: with F, B and P the free-arm matched,
+budget-arm matched and `path_actions` summed over drills, it is min(F / B, 1) × B / P = min(F, B) / P. A perfect
+follower scores 1, an off-path spammer 0, the on-path spammer 1 / P (0.11, 0.10 and 0.08 on the three prototypes) and a
+follower that quits halfway in the free arm about 0.5 (`tests/test_episode.py`). `matched_ratio`, `action_ratio` and
+`actions` stay as diagnostics.
 **`act_sequence` limit:** the replay does not expand its steps (up to 64), so it is one unmatched call: it counts as one raw
 action, ends the episode as `off_trajectory`, and adds nothing to matched actions.
 
@@ -125,7 +130,8 @@ drills have 10 or more recorded state changes before the fork; these are the bes
   known-good line, not exploration: a model that finds a different valid move is ended as `off_trajectory` and scored
   only up to there, so a high off-trajectory rate means "the replay cannot follow this model", not "the model is
   wrong". The original agent's own reverts are on the path too (skippable, and not counted as matched), and a
-  path-following model gets matched ratio 1 by construction. Paths are short (at most 13 state changes), end at the v1 fork, and the free arm can only stop early.
+  path-following model gets matched ratio 1 by construction (so does any model that leaves the path at the same
+  point in both arms; the budget score's coverage factor is what separates them). Paths are short (at most 13 state changes), end at the v1 fork, and the free arm can only stop early.
 - The schedule task exists (`cadence.py::schedule_v2`, one `set_next_wake` call per drill, scored not executed) but has
   never been run against a real model; the tests use `mockllm`.
 - **One genuine schedule drill.** Public v1 data holds one usable session end (see above); the other six schedule drills
