@@ -610,8 +610,6 @@
  "rationale": "Sonnet 5 stopped the harvest, completed 19, accepted 20 and restarted at node 37 with 27/110 HP and no further feed (sonnet5_pushed session-0059 lines 23-77); next session found the kami at 0 HP (session-0060 line 10). The drill requires the chain plus HP prep before the new 12h harvest. The rule scores the end state: kami 20699 harvesting node 37 AND healed (the 100-HP spell card, three Ghost Gums, or about 3h of cumulative waiting); a wake or unrelated feed does not count.",
  "harness": "KamiBench 006 (scaffold 0.7.5)",
  "keep_lines": [
-  8,
-  9,
   10,
   11,
   12,
@@ -626,7 +624,9 @@
   21,
   22,
   23,
-  24
+  24,
+  25,
+  26
  ],
  "summary": {
   "situation": "Quest 19 (12h harvest) is done; quest 20 needs 12h at node 37. Kami 20699 at 27/110 HP.",
@@ -644,20 +644,37 @@
    "text": null,
    "tool_calls": [
     {
-     "id": "toolu_01XUTv2N9ZpWSJTqi7KcBMc9",
-     "name": "harvest_stop",
+     "id": "toolu_01DpX6kTMazZcUmMTY8WREEm",
+     "name": "lens_account",
      "args": {
-      "kami_ids": [
-       9787
-      ]
+      "account_key": "main"
      }
     }
    ]
   },
   {
    "role": "tool_result",
-   "tool_call_id": "toolu_01XUTv2N9ZpWSJTqi7KcBMc9",
-   "content": "Error executing tool harvest_stop: {'code': -32000, 'message': 'failed to insert tx into auction index: pool reached max tx capacity'}",
+   "tool_call_id": "toolu_01DpX6kTMazZcUmMTY8WREEm",
+   "content": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "is_error": true
+  },
+  {
+   "role": "assistant",
+   "text": null,
+   "tool_calls": [
+    {
+     "id": "toolu_0121nsHyRDkPKP1dfS162zLG",
+     "name": "lens_account",
+     "args": {
+      "account_key": "main"
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool_result",
+   "tool_call_id": "toolu_0121nsHyRDkPKP1dfS162zLG",
+   "content": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
    "is_error": true
   },
   {
@@ -986,24 +1003,36 @@
   "suite_version": "v1.0.0"
  },
  "polluted": {
+  "family": "static_robustness",
+  "label": "robustness to earlier failures from the same source run (not the tested model's own errors)",
   "source_drill": "prog-timewall-quest19-to-20",
   "injected": [
    {
-    "tool": "harvest_stop",
+    "tool": "lens_account",
     "args": {
-     "kami_ids": [
-      9787
-     ]
+     "account_key": "main"
     },
-    "error": "Error executing tool harvest_stop: {'code': -32000, 'message': 'failed to insert tx into auction index: pool reached max tx capacity'}",
+    "error": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
     "origin": {
-     "drill": "memory-sonnet-stamina-unreliable-belief",
-     "session_file": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0062.jsonl",
-     "prefix_index": 17
+     "drill": "onboard-complete-before-accept",
+     "session_file": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0002.jsonl",
+     "prefix_index": 9
+    }
+   },
+   {
+    "tool": "lens_account",
+    "args": {
+     "account_key": "main"
+    },
+    "error": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+    "origin": {
+     "drill": "onboard-complete-before-accept",
+     "session_file": "experiment-006-knowledge-delivery/sonnet5_pushed/transcripts/session-0002.jsonl",
+     "prefix_index": 14
     }
    }
   ],
-  "inserted_messages": 2,
-  "variant_hash": "sha256:819d70efcc1249819ffc774cadbb06540c9527d702236f5581c51d2934f82024"
+  "inserted_messages": 4,
+  "variant_hash": "sha256:dba2a3cc06fb5b23107393b3028961255bb447c2a5425e0afd743b4c990b8554"
  }
 }

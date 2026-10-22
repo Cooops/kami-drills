@@ -22753,16 +22753,16 @@
  "rationale": "Sonnet 5 levelled 3149 six times in a row (sonnet5_control session-0070 lines 27-39) and the session ended with no upgrade_skill; the next upgrade_skill came in session 74 (line 20) and spent one point, leaving the rest banked. The rule scores the end state: all 6 points spent, by one allocate_skills or six upgrade_skill calls (lens_skills: 6 unspent + 1 in Grit = 7 points for levels 1 to 8).",
  "harness": "KamiBench 006 (scaffold 0.7.5)",
  "keep_lines": [
-  8,
-  9,
-  21,
-  22,
-  29,
-  30,
+  10,
+  11,
+  23,
+  24,
   31,
   32,
-  41,
-  42
+  33,
+  34,
+  43,
+  44
  ],
  "summary": {
   "situation": "Six level-ups on kami 3149 just succeeded (level 2 to 8), leaving six unspent skill points.",
@@ -22780,18 +22780,37 @@
    "text": null,
    "tool_calls": [
     {
-     "id": "toolu_01Kv5bvHcMx8qTmxjGDU2YH9",
-     "name": "get_strategy_status",
+     "id": "toolu_019kBaAkZr1etjo7gUrRTWh3",
+     "name": "lens_account",
      "args": {
-      "kami_id": 3149
+      "account_key": "main"
      }
     }
    ]
   },
   {
    "role": "tool_result",
-   "tool_call_id": "toolu_01Kv5bvHcMx8qTmxjGDU2YH9",
-   "content": "Error executing tool get_strategy_status: the strategy service answered HTTP 404: {\"timestamp\":\"2026-08-24T06:00:18.971Z\",\"kamiId\":\"3149\",\"status\":\"NOT_FOUND\",\"error\":\"Kami 3149 not found on any VM. The strategy may have exited or been removed. For multi-kami strategies, use kami_indices[0] from GET /api/agent/strategies as the kamiId.\"}",
+   "tool_call_id": "toolu_019kBaAkZr1etjo7gUrRTWh3",
+   "content": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+   "is_error": true
+  },
+  {
+   "role": "assistant",
+   "text": null,
+   "tool_calls": [
+    {
+     "id": "toolu_01SvHG5uksZW53DHS5R9vNbc",
+     "name": "lens_account",
+     "args": {
+      "account_key": "main"
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool_result",
+   "tool_call_id": "toolu_01SvHG5uksZW53DHS5R9vNbc",
+   "content": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
    "is_error": true
   },
   {
@@ -23371,22 +23390,36 @@
   "suite_version": "v1.0.0"
  },
  "polluted": {
+  "family": "static_robustness",
+  "label": "robustness to earlier failures from the same source run (not the tested model's own errors)",
   "source_drill": "prog-sonnet-unspent-skill-points",
   "injected": [
    {
-    "tool": "get_strategy_status",
+    "tool": "lens_account",
     "args": {
-     "kami_id": 3149
+     "account_key": "main"
     },
-    "error": "Error executing tool get_strategy_status: the strategy service answered HTTP 404: {\"timestamp\":\"2026-08-24T06:00:18.971Z\",\"kamiId\":\"3149\",\"status\":\"NOT_FOUND\",\"error\":\"Kami 3149 not found on any VM. The strategy may have exited or been removed. For multi-kami strategies, use kami_indices[0] from GET /api/agent/strategies as the kamiId.\"}",
+    "error": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
     "origin": {
-     "drill": "memory-sonnet-avoid-registry-dump",
-     "session_file": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0072.jsonl",
-     "prefix_index": 11
+     "drill": "onboard-first-kami-vendor",
+     "session_file": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0002.jsonl",
+     "prefix_index": 10
+    }
+   },
+   {
+    "tool": "lens_account",
+    "args": {
+     "account_key": "main"
+    },
+    "error": "Error executing tool lens_account: NOT_FOUND: account main not in mirror",
+    "origin": {
+     "drill": "onboard-first-kami-vendor",
+     "session_file": "experiment-006-knowledge-delivery/sonnet5_control/transcripts/session-0002.jsonl",
+     "prefix_index": 17
     }
    }
   ],
-  "inserted_messages": 2,
-  "variant_hash": "sha256:651bf91790c423b67c38b0b59bc6edaf5b61bfacca7ca44f2e412fdb6e12ba2c"
+  "inserted_messages": 4,
+  "variant_hash": "sha256:1b4ea4f374649b0680c6ad8ba9ff1d7acf3ef59dc285cdda588fd16d4e6fd793"
  }
 }

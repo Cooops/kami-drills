@@ -1,12 +1,16 @@
-"""Build polluted-context variants of selected v1 drills into drills_v2/polluted/ (docs/v2-polluted.md).
+"""Build the static robustness family of polluted-context variants into drills_v2/polluted/ (docs/v2-polluted.md).
 
 Each variant is the v1 drill with up to two real failed tool calls from a sibling drill of the same source run
-copied verbatim into its prefix, right after "Session start.". Rule, replay and oracle are untouched.
+copied verbatim into its prefix, right after "Session start.". They are earlier failures from the same source run,
+not the tested model's own errors (that is kami_drills.polluted.own_error_variants). Rule, replay and oracle are
+untouched; failures of hidden OUTSOURCE tools and infrastructure errors are never injected.
 Deterministic, no network, no model calls:  uv run python scripts/make_polluted_variants.py
 """
 import hashlib
 import json
 from pathlib import Path
+
+from kami_drills.polluted import MAX_ERRORS, eligible_error
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "drills_v2" / "polluted"
@@ -18,7 +22,8 @@ SELECTED = [
     "prog-luna-two-levels-pending", "stale-harvest-start-wrong-room", "stale-notes-wrong-node-stop",
     "repeat-pool-swap-retry",
 ]
-MAX_ERRORS, MAX_CHARS = 2, 1500  # per variant; skip bulky error replies
+FAMILY = "static_robustness"
+LABEL = "robustness to earlier failures from the same source run (not the tested model's own errors)"
 
 
 def load_v1():
@@ -35,7 +40,7 @@ def failed_calls(d):
     calls = {c["id"]: c for m in d["prefix"] for c in (m.get("tool_calls") or [])}
     return [(i, calls[m["tool_call_id"]], m) for i, m in enumerate(d["prefix"])
             if m["role"] == "tool_result" and m.get("is_error") and m["tool_call_id"] in calls
-            and len(m["content"]) <= MAX_CHARS]
+            and eligible_error(calls[m["tool_call_id"]]["name"], m["content"])]
 
 
 def digest(obj):
@@ -58,7 +63,7 @@ def variant(d, v1):
     assert d["prefix"][0]["role"] == "user"
     v = dict(d, id=d["id"] + "--polluted", prefix=d["prefix"][:1] + msgs + d["prefix"][1:],
              keep_lines=[k + len(msgs) if k >= 1 else k for k in d.get("keep_lines", [])])
-    v["polluted"] = {"source_drill": d["id"], "injected": injected, "inserted_messages": len(msgs)}
+    v["polluted"] = {"family": FAMILY, "label": LABEL, "source_drill": d["id"], "injected": injected, "inserted_messages": len(msgs)}
     v["polluted"]["variant_hash"] = digest({k: x for k, x in v.items() if k != "polluted"} | {"injected": injected})
     return v
 

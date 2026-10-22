@@ -2489,6 +2489,8 @@
   "suite_version": "v1.0.0"
  },
  "polluted": {
+  "family": "static_robustness",
+  "label": "robustness to earlier failures from the same source run (not the tested model's own errors)",
   "source_drill": "prog-luna-two-levels-pending",
   "injected": [
    {

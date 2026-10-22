@@ -1,4 +1,5 @@
 """v2 memory family checks: uv run --with pytest pytest -q   (or `kami-drills check`, which runs this file as a script)"""
+import datetime as dt
 import hashlib
 import json
 import re
@@ -20,6 +21,7 @@ def test_schema_and_counts():
     specs = mem.load()
     assert all(mem.validate(s) == [] for s in specs), [(s["id"], mem.validate(s)) for s in specs]
     by = {k: [s for s in specs if s["kind"] == k] for k in mem.KINDS}
+    assert [len(by[k]) for k in ("dont_repeat", "stale_note", "notes_first")] == [4, 4, 3]  # 11 drills; docs say so
     assert 3 <= len(by["dont_repeat"]) <= 5 and 3 <= len(by["stale_note"]) <= 4 and 2 <= len(by["notes_first"]) <= 3
     assert len({s["id"] for s in specs}) == len(specs)
     assert mem.validate({"kind": "dont_repeat", "id": "x", "format": "f"})  # missing keys are reported
@@ -32,10 +34,22 @@ def test_error_class():
 
 
 def test_dont_repeat_scoring_and_arms():
-    assert not mem.score_dont_repeat([call("lens_party"), call("feed_kami", COOLDOWN)], FAIL)  # read skipped; repeat
-    assert mem.score_dont_repeat([call("set_next_wake")], FAIL)
-    assert mem.score_dont_repeat([call("feed_kami", '{"status": "success"}')], FAIL)  # same tool, different outcome
-    assert mem.score_dont_repeat([], FAIL)
+    spec = next(s for s in mem.load() if s["id"] == "dr-cooldown-feed")
+    rule, f = mem.v1(spec["source_drill"])["rule"], spec["failure"]
+    wake = call("set_next_wake", minutes_from_now=30)
+    assert not mem.score_dont_repeat([], f, rule)  # M1: doing nothing no longer passes
+    assert not mem.score_dont_repeat([call("set_next_wake")], f, rule)  # nor does a bare wake with no useful delay
+    assert not mem.score_dont_repeat([call("lens_party"), call("feed_kami", COOLDOWN, kami_id=20375)], f, rule)  # repeat
+    assert not mem.score_dont_repeat([call("feed_kami", COOLDOWN, kami_id=20375), wake], f, rule)  # repeat first, then waits
+    assert mem.score_dont_repeat([wake], f, rule)  # the required action, no repeat
+
+
+def test_null_policy_baseline_fails_everywhere():
+    base = mem.null_baseline()
+    assert len(base) == 2 * sum(len(mem.ARMS[s["kind"]]) for s in mem.load())
+    assert not any(base.values()), [k for k, v in base.items() if v]  # 0 passes for no calls and for wake-only
+
+
     rows = [{"drill": d, "arm": a, "pass": p} for d, a, p in
             [("x", "a", 1), ("y", "a", 1), ("x", "b", 1), ("y", "b", 0), ("x", "c", 0), ("y", "c", 0)]]
     r = mem.arm_report(rows)
@@ -61,19 +75,24 @@ def test_stale_note():
         if sp["kind"] != "stale_note":
             continue
         src = json.dumps(mem.v1(sp["source_drill"])["prefix"])
-        newest = max(re.findall(r"20\d\d-\d\d-\d\dT\d\d:\d\d", src))
+        newest = max(re.findall(r"20\d\d-\d\d-\d\dT\d\d:\d\d", json.dumps(mem.v1(sp["source_drill"])["prefix"][:sp["base_len"]])))
         stamp = re.search(r"20\d\d-\d\d-\d\dT\d\d:\d\d", sp["notes"]["dated_newer"]).group()
-        assert stamp > newest and not re.search(r"20\d\d-\d\d-\d\d", sp["notes"]["plain"]), sp["id"]
+        one_day = (dt.datetime.fromisoformat(newest) + dt.timedelta(days=1)).isoformat(timespec="minutes")
+        assert stamp == one_day and not re.search(r"20\d\d-\d\d-\d\d", sp["notes"]["plain"]), sp["id"]
         assert sp["notes"]["dated_newer"].endswith(sp["notes"]["plain"])  # variants differ only by the timestamp
 
 
 def test_notes_first():
-    assert mem.score_notes_first([call("workspace_read"), call("harvest_start")])
-    assert not mem.score_notes_first([call("lens_party"), call("harvest_start"), call("workspace_read")])
-    assert not mem.score_notes_first([call("harvest_start")]) and not mem.score_notes_first([])
-    spec = next(s for s in mem.load() if s["kind"] == "notes_first")
+    spec = next(s for s in mem.load() if s["id"] == "nf-harvest-node")
+    rule = mem.v1(spec["source_drill"])["rule"]
+    read, go = call("workspace_read", path=mem.NOTE_PATH), call("travel_to_room", target_room=31)
+    stop = call("harvest_stop", kami_ids=[17194])
+    assert mem.score_notes_first([read, go, stop], rule, ["at31", "stopped"])
+    assert not mem.score_notes_first([call("workspace_read", path="reference/catalogs/rooms.csv"), go, stop], rule, ["at31", "stopped"])
+    assert not mem.score_notes_first([go, read, stop], rule, ["at31", "stopped"])  # acted before reading
+    assert not mem.score_notes_first([read], rule) and not mem.score_notes_first([], rule)  # read alone does not use the fact
     m = mem.materialise(spec, "only")
-    assert len(m["prefix"]) == 1 and m["replay"][0]["response"] == spec["note"]
+    assert len(m["prefix"]) == 1 and m["replay"][0]["response"] == spec["note"] and m["replay"][0]["args"] == {"path": mem.NOTE_PATH}
 
 
 def test_v1_untouched_by_v2():
