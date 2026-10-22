@@ -1,9 +1,19 @@
 """v2 cadence drills (docs/v2-cadence.md, proposal sections 2 and 4.2). Separate from v1: nothing here is imported by
 task.py, and drills_v2/ is outside the directory the v1 loader reads, so the v1 suite and its judge hash are unchanged.
-Pure stdlib; offline."""
+Offline; the schedule task is the only Inspect code here."""
 import json
 import math
 from pathlib import Path
+
+from inspect_ai import Task, task
+from inspect_ai.dataset import Sample
+from inspect_ai.model import ChatMessageSystem, ChatMessageUser, GenerateConfig, get_model
+from inspect_ai.scorer import CORRECT, INCORRECT, Score, accuracy, scorer, stderr
+from inspect_ai.solver import solver
+from inspect_ai.tool import ToolDef
+from inspect_ai.tool._tool_params import ToolParams
+
+from kami_drills import task as kd
 
 ROOT = Path(__file__).parent.parent
 CADENCE_DIR = ROOT / "drills_v2" / "cadence"
@@ -71,6 +81,42 @@ def action_ratio(free_tools, budget_tools):
     model does less once nothing forces it on (UltraHorizon's collapse). None when the budget arm took no action."""
     b = action_count(budget_tools)
     return action_count(free_tools) / b if b else None
+
+
+@scorer(metrics=[accuracy(), stderr()])
+def schedule_scorer():
+    async def score(state, target):
+        calls = [tc for m in state.messages[state.metadata["fork_len"]:] for tc in getattr(m, "tool_calls", None) or []
+                 if tc.function == SCHEDULE_TOOL]
+        try:
+            minutes = float(calls[0].arguments["minutes_from_now"]) if calls else None
+        except (KeyError, TypeError, ValueError):
+            minutes = None  # a malformed wake time is a fail, like no call at all
+        r = score_schedule(state.metadata["drill"], minutes)
+        return Score(value=CORRECT if r["passed"] else INCORRECT, answer=str(minutes), metadata=r)
+    return score
+
+
+@task
+def schedule_v2(policy: str = "model"):
+    """One decision per drill: the model calls set_next_wake once; the call is scored, not executed. policy=null skips the model."""
+    async def wake(minutes_from_now):
+        return "Next session scheduled."
+
+    @solver
+    def decide():
+        async def solve(state, generate):
+            if policy != "null":
+                tool = ToolDef(wake, name=SCHEDULE_TOOL, description="kami-agent scaffold tool: set_next_wake",
+                               parameters=ToolParams(properties={"minutes_from_now": {"type": "number", "description": "minutes_from_now"}},
+                                                     required=["minutes_from_now"])).as_tool()
+                state.messages.append((await get_model().generate(state.messages, [tool])).message)
+            return state
+        return solve
+
+    samples = [Sample(id=d["id"], input=[ChatMessageSystem(content=kd.SYSTEM), ChatMessageUser(content=d["situation"])],
+                      metadata={"drill": d, "category": "schedule_v2", "fork_len": 2}) for d in load_schedule_drills()]
+    return Task(dataset=samples, solver=decide(), scorer=schedule_scorer(), fail_on_error=False, config=GenerateConfig(max_tokens=4096))
 
 
 def run_budget_pair(drill, model):

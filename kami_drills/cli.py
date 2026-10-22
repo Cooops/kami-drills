@@ -101,6 +101,12 @@ def cmd_run(args):
     from kami_drills.report import collect, summarise
     from kami_drills.task import kamidrills
 
+    suite = {"v1": kamidrills}
+    if args.suite != "v1":  # v2 suites: scored by their own scorers, so a plain per-drill table, not the v1 report
+        from kami_drills.cadence import schedule_v2
+        from kami_drills.memory import memory_v2
+        from kami_drills.polluted import polluted_v2
+        suite = {"v2-memory": memory_v2, "v2-schedule": schedule_v2, "v2-polluted": polluted_v2}
     from dotenv import find_dotenv, load_dotenv
 
     load_dotenv(find_dotenv(usecwd=True))  # Inspect reads .env too; load it first so the key check sees it
@@ -108,17 +114,22 @@ def cmd_run(args):
         fail("OPENROUTER_API_KEY is not set; export it, or put it in a .env file in this directory")
     known = {d["id"] for d in drills()}
     ids = [i for i in (args.drills or "").split(",") if i]
-    if unknown := sorted(set(ids) - known):
+    if unknown := sorted(set(ids) - known) if args.suite == "v1" else []:
         fail(f"unknown drill id(s): {', '.join(unknown)} (see kami-drills list)")
     provider = args.model.removeprefix("openrouter/").split("/")[0]
     # their strict tool mode requires every parameter, and the harness surface has optional ones
     model_args = {"strict_tools": False} if provider in ("openai", "meta") else {}
-    logs = inspect_eval(kamidrills(), model=args.model, model_args=model_args, epochs=args.epochs, sample_id=ids or None,
+    logs = inspect_eval(suite[args.suite](), model=args.model, model_args=model_args, epochs=args.epochs, sample_id=ids or None,
                         log_dir=args.log_dir, display="full" if args.verbose else "none")
     log = logs[0]
     if log.status != "success" or all(s.error for s in log.samples or []):
         print(f"kami-drills: eval {log.status}, no scored samples; see inspect view --log-dir {args.log_dir}", file=sys.stderr)
         return 1
+    if args.suite != "v1":
+        rows = [[smp.id, smp.epoch, next(iter(smp.scores.values())).value] for smp in log.samples or [] if smp.scores]
+        table(["drill", "try", "score"], rows, left=1)
+        print(f"log: {log.location}")
+        return 0
     summary = summarise(args.model.removeprefix("openrouter/"), collect([log])[args.model.removeprefix("openrouter/")])
     if args.json:
         print(json.dumps(summary, indent=1, default=str))
@@ -203,6 +214,8 @@ def main(argv=None):
 
     s = sub.add_parser("run", help="run the drills against a model and print a summary")
     s.add_argument("--model", required=True, help="Inspect model name, e.g. openrouter/<provider>/<model>")
+    s.add_argument("--suite", choices=["v1", "v2-memory", "v2-schedule", "v2-polluted"], default="v1",
+                   help="which suite (default v1, the frozen one; v2 suites are experimental)")
     s.add_argument("--epochs", type=int, default=1, help="tries per drill (default 1; results use 2)")
     s.add_argument("--drills", help="comma-separated drill ids (default all)")
     s.add_argument("--log-dir", default="logs", help="where Inspect writes the log (default logs/)")

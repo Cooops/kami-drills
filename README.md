@@ -114,8 +114,11 @@ literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md)
 - **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
   over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
 
-Stubbed: the budget-use runner needs multi-step replay (v1 replay answers one fork); the schedule and memory Inspect
-tasks have not been run end to end; the polluted variants need a loader flag. No model has been run on any v2 drill
+Run a v2 suite with `kami-drills run --model <model> --suite v2-memory|v2-schedule|v2-polluted` (default `v1`; v2
+suites print a per-drill pass table). `tests/test_e2e_mock.py` runs all three through Inspect on the built-in
+`mockllm/model` with scripted plays (oracle-like and null): the tests use the mock model only, with no network, key or cost.
+
+Stubbed: the budget-use runner needs multi-step replay (v1 replay answers one fork). No real model has been run on any v2 drill
 and there are no v2 results. `uv run kami-drills check` runs the v1 script checks and the v2 pytest tests
 (pytest is in the `dev` dependency group, which `uv sync` installs). Building drills for another environment:
 [docs/adapting.md](docs/adapting.md).
