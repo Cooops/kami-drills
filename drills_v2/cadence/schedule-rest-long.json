@@ -1,0 +1,29 @@
+{
+ "format": "kami-drills-v2/cadence-schedule",
+ "tool": "set_next_wake",
+ "id": "schedule-rest-long",
+ "kind": "pending",
+ "prototype": true,
+ "origin": "synthetic_variant",
+ "source_v1_id": "stale-harvest-start",
+ "tolerance_band": null,
+ "pass_threshold": 0.7,
+ "pass_threshold_note": "ln units; 0.7 is a factor of 2 either way. Untuned: tune before registration.",
+ "note": "Synthetic variant: the clock fields of the genuine session end (schedule-harvest-9811-session-end) changed to spread the oracles. Not a recorded state. Rest to full is the binding clock.",
+ "situation": "Kami 9811 is RESTING with 40/70 HP, regaining 19.2 HP per hour. Harvest cooldown: 124 s left. You are at the end of a session. Call set_next_wake with minutes_from_now.",
+ "pending_work": [
+  "harvest_start"
+ ],
+ "state": {
+  "kami": {
+   "id": 9811,
+   "state": "RESTING",
+   "hp": 40,
+   "hp_total": 70,
+   "hp_rate_per_hr": 19.2,
+   "cooldown_s": 124
+  }
+ },
+ "variant_of": "schedule-harvest-9811-session-end",
+ "oracle_minutes": 93.75
+}

@@ -17,6 +17,13 @@ def path_of(d):
     return e.path
 
 
+def followed_actions(d):
+    """State changes a path-follower reaches: up to the last one that did not revert (trailing reverts are skippable, so the
+    episode ends before them)."""
+    acts = [c for c in path_of(d) if cadence.is_state_changing(c["tool"])]
+    return next((i + 1 for i in reversed(range(len(acts))) if not acts[i]["error"]), 0)
+
+
 def follower(d, stop_after=None, then=None):
     """Scripted policy that replays the recorded calls in order, per arm (optionally `then` after stop_after calls)."""
     state = {}
@@ -54,7 +61,8 @@ def test_matching_rule():
 def test_follower_gets_ratio_one_and_never_leaves_the_path(d):
     r = cadence.run_budget_pair(d, follower(d))
     assert r["action_ratio"] == 1 and r["off_trajectory_rate"] == 0
-    assert r["free"]["actions"] == r["budget"]["actions"] == d["trajectory_actions"]
+    assert r["free"]["actions"] == r["budget"]["actions"] == followed_actions(d) <= d["trajectory_actions"]
+    assert r["actions"] == {"free": followed_actions(d), "budget": followed_actions(d)} and r["path_actions"] == d["trajectory_actions"]
     assert r["free"]["outcome"] == r["budget"]["outcome"] == "trajectory_end"
     assert r["steps"]["free"] == r["steps"]["budget"] <= d["trajectory_calls"]
 
@@ -85,12 +93,11 @@ def test_unrecorded_read_is_an_error_not_an_invention():
     assert kd.is_error_text(text) and "no recorded response" in text and e.outcome is None
 
 
-def test_budget_exhaustion_ends_budget_arm_only():
-    d = {**DRILLS[0], "budget_calls": 3}
+def test_forced_budget_is_the_50_call_cap_not_the_path_length():
+    assert all(d["budget_calls"] == 50 for d in DRILLS) and any(d["trajectory_calls"] < 50 for d in DRILLS)
     reads = lambda h, arm: ("lens_account", {})
-    r = cadence.run_budget_pair(d, reads)
-    assert r["budget"]["outcome"] == "budget_exhausted" and r["budget"]["steps"] == 3
-    assert r["free"]["steps"] == kd.MAX_TOOL_CALLS and r["free"]["outcome"] == "budget_exhausted"  # v1's 50-call cap
+    r = cadence.run_budget_pair(DRILLS[0], reads)
+    assert r["budget"]["outcome"] == r["free"]["outcome"] == "budget_exhausted" and r["budget"]["steps"] == r["free"]["steps"] == 50
     assert r["action_ratio"] is None  # no state-changing action in the budget arm
 
 
@@ -108,7 +115,7 @@ def test_free_arm_doing_less_gives_ratio_below_one():
     first_action = next(i for i, c in enumerate(path_of(d)) if c["tool"] in cadence.STATE_CHANGING)
     quitter, full = follower(d, first_action + 1, ("done", {})), follower(d)
     r = cadence.run_budget_pair(d, lambda h, arm: (quitter if arm == "free" else full)(h, arm))
-    assert r["action_ratio"] == pytest.approx(1 / d["trajectory_actions"])
+    assert r["action_ratio"] == pytest.approx(1 / followed_actions(d)) and r["actions"]["free"] == 1
 
 
 def test_silent_budget_arm_is_nudged_then_stopped():
@@ -121,7 +128,7 @@ def test_validate_catches_wrong_trajectory_length():
     bad["trajectory_calls"] += 1
     with pytest.raises(ValueError):
         ep.validate_budget(bad)
-    bad = {**DRILLS[0], "budget_calls": 51}
+    bad = {**DRILLS[0], "budget_calls": DRILLS[0]["trajectory_calls"]}  # the path length is not the budget
     with pytest.raises(ValueError):
         ep.validate_budget(bad)
 
@@ -138,3 +145,30 @@ def test_v1_loader_and_suite_hash_unaffected():
     assert {json.loads(p.read_text())["provenance"]["judge_hash"]["kami_drills/task.py"]
             for p in kd.DRILLS.glob("*.json") if not p.name.startswith("_")} == {h}
     assert "episode" not in open(kd.HERE / "task.py").read()
+
+
+def test_recorded_reverts_can_be_skipped_without_ending_the_episode():
+    d = next(d for d in DRILLS if any(c["error"] and cadence.is_state_changing(c["tool"]) for c in path_of(d)))
+    path = path_of(d)
+    acts = [i for i, c in enumerate(path) if cadence.is_state_changing(c["tool"])]
+    k = next(n for n, i in enumerate(acts) if path[i]["error"] and n + 1 < len(acts) and not path[acts[n + 1]]["error"])
+    e = ep.Episode(d, "budget")
+    for i in acts[:k]:  # follow up to the revert, skip it, take the next real action
+        e.call(path[i]["tool"], path[i]["args"])
+    nxt = path[acts[k + 1]]
+    assert not same_as(path[acts[k]], nxt)
+    assert e.call(nxt["tool"], nxt["args"]) == nxt["text"] and e.outcome != "off_trajectory"
+    # a real (non-error) state change cannot be skipped
+    e = ep.Episode(d, "budget")
+    first_ok = next(i for i in acts if not path[i]["error"])
+    other = next(path[i] for i in acts if not path[i]["error"] and not same_as(path[i], path[first_ok]))
+    for i in acts:
+        if i == first_ok:
+            break
+        e.call(path[i]["tool"], path[i]["args"])
+    e.call(other["tool"], other["args"])
+    assert e.outcome == "off_trajectory"
+
+
+def same_as(a, b):
+    return ep.same_call(a["tool"], a["args"], b["tool"], b["args"])

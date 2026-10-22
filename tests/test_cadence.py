@@ -13,43 +13,59 @@ SLEEP = [d for d in ALL if d.get("kind") == "nothing_due"]
 HARNESS_TOOLS = {t["name"] for t in json.loads((cadence.ROOT / "kami_drills" / "surface" / "harness_tools.json").read_text())["tools"]}
 
 
-def test_examples_present_and_oracle_is_about_one_to_three_hours():
-    assert 3 <= len(DRILLS) <= 5
-    assert all(45 <= cadence.oracle_minutes(d["state"]) <= 180 for d in DRILLS)
+def test_examples_present_spread_and_labelled_prototypes():
+    assert len(ALL) == 7 and len(DRILLS) == 2 and len(SLEEP) == 5
+    assert all(d["prototype"] is True for d in ALL)
+    genuine = [d for d in ALL if d["origin"] == "session_end"]
+    assert [d["id"] for d in genuine] == ["schedule-harvest-9811-session-end"]  # the only genuine session end in the public v1 prefixes
+    assert all(d["origin"] == "synthetic_variant" and d["variant_of"] == genuine[0]["id"] for d in ALL if d not in genuine)
+    assert len({json.dumps(d["state"], sort_keys=True) for d in ALL}) == len(ALL)  # no duplicated state (the old 9787-a/b pair)
+    oracles = sorted(d["oracle_minutes"] for d in ALL)
+    assert oracles[-1] / oracles[0] > 100
 
 
-@pytest.mark.parametrize("d", DRILLS, ids=lambda d: d["id"])
-def test_always_5_min_and_always_24h_fail(d):
-    assert not cadence.score_schedule(d, 5)["passed"]
-    assert not cadence.score_schedule(d, 24 * 60)["passed"]
+@pytest.mark.parametrize("d", ALL, ids=lambda d: d["id"])
+def test_oracle_passes_with_zero_loss_and_always_5_fails(d):
+    s = cadence.score_schedule(d, d["oracle_minutes"])
+    assert s["passed"] and s["raw_loss"] == pytest.approx(0, abs=1e-3)
+    assert not cadence.score_schedule(d, 5)["passed"] or d["oracle_minutes"] < 10
 
 
-@pytest.mark.parametrize("d", DRILLS, ids=lambda d: d["id"])
-def test_oracle_passes_with_zero_loss(d):
-    s = cadence.score_schedule(d, cadence.oracle_minutes(d["state"]))
-    assert s["passed"] and s["raw_loss"] == 0
+def best_pass_rate(policies):
+    return max(sum(cadence.score_schedule(d, p(d))["passed"] for d in ALL) for p in policies) / len(ALL)
 
 
-PINNED = {"schedule-rest-17194": 106.25, "schedule-rest-9787-a": 59.375, "schedule-rest-9787-b": 59.375}
+GRID = [m * 1.1 ** k for k in range(0, 80) for m in (1,)]  # 1 .. ~2000 minutes
 
 
-def test_pending_oracles_pinned_and_kind_defaults_to_pending():
-    assert {d["id"]: cadence.score_schedule(d, 60)["oracle_minutes"] for d in DRILLS} == pytest.approx(PINNED)
-    assert all("kind" not in d for d in DRILLS) and len(DRILLS) == 3
+def test_no_constant_or_kind_keyed_policy_passes_more_than_about_half():
+    assert best_pass_rate([lambda d, c=c: c for c in GRID]) <= 0.5
+    kinds = [d.get("kind") for d in ALL]
+    # one constant per drill kind, chosen with hindsight: the "90 min if pending else 360" family
+    by_kind = sum(max(sum(cadence.score_schedule(d, c)["passed"] for d in ALL if d["kind"] == k) for c in GRID) for k in set(kinds))
+    assert by_kind / len(ALL) <= 0.5
 
 
-def test_nothing_due_drills_present_with_hours_long_oracles():
-    assert 3 <= len(SLEEP) <= 5
-    assert all(4 * 60 <= d["oracle_minutes"] < 24 * 60 and d["flags"] and not d["pending_work"] for d in SLEEP)
+def test_every_situation_ends_in_the_same_neutral_prompt_with_no_rule_hints():
+    assert all(d["situation"].endswith(cadence.CLOSING) for d in ALL)
+    heads = " ".join(d["situation"][: -len(cadence.CLOSING)].lower() for d in ALL)
+    for hint in ("pending", "worth starting", "fully rested", "everything you meant", "nothing is due", "only worth"):
+        assert hint not in heads
 
 
-@pytest.mark.parametrize("d", SLEEP, ids=lambda d: d["id"])
-def test_nothing_due_5_min_fails_oracle_passes_24h_fails_when_event_is_earlier(d):
-    assert not cadence.score_schedule(d, 5)["passed"]
-    assert cadence.score_schedule(d, d["oracle_minutes"] * 1.3)["passed"]
-    assert cadence.score_schedule(d, d["oracle_minutes"])["raw_loss"] == pytest.approx(0, abs=1e-3)
-    assert cadence.score_schedule(d, 1440)["passed"] == (math.log(1440 / d["oracle_minutes"]) <= d["pass_threshold"])
-    assert not cadence.score_schedule(d, 1440)["passed"]  # every shipped oracle is under 12 h
+def test_old_drill_without_closing_prompt_is_rejected():
+    d = copy.deepcopy(DRILLS[0])
+    d["situation"] += " Harvesting the kami is the pending work."
+    with pytest.raises(ValueError):
+        cadence.validate_schedule(d)
+    g = copy.deepcopy(next(x for x in ALL if x["origin"] == "session_end"))
+    g["source_end_msg"] = 1  # a tool call, not a session end
+    with pytest.raises(ValueError):
+        cadence.validate_schedule(g)
+
+
+def test_pending_oracle_is_the_later_of_cooldown_and_rest():
+    assert {d["id"]: d["oracle_minutes"] for d in DRILLS} == pytest.approx({"schedule-rest-near-full": 6.25, "schedule-rest-long": 93.75})
 
 
 def test_always_24h_passes_when_nothing_happens_for_a_day():
@@ -77,6 +93,10 @@ def test_kind_validated():
     bad["kind"] = "bogus"
     with pytest.raises(ValueError):
         cadence.validate_schedule(bad)
+
+
+def test_always_24h_passes_only_the_idle_day():
+    assert [d["id"] for d in ALL if cadence.score_schedule(d, 1440)["passed"]] == ["schedule-harvest-idle"]
 
 
 def test_loss_is_symmetric_in_log_space():
@@ -130,8 +150,18 @@ def test_v1_loader_ignores_drills_v2():
     assert not list(task.DRILLS.rglob("schedule-*"))
 
 
-def test_state_changing_names_are_real_harness_tools():
-    assert cadence.STATE_CHANGING <= HARNESS_TOOLS
+def test_state_changing_classifies_every_harness_tool():
+    descs = {t["name"]: t["description"] for t in json.loads((cadence.ROOT / "kami_drills" / "surface" / "harness_tools.json").read_text())["tools"]}
+    assert cadence.STATE_CHANGING | cadence.READ_ONLY | {n for n in HARNESS_TOOLS if n.startswith("lens_")} == HARNESS_TOOLS
+    assert not cadence.STATE_CHANGING & cadence.READ_ONLY and cadence.READ_ONLY <= HARNESS_TOOLS
+    # every tool that sends a transaction (the harness says so in its description) is state-changing; none of those is read-only
+    tx = {n for n, t in descs.items() if "Validates before signing" in t or "Owner wallet" in t or "Operator wallet" in t or "owner-signed transaction" in t}
+    assert tx <= cadence.STATE_CHANGING and len(tx) > 40
+    for n in ("newbie_vendor_buy", "fund_operator", "listing_buy", "pool_swap", "craft_item", "burn_items", "scavenge_claim_and_reveal",
+              "register_account", "harvest_start", "chat_send", "gacha_use", "take_trade", "portal_deposit"):
+        assert cadence.is_state_changing(n)
+    for n in ("lens_kami", "pool_swap_quote", "quest_state", "set_next_wake", "workspace_read", "no_such_tool"):
+        assert not cadence.is_state_changing(n)
 
 
 def test_action_ratio():

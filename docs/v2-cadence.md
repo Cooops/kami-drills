@@ -11,54 +11,68 @@ pending, so a long sleep loses output). Scoring only "fewer calls" or "per-quest
 agent that sleeps all week has perfect efficiency on the quests it never starts. The schedule drill therefore scores the
 wake time against a clock, in both directions, and the budget drill counts state-changing actions, not calls.
 
+## Everything below is a prototype
+
+Every schedule and budget drill here is a **prototype built from KamiBench-era v1 data** (public, CC-BY-4.0). They show
+the format, the scoring and the loaders work. They are not the benchmark. The real bank comes from Season 1 after close;
+no Season 1 data is in this repo. Each schedule file says `"prototype": true`.
+
 ## Schedule drill
 
-`drills_v2/cadence/schedule-*.json`. The agent is at a session end with pending work and must call `set_next_wake`
-(`minutes_from_now`).
+`drills_v2/cadence/schedule-*.json`. The agent is at a session end and must call `set_next_wake` (`minutes_from_now`).
+The prompt is the kami state plus one closing sentence, identical in every drill (`cadence.CLOSING`): *"You are at the end
+of a session. Call set_next_wake with minutes_from_now."* It carries no hint about what is pending or what is worth
+waiting for; the model has to infer that from the state. World facts the oracle uses (HP regen or drain per hour, MUSU
+rate, cooldown) are shown. The thresholds below are the oracle's assumptions and are not shown.
 
-- **Oracle:** minutes until the kami is off cooldown and fully rested, from the state's clock fields:
-  `max(cooldown_s, (hp_total - hp) / hp_rate_per_hr * 3600) / 60`. The file records it and the loader checks it.
 - **Score:** raw loss `|ln(chosen / oracle)|`, always reported. Optional `tolerance_band` (a factor, default `null`):
   loss becomes `max(0, raw - ln(band))`. `pass_threshold` (ln units, 0.7 = a factor of 2) is applied to that loss.
-- Always 5 min and always 24 h both fail every example (oracle 59 to 106 min; raw loss 2.5 and 2.6 or more).
-- Each drill records `source_v1_id` and the fork line. Examples use only drills sourced from the public KamiBench
-  dataset, no Season 1 data.
-
-## Two kinds: `pending` and `nothing_due`
-
-Each schedule drill has `kind` (`"pending"` when absent, so the first three files are unchanged).
-
-- **`pending`:** work is waiting on a clock (rest, cooldown). The oracle is the rule above. A model that always sleeps
-  long fails these.
-- **`nothing_due`:** no kami needs action: harvesting, HP well above the risk line, no cooldown, `pending_work` empty.
-  Oracle = minutes to the earliest useful event, capped at 1440 (the harness maximum):
-  `min(harvest collect, HP risk line)`, each a linear extrapolation of the recorded rate:
-  `(collect_target_musu - accrued_musu) / rate_per_hr` and `(hp - hp_risk_fraction * hp_total) / hp_drain_per_hr`.
-  A model that always sleeps 5 minutes fails these (and burns calls); a model that always sleeps 24 h usually fails too,
-  since an event arrives earlier, and passes only where the oracle is near the cap.
-- **Why both:** one kind alone is gamed by a constant. Always-long passes only nothing-due drills with a near-cap
-  oracle and fails every pending one; always-short passes neither. Only a model that reads the clock passes both.
-- **Parameters, recorded in each nothing_due file (`params`):** `hp_risk_fraction` (0.3) and `collect_target_musu` (250)
-  are this drill's assumptions, not game facts. Quest completion has no clock in a kami state, so it is not an event.
-- **Source and honesty:** clock fields come from the recorded `lens_kami` read in a public v1 drill (`hpRatePerHr`,
-  `cooldownSec`, `musu.accrued`, `musu.spotRatePerHr`). No v1 state is verifiably nothing-due account-wide (quests,
-  feeding and other work are not in a kami read), so each file carries a `flags` entry: these are the closest honest
-  cases, where the kami clock alone is idle. Oracles are 4 to 11 h; none is at the cap, so the capped case is only
-  unit-tested on a synthetic state.
+- **Where drills fork.** Only at a point where the original v1 agent ended its own turn. The earlier drills forked at
+  points where the v1 rule requires an action, so "wait" was the wrong answer there; those were removed. Scanning all 47
+  public v1 prefixes: **no** prefix contains a `set_next_wake` or `end_session` call, and **two** contain a text-only
+  stop by the agent (`stale-harvest-start` message 9, `onboard-fund-amount` message 7; the harness then said "Continue. To
+  end this session, call end_session."). `onboard-fund-amount` has no kami, so there is no clock to schedule on. That
+  leaves **one genuine session end**: `schedule-harvest-9811-session-end` (state from the `lens_party` read at message 4:
+  27/70 HP, losing 5.09/hr, 27 MUSU accrued at 26.62/hr, no cooldown). v1's rule for that drill also requires
+  `harvest_collect` first and accepts a later `set_next_wake` of about 60 min; this drill scores only the wake, and its
+  oracle (70.7 min) is within a factor of 2 of v1's.
+- **Synthetic variants.** The other six files are **synthetic**: the same kami, with the clock fields changed so the
+  oracles spread from 6 to 1440 min, so no single value fits. They are marked `"origin": "synthetic_variant"` and are not
+  recorded states. They exist to test the scorer and to show the spread; replace them with real session ends from Season 1.
+- **Kinds.** `pending` (a RESTING kami with cooldown): oracle `max(cooldown_s, (hp_total - hp) / hp_rate_per_hr * 3600) / 60`.
+  `nothing_due` (a HARVESTING kami, nothing on cooldown): oracle is the earliest of the harvest reaching
+  `collect_target_musu` and HP draining to `hp_risk_fraction * hp_total`, each a linear extrapolation, capped at 1440
+  (the harness maximum). The kind is an author label; the model is not told it.
+- **Untuned parameters.** `hp_risk_fraction` (0.3), `collect_target_musu` (250) and `pass_threshold` (0.7) are this
+  drill's assumptions, not game facts, are recorded in each file (`params`), and have not been tuned. Quest completion
+  has no clock in a kami state, so it is not an event.
+- **Gaming checks** (`tests/test_cadence.py`): no constant wake time, and no constant chosen per drill kind with
+  hindsight, passes more than half of the drills; the closing prompt is identical and the preceding text has no rule hints.
+  This is a check on the shipped files, not a proof: seven drills is a small bank.
+- Each drill records `source_v1_id` and either `source_end_msg` or `variant_of`. The loader checks that a genuine
+  `source_end_msg` is an assistant message with no tool call.
 
 ## Budget-use drill
 
-One short episode, two arms: a forced budget of N calls (v1's `MAX_TOOL_CALLS` is 50, and a model cannot stop early:
-a reply with no tool call is answered "keep working" up to 3 times), and a free arm with a `done` tool. Metric:
-state-changing actions in the free arm over the budget arm (`action_ratio`; below 1 means less initiative when nothing
-forces it on). v1 has no ACT/PERCEIVE classification, so `STATE_CHANGING` is an explicit list of transaction-sending
-tools, tested against the harness tool list (it omits some writers, e.g. `burn_items`, which therefore count as reads).
+One short episode, two arms. Both arms get v1's 50-call session cap (`MAX_TOOL_CALLS`, the proposal's forced budget);
+the budget arm has no `done` tool and a reply with no tool call is answered "keep working" up to 3 times, and the free
+arm has a `done` tool. Metric: state-changing actions per arm (`actions`), and their ratio free over budget
+(`action_ratio`; below 1 means less initiative when nothing forces it on). **The ratio is capped by the recorded path:** a
+model that follows it gets 1 in both arms, and neither arm can go beyond the path's last state change, so read the
+per-arm counts and `path_actions`, not only the ratio.
 
-`cadence.run_budget_pair(drill, model)` runs both arms offline through `kami_drills/episode.py` and returns
-`action_ratio`, `off_trajectory_rate` (share of the two arms that ended off the path) and `steps` per arm. `model` is a
-policy `model(history, arm) -> (tool, args) | None`. The Inspect task is `kami_drills/episode.py::budget_v2`
-(`uv run inspect eval kami_drills/episode.py`), two samples per drill; its scorer's metadata carries the tool list so the
-ratio is computed per drill pair. It has not been run against a model.
+**One classification for the package.** `harness_tools.json` has no ACT/PERCEIVE category, so `cadence.STATE_CHANGING`
+is derived from it: every harness tool except an explicit, reviewed `READ_ONLY` list (get_*, quotes, status reads) and
+the `lens_*` reads. That is 67 of 109 tools, including `newbie_vendor_buy`, `fund_operator`, `listing_buy`, `pool_swap`,
+`craft_item`, `burn_items` and the other transaction tools. `cadence.is_state_changing(tool)` is the predicate. A test
+checks that every harness tool is classified and that every tool whose description says it signs a transaction is
+state-changing. Other modules should import this one set.
+
+`cadence.run_budget_pair(drill, model)` runs both arms offline through `kami_drills/episode.py` and returns `actions`
+per arm, `action_ratio`, `path_actions`, `off_trajectory_rate` (share of the two arms that ended off the path) and
+`steps` per arm. `model` is a policy `model(history, arm) -> (tool, args) | None`. The Inspect task is
+`kami_drills/episode.py::budget_v2` (`uv run inspect eval kami_drills/episode.py`), two samples per drill; its scorer's
+metadata carries the tool list so the ratio is computed per drill pair. It has not been run against a model.
 
 ### On-trajectory replay
 
@@ -72,18 +86,20 @@ public v1 files hold nothing after the fork, so that is all the continuation the
   default. Id lists compare as sorted sets; numbers and numeric strings are equal; text is trimmed and lower-cased.
   Anything else must be equal, so an extra or different argument is a different call.
 - **State-changing call** (in `STATE_CHANGING`): must match the next recorded state-changing call; recorded reads in
-  between may be skipped. A match returns the recorded result, errors included. Anything else ends the episode as
-  `off_trajectory`, and nothing is answered. The call is counted as an action attempted.
+  between may be skipped, and so may a recorded state change whose result was a revert or error (the model need not
+  repeat a failure; a later recorded call still matches). A match returns the recorded result, errors included. Any
+  other call ends the episode as `off_trajectory`, and nothing is answered. The call is counted as an action attempted.
 - **Reads** keep v1 semantics: the nearest matching recorded read ahead on the path, then the drill's `recorded_reads`,
   then `_global_reads`. No match returns v1's "not available in this drill" error. No output is invented.
-- **Ends:** `done` (free arm; `end_session` and `set_next_wake` also count), `budget_exhausted` (budget arm at N calls;
-  the free arm has the 50-call cap), `off_trajectory`, `trajectory_end` (the last recorded state change matched, or a
-  state change was attempted after it), or `stopped` (no tool call). Steps and actions are scored up to that point.
+- **Ends:** `done` (free arm; `end_session` and `set_next_wake` also count), `budget_exhausted` (50 calls, both arms), `off_trajectory`, `trajectory_end` (the last recorded state change that did not revert
+  matched, or a state change was attempted after it), or `stopped` (no tool call). Steps and actions are scored up to that point.
 
-Budget drills: `budget-vendor-run` (from `repeat-newbie-vendor-guess`, 44 calls, 12 actions), `budget-harvest-run` (from
-`stale-cooldown-retry-start`, 41 and 12), `budget-onboard-run` (from `onboard-complete-before-accept`, 48 and 11). Each
-sets `budget_calls` to the full recorded length. Few v1 drills have 10 or more recorded state changes before the fork;
-these are the best available.
+Budget drills (prototypes, KamiBench-era v1 data): `budget-vendor-run` (from `repeat-newbie-vendor-guess`, 44 recorded
+calls, 13 state changes), `budget-harvest-run` (from `stale-cooldown-retry-start`, 41 and 13), `budget-onboard-run`
+(from `onboard-complete-before-accept`, 48 and 13). The counts use the package-wide classification (`burn_items`,
+`scavenge_claim_and_reveal` and `register_account` count; earlier text said 12, 12 and 11). `budget_calls` is 50 in every
+file, not the path length. Some of the recorded state changes reverted (1 to 4 per path); those can be skipped. Few v1
+drills have 10 or more recorded state changes before the fork; these are the best available.
 
 ## Limitations
 
@@ -92,8 +108,14 @@ these are the best available.
   only up to there, so a high off-trajectory rate means "the replay cannot follow this model", not "the model is
   wrong". The original agent's own reverts are on the path too, and a path-following model gets `action_ratio` 1 by
   construction. Paths are short (at most 13 state changes), end at the v1 fork, and the free arm can only stop early.
-- No Inspect task runs the schedule drill yet; `score_schedule` takes a chosen wake time.
-- Nothing-due examples are kami-clock-only (see above); four, from three kami (20699, 715, 17194; the last twice, in different sessions).
-- Two examples share one kami state (different forks); effective n is 2. The oracle is one rule, and `pass_threshold` is
-  untuned.
-- The clock is HP rest and cooldown. Harvest timers are not in v1 states (`harvestEnd` there is an event counter).
+- The schedule task exists (`cadence.py::schedule_v2`, one `set_next_wake` call per drill, scored not executed) but has
+  never been run against a real model; the tests use `mockllm`.
+- **One genuine schedule drill.** Public v1 data holds one usable session end (see above); the other six schedule drills
+  are synthetic clock variants of it, same kami, one rule family. Effective n is far below 7, there is no cluster
+  structure, and a pass rate over this bank says little. The bank is a format check until Season 1 data replaces it.
+- The oracle is still one rule per kind, with untuned parameters (0.3 risk line, 250 MUSU collect target, factor-2
+  threshold). The model is not shown those, so it can only infer them; the factor-2 window absorbs some of that.
+- The "no constant policy passes more than half" check is on the shipped seven drills and a grid of constants; it does not
+  cover policies that read the state (for example, "wait for HP to drain to 30%"), which is the intended solution.
+- The clock is HP rest, HP drain, cooldown and harvest accrual. Harvest timers are not in v1 states (`harvestEnd` there
+  is an event counter), and quests have no clock.

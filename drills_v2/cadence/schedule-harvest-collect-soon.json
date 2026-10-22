@@ -1,0 +1,39 @@
+{
+ "format": "kami-drills-v2/cadence-schedule",
+ "tool": "set_next_wake",
+ "id": "schedule-harvest-collect-soon",
+ "kind": "nothing_due",
+ "prototype": true,
+ "origin": "synthetic_variant",
+ "source_v1_id": "stale-harvest-start",
+ "tolerance_band": null,
+ "pass_threshold": 0.7,
+ "pass_threshold_note": "ln units; 0.7 is a factor of 2 either way. Untuned: tune before registration.",
+ "note": "Synthetic variant: the clock fields of the genuine session end (schedule-harvest-9811-session-end) changed to spread the oracles. Not a recorded state. Collect target is the binding event.",
+ "situation": "Kami 9811 is HARVESTING with 60/70 HP, losing 0.8 HP per hour. It has accrued 240 MUSU and earns 40 MUSU per hour. Harvest cooldown: 0 s. You are at the end of a session. Call set_next_wake with minutes_from_now.",
+ "pending_work": [],
+ "state": {
+  "kami": {
+   "id": 9811,
+   "state": "HARVESTING",
+   "hp": 60,
+   "hp_total": 70,
+   "hp_drain_per_hr": 0.8,
+   "cooldown_s": 0
+  },
+  "harvest": {
+   "accrued_musu": 240,
+   "rate_per_hr": 40
+  }
+ },
+ "params": {
+  "hp_risk_fraction": 0.3,
+  "collect_target_musu": 250
+ },
+ "params_note": "hp_risk_fraction (0.3) and collect_target_musu (250) are this drill's untuned assumptions, not game facts; the model is not shown them.",
+ "flags": [
+  "kami clock only: quests, feeding and inventory work are not in a kami read, so 'nothing due' is judged on the kami clock alone"
+ ],
+ "variant_of": "schedule-harvest-9811-session-end",
+ "oracle_minutes": 15.0
+}

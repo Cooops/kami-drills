@@ -2,8 +2,9 @@
 
 An episode starts partway through a public v1 drill's recorded prefix and follows that recorded transcript forward. It
 never invents a tool output: every answer is a recorded one. State-changing calls must match the next recorded
-state-changing call (same tool, same normalised arguments) and are answered with its recorded result. A different
-state-changing call ends the episode ("off_trajectory"). Reads keep v1 semantics: recorded reads plus _global_reads.
+state-changing call (same tool, same normalised arguments) and are answered with its recorded result. A recorded
+state change whose result was a revert or error may be skipped. Any other different state-changing call ends the
+episode ("off_trajectory"). Reads keep v1 semantics: recorded reads plus _global_reads.
 Nothing here is imported by task.py, so the v1 suite and its judge hash are unchanged.
 """
 import json
@@ -53,7 +54,8 @@ def same_call(tool, a, tool2, b):
 def trajectory(prefix):
     """Flat [{"tool", "args", "text"}] of the tool calls in a recorded message list, in order, each with its result."""
     results = {m["tool_call_id"]: str(m["content"]) for m in prefix if m["role"] == "tool_result"}
-    return [{"tool": tc["name"], "args": tc.get("args") or {}, "text": results.get(tc["id"], "")}
+    return [{"tool": tc["name"], "args": tc.get("args") or {}, "text": results.get(tc["id"], ""),
+             "error": kd.is_error_text(results.get(tc["id"], ""))}
             for m in prefix if m["role"] == "assistant" for tc in m.get("tool_calls") or []]
 
 
@@ -63,11 +65,25 @@ class Episode:
         self.drill, self.arm = drill, arm
         self.prefix = self.src["prefix"][:drill["start"]]
         self.path = trajectory(self.src["prefix"][drill["start"]:])
-        self.budget = drill["budget_calls"] if arm == "budget" else kd.MAX_TOOL_CALLS
+        self.budget = kd.MAX_TOOL_CALLS  # both arms get v1's 50-call session cap; the budget arm just has no `done`
         self.pos, self.calls, self.outcome = 0, [], None
 
-    def _next_action(self):
-        return next((i for i in range(self.pos, len(self.path)) if self.path[i]["tool"] in cadence.STATE_CHANGING), None)
+    def _actions(self):
+        return [i for i in range(self.pos, len(self.path)) if cadence.is_state_changing(self.path[i]["tool"])]
+
+    def _match_action(self, tool, args):
+        """Index of the recorded state change this call matches: the next one, or a later one when every state change
+        before it was a recorded revert/error (those may be skipped). None if no match."""
+        for i in self._actions():
+            if same_call(tool, args, self.path[i]["tool"], self.path[i]["args"]):
+                return i
+            if not self.path[i]["error"]:
+                return None
+        return None
+
+    def _live_actions(self):
+        """Recorded state changes still worth doing: errors left on the path are skippable, so they do not keep it open."""
+        return [i for i in self._actions() if not self.path[i]["error"]]
 
     def _read(self, tool, args):
         """Recorded answer to a read, or None. The nearest recorded copy still ahead on the path wins, then v1's recorded
@@ -90,13 +106,13 @@ class Episode:
                 text, self.outcome = "Session ended.", "done"
             else:
                 text = f"Budget not used up ({self.budget - len(self.calls) - 1} calls left). Keep working."
-        elif tool in cadence.STATE_CHANGING:
-            j = self._next_action()
-            if j is None:  # the recorded path has no state change left to answer with
+        elif cadence.is_state_changing(tool):
+            j = self._match_action(tool, args)
+            if not self._live_actions() and j is None:  # nothing left to answer with but skippable errors
                 text, self.outcome = "Recorded path ended.", "trajectory_end"
-            elif same_call(tool, args, self.path[j]["tool"], self.path[j]["args"]):
+            elif j is not None:
                 text, matched, self.pos = self.path[j]["text"], True, j + 1
-                if self._next_action() is None:
+                if not self._live_actions():
                     self.outcome = "trajectory_end"
             else:
                 text, self.outcome = "Off the recorded path.", "off_trajectory"
@@ -114,7 +130,7 @@ class Episode:
         included, since trying it is the initiative being measured), recorded-path progress."""
         tools = [c["tool"] for c in self.calls]
         return {"arm": self.arm, "outcome": self.outcome or "stopped", "steps": len(self.calls), "tools": tools,
-                "actions": cadence.action_count(tools), "path_actions_matched": sum(c["matched"] and c["tool"] in cadence.STATE_CHANGING for c in self.calls),
+                "actions": cadence.action_count(tools), "path_actions_matched": sum(c["matched"] and cadence.is_state_changing(c["tool"]) for c in self.calls),
                 "off_trajectory": self.outcome == "off_trajectory"}
 
 
@@ -156,8 +172,8 @@ def validate_budget(d):
         raise ValueError(f"{d['id']}: start must be an assistant message")
     if (len(ep.path), cadence.action_count(p["tool"] for p in ep.path)) != (d["trajectory_calls"], d["trajectory_actions"]):
         raise ValueError(f"{d['id']}: recorded trajectory length disagrees with the source drill")
-    if not 0 < d["budget_calls"] <= min(d["trajectory_calls"], kd.MAX_TOOL_CALLS):
-        raise ValueError(f"{d['id']}: budget_calls must be within 1..min(trajectory_calls, {kd.MAX_TOOL_CALLS})")
+    if d["budget_calls"] != kd.MAX_TOOL_CALLS:
+        raise ValueError(f"{d['id']}: budget_calls must be {kd.MAX_TOOL_CALLS} (the proposal's forced budget, v1's session cap)")
     return d
 
 

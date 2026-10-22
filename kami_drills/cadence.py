@@ -20,12 +20,20 @@ CADENCE_DIR = ROOT / "drills_v2" / "cadence"
 SCHEDULE_FORMAT = "kami-drills-v2/cadence-schedule"
 BUDGET_FORMAT = "kami-drills-v2/cadence-budget"
 SCHEDULE_TOOL = "set_next_wake"  # v1 harness scaffold tool; argument minutes_from_now
-# v1 has no ACT/PERCEIVE classification, so this is explicit: tools that send transactions (names from harness_tools.json)
-STATE_CHANGING = frozenset({
-    "harvest_start", "harvest_stop", "harvest_collect", "move_to_room", "travel_to_room", "feed_kami", "revive_kami",
-    "level_up_kami", "level_to", "allocate_skills", "upgrade_skill", "level_and_allocate_batch",
-    "feed_level_allocate_batch", "use_item_batch", "accept_quest", "complete_quest", "act_sequence",
-    "burn_items", "scavenge_claim_and_reveal", "register_account"})
+# harness_tools.json has no ACT/PERCEIVE category, so classification is explicit and reviewed against the tool
+# descriptions: READ_ONLY are the tools that send no transaction and change nothing (lens_*, get_*, quotes, status
+# reads). Every other harness tool sends a transaction or otherwise changes account state. tests/test_cadence.py
+# checks that every harness tool is classified and that no "Validates before signing" tool is read-only.
+READ_ONLY = frozenset({
+    "list_accounts", "get_gas_balance", "bridge_status", "get_tier", "get_all_strategies", "get_all_strategy_statuses",
+    "get_strategy_status", "get_strategy_logs", "get_item_orderbook", "pool_swap_quote", "check_quest_completable",
+    "quest_state", "get_expected_objective", "get_scavenge_points", "get_scavenge_droptable"})
+HARNESS_TOOLS = frozenset(t["name"] for t in json.loads((ROOT / "kami_drills" / "surface" / "harness_tools.json").read_text())["tools"])
+STATE_CHANGING = frozenset(n for n in HARNESS_TOOLS if n not in READ_ONLY and not n.startswith("lens_"))
+
+
+def is_state_changing(tool):
+    return tool in STATE_CHANGING
 
 
 def oracle_minutes(state):
@@ -38,6 +46,9 @@ def oracle_minutes(state):
 
 MAX_WAKE_MINUTES = 24 * 60  # harness maximum for set_next_wake
 KINDS = ("pending", "nothing_due")
+ORIGINS = ("session_end", "synthetic_variant")
+# Every situation ends with this and nothing else: no hint about which kind of drill it is. The model infers it from the state.
+CLOSING = "You are at the end of a session. Call set_next_wake with minutes_from_now."
 
 
 def nothing_due_oracle_minutes(state, params):
@@ -97,6 +108,12 @@ def validate_schedule(d):
             raise ValueError(f"{d.get('id')}: {key} missing or not {typ}")
     if d.get("format") != SCHEDULE_FORMAT or d.get("tool") != SCHEDULE_TOOL:
         raise ValueError(f"{d['id']}: wrong format or tool")
+    if d.get("prototype") is not True or d.get("origin") not in ORIGINS or not d.get("situation", "").endswith(CLOSING):
+        raise ValueError(f"{d['id']}: needs prototype: true, origin in {ORIGINS}, and a situation ending in the neutral closing prompt")
+    if d["origin"] == "session_end":  # the original agent's own text-only stop in the public v1 prefix
+        m = json.loads((ROOT / "drills" / f"{d['source_v1_id']}.json").read_text())["prefix"][d["source_end_msg"]]
+        if m["role"] != "assistant" or m.get("tool_calls"):
+            raise ValueError(f"{d['id']}: source_end_msg is not a session end (an assistant message with no tool call)")
     if "tolerance_band" not in d or not (d["tolerance_band"] is None or d["tolerance_band"] >= 1):
         raise ValueError(f"{d['id']}: tolerance_band must be recorded as null or a factor >= 1")
     if d["pass_threshold"] < 0 or (not nothing_due and not d["pending_work"]):
@@ -116,7 +133,7 @@ def load_schedule_drills(directory=CADENCE_DIR):
 
 
 def action_count(tool_names):
-    return sum(t in STATE_CHANGING for t in tool_names)
+    return sum(map(is_state_changing, tool_names))
 
 
 def action_ratio(free_tools, budget_tools):
@@ -164,10 +181,13 @@ def schedule_v2(policy: str = "model"):
 
 def run_budget_pair(drill, model):
     """Run both arms of a budget drill offline on its recorded trajectory (kami_drills/episode.py). `model` is a policy,
-    model(history, arm) -> (tool, args) or None; history is v1-shaped messages. Reports action_ratio (free over budget),
-    the off-trajectory rate over the two arms, and the steps taken in each."""
+    model(history, arm) -> (tool, args) or None; history is v1-shaped messages. Reports the action count per arm,
+    action_ratio (free over budget; capped at 1 for a path-follower, since both arms stop at the recorded path's end,
+    so read the counts, not only the ratio), path_actions (what a full follower reaches), the off-trajectory rate over
+    the two arms, and the steps taken in each."""
     from kami_drills.episode import run_episode
     free, budget = (run_episode(drill, model, arm) for arm in ("free", "budget"))
     return {"action_ratio": action_ratio(free["tools"], budget["tools"]),
+            "actions": {"free": free["actions"], "budget": budget["actions"]}, "path_actions": drill["trajectory_actions"],
             "off_trajectory_rate": (free["off_trajectory"] + budget["off_trajectory"]) / 2,
             "steps": {"free": free["steps"], "budget": budget["steps"]}, "free": free, "budget": budget}
