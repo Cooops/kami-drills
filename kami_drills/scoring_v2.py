@@ -163,45 +163,145 @@ def composite(decision, cadence, form="zsum"):
     raise ValueError(f"unknown form {form!r}")
 
 
-def _resample(items, clusters, rng):
-    """One bootstrap draw of item ids: whole clusters when given ({item: cluster}), else items."""
-    if not clusters:
-        return [rng.choice(items) for _ in items]
-    groups = {}
+def default_tier_sizes(n_models):
+    """Registered tier sizes: top and bottom each floor(0.3 * N + 0.5) (halves round up; N = 15 gives 5/5/5), middle the
+    rest. Integer arithmetic, so no float rounding."""
+    k = (3 * n_models + 5) // 10
+    return k, n_models - 2 * k, k
+
+
+def _resample(items, clusters, rng, strata=None):
+    """One bootstrap draw of item ids, stratified: within each stratum ({item: stratum}; one stratum if None), as many
+    clusters ({item: cluster}; an item without one is its own) as the stratum holds are drawn with replacement. A
+    stratum with a single cluster draws its items instead, since one cluster carries no between-cluster variance."""
+    by_stratum = {}
     for i in items:
-        groups.setdefault(clusters[i], []).append(i)
-    groups = list(groups.values())
-    return [i for _ in groups for i in rng.choice(groups)]
+        by_stratum.setdefault((strata or {}).get(i), {}).setdefault((clusters or {}).get(i, i), []).append(i)
+    pick = []
+    for groups in by_stratum.values():
+        groups = list(groups.values())
+        if len(groups) == 1:
+            groups = [[i] for i in groups[0]]
+        pick += [i for _ in groups for i in rng.choice(groups)]
+    return pick
 
 
-def _boot_means(per_model_item_scores, n, seed, clusters, score_fn=None):
-    """Yields ({model: score over one shared resample of items}, rng). Every model must score the same items. The
-    score is the mean unless score_fn(picked_item_ids) -> {model: score} is given (e.g. the composite)."""
+def _mean_over(scores, pick):
+    """Mean of {item: score} over the picked ids, skipping items the model was not administered (absent or None); the
+    mean over all its administered items when the draw holds none of them."""
+    vals = [scores[i] for i in pick if scores.get(i) is not None]
+    return statistics.fmean(vals or [v for v in scores.values() if v is not None])
+
+
+def _boot_means(per_model_item_scores, n, seed, clusters, score_fn=None, strata=None):
+    """Yields ({model: score over one shared resample of items}, rng). Items are the union over models; a model's
+    missing or None items are not administered and skipped (`_mean_over`). The score is the mean unless
+    score_fn(picked_item_ids) -> {model: score} is given (e.g. the composite)."""
     rng = random.Random(seed)
-    items = sorted(next(iter(per_model_item_scores.values())))
+    items = sorted(set().union(*per_model_item_scores.values()))
     for _ in range(n):
-        pick = _resample(items, clusters, rng)
+        pick = _resample(items, clusters, rng, strata)
         yield (score_fn(pick) if score_fn else
-               {m: statistics.fmean(s[i] for i in pick) for m, s in per_model_item_scores.items()}), rng
+               {m: _mean_over(s, pick) for m, s in per_model_item_scores.items()}), rng
 
 
-def tier_probs_bootstrap(per_model_item_scores, tier_sizes=(3, 4, 3), n=2000, seed=0, clusters=None, score_fn=None):
-    """P(top/middle/bottom) per model: resample items (clusters if given), score models (mean, or score_fn over the
-    resampled item ids), rank them each replicate (ties broken at random), cut the ranking into tier_sizes.
-    per_model_item_scores: {model: {item: score}}."""
-    models = sorted(per_model_item_scores)
+def _tier_shares(models, tier_sizes, draws, n):
+    """Ranks the models in each of n draws ({model: score}, rng), higher first and ties broken at random, cuts the
+    ranking into tier_sizes and returns {model: {tier: share of draws}}."""
     if sum(tier_sizes) != len(models):
         raise ValueError(f"tier sizes {tier_sizes} do not add up to {len(models)} models")
     labels = [t for t, k in zip(TIERS, tier_sizes) for _ in range(k)]
     counts = {m: dict.fromkeys(TIERS, 0) for m in models}
-    for means, rng in _boot_means(per_model_item_scores, n, seed, clusters, score_fn):
-        order = sorted(models, key=lambda m: (-means[m], rng.random()))
-        for m, t in zip(order, labels):
+    for scores, rng in draws:
+        for m, t in zip(sorted(models, key=lambda m: (-scores[m], rng.random())), labels):
             counts[m][t] += 1
     return {m: {t: c / n for t, c in counts[m].items()} for m in models}
 
 
-def mcb_set(per_model_item_scores, n=2000, seed=0, clusters=None, alpha=.05):
+def tier_probs_bootstrap(per_model_item_scores, tier_sizes=(3, 4, 3), n=10000, seed=0, clusters=None, score_fn=None,
+                         strata=None):
+    """P(top/middle/bottom) per model: resample items (clusters if given, within strata if given), score models (mean,
+    or score_fn over the resampled item ids), rank them each replicate (ties broken at random), cut the ranking into
+    tier_sizes. per_model_item_scores: {model: {item: score}}."""
+    return _tier_shares(sorted(per_model_item_scores), tier_sizes, _boot_means(per_model_item_scores, n, seed, clusters, score_fn, strata), n)
+
+
+def pooled_ratio(pairs):
+    """Pooled budget ratio of [(free_actions, budget_actions)]: total state-changing actions in the free arms over the
+    total in the forced-budget arms; None when the budget arms took no action."""
+    b = sum(p[1] for p in pairs)
+    return sum(p[0] for p in pairs) / b if b else None
+
+
+def forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000, seed=0, clusters=None):
+    """Registered forecast, proposal 6.1 steps 2-5. Returns {model: {tier: P}}.
+    decision_items: {model: {item: pass@1}}; an absent or None item is not administered and excluded.
+    schedule_losses: {model: {drill: cadence.schedule_loss}}; absent or inf counts as MAX_SCHEDULE_LOSS.
+    budget_ratios: {model: pooled budget ratio or None}, held fixed across replicates; or {model: {drill: (free_actions,
+    budget_actions)}}, pooled per replicate over the resampled budget drills (`pooled_ratio`).
+    clusters: {item or drill id: snapshot family}. Stratified cluster bootstrap: decision, schedule and budget items are
+    resampled separately (`_resample`), and both scores, the composite and the ranking are recomputed each replicate."""
+    models = sorted(decision_items)
+    per_model = {m: {} for m in models}
+    for kind, data in (("decision", decision_items), ("schedule", schedule_losses), ("budget", budget_ratios)):
+        for m in models:
+            if isinstance(data[m], dict):
+                per_model[m].update({(kind, i): v for i, v in data[m].items()})
+    ids = set().union(*per_model.values())
+    fam = {k: (k[0], clusters.get(k[1], k[1])) for k in ids} if clusters else None
+
+    def score(pick):
+        by = {"decision": [], "schedule": [], "budget": []}
+        for kind, i in pick:
+            by[kind].append(i)
+        dec = {m: _mean_over(decision_items[m], by["decision"]) for m in models}
+        sched = {m: [schedule_losses[m].get(i, math.inf) for i in by["schedule"]] for m in models}
+        budget = {m: pooled_ratio([r[i] for i in by["budget"] if i in r]) if isinstance(r := budget_ratios[m], dict)
+                  else r for m in models}
+        return composite(dec, cadence_score(sched, budget))
+
+    return tier_probs_bootstrap(per_model, tier_sizes, n, seed, fam, score, {k: k[0] for k in ids})
+
+
+def season_baseline_probs(per_model_run_outcomes, tier_sizes, n=10000, seed=0):
+    """Calibrated Season 1 baseline: P(tier) per model from resampling each model's own live runs with replacement,
+    ranking the resampled means (ties at random) and cutting at tier_sizes. per_model_run_outcomes: {model: [outcome
+    per run]}. Calibrated to run-to-run noise only, not to change between seasons."""
+    models = sorted(per_model_run_outcomes)
+    rng = random.Random(seed)
+    draws = (({m: statistics.fmean(rng.choices(r, k=len(r))) for m, r in sorted(per_model_run_outcomes.items())}, rng)
+             for _ in range(n))
+    return _tier_shares(models, tier_sizes, draws, n)
+
+
+def live_tiers(per_model_run_outcomes, tier_sizes):
+    """Outcome tier per model: rank by mean outcome over its runs, ties broken by model id, cut at tier_sizes."""
+    means = {m: statistics.fmean(r) for m, r in per_model_run_outcomes.items()}
+    if sum(tier_sizes) != len(means):
+        raise ValueError(f"tier sizes {tier_sizes} do not add up to {len(means)} models")
+    labels = [t for t, k in zip(TIERS, tier_sizes) for _ in range(k)]
+    return dict(zip(sorted(means, key=lambda m: (-means[m], m)), labels))
+
+
+def certain_probs(tiers):
+    """{model: tier} -> a forecast putting probability 1 on that tier."""
+    return {m: {t: float(t == tier) for t in TIERS} for m, tier in tiers.items()}
+
+
+def rps_skill(forecast_probs, outcome_tiers, baselines):
+    """Mean RPS over the models in outcome_tiers, and skill 1 - RPS / RPS_baseline against each named baseline
+    ({name: {model: probs}}) plus "uniform". A model a baseline does not cover (new this season) gets uniform in it.
+    Returns {"rps": forecast mean RPS, "skill": {name: skill or None}}."""
+    uniform = {t: 1 / len(TIERS) for t in TIERS}
+
+    def mean_rps(probs):
+        return statistics.fmean(rps(probs.get(m, uniform), t) for m, t in outcome_tiers.items())
+
+    f = mean_rps(forecast_probs)
+    return {"rps": f, "skill": {name: rps_vs_baseline(f, mean_rps(p)) for name, p in {**baselines, "uniform": {}}.items()}}
+
+
+def mcb_set(per_model_item_scores, n=10000, seed=0, clusters=None, alpha=.05):
     """Multiple comparisons with the best by paired item bootstrap: model m stays in the set unless its mean is below
     the best of the others in at least 1 - alpha of replicates. Returns the sorted set.
     shortcut: per-model percentile, not Hsu's simultaneous critical value; upgrade if the set is used for a claim
@@ -214,7 +314,7 @@ def mcb_set(per_model_item_scores, n=2000, seed=0, clusters=None, alpha=.05):
     return [m for m in models if behind[m] / n < 1 - alpha]
 
 
-def rho_cluster_ci(drill_score, live_runs, n=2000, seed=0):
+def rho_cluster_ci(drill_score, live_runs, n=10000, seed=0):
     """Spearman rho between drill score and mean live outcome per model, with a 95% CI that resamples models (the
     cluster: runs of one model share one drill score). drill_score: {model: x}; live_runs: {model: [outcome per run]}.
     Returns (rho, lo, hi); degenerate replicates (constant ranks) are skipped."""

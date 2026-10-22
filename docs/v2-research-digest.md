@@ -114,8 +114,10 @@ setting ([Bean et al.](https://arxiv.org/html/2511.04703v1)). Kane's argument-ba
 scoring, generalisation, extrapolation and decision inferences, each needing its own backing
 ([Kane](https://www.ets.org/research/policy_research_reports/publications/article/2013/jrpe.html)).
 
-**Inference.** At ten models the honest target is positive RPS skill against the previous season's ranks, not a
-point ρ, and not a ρ interval that excludes zero, which a bank tuned on that season can clear by proxying its ranks. Replay gaps behave like not-reached items whose rate depends on the agent, so they are not ignorable and
+**Inference.** At ten models the honest target is positive RPS skill against the previous season's ranks with their
+run-to-run noise priced in (a bootstrap over each model's runs), not a point ρ, and not a ρ interval that excludes
+zero, which a bank tuned on that season can clear by proxying its ranks. The previous ranks taken as certain are no bar:
+a hedged copy of them beats that forecast without any drill information. Replay gaps behave like not-reached items whose rate depends on the agent, so they are not ignorable and
 need a pre-registered coding rule with a score-0 sensitivity bound; the analogy is ours, since no LLM-eval paper
 treats environment-side gaps this way. One pre-registered composite, RPS as primary metric and ρ as descriptive
 follows the Registered Reports norm.
@@ -259,8 +261,10 @@ free to continue. Both are inferences; no published benchmark scores a chosen wa
 
 ## 6. Implications for kami-drills v2
 
-- Target positive RPS skill against the Season 1 ranks baseline, with the criterion's reliability ceiling published
-  beside it, not a ρ interval that excludes zero (a bank tuned on Season 1 can clear that by proxy) and not ρ ≥ 0.85
+- Target positive RPS skill against a calibrated Season 1 baseline (tier shares from bootstrapping each model's
+  Season 1 runs), with a hedged copy of the Season 1 tiers as a control and the criterion's reliability ceiling
+  published beside it; not a ρ interval that excludes zero (a bank tuned on Season 1 can clear that by proxy), not
+  skill against Season 1 ranks taken as certain (a hedge clears that), and not ρ ≥ 0.85
   ([proposal §1](v2-proposal.md#1-what-ten-models-can-show)).
 - Treat cadence as a second measured axis, with schedule and budget-use drills scored so that efficient waiting and
   stalling separate ([§2](v2-proposal.md#2-what-a-frozen-state-drill-cannot-see), [§4.2](v2-proposal.md#42-cadence)).
@@ -274,11 +278,12 @@ free to continue. Both are inferences; no published benchmark scores a chosen wa
   as probable grader errors ([§4.7](v2-proposal.md#47-bank-and-selection)).
 - Build memory drills around revision, the weakest measured competency: don't-repeat, stale-note with a "dated newer"
   variant, notes-before-first-call; score note-writing by downstream effect ([§4.3](v2-proposal.md#43-memory)).
-- Add polluted-context variants for self-conditioning; chained decisions for late drift only once cadence is
+- Add polluted-context variants: static ones measure robustness to earlier errors from the source run, and only
+  own-error variants (the model's own earlier mistakes) test self-conditioning; chained decisions for late drift only once cadence is
   validated ([§4.4](v2-proposal.md#44-polluted-context), [§4.5](v2-proposal.md#45-chained-decisions),
   [§8](v2-proposal.md#8-open-questions)).
-- Register one fixed composite and the accuracy-only forecast beside it; RPS over tiers against uniform and
-  prior-season baselines; ρ descriptive with a model-cluster CI; MCB sets for pairwise claims
+- Register one fixed composite and the accuracy-only forecast beside it; RPS over tiers against a calibrated
+  prior-season baseline (primary), the certain prior-season forecast and uniform; ρ descriptive with a model-cluster CI; MCB sets for pairwise claims
   ([§6](v2-proposal.md#6-validation-design-for-season-2)).
 - A stateless arm for one or two models is the only design under which "learned" means what the literature means
   ([§7](v2-proposal.md#7-plan), item 17).

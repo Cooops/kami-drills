@@ -41,11 +41,21 @@ not much more, and v2 should be designed from that arithmetic rather than from t
   criterion's across-run reliability must be measured, and drill reliability follows Spearman–Brown: doubling
   parallel items lifts 0.6 to 0.75 and 0.7 to 0.82. That is the case for a larger suite.
 
-The Season 2 primary claim is therefore **positive RPS skill against the "Season 1 ranks" baseline** (section 6),
-with the criterion's noise ceiling published beside it. Not "a ρ interval that excludes zero": the v2 bank is chosen
-and tuned on Season 1, so a bank that merely reproduces Season 1's order would clear that bar whenever ranks persist
-across seasons, without the drills adding anything. Beating the Season 1 ranks forecast is the part a proxy cannot
-fake. Not ρ ≥ 0.85 either, which no agent benchmark has met.
+The Season 2 primary claim is therefore **positive RPS skill against a calibrated Season 1 baseline** (section 6.1),
+with the criterion's noise ceiling published beside it. The baseline gives each returning model P(tier) from
+bootstrapping its own Season 1 live runs, the same calibration machinery the drill forecast gets. Not "a ρ interval
+that excludes zero": the v2 bank is chosen and tuned on Season 1, so a bank that merely reproduces Season 1's order
+would clear that bar whenever ranks persist across seasons. Not skill against the Season 1 ranks taken as certain
+either: a hedged copy of the Season 1 tiers (0.7 on the Season 1 tier, 0.25 adjacent, 0.05 far) carries no drill
+information and still beats the certain forecast (review arithmetic: about +0.06 RPS skill with 2 of 10 tier swaps,
++0.28 with 4). In a simulation where seasons differ only by run-to-run noise (30 seasons, 10 models, 3 runs each;
+`tests/test_scoring_v2.py`) the copy averages +0.23 skill against the certain forecast and −0.04 against the
+calibrated baseline. What positive skill would show: the drill forecast placed Season 2 models better than
+Season 1's live results did, with their run noise priced in. What it would not show: the bootstrap is calibrated to
+run-to-run noise only, not to change between seasons, so when ranks shift for other reasons any forecast hedged wider
+than run noise can beat it without drill information. That is why the hedged copy is reported beside it as a control,
+and why at n = 10 a positive skill is a direction, not proof that the drills measure what Season 1 could not. Not
+ρ ≥ 0.85 either, which no agent benchmark has met.
 
 ## 2. What a frozen-state drill cannot see
 
@@ -226,28 +236,44 @@ prospectively.
 
 ### 6.1 Registered forecast (text to register)
 
-> 1. **Models and tiers.** The forecast covers the N models drilled and run live in Season 2. Tier sizes are
->    (3, 4, 3) for N = 10; for other N, top and bottom are each round(0.3 × N) and middle is the rest.
-> 2. **Decision score.** pass@1 (mean over tries, K per `choose_k`) over the selected decision bank, with
->    not-administered attempts excluded (gap coding). pass^2 and the score-0 gap bound are reported, not forecast.
-> 3. **Cadence score.** For each model, the mean of two z-scores taken across the N models: z(−median schedule loss)
->    over the schedule drills, loss = |ln(chosen / oracle)| with no tolerance band and an invalid or missing wake
->    counted as ln(1440); and z(min(budget action ratio, 1)), the ratio being state-changing actions in the free arm
->    over the forced-budget arm, pooled over the budget drills, with no action in the budget arm counted as 0
->    (`cadence_score`).
+> 1. **Models and tiers.** The forecast covers the N models drilled and run live in Season 2. Top and bottom each
+>    hold floor(0.3 × N + 0.5) models (halves round up: (3, 4, 3) at N = 10, (5, 5, 5) at N = 15) and the middle the
+>    rest (`default_tier_sizes`).
+> 2. **Decision score.** pass@1 per decision item (mean over tries, K per `choose_k`), averaged over the selected
+>    decision bank. A not-administered item (gap coding) is left out of that model's mean. pass^2 and the score-0 gap
+>    bound are reported, not forecast.
+> 3. **Cadence score.** For each model, the mean of two z-scores taken across the N models (`cadence_score`):
+>    z(−median schedule loss) over the schedule drills, loss = |ln(chosen / oracle)| with no tolerance band and an
+>    invalid or missing wake counted as ln(1440); and z(min(pooled budget ratio, 1)). A model's **pooled budget ratio**
+>    is its state-changing actions summed over the free arms of the budget drills, divided by the same sum over the
+>    forced-budget arms (`pooled_ratio`); a zero denominator counts as 0.
 > 4. **Composite.** Equal-weight z-sum: z(decision) + z(cadence) (`composite`, form "zsum").
-> 5. **Tier probabilities.** P(top), P(middle), P(bottom) per model are the shares of 10,000 bootstrap replicates
->    (seed 0) in which the model lands in each tier, resampling decision and cadence items by snapshot family and
->    recomputing both scores, the composite and the ranking each replicate (`tier_probs_bootstrap` with the
->    composite as `score_fn`; ties broken at random).
-> 6. **Outcome.** Each model's live tier is its rank by mean week-end quests over its Season 2 runs, cut at the same
->    tier sizes.
-> 7. **Primary metric.** Mean ranked probability score over models (`rps`). The primary claim is RPS skill
->    1 − RPS / RPS_baseline > 0 against the "Season 1 ranks" baseline (Season 1 live tiers as a certain forecast;
->    models new in Season 2 get uniform probabilities). Skill against the uniform baseline is secondary.
-> 8. **Beside it.** The accuracy-only forecast (decision score alone, same steps 1, 2, 5–7), so Season 2 tests whether
->    cadence adds. Spearman ρ with a model-cluster bootstrap CI (`rho_cluster_ci`) is descriptive only. Pairwise
->    claims use a multiple-comparisons-with-the-best set (`mcb_set`), not Holm.
+> 5. **Tier probabilities.** `forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000, seed=0,
+>    clusters)`, with decision_items {model: {item: pass@1, or None if not administered}}, schedule_losses
+>    {model: {drill: loss}}, budget_ratios {model: {drill: (free-arm actions, budget-arm actions)}}, tier_sizes from
+>    step 1 and clusters {item or drill: snapshot family}. P(top), P(middle), P(bottom) per model are the shares of
+>    10,000 replicates (seed 0) in which the model lands in each tier. Each replicate is a stratified cluster bootstrap:
+>    within each of three strata (decision items, schedule drills, budget drills) it draws, with replacement, as many
+>    snapshot families as the stratum holds; a stratum with a single family draws its items instead. A model's
+>    decision mean skips items it was not administered, and is its mean over all administered items if the draw holds
+>    none of them. The decision score, the schedule medians, the pooled budget ratios (over the drawn budget drills),
+>    the composite and the ranking are recomputed each replicate; ties are broken at random.
+>    (`forecast` also accepts each model's pooled budget ratio as a number, held fixed across replicates; that form is
+>    not the registered one.)
+> 6. **Outcome.** Each model's live tier is its rank by mean week-end quests over its Season 2 runs, ties broken by
+>    model id, cut at the step 1 sizes (`live_tiers`).
+> 7. **Primary metric.** Mean ranked probability score over models (`rps`, `rps_skill`). The primary claim is RPS skill
+>    1 − RPS / RPS_baseline > 0 against the **calibrated Season 1 baseline** (`season_baseline_probs`, n = 10,000,
+>    seed 0): over the models that ran live in both seasons, resample each model's Season 1 runs with replacement, rank
+>    the resampled means (ties at random), cut at `default_tier_sizes` of that model count, and take each model's tier
+>    shares. Models new in Season 2 get uniform probabilities. Secondary: skill against the **certain Season 1
+>    forecast** (the same models' Season 1 `live_tiers` at probability 1, `certain_probs`; new models uniform) and
+>    against **uniform**. Reported as a control: the **hedged Season 1 copy** (0.7 on the Season 1 tier, 0.25 on an
+>    adjacent tier, 0.05 on the far one; 0.15 / 0.7 / 0.15 for the middle tier; new models uniform), scored the same way.
+> 8. **Beside it.** The accuracy-only forecast (decision score alone: `tier_probs_bootstrap` over the decision items
+>    with the same clusters, n = 10,000, seed 0; graded as in steps 6–7), so Season 2 tests whether cadence adds.
+>    Spearman ρ with a model-cluster bootstrap CI (`rho_cluster_ci`) is descriptive only. Pairwise claims use a
+>    multiple-comparisons-with-the-best set (`mcb_set`), not Holm.
 > 9. **Exploratory, not registered.** The product composite (decision × cadence), correlation of individual items
 >    with live outcomes, and anything else not listed here.
 
@@ -256,9 +282,13 @@ both components on a ratio scale with a meaningful zero, which the schedule loss
 component swing the whole score. The z-sum is robust to one noisy component and needs no scale choice. Weights cannot
 be fitted on ten points, so they are equal and declared. The product is reported as exploratory.
 
-**Why Season 1 ranks is the baseline that matters.** The bank is selected and tuned on Season 1. A bank that
-proxies Season 1's ranks would beat uniform and show a ρ interval above zero whenever ranks persist across seasons;
-only beating the Season 1 ranks forecast shows the drills add information.
+**Why a calibrated Season 1 baseline.** The bank is selected and tuned on Season 1. A bank that proxies Season 1's
+ranks would beat uniform and show a ρ interval above zero whenever ranks persist across seasons. Against Season 1
+ranks taken as certain, any hedge wins, drills or not. The calibrated baseline prices Season 1's own run noise the way
+the drill forecast prices item noise, so beating it means the drill forecast placed models better than Season 1's
+live results with their noise priced in. It does not price change between seasons; the hedged copy is the control for
+that, and a drill forecast that beats the calibrated baseline but not the hedged copy has shown hedging, not drill
+information.
 
 ### 6.2 Supporting analyses
 
@@ -295,9 +325,9 @@ Items marked "after close" need Season 1 live data and wait for 2026-10-25 20:41
 | 7 | Cadence family: schedule drill and budget-use drill | New family | M | The axis v1 cannot see |
 | 8 | Memory family: don't-repeat, stale-note (with "dated newer"), notes-before-first-call | New family | M | Revision is the weakest competency |
 | 9 | Polluted-context variant of 10–15 existing drills | New family | S | Measured decay mechanism |
-| 10 | pass@1 primary, pass^2 secondary; K from try-disagreement; bootstrap over snapshot families; tiers not ranks | Scoring | S | Compounding reliability; clustered SEs |
+| 10 | pass@1 primary, pass^2 secondary; K from try-disagreement; stratified bootstrap over snapshot families; tiers not ranks | Scoring | S | Compounding reliability; clustered SEs |
 | 11 | Register one fixed composite (decision + cadence) and the accuracy-only forecast beside it, by timestamped commit | Forecast | S | Tests whether cadence adds |
-| 12 | RPS skill vs the Season-1-ranks baseline (primary) and uniform; ρ descriptive with cluster CI; MCB set for pairwise | Validation | S | Proper, registrable, graded at close |
+| 12 | RPS skill vs the calibrated Season 1 baseline (primary), the certain Season 1 forecast and uniform, hedged Season 1 copy as control; ρ descriptive with cluster CI; MCB set for pairwise | Validation | S | Proper, registrable, graded at close |
 | 13 | Criterion ICC from the run-level model; hash-based held-out third; report held-out ρ | Validation | S | Noise ceiling; holdout norm |
 | 14 | After close: classify every session end (completed / slept with pending work / gave up / errored); mine requested vs clamped wake intervals; test whether day-1 loop establishment predicts the week | Mine S1 | M | METR-style labelling; Ord's hazard |
 | 15 | After close: recode v1 attempts by gap type against live rank; mine mistake families with a windowed repeat definition; diff notes against snapshots for stale beliefs | Mine S1 | M | Tests gap ignorability; seeds drills |

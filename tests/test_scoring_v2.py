@@ -1,10 +1,15 @@
 """v2 scoring checks (hand-computed): uv run pytest -q tests/test_scoring_v2.py"""
 import pytest
 
-from kami_drills.scoring_v2 import (MAX_SCHEDULE_LOSS, cadence_score, choose_k, cluster_bootstrap_ci, composite,
-                                    cost_per_action, gap_code, gap_sensitivity, heldout_split, is_heldout, item_stats,
-                                    mcb_set, pass_at_k, pass_hat_k, rho_cluster_ci, rps, rps_vs_baseline, select_items,
-                                    tier_probs_bootstrap, uniform_rps)
+import random
+import statistics
+
+from kami_drills.scoring_v2 import (MAX_SCHEDULE_LOSS, TIERS, cadence_score, certain_probs, choose_k,
+                                    cluster_bootstrap_ci, composite, cost_per_action, default_tier_sizes, forecast,
+                                    gap_code, gap_sensitivity, heldout_split, is_heldout, item_stats, live_tiers,
+                                    mcb_set, pass_at_k, pass_hat_k, pooled_ratio, rho_cluster_ci, rps, rps_skill,
+                                    rps_vs_baseline, season_baseline_probs, select_items, tier_probs_bootstrap,
+                                    uniform_rps)
 
 
 def test_pass_k():
@@ -155,3 +160,97 @@ def test_choose_k():
 def test_cost_per_action():
     assert cost_per_action(.6, ["feed_kami", "lens_kami", "harvest_start", "harvest_collect"]) == pytest.approx(.2)
     assert cost_per_action(.6, ["lens_kami"]) is None
+
+
+def test_default_tier_sizes():
+    # floor(0.3 N + 0.5): halves round up, unlike Python's round (which gives 4/7/4 at N = 15)
+    assert default_tier_sizes(10) == (3, 4, 3) and default_tier_sizes(15) == (5, 5, 5)
+    assert default_tier_sizes(5) == (2, 1, 2) and default_tier_sizes(7) == (2, 3, 2) and default_tier_sizes(12) == (4, 4, 4)
+
+
+def test_bootstrap_not_administered_and_one_family():
+    # b was never administered item y (absent) and z (None): no KeyError, and b is scored on x alone
+    scores = {"a": {"x": 0, "y": .5, "z": .5}, "b": {"x": 1}, "c": {"x": 0, "y": 0, "z": None}}
+    p = tier_probs_bootstrap(scores, tier_sizes=(1, 1, 1), n=200)
+    assert p["b"]["top"] == 1
+    # every item in one family: the stratum falls back to items, so no draw is empty and ranks still vary
+    p = tier_probs_bootstrap({"a": {"x": 1, "y": 0}, "b": {"x": 0, "y": 1}}, tier_sizes=(1, 0, 1), n=2000,
+                             clusters={"x": "f", "y": "f"})
+    assert .4 < p["a"]["top"] < .6
+
+
+def test_season_baseline_probs():
+    runs = {"a": [9, 9], "b": [5, 5, 5], "c": [1, 1]}
+    p = season_baseline_probs(runs, (1, 1, 1), n=100)
+    assert p == certain_probs({"a": "top", "b": "middle", "c": "bottom"})
+    noisy = season_baseline_probs({"a": [0, 10], "b": [4, 6], "c": [-5, -5]}, (1, 1, 1), n=4000, seed=1)
+    assert noisy["c"]["bottom"] == 1 and .4 < noisy["a"]["top"] < .9 and all(
+        sum(v.values()) == pytest.approx(1) for v in noisy.values())
+    assert live_tiers({"a": [1, 3], "b": [2, 2], "c": [0]}, (1, 1, 1)) == {"a": "top", "b": "middle", "c": "bottom"}
+
+
+def test_rps_skill():
+    out = {"a": "top", "b": "bottom"}
+    r = rps_skill(certain_probs(out), out, {"s1": certain_probs({"a": "bottom", "b": "top"})})
+    assert r["rps"] == 0 and r["skill"] == {"s1": 1.0, "uniform": 1.0}
+    # a model the baseline does not cover is uniform in it, so the baseline equals uniform here
+    r = rps_skill(certain_probs({"a": "middle", "b": "middle"}), out, {"s1": {}})
+    assert r["skill"]["s1"] == r["skill"]["uniform"] < 0
+
+
+def _hedged(tier):
+    if tier == "middle":
+        return {"top": .15, "middle": .7, "bottom": .15}
+    return {t: (.7, .25, .05)[abs(TIERS.index(t) - TIERS.index(tier))] for t in TIERS}
+
+
+def test_hedged_season1_copy_has_no_skill_against_calibrated_baseline():
+    # Seasons drawn from the same per-model run distribution (no drift). A hedged copy of the Season 1 tiers carries no
+    # drill information: it beats the certain Season 1 forecast clearly, but not the bootstrap-calibrated one.
+    rng, sizes, vs_cal, vs_certain = random.Random(7), (3, 4, 3), [], []
+    for season in range(30):
+        s1 = {f"m{i}": [rng.gauss(i, 4) for _ in range(3)] for i in range(10)}
+        s2 = {m: [rng.gauss(int(m[1:]), 4) for _ in range(3)] for m in s1}
+        t1, out = live_tiers(s1, sizes), live_tiers(s2, sizes)
+        r = rps_skill({m: _hedged(t) for m, t in t1.items()}, out,
+                      {"calibrated": season_baseline_probs(s1, sizes, n=300, seed=season), "certain": certain_probs(t1)})
+        vs_cal.append(r["skill"]["calibrated"])
+        vs_certain.append(r["skill"]["certain"])
+    assert statistics.fmean(vs_certain) > .15
+    assert statistics.fmean(vs_cal) < .05
+
+
+def _synthetic(rng, ability):
+    """10 models; decision items in 4 families, schedule drills all in one family, budget drills in 2."""
+    dec = {m: {f"d{j}": float(rng.random() < .2 + .06 * a) for j in range(24)} for m, a in ability.items()}
+    dec["m3"]["d0"] = None  # gap-excluded
+    del dec["m4"]["d1"]  # never administered
+    sched = {m: {f"s{j}": abs(rng.gauss(0, 3 - .25 * a)) for j in range(4)} for m, a in ability.items()}
+    sched["m0"]["s0"] = float("inf")
+    budget = {m: {f"b{j}": (rng.randint(0, a + 2), 10) for j in range(4)} for m, a in ability.items()}
+    clusters = {**{f"d{j}": f"fam{j % 4}" for j in range(24)}, **{f"s{j}": "sched" for j in range(4)},
+                **{f"b{j}": f"bfam{j % 2}" for j in range(4)}}
+    return dec, sched, budget, clusters
+
+
+def test_forecast_end_to_end():
+    rng = random.Random(3)
+    ability = {f"m{i}": i for i in range(10)}
+    dec, sched, budget, clusters = _synthetic(rng, ability)
+    sizes = default_tier_sizes(10)
+    p = forecast(dec, sched, budget, sizes, n=500, seed=0, clusters=clusters)
+    assert set(p) == set(ability) and all(sum(v.values()) == pytest.approx(1) for v in p.values())
+    assert p["m9"]["top"] > .5 and p["m0"]["bottom"] > .5
+    assert sum(v["top"] for v in p.values()) == pytest.approx(3)
+    assert p == forecast(dec, sched, budget, sizes, n=500, seed=0, clusters=clusters)
+    # pooled budget ratios as fixed inputs; no clusters (item bootstrap within each stratum)
+    fixed = {m: pooled_ratio(list(b.values())) for m, b in budget.items()}
+    q = forecast(dec, sched, fixed, sizes, n=300)
+    assert q["m9"]["top"] > .5
+    # graded against a live outcome with both Season 1 baselines and uniform
+    s1 = {m: [a + rng.gauss(0, 2) for _ in range(3)] for m, a in ability.items()}
+    s2 = {m: [a + rng.gauss(0, 2) for _ in range(3)] for m, a in ability.items()}
+    r = rps_skill(p, live_tiers(s2, sizes), {"season1_calibrated": season_baseline_probs(s1, sizes, n=500),
+                                            "season1_certain": certain_probs(live_tiers(s1, sizes))})
+    assert set(r["skill"]) == {"season1_calibrated", "season1_certain", "uniform"} and r["skill"]["uniform"] > 0
+    assert pooled_ratio([(3, 10), (5, 10)]) == .4 and pooled_ratio([(2, 0)]) is None
