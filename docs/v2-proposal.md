@@ -83,7 +83,7 @@ Everything in this section is computed from the published v1 results
 [`models/`](../results/v1.0.0-rc2/models/), [`paired.txt`](../results/v1.0.0-rc2/paired.txt)).
 
 **Signal is concentrated.** Comparing the mean of the three models the Season 1 forecast placed in the top tier
-against the other eight: risk drills separate by +0.24 (4 of 5 drills in the expected direction), memory by +0.17
+against the other eight drilled models (seven live-cohort models and the drill-only control): risk drills separate by +0.24 (4 of 5 drills in the expected direction), memory by +0.17
 (5 of 6), progression by +0.15 (6 of 7). Onboarding separates by +0.05; repeat_failed and stale_state, 20 of the 47
 drills, by +0.11 with three and two reversed drills. Six drills rank the top tier below the rest. Thirteen are
 passed or failed by essentially everyone, including two no model passes, which need a rule review before
@@ -177,9 +177,8 @@ its hardest forks were "detours" where the agent later corrected itself, a fork 
 
 ### 4.6 API habits
 
-Operator logs show live mistake classes v1 has no drill for: `lens_config` with a wrong key, `workspace_read` of a
-missing file, `lens_node` on a node outside the mirror, `workspace_write` outside `workspace/`, and swap or trade
-underflows. These are cheap to fork. Weighting families by how often the decision occurs live is the direct fix for
+Candidate API-habit classes v1 has no drill for, to be mined from Season 1 logs after close: wrong configuration
+keys, reads of missing files, reads outside the local mirror, and swap or trade underflows. These are cheap to fork. Weighting families by how often the decision occurs live is the direct fix for
 a suite whose mix is not matched to the live action mix.
 
 ### 4.7 Bank and selection
