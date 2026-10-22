@@ -7,7 +7,9 @@ import pytest
 
 from kami_drills import cadence
 
-DRILLS = cadence.load_schedule_drills()
+ALL = cadence.load_schedule_drills()
+DRILLS = [d for d in ALL if d.get("kind", "pending") == "pending"]
+SLEEP = [d for d in ALL if d.get("kind") == "nothing_due"]
 HARNESS_TOOLS = {t["name"] for t in json.loads((cadence.ROOT / "kami_drills" / "surface" / "harness_tools.json").read_text())["tools"]}
 
 
@@ -26,6 +28,55 @@ def test_always_5_min_and_always_24h_fail(d):
 def test_oracle_passes_with_zero_loss(d):
     s = cadence.score_schedule(d, cadence.oracle_minutes(d["state"]))
     assert s["passed"] and s["raw_loss"] == 0
+
+
+PINNED = {"schedule-rest-17194": 106.25, "schedule-rest-9787-a": 59.375, "schedule-rest-9787-b": 59.375}
+
+
+def test_pending_oracles_pinned_and_kind_defaults_to_pending():
+    assert {d["id"]: cadence.score_schedule(d, 60)["oracle_minutes"] for d in DRILLS} == pytest.approx(PINNED)
+    assert all("kind" not in d for d in DRILLS) and len(DRILLS) == 3
+
+
+def test_nothing_due_drills_present_with_hours_long_oracles():
+    assert 3 <= len(SLEEP) <= 5
+    assert all(4 * 60 <= d["oracle_minutes"] < 24 * 60 and d["flags"] and not d["pending_work"] for d in SLEEP)
+
+
+@pytest.mark.parametrize("d", SLEEP, ids=lambda d: d["id"])
+def test_nothing_due_5_min_fails_oracle_passes_24h_fails_when_event_is_earlier(d):
+    assert not cadence.score_schedule(d, 5)["passed"]
+    assert cadence.score_schedule(d, d["oracle_minutes"] * 1.3)["passed"]
+    assert cadence.score_schedule(d, d["oracle_minutes"])["raw_loss"] == pytest.approx(0, abs=1e-3)
+    assert cadence.score_schedule(d, 1440)["passed"] == (math.log(1440 / d["oracle_minutes"]) <= d["pass_threshold"])
+    assert not cadence.score_schedule(d, 1440)["passed"]  # every shipped oracle is under 12 h
+
+
+def test_always_24h_passes_when_nothing_happens_for_a_day():
+    state = {"kami": {"hp": 100, "hp_total": 100, "hp_drain_per_hr": 1, "cooldown_s": 0}, "harvest": {"accrued_musu": 0, "rate_per_hr": 0}}
+    params = {"hp_risk_fraction": 0.3, "collect_target_musu": 250}
+    assert cadence.nothing_due_oracle_minutes(state, params) == 1440  # capped; risk line is 70 h away
+    d = {**copy.deepcopy(SLEEP[0]), "state": state, "params": params, "oracle_minutes": 1440}
+    assert cadence.score_schedule(d, 1440)["passed"] and not cadence.score_schedule(d, 5)["passed"]
+
+
+def test_nothing_due_oracle_takes_the_earlier_event():
+    state = {"kami": {"hp": 100, "hp_total": 100, "hp_drain_per_hr": 10, "cooldown_s": 0}, "harvest": {"accrued_musu": 0, "rate_per_hr": 50}}
+    assert cadence.nothing_due_oracle_minutes(state, {"hp_risk_fraction": 0.3, "collect_target_musu": 250}) == 300  # collect at 5 h, risk at 7 h
+    assert cadence.nothing_due_oracle_minutes(state, {"hp_risk_fraction": 0.3, "collect_target_musu": 1000}) == 420
+
+
+def test_kind_validated():
+    for edit in (lambda d: d.update(kind="bogus"), lambda d: d["params"].pop("hp_risk_fraction"), lambda d: d.update(pending_work=["x"]),
+                 lambda d: d["state"]["kami"].update(cooldown_s=60), lambda d: d.update(oracle_minutes=1.0), lambda d: d.pop("flags")):
+        d = copy.deepcopy(SLEEP[0])
+        edit(d)
+        with pytest.raises(ValueError):
+            cadence.validate_schedule(d)
+    bad = copy.deepcopy(DRILLS[0])
+    bad["kind"] = "bogus"
+    with pytest.raises(ValueError):
+        cadence.validate_schedule(bad)
 
 
 def test_loss_is_symmetric_in_log_space():
