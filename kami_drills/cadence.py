@@ -162,6 +162,11 @@ def schedule_v2(policy: str = "model"):
 
 
 def run_budget_pair(drill, model):
-    # The format and scorer above are complete; the runner is not. Two arms of a multi-call episode need replayed
-    # state to change between calls, which v1's single-fork replay cannot do.
-    raise NotImplementedError("needs multi-step replay (see proposal §4.5)")
+    """Run both arms of a budget drill offline on its recorded trajectory (kami_drills/episode.py). `model` is a policy,
+    model(history, arm) -> (tool, args) or None; history is v1-shaped messages. Reports action_ratio (free over budget),
+    the off-trajectory rate over the two arms, and the steps taken in each."""
+    from kami_drills.episode import run_episode
+    free, budget = (run_episode(drill, model, arm) for arm in ("free", "budget"))
+    return {"action_ratio": action_ratio(free["tools"], budget["tools"]),
+            "off_trajectory_rate": (free["off_trajectory"] + budget["off_trajectory"]) / 2,
+            "steps": {"free": free["steps"], "budget": budget["steps"]}, "free": free, "budget": budget}
