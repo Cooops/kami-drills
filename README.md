@@ -99,6 +99,37 @@ How drills, scoring and provenance work: [docs/method.md](docs/method.md). Addin
 gap-free drills forked from runs that log full state, and drills for memory (repairing and relying on notes) and
 stamina (decisions late in long sessions and across sessions).
 
+## v2 (experimental, for Season 2)
+
+v1 is the frozen Season 1 forecast suite: nothing below touches `drills/`, the v1 loader, the judge hash or
+`kami-drills run`. v2 is a draft for Season 2, set out in [docs/v2-proposal.md](docs/v2-proposal.md) with the
+literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md). The pieces so far, all offline:
+
+- **Cadence** ([docs/v2-cadence.md](docs/v2-cadence.md), `kami_drills/cadence.py`): schedule drills score the chosen
+  wake time against the game clock; the budget-use drill pairs a forced-budget arm with a free one.
+- **Memory** ([docs/v2-memory.md](docs/v2-memory.md), `kami_drills/memory.py`): 11 prototype drills (don't-repeat,
+  stale-note with a "dated newer" variant, notes-first) from KamiBench-era v1 data, materialised as v1-shaped drills;
+  the real bank comes from Season 1 after close. They fail passive play (no calls, a bare wake, `end_session`) but
+  not always a long wake: the cooldown drills pass by waiting, because waiting is right there
+  (table in the memory doc).
+- **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 static prototype
+  variants that test robustness to earlier failures from the same source run (not the model's own errors, so not
+  self-conditioning), and `own_error_variants(log)`, which builds per-model variants for every drill from the model's
+  own failures on other drills (never the scored one, no replay gaps, no selection on outcome; the injected dose per
+  model is recorded); score the delta against the same
+  drills' clean results. All items are prototypes.
+- **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
+  over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
+
+Run a v2 suite with `kami-drills run --model <model> --suite v2-memory|v2-schedule|v2-polluted` (default `v1`; v2
+suites print a per-drill pass table). `tests/test_e2e_mock.py` runs all three through Inspect on the built-in
+`mockllm/model` with scripted plays (oracle-like and null): the tests use the mock model only, with no network, key or cost.
+
+The budget-use runner is implemented (`v2-budget` suite). No real model has been run on any v2 drill
+and there are no v2 results. `uv run kami-drills check` runs the v1 script checks and the v2 pytest tests
+(pytest is in the `dev` dependency group, which `uv sync` installs). Building drills for another environment:
+[docs/adapting.md](docs/adapting.md).
+
 ## Licence and credits
 
 Code [MIT](LICENSE); copied upstream material is listed in [third_party/](third_party/NOTICE.md). Drill data CC-BY-4.0 ([DATA_LICENSE.md](DATA_LICENSE.md)): 37 drills
@@ -112,6 +143,8 @@ Maintained by Coopes, who works at Asphodel, the studio behind Kamigotchi, and
 runs Kamibots; its tools are hidden from every drill. This project is Coopes's personal work.
 
 ## Citation
+
+Also in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository"). Code is MIT; drill data is CC BY 4.0.
 
 ```bibtex
 @software{kami_drills_2026,

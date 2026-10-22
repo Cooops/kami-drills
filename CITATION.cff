@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use kami-drills, please cite it as below. Code is MIT; the drill data is CC BY 4.0 (see DATA_LICENSE.md)."
+type: software
+title: kami-drills
+abstract: "Offline decision drills forked from real Kamigotchi agent transcripts, scored by deterministic rules (Inspect)."
+authors:
+  - name: Coopes
+version: 1.0.0
+date-released: 2026-10-16
+repository-code: https://github.com/Cooops/kami-drills
+url: https://github.com/Cooops/kami-drills
+license: MIT
+keywords:
+  - evaluation
+  - agents
+  - Kamigotchi
+  - Inspect
