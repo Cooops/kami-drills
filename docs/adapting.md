@@ -72,7 +72,10 @@ count (`cluster_bootstrap_ci`). With tens of items, report tiers, not ranks, and
 The point of a drill suite is to forecast live play, so say in advance what it forecasts. Before the live run opens,
 commit a document (timestamped) that places each model in a tier (top, middle, bottom) with a probability for each,
 and names the live outcome it is graded on. Grade it with a strictly proper scoring rule: the ranked probability score
-over ordered tiers (`rps`), against a uniform baseline and any other baseline you could have used (`rps_vs_baseline`).
+over ordered tiers (`rps`, `rps_skill`), against a uniform baseline and any other baseline you could have used. If
+a previous season's ranks are a baseline, calibrate them the way the forecast is calibrated (`season_baseline_probs`:
+bootstrap each model's previous runs) rather than taking them as certain: a hedged copy of the old ranks, with no drill
+information at all, beats a certain forecast.
 Report rank correlation descriptively with an interval that clusters by model, since repeated runs of one model share
 one drill score. Hold out a share of items from any tuning by a stable hash of the item id (`heldout_split`), so
 retiring items never reshuffles the split, and report the correlation on the held-out share too. Anything not in the registered document is exploratory.
