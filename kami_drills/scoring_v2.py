@@ -227,8 +227,9 @@ def tier_probs_bootstrap(per_model_item_scores, tier_sizes=(3, 4, 3), n=10000, s
 
 
 def pooled_ratio(pairs):
-    """Pooled budget ratio of [(free_actions, budget_actions)]: total state-changing actions in the free arms over the
-    total in the forced-budget arms; None when the budget arms took no action."""
+    """Pooled budget ratio of [(free_matched, budget_matched)]: total matched actions (cadence.matched_actions) in the
+    free arms over the total in the forced-budget arms, as cadence.pooled_budget_ratio; None (scored 0) when the budget
+    arms matched nothing."""
     b = sum(p[1] for p in pairs)
     return sum(p[0] for p in pairs) / b if b else None
 

@@ -245,12 +245,14 @@ prospectively.
 > 3. **Cadence score.** For each model, the mean of two z-scores taken across the N models (`cadence_score`):
 >    z(−median schedule loss) over the schedule drills, loss = |ln(chosen / oracle)| with no tolerance band and an
 >    invalid or missing wake counted as ln(1440); and z(min(pooled budget ratio, 1)). A model's **pooled budget ratio**
->    is its state-changing actions summed over the free arms of the budget drills, divided by the same sum over the
->    forced-budget arms (`pooled_ratio`); a zero denominator counts as 0.
+>    is its *matched* actions (recorded, non-revert state changes it reproduced: `matched_actions` from
+>    `cadence.run_budget_pair`) summed over the free arms of the budget drills, divided by the same sum over the
+>    forced-budget arms (`pooled_ratio`, equal to `cadence.pooled_budget_ratio`); a zero denominator counts as 0, so a
+>    model that matches nothing scores lowest.
 > 4. **Composite.** Equal-weight z-sum: z(decision) + z(cadence) (`composite`, form "zsum").
 > 5. **Tier probabilities.** `forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000, seed=0,
 >    clusters)`, with decision_items {model: {item: pass@1, or None if not administered}}, schedule_losses
->    {model: {drill: loss}}, budget_ratios {model: {drill: (free-arm actions, budget-arm actions)}}, tier_sizes from
+>    {model: {drill: loss}}, budget_ratios {model: {drill: (free-arm matched actions, budget-arm matched actions)}}, tier_sizes from
 >    step 1 and clusters {item or drill: snapshot family}. P(top), P(middle), P(bottom) per model are the shares of
 >    10,000 replicates (seed 0) in which the model lands in each tier. Each replicate is a stratified cluster bootstrap:
 >    within each of three strata (decision items, schedule drills, budget drills) it draws, with replacement, as many
