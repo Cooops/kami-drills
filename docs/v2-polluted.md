@@ -38,13 +38,22 @@ pollution hurt.
 ## Own-error variants (self-conditioning)
 
 1. Run the model on the clean v1 drills (`kami-drills run`), keeping the Inspect eval log.
-2. `own_error_variants(log)` reads that log: for each drill, the model's own failed calls after the fork (call plus
-   error reply; hidden-tool and infrastructure failures dropped, duplicates removed, at most two) are inserted after
-   "Session start." of the same drill. It returns `{id--own-error: v1-shaped drill}`; drills where the model made no
-   failed call are left out.
-3. Run them as a second pass for the same model: `polluted_v2(specs=variants.values())`, then `polluted_delta`.
+2. `own_error_variants(log)` reads that log and builds one variant for **every** drill in it. Each variant inserts,
+   after "Session start.", the model's own failed calls (call plus error reply; hidden-tool and infrastructure
+   failures dropped, duplicates removed, at most two) taken from **other** drills, never the scored one, so the model
+   does not see "I tried X and it failed" for the item being scored. Donor drills are taken in id order starting after
+   the scored drill (wrapping); a donor call matching something the scored drill's rule forbids is skipped. Nothing
+   depends on whether the model passed or failed the scored drill, so there is no selection on the outcome (building
+   variants only for failed drills would inflate the delta by regression to the mean). A drill gets no variant only
+   if no other drill has an eligible failure.
+3. Run them as a second pass for the same model: `polluted_v2(specs=variants.values())`, then `polluted_delta`,
+   keying the polluted results by `variant["polluted"]["source_drill"]`. Compare against the clean results of the
+   same drills, including the ones the model passed.
 
-It reads a log and makes no model call; `tests/test_polluted.py` checks it on a synthetic log. Not yet run on a real
+Limit: a donor failure comes from a different decision, so it tests "failures earlier in my context", not "repeating
+my own mistake here". It is still the model's own behaviour, unlike the static family.
+
+It reads a log and makes no model call; `tests/test_polluted.py` checks on a synthetic log that no injected error comes from the scored drill and that the variants do not depend on pass/fail. Not yet run on a real
 model's log.
 
 ## Regenerate
@@ -52,4 +61,4 @@ model's log.
 `uv run python scripts/make_polluted_variants.py` is deterministic. `tests/test_polluted.py` checks reruns are
 identical, every injected error exists verbatim in v1 data and is eligible (no hidden tool, no infra error), and the v1 suite hash is unchanged.
 
-Not yet done: no model has run on the variants; running them needs a loader flag for `drills_v2/polluted/`.
+Not yet done: no model has run on the variants. Run the static ones with `kami-drills run --suite v2-polluted`.

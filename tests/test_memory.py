@@ -44,12 +44,27 @@ def test_dont_repeat_scoring_and_arms():
     assert mem.score_dont_repeat([wake], f, rule)  # the required action, no repeat
 
 
-def test_null_policy_baseline_fails_everywhere():
+def test_passive_policies():
     base = mem.null_baseline()
-    assert len(base) == 2 * sum(len(mem.ARMS[s["kind"]]) for s in mem.load())
-    assert not any(base.values()), [k for k, v in base.items() if v]  # 0 passes for no calls and for wake-only
+    assert len(base) == len(mem.PASSIVE_POLICIES) * sum(len(mem.ARMS[s["kind"]]) for s in mem.load())
+    passed = {k for k, v in base.items() if v}
+    # waiting is correct only for the cooldown drills (their source rule accepts a wake of >= 4-5 min); everything else
+    # needs a real action, and a bare wake, end_session or no calls never passes
+    # (sn-cooldown-over: the replay's wake row sets "cooled", but the note-vs-world answer there is "wait", so it too is waiting-correct)
+    assert {k.split(":")[0] for k in passed} == {"dr-cooldown-feed", "dr-stop-cooldown", "sn-cooldown-over"}
+    assert {k.rsplit("/", 1)[1] for k in passed} == {"wake-5", "wake-30", "wake-60", "read-then-wake"}
 
 
+def test_notes_first_needs_action():
+    spec = next(s for s in mem.load() if s["id"] == "nf-wait-then-start")
+    rule = mem.v1(spec["source_drill"])["rule"]
+    read, wake = call("workspace_read", path=mem.NOTE_PATH), call("set_next_wake", minutes_from_now=30)
+    start = call("harvest_start", kami_ids=[9787], node_index=29)
+    assert not mem.score_notes_first([read, wake], rule)  # the v1 rule alone would accept this
+    assert mem.score_notes_first([read, call("wait", seconds=130), start], rule)
+
+
+def test_arm_report():
     rows = [{"drill": d, "arm": a, "pass": p} for d, a, p in
             [("x", "a", 1), ("y", "a", 1), ("x", "b", 1), ("y", "b", 0), ("x", "c", 0), ("y", "c", 0)]]
     r = mem.arm_report(rows)

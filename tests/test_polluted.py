@@ -91,8 +91,10 @@ def test_own_error_variants_from_synthetic_log():
                                    SimpleNamespace(id="not-a-drill", messages=msgs, metadata={"fork_len": 1}),
                                    SimpleNamespace(id="risk-unmanaged-lowhp", messages=msgs[:1], metadata={"fork_len": 1})])
     out = own_error_variants(log)
-    assert list(out) == [drill_id + "--own-error"]  # no-error and unknown samples are left out
-    v = out[drill_id + "--own-error"]
+    # the failing drill has no donor but itself, so it gets no variant; the failure-free drill gets it as a donor error
+    assert list(out) == ["risk-unmanaged-lowhp--own-error"]  # unknown samples are left out
+    drill = gen.load_v1()["risk-unmanaged-lowhp"]
+    v = out["risk-unmanaged-lowhp--own-error"]
     assert [i["tool"] for i in v["polluted"]["injected"]] == ["feed_kami"]  # hidden tool and the successful read dropped
     assert v["polluted"]["inserted_messages"] == 2 and v["polluted"]["family"] == "own_error"
     assert v["prefix"][0] == drill["prefix"][0] and v["prefix"][3:] == drill["prefix"][1:]
@@ -102,3 +104,26 @@ def test_own_error_variants_from_synthetic_log():
            {k: x for k, x in drill.items() if k not in ("id", "prefix", "keep_lines")}
     assert own_error_variants(log) == out  # deterministic
     assert len(polluted_v2(specs=out.values()).dataset) == 1
+
+
+def test_own_error_variants_use_other_drills_and_ignore_outcome():
+    drills = gen.load_v1()
+    ids = ["risk-lowhp-feed-first", "risk-unmanaged-lowhp", "stale-notes-wrong-node-stop"]
+    def sample(did, tool, kami, passed):  # the model's failed call carries the drill id in its text, so origin is traceable
+        tc = ToolCall(id="c1", function=tool, arguments={"kami_id": kami})
+        err = f"Error executing tool {tool}: validation failed; no transaction sent: ... revert: from {did}: Reverted"
+        msgs = [ChatMessageUser(content="start"), ChatMessageAssistant(content="", tool_calls=[tc]),
+                ChatMessageTool(content=err, tool_call_id="c1", function=tool)]
+        return SimpleNamespace(id=did, messages=msgs, metadata={"fork_len": 1}, passed=passed)
+    log = lambda flags: SimpleNamespace(samples=[sample(d, "feed_kami", 100 + i, f) for i, (d, f) in enumerate(zip(ids, flags))])
+    out = own_error_variants(log([True, True, True]), max_errors=1)
+    assert set(out) == {i + "--own-error" for i in ids}  # every drill gets a variant, not just failed ones
+    for did in ids:
+        for inj in out[did + "--own-error"]["polluted"]["injected"]:
+            assert f"from {did}:" not in inj["error"]  # never the scored drill's own failure
+    assert own_error_variants(log([False, False, False]), max_errors=1) == out  # pass/fail of the log changes nothing
+    # a donor call that the scored drill's rule forbids is skipped
+    rule = drills["risk-lowhp-feed-first"]["rule"]
+    forbidden = [p for p in rule.get("forbid", []) if p["tool"] == "feed_kami"]
+    for inj in out["risk-lowhp-feed-first--own-error"]["polluted"]["injected"]:
+        assert not any(kd.matches({"tool": inj["tool"], "args": inj["args"], "ok": False}, p) for p in forbidden)

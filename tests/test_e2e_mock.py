@@ -25,6 +25,9 @@ def run(task, sample_id, outputs, tmp_path):
     return next(iter(log.samples[0].scores.values())).value == "C"
 
 
+WAITING_IS_RIGHT = {"dr-cooldown-feed", "dr-stop-cooldown", "sn-cooldown-over"}
+
+
 @pytest.mark.parametrize("spec", mem.load(), ids=lambda s: s["id"])
 def test_memory(spec, tmp_path):
     m = mem.materialise(spec, mem.ARMS[spec["kind"]][0])
@@ -34,6 +37,8 @@ def test_memory(spec, tmp_path):
     assert run(mem.memory_v2(), m["id"], play(*oracle), tmp_path)
     assert not run(mem.memory_v2(), m["id"], play(), tmp_path)  # null play: no calls at all fails every drill (M1)
     assert not run(mem.memory_v2(), m["id"], play(("set_next_wake", {})), tmp_path)  # bare wake fails too
+    wake30 = run(mem.memory_v2(), m["id"], play(("set_next_wake", {"minutes_from_now": 30})), tmp_path)
+    assert wake30 == (spec["id"] in WAITING_IS_RIGHT)  # waiting passes only where the source rule accepts it
 
 
 def test_schedule(tmp_path):

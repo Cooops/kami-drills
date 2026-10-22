@@ -15,21 +15,40 @@ engine, tool surface and rule language run unchanged. Notes are shown as a `work
 
 | kind | arms | pass |
 |---|---|---|
-| `dont_repeat` | a: failure kept in context as transcript; b: failure removed, the lesson as a note; c: failure removed, nothing | the source drill's v1 rule holds (the required action is taken) AND the first state-changing call does not repeat the failure (same tool, same normalised error class). Doing nothing fails |
-| `stale_note` | `plain`, `dated_newer` (note stamped one day after the newest timestamp in the state) | the source drill's v1 rule holds, i.e. the action follows the world |
-| `notes_first` | one | `workspace_read` of `notes/lessons.md` itself comes before the first state-changing call (reading `reference/` does not count), AND the source drill's v1 rule holds, i.e. the action uses the fact; the needed fact is only in the note |
+| `dont_repeat` | a: failure kept in context as transcript; b: failure removed, the lesson as a note; c: failure removed, nothing | the source drill's v1 rule holds (the required action is taken) AND the first state-changing call does not repeat the failure (same tool, same normalised error class). Waiting passes only where the source rule accepts a long enough `set_next_wake` (see the table below) |
+| `stale_note` | `plain`, `dated_newer` (note stamped one day after the newest timestamp in the state) | the source drill's v1 rule holds, i.e. the action follows the world (`sn-levelup-pending` also requires a real action) |
+| `notes_first` | one | `workspace_read` of `notes/lessons.md` itself comes before the first state-changing call (reading `reference/` does not count), AND the source drill's v1 rule holds, i.e. the action uses the fact, AND a state-changing call other than waiting or ending the session is made; the needed fact is only in the note |
 
 State-changing means `kami_drills.cadence.STATE_CHANGING` (listed transaction tools); unlisted names count as reads.
 
 Examples (11): 4 don't-repeat from `repeat-*`, 4 stale-note from `stale-*`, 3 notes-first from `repeat-*` and `stale-*`.
 Every spec records its source drill id, and `validate` checks the failure against the source transcript.
 
-## Null-policy baseline
+## Passive-play baseline
 
-`memory.null_baseline()` scores a model that makes no calls and one that only calls `set_next_wake` with no arguments,
-on every drill and arm. Result: 0 of 11 drills (0 of 23 drill-arms, both null policies) pass, so a pass needs a real
-action. `tests/test_memory.py` asserts it and `tests/test_e2e_mock.py` plays the null policy through Inspect on every
-drill with `mockllm` (it fails each time; the oracle play passes each time).
+`memory.null_baseline()` scores seven passive policies on every drill and arm (`PASSIVE_POLICIES`): no calls; a bare
+`set_next_wake`; `set_next_wake` with 5, 30 and 60 minutes; `end_session`; a read of the notes file then a 30-minute
+wake. The replay's own flag rows are applied (a wake can set the pass flag). `tests/test_memory.py` and
+`tests/test_e2e_mock.py` (through Inspect with `mockllm`) assert the table below.
+
+Not every drill should fail passive play. The cooldown drills test "don't repeat the failed action", and their v1 rule
+accepts a long enough wake because waiting is the correct way to avoid the failure. There, passing by waiting is right,
+and the arms still differ in whether a model repeats the failed call first. Everywhere else the scorer needs the
+action.
+
+| drill | correct play | passive play that passes | why |
+|---|---|---|---|
+| dr-cooldown-feed | wake 5+ min (do not feed/start 20375 now) | wake 5/30/60, read-then-wake | waiting is the answer; a bare wake, end_session, no calls fail |
+| dr-stop-cooldown | wait, then harvest_stop 17194, or wake 4+ min | wake 5/30/60, read-then-wake | waiting is the answer; end_session alone and no calls fail |
+| dr-listing-buy-underflow | listing_buy with a valid amount | none | needs the purchase (flag `bought`) |
+| dr-stop-starving | buy food, feed 703, then harvest_stop | none | needs `fed` and `stopped` |
+| sn-cooldown-over | wait out the cooldown, then harvest_start | wake 5/30/60, read-then-wake | the stale note says the cooldown is over; the world says wait, and a wake satisfies the source rule (flag `cooled`) |
+| sn-fed-full-hp | follow the world, not the note | none | needs the corrective action |
+| sn-levelup-pending | upgrade_skill (do not level_up again) | none | a replayed wake would set the pass flag, so the spec sets `needs_action`: a real state-changing call is required |
+| sn-quest10-open | accept_quest 11 | none | needs the quest call |
+| nf-feed-first | read notes, then feed | none | needs read and act |
+| nf-harvest-node | read notes, travel, harvest_stop | none | needs read and act |
+| nf-wait-then-start | read notes, wait, harvest_start | none | the v1 rule alone would accept a wake; `notes_first` now requires a non-wait state-changing call |
 
 ## What each arm isolates
 

@@ -21,30 +21,41 @@ def eligible_error(tool, text):
     return tool not in kd.OUTSOURCE and not INFRA.search(text) and len(text) <= MAX_CHARS
 
 
+def _failed_calls(smp):
+    """[(ToolCall, error text)] eligible failed calls the model made after the fork in one sample, duplicates removed."""
+    msgs = smp.messages[smp.metadata["fork_len"]:]
+    results = {m.tool_call_id: str(m.content) for m in msgs if isinstance(m, ChatMessageTool)}
+    seen, out = set(), []
+    for tc in (tc for m in msgs if isinstance(m, ChatMessageAssistant) for tc in m.tool_calls or []):
+        text, key = results.get(tc.id, ""), json.dumps([tc.function, tc.arguments], sort_keys=True)
+        if kd.is_error_text(text) and eligible_error(tc.function, text) and key not in seen:
+            seen.add(key)
+            out.append((tc, text))
+    return out
+
+
 def own_error_variants(clean_eval_log, drills=None, max_errors=MAX_ERRORS):
-    """Self-conditioning design: one model's clean-drill eval log -> {variant id: v1-shaped drill} that replays that
-    model's OWN failed calls (call + error reply, in order) right after "Session start." of the same drill.
-    Run the result as a second pass for the same model (`polluted_v2(specs=...)`) and compare with `polluted_delta`.
-    Needs sample ids = v1 drill ids and metadata fork_len (what drill_agent logs). Drills where the model made no
-    eligible failed call are left out. Reads a log; makes no model call."""
+    """Self-conditioning design: one model's clean-drill eval log -> {variant id: v1-shaped drill} for EVERY drill in
+    the log. Each variant replays the model's OWN failed calls (call + error reply) taken from OTHER drills, right
+    after "Session start." of the scored drill, so the model never sees its own attempt at the item being scored.
+    Selection does not look at the model's result on the scored drill: donors are the other drills in id order,
+    starting after the scored drill (wrapping), and a donor call is skipped if it matches a call the scored drill's
+    rule forbids (it would leak the answer). A drill gets no variant only if no other drill has an eligible failure.
+    Run the result as a second pass for the same model (`polluted_v2(specs=...)`) and compare with the same drills'
+    clean results via `polluted_delta` (key the polluted map by variant["polluted"]["source_drill"]).
+    Needs sample ids = v1 drill ids and metadata fork_len (what drill_agent logs). Reads a log; makes no model call."""
     drills = drills or {d["id"]: d for d in (json.loads(p.read_text()) for p in sorted((ROOT / "drills").glob("*.json"))
                                               if not p.name.startswith("_"))}
-    out = {}
-    for smp in clean_eval_log.samples or []:
-        if smp.id not in drills:
-            continue
-        msgs = smp.messages[smp.metadata["fork_len"]:]
-        results = {m.tool_call_id: str(m.content) for m in msgs if isinstance(m, ChatMessageTool)}
-        seen, inj = set(), []
-        for tc in (tc for m in msgs if isinstance(m, ChatMessageAssistant) for tc in m.tool_calls or []):
-            text, key = results.get(tc.id, ""), json.dumps([tc.function, tc.arguments], sort_keys=True)
-            if kd.is_error_text(text) and eligible_error(tc.function, text) and key not in seen:
-                seen.add(key)
-                inj.append((tc, text))
+    fails = {smp.id: _failed_calls(smp) for smp in clean_eval_log.samples or [] if smp.id in drills}
+    ids, out = sorted(fails), {}
+    for i, did in enumerate(ids):
+        d = drills[did]
+        forbidden = d["rule"].get("forbid", []) + [f for pr in d["rule"].get("forbid_before", []) for f in pr["forbid"]]
+        inj = [(tc, text) for other in ids[i + 1:] + ids[:i] for tc, text in fails[other]
+               if not any(kd.matches({"tool": tc.function, "args": tc.arguments or {}, "ok": False}, p) for p in forbidden)][:max_errors]
         if not inj:
             continue
-        inj = inj[:max_errors]
-        d, new = drills[smp.id], []
+        new = []
         for n, (tc, text) in enumerate(inj):  # fresh ids: recorded v1 ids (call_1) repeat across turns
             new += [{"role": "assistant", "text": None, "tool_calls": [{"id": f"own_{n}", "name": tc.function, "args": tc.arguments or {}}]},
                     {"role": "tool_result", "tool_call_id": f"own_{n}", "content": text, "is_error": True}]
