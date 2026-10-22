@@ -99,6 +99,27 @@ How drills, scoring and provenance work: [docs/method.md](docs/method.md). Addin
 gap-free drills forked from runs that log full state, and drills for memory (repairing and relying on notes) and
 stamina (decisions late in long sessions and across sessions).
 
+## v2 (experimental, for Season 2)
+
+v1 is the frozen Season 1 forecast suite: nothing below touches `drills/`, the v1 loader, the judge hash or
+`kami-drills run`. v2 is a draft for Season 2, set out in [docs/v2-proposal.md](docs/v2-proposal.md) with the
+literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md). The pieces so far, all offline:
+
+- **Cadence** ([docs/v2-cadence.md](docs/v2-cadence.md), `kami_drills/cadence.py`): schedule drills score the chosen
+  wake time against the game clock; the budget-use drill pairs a forced-budget arm with a free one.
+- **Memory** ([docs/v2-memory.md](docs/v2-memory.md), `kami_drills/memory.py`): don't-repeat, stale-note (with a
+  "dated newer" variant) and notes-first drills, materialised as v1-shaped drills.
+- **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 v1 drills with
+  one or two of the agent's own real failed calls prepended; score the delta against the clean drill.
+- **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
+  over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
+
+Stubbed: the budget-use runner needs multi-step replay (v1 replay answers one fork); the schedule and memory Inspect
+tasks have not been run end to end; the polluted variants need a loader flag. No model has been run on any v2 drill
+and there are no v2 results. `uv run kami-drills check` runs the v1 script checks and the v2 pytest tests
+(pytest is in the `dev` dependency group, which `uv sync` installs). Building drills for another environment:
+[docs/adapting.md](docs/adapting.md).
+
 ## Licence and credits
 
 Code [MIT](LICENSE); copied upstream material is listed in [third_party/](third_party/NOTICE.md). Drill data CC-BY-4.0 ([DATA_LICENSE.md](DATA_LICENSE.md)): 37 drills
@@ -112,6 +133,8 @@ Maintained by Coopes, who works at Asphodel, the studio behind Kamigotchi, and
 runs Kamibots; its tools are hidden from every drill. This project is Coopes's personal work.
 
 ## Citation
+
+Also in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository"). Code is MIT; drill data is CC BY 4.0.
 
 ```bibtex
 @software{kami_drills_2026,
