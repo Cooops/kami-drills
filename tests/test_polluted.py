@@ -6,7 +6,13 @@ from pathlib import Path
 
 import pytest
 
-from kami_drills.polluted import polluted_delta
+from types import SimpleNamespace
+
+from inspect_ai.model import ChatMessageAssistant, ChatMessageTool, ChatMessageUser
+from inspect_ai.tool import ToolCall
+
+from kami_drills import task as kd
+from kami_drills.polluted import eligible_error, own_error_variants, polluted_delta, polluted_v2
 
 ROOT = Path(__file__).resolve().parent.parent
 V1_SUITE_SHA256 = "cd9a2fe576bd08f8d460a419069ee87fa497a196be1f426d29696d8d203bafa9"  # file names + bytes of drills/*.json
@@ -27,8 +33,10 @@ def test_errors_are_verbatim_v1_data_from_the_same_run():
     for text in gen.build().values():
         v = json.loads(text)
         meta, src = v["polluted"], v1[v["polluted"]["source_drill"]]
+        assert meta["family"] == "static_robustness" and "same source run" in meta["label"]
         assert meta["injected"] and meta["variant_hash"].startswith("sha256:")
         for inj in meta["injected"]:
+            assert inj["tool"] not in kd.OUTSOURCE and eligible_error(inj["tool"], inj["error"])  # no hidden tools, no infra
             donor = v1[inj["origin"]["drill"]]
             assert gen.run_of(donor) == gen.run_of(src) and donor["src"] == inj["origin"]["session_file"]
             call_msg = next(m for m in v["prefix"] if m["role"] == "assistant"
@@ -60,3 +68,37 @@ def test_polluted_delta():
     assert polluted_delta(clean, clean) == 0
     with pytest.raises(ValueError):
         polluted_delta(clean, {"x": [True]})
+
+
+def test_eligible_error():
+    assert not eligible_error("get_strategy_status", "Error executing tool get_strategy_status: not found")  # hidden
+    assert not eligible_error("harvest_stop", "{'message': 'failed to insert tx into auction index: pool reached max tx capacity'}")
+    assert eligible_error("feed_kami", "Error executing tool feed_kami: ... revert: kami too far: Reverted")
+
+
+def test_own_error_variants_from_synthetic_log():
+    drill_id = "risk-lowhp-feed-first"
+    drill = gen.load_v1()[drill_id]
+    bad = "Error executing tool feed_kami: validation failed; no transaction sent: ... revert: kami too far: Reverted"
+    msgs = [ChatMessageUser(content="start")] + [
+        ChatMessageAssistant(content="", tool_calls=[ToolCall(id="c1", function="feed_kami", arguments={"kami_id": 1}),
+                                                     ToolCall(id="c2", function="get_strategy_status", arguments={}),
+                                                     ToolCall(id="c3", function="lens_party", arguments={})]),
+        ChatMessageTool(content=bad, tool_call_id="c1", function="feed_kami"),
+        ChatMessageTool(content="Error executing tool get_strategy_status: nope", tool_call_id="c2", function="get_strategy_status"),
+        ChatMessageTool(content='{"ok": 1}', tool_call_id="c3", function="lens_party")]
+    log = SimpleNamespace(samples=[SimpleNamespace(id=drill_id, messages=msgs, metadata={"fork_len": 1}),
+                                   SimpleNamespace(id="not-a-drill", messages=msgs, metadata={"fork_len": 1}),
+                                   SimpleNamespace(id="risk-unmanaged-lowhp", messages=msgs[:1], metadata={"fork_len": 1})])
+    out = own_error_variants(log)
+    assert list(out) == [drill_id + "--own-error"]  # no-error and unknown samples are left out
+    v = out[drill_id + "--own-error"]
+    assert [i["tool"] for i in v["polluted"]["injected"]] == ["feed_kami"]  # hidden tool and the successful read dropped
+    assert v["polluted"]["inserted_messages"] == 2 and v["polluted"]["family"] == "own_error"
+    assert v["prefix"][0] == drill["prefix"][0] and v["prefix"][3:] == drill["prefix"][1:]
+    assert v["prefix"][1]["tool_calls"][0] == {"id": "own_0", "name": "feed_kami", "args": {"kami_id": 1}}
+    assert v["prefix"][2]["content"] == bad and v["prefix"][2]["tool_call_id"] == "own_0"
+    assert {k: x for k, x in v.items() if k not in ("id", "prefix", "keep_lines", "polluted")} == \
+           {k: x for k, x in drill.items() if k not in ("id", "prefix", "keep_lines")}
+    assert own_error_variants(log) == out  # deterministic
+    assert len(polluted_v2(specs=out.values()).dataset) == 1

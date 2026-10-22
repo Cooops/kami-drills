@@ -25,24 +25,15 @@ def run(task, sample_id, outputs, tmp_path):
     return next(iter(log.samples[0].scores.values())).value == "C"
 
 
-def spec_of(kind):  # dr-cooldown-feed: its replay reproduces the recorded revert, so repeating it is scored as a repeat
-    return next(s for s in mem.load() if s["kind"] == kind and (kind != "dont_repeat" or s["id"] == "dr-cooldown-feed"))
-
-
-@pytest.mark.parametrize("kind", ["stale_note", "notes_first", "dont_repeat"])
-def test_memory(kind, tmp_path):
-    spec = spec_of(kind)
-    arm = mem.ARMS[kind][0]
-    m = mem.materialise(spec, arm)
-    sid, oracle = m["id"], [tuple(c) for c in m["oracle"]]
-    if kind == "notes_first":
+@pytest.mark.parametrize("spec", mem.load(), ids=lambda s: s["id"])
+def test_memory(spec, tmp_path):
+    m = mem.materialise(spec, mem.ARMS[spec["kind"]][0])
+    oracle = [tuple(c) for c in m["oracle"]]
+    if spec["kind"] == "notes_first":
         oracle = [("workspace_read", {"path": mem.NOTE_PATH}), *oracle]
-    assert run(mem.memory_v2(), sid, play(*oracle), tmp_path)
-    if kind == "dont_repeat":  # doing nothing never repeats the failure, so the failing play is the one that must lose
-        call = mem.v1(spec["source_drill"])["prefix"][spec["base_len"]]["tool_calls"][0]
-        assert not run(mem.memory_v2(), sid, play((call["name"], call["args"])), tmp_path)
-    else:
-        assert not run(mem.memory_v2(), sid, play(), tmp_path)
+    assert run(mem.memory_v2(), m["id"], play(*oracle), tmp_path)
+    assert not run(mem.memory_v2(), m["id"], play(), tmp_path)  # null play: no calls at all fails every drill (M1)
+    assert not run(mem.memory_v2(), m["id"], play(("set_next_wake", {})), tmp_path)  # bare wake fails too
 
 
 def test_schedule(tmp_path):

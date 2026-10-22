@@ -14,6 +14,7 @@ from inspect_ai.model import ChatMessageAssistant, ChatMessageTool, GenerateConf
 from inspect_ai.scorer import CORRECT, INCORRECT, Score, accuracy, scorer, stderr
 from inspect_ai.util import store
 
+from kami_drills import cadence
 from kami_drills import task as kd
 
 ROOT = Path(__file__).parent.parent
@@ -24,11 +25,6 @@ KINDS = {"dont_repeat": {"source_drill", "base_len", "failure", "note"},
          "stale_note": {"source_drill", "base_len", "notes"},
          "notes_first": {"source_drill", "base_len", "fact", "note"}}
 ARMS = {"dont_repeat": ("a", "b", "c"), "stale_note": ("plain", "dated_newer"), "notes_first": ("only",)}
-# shortcut: read-only by name; anything else (incl. act_sequence) counts as state-changing. Revisit if the surface grows.
-READ_ONLY = {"workspace_read", "workspace_list", "get_status", "wait", "set_next_wake", "end_session", "quest_state",
-             "check_quest_completable", "list_accounts"}
-
-
 def load(directory=V2):
     return [json.loads(p.read_text()) for p in sorted(Path(directory).glob("*.json"))]
 
@@ -47,7 +43,7 @@ def error_class(text):
 
 
 def state_changing(tool):
-    return tool not in READ_ONLY and not tool.startswith(("lens_", "get_"))
+    return getattr(cadence, "is_state_changing", lambda t: t in cadence.STATE_CHANGING)(tool)
 
 
 def validate(spec):
@@ -86,21 +82,21 @@ def materialise(spec, arm):
         out["prefix"] = src["prefix"] if arm == "a" else src["prefix"][:cut]  # a: failure excerpt stays in context
         if arm == "b":
             out["prefix"] = out["prefix"] + _note_read(spec["note"], 1)
-        out["rule"] = {"require_flags": ["never"]}  # keeps v1's early stop off; the v2 scorer decides
     elif kind == "stale_note":
         out["prefix"] = src["prefix"][:cut] + _note_read(spec["notes"][arm], 1)
     else:  # notes_first: only the session-start message, and the workspace answers with the note
         out["prefix"] = src["prefix"][:cut]
-        out["replay"] = [{"tool": "workspace_read", "args": {}, "response": spec["note"]},
+        out["replay"] = [{"tool": "workspace_read", "args": {"path": NOTE_PATH}, "response": spec["note"]},
                          {"tool": "workspace_list", "args": {}, "response": NOTE_PATH}] + out["replay"]
-        out["rule"] = {"require_flags": ["never"]}
     return out
 
 
-def score_dont_repeat(calls, failure):
-    """Pass = the first state-changing call does not repeat the failure (same tool, same normalised error class)."""
+def score_dont_repeat(calls, failure, rule, flags=()):
+    """Pass = the model takes the source drill's required action (v1 rule holds over the calls) AND its first
+    state-changing call does not repeat the failure (same tool, same normalised error class). Doing nothing fails."""
     first = next((c for c in calls if state_changing(c["tool"])), None)
-    return not (first and first["tool"] == failure["tool"] and error_class(first["text"]) == failure["error_class"])
+    repeat = first and first["tool"] == failure["tool"] and error_class(first["text"]) == failure["error_class"]
+    return not repeat and score_stale_note(calls, rule, flags)
 
 
 def score_stale_note(calls, rule, flags=()):
@@ -109,11 +105,30 @@ def score_stale_note(calls, rule, flags=()):
     return not kd.rule_failures(rule, trace, set(flags))
 
 
-def score_notes_first(calls):
-    """Pass = a workspace_read comes before the first state-changing call (or no state change was attempted)."""
-    read = next((i for i, c in enumerate(calls) if c["tool"] == "workspace_read"), None)
+def score_notes_first(calls, rule, flags=()):
+    """Pass = the notes file itself is read before the first state-changing call, AND the action then taken follows the
+    fact in it (the source drill's v1 rule holds). Reading some other file, or acting without the note, fails."""
+    read = next((i for i, c in enumerate(calls) if c["tool"] == "workspace_read" and c["args"].get("path") == NOTE_PATH), None)
     change = next((i for i, c in enumerate(calls) if state_changing(c["tool"])), None)
-    return read is not None and (change is None or read < change)
+    return read is not None and (change is None or read < change) and score_stale_note(calls, rule, flags)
+
+
+def null_baseline():
+    """{materialised drill id: pass} for a model that makes no calls at all, plus one that only calls set_next_wake
+    with no arguments. Every entry must be False: a pass here means the drill rewards doing nothing."""
+    out = {}
+    for spec in load():
+        for arm in ARMS[spec["kind"]]:
+            m = materialise(spec, arm)
+            for name, calls in (("none", []), ("wake-only", [{"tool": "set_next_wake", "args": {}, "text": "{}"}])):
+                out[f"{m['id']}/{name}"] = score_calls(m, spec, calls, ())
+    return out
+
+
+def score_calls(m, spec, calls, flags):
+    return {"dont_repeat": lambda: score_dont_repeat(calls, spec["failure"], m["rule"], flags),
+            "stale_note": lambda: score_stale_note(calls, m["rule"], flags),
+            "notes_first": lambda: score_notes_first(calls, m["rule"], flags)}[spec["kind"]]()
 
 
 def arm_report(rows):
@@ -137,10 +152,7 @@ def calls_of(state):
 def memory_rule():
     async def score(state, target):
         spec, v2, calls = state.metadata["spec"], state.metadata["spec"]["v2"], calls_of(state)
-        src = next(s for s in load() if s["id"] == v2["spec"])
-        ok = {"dont_repeat": lambda: score_dont_repeat(calls, src["failure"]),
-              "stale_note": lambda: score_stale_note(calls, spec["rule"], store().get("flags", set())),
-              "notes_first": lambda: score_notes_first(calls)}[v2["kind"]]()
+        ok = score_calls(spec, next(s for s in load() if s["id"] == v2["spec"]), calls, store().get("flags", set()))
         return Score(value=CORRECT if ok else INCORRECT, answer=json.dumps([c["tool"] for c in calls]),
                         metadata={"arm": v2["arm"], "spec": v2["spec"], "kind": v2["kind"]})
     return score
@@ -148,7 +160,7 @@ def memory_rule():
 
 @task
 def memory_v2(policy: str = "model"):
-    """STUB: wired to v1's replay engine but not yet run end to end (no model calls were made when it was written)."""
+    """Runs on v1's replay engine; exercised end to end with mockllm only (tests/test_e2e_mock.py), no real model yet."""
     samples = []
     for spec in load():
         for arm in ARMS[spec["kind"]]:

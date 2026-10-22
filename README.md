@@ -107,10 +107,13 @@ literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md)
 
 - **Cadence** ([docs/v2-cadence.md](docs/v2-cadence.md), `kami_drills/cadence.py`): schedule drills score the chosen
   wake time against the game clock; the budget-use drill pairs a forced-budget arm with a free one.
-- **Memory** ([docs/v2-memory.md](docs/v2-memory.md), `kami_drills/memory.py`): don't-repeat, stale-note (with a
-  "dated newer" variant) and notes-first drills, materialised as v1-shaped drills.
-- **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 v1 drills with
-  one or two of the agent's own real failed calls prepended; score the delta against the clean drill.
+- **Memory** ([docs/v2-memory.md](docs/v2-memory.md), `kami_drills/memory.py`): 11 prototype drills (don't-repeat,
+  stale-note with a "dated newer" variant, notes-first) from KamiBench-era v1 data, materialised as v1-shaped drills;
+  the real bank comes from Season 1 after close. A null policy (no calls) fails every one.
+- **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 static prototype
+  variants that test robustness to earlier failures from the same source run (not the model's own errors), and
+  `own_error_variants(log)`, which builds per-model variants from a model's own clean-drill failures for a second pass
+  (the self-conditioning design); score the delta against the clean drill.
 - **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
   over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
 
@@ -118,7 +121,7 @@ Run a v2 suite with `kami-drills run --model <model> --suite v2-memory|v2-schedu
 suites print a per-drill pass table). `tests/test_e2e_mock.py` runs all three through Inspect on the built-in
 `mockllm/model` with scripted plays (oracle-like and null): the tests use the mock model only, with no network, key or cost.
 
-Stubbed: the budget-use runner needs multi-step replay (v1 replay answers one fork). No real model has been run on any v2 drill
+The budget-use runner is implemented (`v2-budget` suite). No real model has been run on any v2 drill
 and there are no v2 results. `uv run kami-drills check` runs the v1 script checks and the v2 pytest tests
 (pytest is in the `dev` dependency group, which `uv sync` installs). Building drills for another environment:
 [docs/adapting.md](docs/adapting.md).
