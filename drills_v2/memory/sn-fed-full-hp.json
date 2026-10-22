@@ -1,0 +1,11 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "stale_note",
+ "id": "sn-fed-full-hp",
+ "source_drill": "stale-feed-from-shop-room",
+ "base_len": 33,
+ "notes": {
+  "plain": "Kami 21340 was fed last session and is at full HP. Nothing is pending; no need to feed or travel.",
+  "dated_newer": "Updated 2026-10-30T00:00Z. Kami 21340 was fed last session and is at full HP. Nothing is pending; no need to feed or travel."
+ }
+}
