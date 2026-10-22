@@ -1,0 +1,9 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "notes_first",
+ "id": "nf-harvest-node",
+ "source_drill": "stale-notes-wrong-node-stop",
+ "base_len": 1,
+ "fact": "Kami 17194 is harvesting at node 31 (room 31)",
+ "note": "Kami 17194 is harvesting at node 31 (room 31). The account must be in room 31 to stop or collect it."
+}
