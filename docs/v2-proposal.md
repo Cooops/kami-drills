@@ -25,8 +25,9 @@ not much more, and v2 should be designed from that arithmetic rather than from t
   a weak test of the drills, not a verdict on them.
 - **Run level is not free n.** Runs of one model share one drill score. The one agent benchmark that decomposed
   run variance found model identity explains 64.8% and repeated runs of the same model 35.2%
-  ([Business Arena](https://arxiv.org/pdf/2608.08621)). The effective n sits between 10 and 27; inference must
-  cluster by model.
+  ([Business Arena](https://arxiv.org/pdf/2608.08621)). The forecast is graded on model means, so its effective n
+  is 10, not 27. A run-level mixed model cannot recover within-model drill effects, because every run of a model
+  carries the same drill score; it is used only to estimate the criterion's across-run reliability (ICC).
 - **The bar in the literature is low.** The only paper defining predictive validity for agent rankings as
   in-sample to out-of-sample rank correlation reports −0.13 (n = 13) to 0.69 (n = 20), proposes ρ = 0.85 as a
   falsification threshold, and calls its own evidence "too thin to confirm"
@@ -40,8 +41,11 @@ not much more, and v2 should be designed from that arithmetic rather than from t
   criterion's across-run reliability must be measured, and drill reliability follows Spearman–Brown: doubling
   parallel items lifts 0.6 to 0.75 and 0.7 to 0.82. That is the case for a larger suite.
 
-The Season 2 target is therefore a confidence interval that excludes zero and a correct top tier, with the
-criterion's noise ceiling published beside it. Not ρ ≥ 0.85, which no agent benchmark has met.
+The Season 2 primary claim is therefore **positive RPS skill against the "Season 1 ranks" baseline** (section 6),
+with the criterion's noise ceiling published beside it. Not "a ρ interval that excludes zero": the v2 bank is chosen
+and tuned on Season 1, so a bank that merely reproduces Season 1's order would clear that bar whenever ranks persist
+across seasons, without the drills adding anything. Beating the Season 1 ranks forecast is the part a proxy cannot
+fake. Not ρ ≥ 0.85 either, which no agent benchmark has met.
 
 ## 2. What a frozen-state drill cannot see
 
@@ -104,8 +108,9 @@ the most gapped, the least trustworthy despite separating well. At a 60% gap rat
 about 19 drills, which roughly halves the suite's reliability.
 
 **Era is a confound.** On the 10 drills forked from 4.7-era hosted runs, Sol scores 0.40 against 0.77 on the 37
-KamiBench drills, while Gemini 3.6 Flash flips the other way (0.70 vs 0.50). v2 is built entirely from 4.7-era
-Season 1 runs, so some v1-to-v2 rank movement will be source era, not capability, and should be reported as such.
+KamiBench drills, while Gemini 3.6 Flash flips the other way (0.70 vs 0.50). The example v2 drills now in
+`drills_v2/` are prototypes forked from KamiBench-era v1 data, built to exercise the rules and scorers; the real v2
+bank is built from 4.7-era Season 1 runs after close, so some v1-to-v2 rank movement will be source era, not capability, and should be reported as such.
 
 **Tries disagree unevenly.** Drills where the two tries disagree range from 3 to 16 per model: the per-item
 variance needed to decide whether a third or fourth try pays (section 5).
@@ -117,6 +122,9 @@ this n ([Leaderboard Lottery, ICML 2026](https://icml.cc/virtual/2026/80012)).
 ## 4. Drill families for v2
 
 ### 4.1 Snapshot forks (fixes gaps)
+
+*The drills in `drills_v2/` are prototypes from KamiBench-era v1 data. The bank this section describes is forked
+from Season 1 after close (2026-10-25 20:41 UTC).*
 
 Season 1 logs a full state snapshot at every session start (account, roster, every kami, quest states, inventory,
 gas, lens status) that the agent never sees. Forking every v2 drill at a session start answers the snapshot's reads
@@ -186,39 +194,81 @@ a suite whose mix is not matched to the live action mix.
 IRT will not rescue a ten-respondent test: Rasch difficulties are stable only to ±1 logit with 16–36 respondents
 ([rasch.org](https://www.rasch.org/rmt/rmt74m.htm)), and IRT-inspired selection "struggle[s] to meaningfully reduce
 variance" on LLM evals ([Madaan et al.](https://arxiv.org/abs/2406.10229)). The selection logic transfers with
-classical statistics: write a bank of 80–100 candidates, administer the 40–50 with corrected point-biserial ≥ 0.2
-and model-level pass rates between 0.1 and 0.9, re-check each season, apply changes only prospectively.
+classical statistics, with one caution: at n = 10 models the standard error of a correlation is about 0.33, so a
+point-biserial ≥ 0.2 threshold mostly selects noise. The registered rule (`select_items`): write a bank of 80–100
+candidates; drop low-information items (model pass rate ≥ 0.95 or ≤ 0.05) and reversed items (sent to audit); of the
+rest, administer the 40–50 with the highest *internal* discrimination (corrected point-biserial against the rest of
+the suite, from drill responses only). Correlation of an item with live outcomes is reported as exploratory and never
+used for selection, since that would tune the bank to Season 1's ranks. Held-out membership is a stable hash of the
+drill id (`is_heldout`: sha256 of category/id, one third in expectation per category), fixed before any selection, so
+retiring or adding items never moves another item across the split. Re-check each season and apply changes only
+prospectively.
 
 ## 5. Scoring
 
-- **pass@1 primary, pass^2 secondary.** A quest fails if any step fails, so under constant per-step accuracy p an
+- **pass@1 primary, pass^2 reported.** The decision score in the forecast (section 6) is pass@1. A quest fails if any step fails, so under constant per-step accuracy p an
   n-step task succeeds near p^n; METR's 80% horizons are 4–6× shorter than its 50% horizons
   ([METR](https://arxiv.org/html/2503.14499)), and τ-bench's agent fell from pass^1 ≈ 61% to pass^8 under 25%
   ([τ-bench](https://arxiv.org/pdf/2406.12045)). pass^k is the long-horizon quantity; pass@k measures discovery.
 - **K from try-disagreement.** K = 2 captures about a third of recoverable resampling variance, K = 4 about half;
   stop raising K once E[σ²]/K is small beside between-item variance
-  ([Miller](https://arxiv.org/html/2411.00640v1)). K = 3–4 on high-disagreement items.
+  ([Miller](https://arxiv.org/html/2411.00640v1)). Registered rule (`choose_k`): from a K = 2 pilot, take the
+  smallest K in 2–4 with mean within-item variance / K ≤ 0.1 × between-item variance; K = 4 if none qualifies.
 - **Cluster-aware intervals.** Clustered standard errors can be 3× naive (same paper). 30 of v1's 47 drills come
   from one KamiBench run, and v2 forks share snapshots and mistake families. Bootstrap over snapshot families and
   report the cluster count.
-- **Gap coding, pre-registered.** A gap before any scorable action is "not administered"; a gap after a wrong
-  action is scored. Publish per-model gap rate beside pass rate and a score-0 sensitivity bound.
-- **Tiers, not ranks**, with cost per model beside the score.
+- **Gap coding, pre-registered** ([v2-gap-coding.md](v2-gap-coding.md)). A scorable action is a state-changing
+  call, not a read. A gap before any scorable action is "not administered"; a gap after one is scored. The score
+  with not-administered excluded and the score with it counted as 0 are co-primary, with per-model gap rate beside.
+- **Tiers, not ranks**, with cost per model and cost per state-changing action (`cost_per_action`) beside the score.
 
 ## 6. Validation design for Season 2
 
-- **Forecast model.** One fixed two-component composite: decision score (pass^2 over the selected bank) predicts
-  quests per session; cadence score (schedule + budget-use drills) predicts the share of sessions in which the
-  agent keeps acting. The composite is their product or an equal-weight z-sum, written down before Season 2 and
-  never revisited. Weights cannot be fitted on ten points; they are fixed from Season 1 and declared. The v1-style
-  accuracy-only forecast is registered beside it, so Season 2 tests whether cadence adds, out-of-sample.
+### 6.1 Registered forecast (text to register)
+
+> 1. **Models and tiers.** The forecast covers the N models drilled and run live in Season 2. Tier sizes are
+>    (3, 4, 3) for N = 10; for other N, top and bottom are each round(0.3 × N) and middle is the rest.
+> 2. **Decision score.** pass@1 (mean over tries, K per `choose_k`) over the selected decision bank, with
+>    not-administered attempts excluded (gap coding). pass^2 and the score-0 gap bound are reported, not forecast.
+> 3. **Cadence score.** For each model, the mean of two z-scores taken across the N models: z(−median schedule loss)
+>    over the schedule drills, loss = |ln(chosen / oracle)| with no tolerance band and an invalid or missing wake
+>    counted as ln(1440); and z(min(budget action ratio, 1)), the ratio being state-changing actions in the free arm
+>    over the forced-budget arm, pooled over the budget drills, with no action in the budget arm counted as 0
+>    (`cadence_score`).
+> 4. **Composite.** Equal-weight z-sum: z(decision) + z(cadence) (`composite`, form "zsum").
+> 5. **Tier probabilities.** P(top), P(middle), P(bottom) per model are the shares of 10,000 bootstrap replicates
+>    (seed 0) in which the model lands in each tier, resampling decision and cadence items by snapshot family and
+>    recomputing both scores, the composite and the ranking each replicate (`tier_probs_bootstrap` with the
+>    composite as `score_fn`; ties broken at random).
+> 6. **Outcome.** Each model's live tier is its rank by mean week-end quests over its Season 2 runs, cut at the same
+>    tier sizes.
+> 7. **Primary metric.** Mean ranked probability score over models (`rps`). The primary claim is RPS skill
+>    1 − RPS / RPS_baseline > 0 against the "Season 1 ranks" baseline (Season 1 live tiers as a certain forecast;
+>    models new in Season 2 get uniform probabilities). Skill against the uniform baseline is secondary.
+> 8. **Beside it.** The accuracy-only forecast (decision score alone, same steps 1, 2, 5–7), so Season 2 tests whether
+>    cadence adds. Spearman ρ with a model-cluster bootstrap CI (`rho_cluster_ci`) is descriptive only. Pairwise
+>    claims use a multiple-comparisons-with-the-best set (`mcb_set`), not Holm.
+> 9. **Exploratory, not registered.** The product composite (decision × cadence), correlation of individual items
+>    with live outcomes, and anything else not listed here.
+
+**Why the z-sum, not the product.** The product matches the yield × persistence hypothesis (section 2), but it needs
+both components on a ratio scale with a meaningful zero, which the schedule loss is not, and it lets one noisy
+component swing the whole score. The z-sum is robust to one noisy component and needs no scale choice. Weights cannot
+be fitted on ten points, so they are equal and declared. The product is reported as exploratory.
+
+**Why Season 1 ranks is the baseline that matters.** The bank is selected and tuned on Season 1. A bank that
+proxies Season 1's ranks would beat uniform and show a ρ interval above zero whenever ranks persist across seasons;
+only beating the Season 1 ranks forecast shows the drills add information.
+
+### 6.2 Supporting analyses
+
 - **Returning models.** Season 1 live cadence is a legitimate registered predictor if declared; it tests whether
   cadence is a stable trait across seasons.
-- **Primary metric.** Ranked probability score over top/middle/bottom tiers against two baselines, uniform and
-  "Season 1 ranks". Strictly proper, pre-registrable, graded at close. ρ is reported descriptively with a
-  model-cluster bootstrap CI. Pairwise claims use a multiple-comparisons-with-the-best set, not Holm.
-- **Run-level model.** `live_run = b0 + b1·drill + u_model + e`, with a model random intercept. Hold out one third
-  of drills from any tuning and report ρ on the held-out subset.
+- **Effective n.** The forecast is graded on 10 model means. The run-level model
+  `live_run = b0 + u_model + e` is fitted only for the criterion's across-run reliability (ICC); it cannot identify a
+  within-model drill effect, because all runs of a model share one drill score.
+- **Held-out items.** One third of drills is held out from any tuning by stable hash (`is_heldout`); ρ is also
+  reported on the held-out subset.
 - **Validity chain.** Four claims with one piece of evidence each, following Kane and the NeurIPS 2025
   construct-validity audit (16% of 445 benchmarks used any uncertainty estimate;
   [Bean et al.](https://arxiv.org/html/2511.04703v1)): scoring (human audit of a drill sample), generalisation
@@ -240,15 +290,15 @@ Items marked "after close" need Season 1 live data and wait for 2026-10-25 20:41
 | 2 | Widen the live snapshot to the tools agents ask for; align drill and live tool surfaces | Gaps | M | Season 2 gap-free at source; target < 10% |
 | 3 | Pre-register gap coding; publish gap rate and a score-0 sensitivity bound per model | Scoring | S | Gap rate tracks ability |
 | 4 | After close: across-run ICC of week-end quests, split-half seed reliability, attenuation ceiling | Validation | S | Caps achievable ρ; drills vs runs spend |
-| 5 | After close: item analysis of v1 against week-end quests; retire the 13 low-information drills; audit the 6 reversed and 2 universally failed | Scoring | S | Discrimination selection without IRT |
-| 6 | 80–100 drill bank from the 27 Season 1 runs, weighted by live action frequency, including top-tier mistakes and API-habit classes; administer the 40–50 that pass item filters | Bank | L | Reliability; separates the top tier |
+| 5 | After close: internal item analysis of v1 (drill responses only); retire the 13 low-information drills; audit the 6 reversed and 2 universally failed; item-vs-live correlation as exploratory only | Scoring | S | Discrimination selection without IRT or live leakage |
+| 6 | 80–100 drill bank from the 27 Season 1 runs, weighted by live action frequency, including top-tier mistakes and API-habit classes; administer the 40–50 chosen by `select_items` | Bank | L | Reliability; separates the top tier |
 | 7 | Cadence family: schedule drill and budget-use drill | New family | M | The axis v1 cannot see |
 | 8 | Memory family: don't-repeat, stale-note (with "dated newer"), notes-before-first-call | New family | M | Revision is the weakest competency |
 | 9 | Polluted-context variant of 10–15 existing drills | New family | S | Measured decay mechanism |
 | 10 | pass@1 primary, pass^2 secondary; K from try-disagreement; bootstrap over snapshot families; tiers not ranks | Scoring | S | Compounding reliability; clustered SEs |
 | 11 | Register one fixed composite (decision + cadence) and the accuracy-only forecast beside it, by timestamped commit | Forecast | S | Tests whether cadence adds |
-| 12 | RPS over tiers vs uniform and Season-1-ranks baselines; ρ descriptive with cluster CI; MCB set for pairwise | Validation | S | Proper, registrable, graded at close |
-| 13 | Run-level mixed model; hold out one third of drills; report held-out ρ | Validation | S–M | Within-model variation; holdout norm |
+| 12 | RPS skill vs the Season-1-ranks baseline (primary) and uniform; ρ descriptive with cluster CI; MCB set for pairwise | Validation | S | Proper, registrable, graded at close |
+| 13 | Criterion ICC from the run-level model; hash-based held-out third; report held-out ρ | Validation | S | Noise ceiling; holdout norm |
 | 14 | After close: classify every session end (completed / slept with pending work / gave up / errored); mine requested vs clamped wake intervals; test whether day-1 loop establishment predicts the week | Mine S1 | M | METR-style labelling; Ord's hazard |
 | 15 | After close: recode v1 attempts by gap type against live rank; mine mistake families with a windowed repeat definition; diff notes against snapshots for stale beliefs | Mine S1 | M | Tests gap ignorability; seeds drills |
 | 16 | Chained drills on an anvil fork of Yominet, scored by step of first failure | New family, gaps | L | After 1–15; subject to the chain operator's approval |
@@ -256,8 +306,6 @@ Items marked "after close" need Season 1 live data and wait for 2026-10-25 20:41
 
 ## 8. Open questions
 
-- **Composite form.** Product (matches the yield × persistence hypothesis) or equal-weight z-sum (robust to one
-  noisy component)? Decide before Season 2 and do not revisit.
 - **Schedule oracle.** The game clock gives a lower bound on the useful wake interval, not a unique answer. Is
   |log ratio| against the earliest useful wake the right loss, or should there be a tolerance band?
 - **Era.** Drop the KamiBench-era drills entirely (removes the confound) or keep a labelled subset (keeps v1

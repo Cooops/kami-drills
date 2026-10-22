@@ -54,14 +54,16 @@ mistake fails ([CONTRIBUTING.md](../CONTRIBUTING.md) steps 3 to 5). A rule a sec
 After a first round of models, compute per-item pass rate and the corrected point-biserial (correlation of the item
 with the rest-score, item removed) from the model-by-item response matrix (`kami_drills/scoring_v2.py` `item_stats`).
 Items everyone passes or everyone fails carry no information; items that correlate negatively with the rest are more
-likely grader errors than real blind spots, so audit them before trusting them. Keep a bank larger than the suite,
+likely grader errors than real blind spots, so audit them before trusting them. With ten or so models a correlation's
+standard error is about 0.33, so rank items by this internal discrimination rather than cutting at a threshold
+(`select_items`), and never select on correlation with the live outcome you will grade against. Keep a bank larger than the suite,
 administer the items that pass the filters, re-check each season, and apply changes only prospectively so a released
 suite version never changes.
 
 ## 7. Report pass^k and clustered intervals
 
 Run each item k times. Report pass@1 (mean over tries) and pass^k (passed on every try; `pass_hat_k`). Long-horizon
-success compounds per-step success, so pass^k is the quantity that predicts a multi-step task. Items forked from the
+success compounds per-step success, so pass^k is the long-horizon-relevant quantity. Items forked from the
 same run or the same snapshot are not independent: bootstrap over those families, not items, and report the family
 count (`cluster_bootstrap_ci`). With tens of items, report tiers, not ranks, and put cost per model beside the score.
 
@@ -72,8 +74,8 @@ commit a document (timestamped) that places each model in a tier (top, middle, b
 and names the live outcome it is graded on. Grade it with a strictly proper scoring rule: the ranked probability score
 over ordered tiers (`rps`), against a uniform baseline and any other baseline you could have used (`rps_vs_baseline`).
 Report rank correlation descriptively with an interval that clusters by model, since repeated runs of one model share
-one drill score. Hold out a share of items from any tuning (`heldout_split`) and report the correlation on the
-held-out share too. Anything not in the registered document is exploratory.
+one drill score. Hold out a share of items from any tuning by a stable hash of the item id (`heldout_split`), so
+retiring items never reshuffles the split, and report the correlation on the held-out share too. Anything not in the registered document is exploratory.
 
 ## 9. Add cadence and memory items
 

@@ -93,8 +93,9 @@ clustered standard errors were up to 3.05× naive ([Miller](https://arxiv.org/ht
 respondents and ±0.5 with 64–144 ([Linacre](https://www.rasch.org/rmt/rmt74m.htm)). Madaan et al. find that methods from the human-testing literature "struggle to meaningfully reduce variance" on LLM
 evals ([Madaan et al.](https://arxiv.org/abs/2406.10229)). What transfers is Fluid Benchmarking's observation that
 low-discrimination items are disproportionately mislabelled (0.01 versus 0.75 per 100-item session, adaptive versus
-random), implemented with classical statistics: drop items with corrected point-biserial below 0.2
-([item-total correlation](https://en.wikipedia.org/wiki/Item-total_correlation)), keep mid-difficulty items, and
+random), implemented with classical statistics: rank items by corrected point-biserial
+([item-total correlation](https://en.wikipedia.org/wiki/Item-total_correlation)) rather than cutting at 0.2, since its
+standard error is about 0.33 at ten respondents, keep mid-difficulty items, and
 exclude the models under test from any fitting set.
 
 **Missing data.** IRT distinguishes "not administered" (ignorable when independent of ability) from "omitted";
@@ -113,8 +114,8 @@ setting ([Bean et al.](https://arxiv.org/html/2511.04703v1)). Kane's argument-ba
 scoring, generalisation, extrapolation and decision inferences, each needing its own backing
 ([Kane](https://www.ets.org/research/policy_research_reports/publications/article/2013/jrpe.html)).
 
-**Inference.** At ten models the honest target is an interval that excludes zero and a correct top tier, not a
-point ρ. Replay gaps behave like not-reached items whose rate depends on the agent, so they are not ignorable and
+**Inference.** At ten models the honest target is positive RPS skill against the previous season's ranks, not a
+point ρ, and not a ρ interval that excludes zero, which a bank tuned on that season can clear by proxying its ranks. Replay gaps behave like not-reached items whose rate depends on the agent, so they are not ignorable and
 need a pre-registered coding rule with a score-0 sensitivity bound; the analogy is ours, since no LLM-eval paper
 treats environment-side gaps this way. One pre-registered composite, RPS as primary metric and ρ as descriptive
 follows the Registered Reports norm.
@@ -258,8 +259,9 @@ free to continue. Both are inferences; no published benchmark scores a chosen wa
 
 ## 6. Implications for kami-drills v2
 
-- Target an interval that excludes zero and a correct top tier, with the criterion's reliability ceiling published
-  beside it, not ρ ≥ 0.85 ([proposal §1](v2-proposal.md#1-what-ten-models-can-show)).
+- Target positive RPS skill against the Season 1 ranks baseline, with the criterion's reliability ceiling published
+  beside it, not a ρ interval that excludes zero (a bank tuned on Season 1 can clear that by proxy) and not ρ ≥ 0.85
+  ([proposal §1](v2-proposal.md#1-what-ten-models-can-show)).
 - Treat cadence as a second measured axis, with schedule and budget-use drills scored so that efficient waiting and
   stalling separate ([§2](v2-proposal.md#2-what-a-frozen-state-drill-cannot-see), [§4.2](v2-proposal.md#42-cadence)).
 - Report progression and cost per state-changing action as separate columns, never cost per completed task alone
