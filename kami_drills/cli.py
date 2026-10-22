@@ -56,12 +56,20 @@ def cmd_list(args):
 
 def cmd_check(args):
     ok = True
-    for test in [*sorted((ROOT / "tests").glob("test_*.py")), ROOT / "kami_drills" / "report.py"]:
+    tests = sorted((ROOT / "tests").glob("test_*.py"))
+    # v1 checks are plain scripts; v2 tests use pytest (dev dependency, installed by `uv run`)
+    py = [t for t in tests if "import pytest" in t.read_text()]
+    for test in [*(t for t in tests if t not in py), ROOT / "kami_drills" / "report.py"]:
         try:
             runpy.run_path(str(test), run_name="__main__")
         except AssertionError as e:
             ok = False
             print(f"FAIL {test.name}: {e}")
+    if py:
+        import subprocess
+        if subprocess.run([sys.executable, "-m", "pytest", "-q", *map(str, py)]).returncode != 0:
+            ok = False
+            print("FAIL pytest (needs the dev group: uv sync --group dev)")
     print("all checks passed" if ok else "checks failed")
     return 0 if ok else 1
 
