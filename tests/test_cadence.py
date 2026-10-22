@@ -89,8 +89,3 @@ def test_action_ratio():
     assert cadence.action_ratio(free, budget) == pytest.approx(1 / 4)
     assert cadence.action_ratio(budget, budget) == 1
     assert cadence.action_ratio(free, ["lens_kami"]) is None  # budget arm acted never: undefined, not infinite
-
-
-def test_budget_runner_is_a_stub():
-    with pytest.raises(NotImplementedError, match="multi-step replay"):
-        cadence.run_budget_pair({}, "m")
