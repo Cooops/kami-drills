@@ -91,7 +91,7 @@ these are the best available.
   known-good line, not exploration: a model that finds a different valid move is ended as `off_trajectory` and scored
   only up to there, so a high off-trajectory rate means "the replay cannot follow this model", not "the model is
   wrong". The original agent's own reverts are on the path too, and a path-following model gets `action_ratio` 1 by
-  construction. Paths are short (at most 12 state changes), end at the v1 fork, and the free arm can only stop early.
+  construction. Paths are short (at most 13 state changes), end at the v1 fork, and the free arm can only stop early.
 - No Inspect task runs the schedule drill yet; `score_schedule` takes a chosen wake time.
 - Nothing-due examples are kami-clock-only (see above); four, from three kami (20699, 715, 17194; the last twice, in different sessions).
 - Two examples share one kami state (different forks); effective n is 2. The oracle is one rule, and `pass_threshold` is

@@ -8,7 +8,7 @@ from inspect_ai import eval as inspect_eval
 from inspect_ai.model import ModelOutput, get_model
 
 from kami_drills import memory as mem
-from kami_drills.cadence import load_schedule_drills, oracle_minutes, schedule_v2
+from kami_drills.cadence import drill_oracle_minutes, load_schedule_drills, schedule_v2
 from kami_drills.polluted import polluted_v2
 
 M = "mockllm/model"
@@ -47,7 +47,7 @@ def test_memory(kind, tmp_path):
 
 def test_schedule(tmp_path):
     for d in load_schedule_drills():
-        assert run(schedule_v2(), d["id"], play(("set_next_wake", {"minutes_from_now": oracle_minutes(d["state"])})), tmp_path)
+        assert run(schedule_v2(), d["id"], play(("set_next_wake", {"minutes_from_now": drill_oracle_minutes(d)})), tmp_path)
         assert not run(schedule_v2(), d["id"], play(), tmp_path)  # never schedules a wake
         assert not run(schedule_v2(), d["id"], play(("set_next_wake", {"minutes_from_now": 1})), tmp_path)  # far too early
 

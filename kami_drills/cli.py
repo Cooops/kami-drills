@@ -105,8 +105,9 @@ def cmd_run(args):
     if args.suite != "v1":  # v2 suites: scored by their own scorers, so a plain per-drill table, not the v1 report
         from kami_drills.cadence import schedule_v2
         from kami_drills.memory import memory_v2
+        from kami_drills.episode import budget_v2
         from kami_drills.polluted import polluted_v2
-        suite = {"v2-memory": memory_v2, "v2-schedule": schedule_v2, "v2-polluted": polluted_v2}
+        suite = {"v2-memory": memory_v2, "v2-schedule": schedule_v2, "v2-polluted": polluted_v2, "v2-budget": budget_v2}
     from dotenv import find_dotenv, load_dotenv
 
     load_dotenv(find_dotenv(usecwd=True))  # Inspect reads .env too; load it first so the key check sees it
@@ -214,7 +215,7 @@ def main(argv=None):
 
     s = sub.add_parser("run", help="run the drills against a model and print a summary")
     s.add_argument("--model", required=True, help="Inspect model name, e.g. openrouter/<provider>/<model>")
-    s.add_argument("--suite", choices=["v1", "v2-memory", "v2-schedule", "v2-polluted"], default="v1",
+    s.add_argument("--suite", choices=["v1", "v2-memory", "v2-schedule", "v2-polluted", "v2-budget"], default="v1",
                    help="which suite (default v1, the frozen one; v2 suites are experimental)")
     s.add_argument("--epochs", type=int, default=1, help="tries per drill (default 1; results use 2)")
     s.add_argument("--drills", help="comma-separated drill ids (default all)")

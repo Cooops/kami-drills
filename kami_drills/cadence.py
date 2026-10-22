@@ -24,7 +24,8 @@ SCHEDULE_TOOL = "set_next_wake"  # v1 harness scaffold tool; argument minutes_fr
 STATE_CHANGING = frozenset({
     "harvest_start", "harvest_stop", "harvest_collect", "move_to_room", "travel_to_room", "feed_kami", "revive_kami",
     "level_up_kami", "level_to", "allocate_skills", "upgrade_skill", "level_and_allocate_batch",
-    "feed_level_allocate_batch", "use_item_batch", "accept_quest", "complete_quest", "act_sequence"})
+    "feed_level_allocate_batch", "use_item_batch", "accept_quest", "complete_quest", "act_sequence",
+    "burn_items", "scavenge_claim_and_reveal", "register_account"})
 
 
 def oracle_minutes(state):
