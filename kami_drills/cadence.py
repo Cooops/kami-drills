@@ -37,17 +37,20 @@ def is_state_changing(tool):
 
 
 def oracle_minutes(state):
-    """Minutes until the kami is both off cooldown and fully rested: the soonest moment a session has full work to do.
-    Needs a resting kami regaining HP (hp_rate_per_hr > 0)."""
-    k = state["kami"]
-    rest_s = max(k["hp_total"] - k["hp"], 0) / k["hp_rate_per_hr"] * 3600
-    return max(k["cooldown_s"], rest_s) / 60
+    """Minutes until the cooldown ends: the pending work is harvest_start on a resting kami, and v1's stale-cooldown-retry-start
+    rule is to wait the cooldown out and then start (71/90 HP is not waited on to full). No HP term."""
+    return state["kami"]["cooldown_s"] / 60
 
 
 MAX_WAKE_MINUTES = 24 * 60  # harness maximum for set_next_wake
 KINDS = ("pending", "nothing_due")
 ORIGINS = ("session_end", "synthetic_variant")
 # Every situation ends with this and nothing else: no hint about which kind of drill it is. The model infers it from the state.
+HP_RISK_FRACTION, COLLECT_TARGET_MUSU = 0.3, 250
+# The operator's policy, stated in every situation so the thresholds are facts the model reasons from, not guesses. The same
+# sentence in every drill, so it carries no hint of the drill kind. It sits before the neutral closing.
+POLICY = (f"Policy: restart a resting kami's harvest as soon as its cooldown ends; collect when accrued MUSU reaches {COLLECT_TARGET_MUSU}; "
+          f"act before HP falls below {HP_RISK_FRACTION:.0%} of its maximum. The longest wake you can set is {MAX_WAKE_MINUTES} minutes.")
 CLOSING = "You are at the end of a session. Call set_next_wake with minutes_from_now."
 
 
@@ -87,8 +90,8 @@ def score_schedule(drill, chosen_minutes):
 
 def _validate_nothing_due(d):
     k, h, p = d["state"].get("kami", {}), d["state"].get("harvest", {}), d.get("params")
-    if not isinstance(p, dict) or not {"hp_risk_fraction", "collect_target_musu"} <= set(p) or not 0 < p["hp_risk_fraction"] < 1:
-        raise ValueError(f"{d['id']}: nothing_due needs params.hp_risk_fraction in (0,1) and params.collect_target_musu")
+    if p != {"hp_risk_fraction": HP_RISK_FRACTION, "collect_target_musu": COLLECT_TARGET_MUSU}:
+        raise ValueError(f"{d['id']}: nothing_due params must equal the thresholds stated in POLICY")
     if d["pending_work"] or not isinstance(d.get("flags"), list):
         raise ValueError(f"{d['id']}: nothing_due needs empty pending_work and a flags list")
     if not {"hp", "hp_total", "hp_drain_per_hr", "cooldown_s"} <= set(k) or not {"accrued_musu", "rate_per_hr"} <= set(h):
@@ -108,8 +111,8 @@ def validate_schedule(d):
             raise ValueError(f"{d.get('id')}: {key} missing or not {typ}")
     if d.get("format") != SCHEDULE_FORMAT or d.get("tool") != SCHEDULE_TOOL:
         raise ValueError(f"{d['id']}: wrong format or tool")
-    if d.get("prototype") is not True or d.get("origin") not in ORIGINS or not d.get("situation", "").endswith(CLOSING):
-        raise ValueError(f"{d['id']}: needs prototype: true, origin in {ORIGINS}, and a situation ending in the neutral closing prompt")
+    if d.get("prototype") is not True or d.get("origin") not in ORIGINS or not d.get("situation", "").endswith(f"{POLICY} {CLOSING}"):
+        raise ValueError(f"{d['id']}: needs prototype: true, origin in {ORIGINS}, and a situation ending in the policy line and the neutral closing prompt")
     if d["origin"] == "session_end":  # the original agent's own text-only stop in the public v1 prefix
         m = json.loads((ROOT / "drills" / f"{d['source_v1_id']}.json").read_text())["prefix"][d["source_end_msg"]]
         if m["role"] != "assistant" or m.get("tool_calls"):
@@ -121,8 +124,8 @@ def validate_schedule(d):
     if nothing_due:
         _validate_nothing_due(d)
         return d
-    if set(d["state"].get("kami", {})) < {"hp", "hp_total", "hp_rate_per_hr", "cooldown_s"} or d["state"]["kami"]["hp_rate_per_hr"] <= 0:
-        raise ValueError(f"{d['id']}: state.kami needs hp, hp_total, hp_rate_per_hr > 0, cooldown_s")
+    if d["pending_work"] != ["harvest_start"] or d["state"].get("kami", {}).get("state") != "RESTING" or not d["state"]["kami"].get("cooldown_s", 0) > 0:
+        raise ValueError(f"{d['id']}: pending drills are harvest_start on a RESTING kami with cooldown_s > 0")
     if abs(d["oracle_minutes"] - oracle_minutes(d["state"])) > 0.01:
         raise ValueError(f"{d['id']}: recorded oracle_minutes disagrees with the clock fields")
     return d
@@ -141,6 +144,19 @@ def action_ratio(free_tools, budget_tools):
     model does less once nothing forces it on (UltraHorizon's collapse). None when the budget arm took no action."""
     b = action_count(budget_tools)
     return action_count(free_tools) / b if b else None
+
+
+def matched_actions(result):
+    """Non-revert recorded state changes the model matched in one arm's episode result. Excludes a different call, a repeated
+    recorded revert, reads, and act_sequence (it never matches a single recorded call: documented limit)."""
+    return result["matched_actions"]
+
+
+def pooled_budget_ratio(results):
+    """Headline budget metric over run_budget_pair results: matched actions in the free arm over matched actions in the budget
+    arm, pooled across drills. A one-call spammer matches nothing (None); a follower gets 1. None when the budget arms matched nothing."""
+    b = sum(matched_actions(r["budget"]) for r in results)
+    return sum(matched_actions(r["free"]) for r in results) / b if b else None
 
 
 @scorer(metrics=[accuracy(), stderr()])
@@ -181,13 +197,17 @@ def schedule_v2(policy: str = "model"):
 
 def run_budget_pair(drill, model):
     """Run both arms of a budget drill offline on its recorded trajectory (kami_drills/episode.py). `model` is a policy,
-    model(history, arm) -> (tool, args) or None; history is v1-shaped messages. Reports the action count per arm,
-    action_ratio (free over budget; capped at 1 for a path-follower, since both arms stop at the recorded path's end,
-    so read the counts, not only the ratio), path_actions (what a full follower reaches), the off-trajectory rate over
-    the two arms, and the steps taken in each."""
+    model(history, arm) -> (tool, args) or None; history is v1-shaped messages. Reports per arm: raw `actions` (state-changing
+    calls attempted, reverts and off-path calls included), `matched_actions` (non-revert recorded state changes matched) and
+    `coverage` (matched over path_actions). `path_actions` is what a perfect follower can reach: the path's non-revert state
+    changes. `matched_ratio` is free over budget matched; `action_ratio` is the raw-count ratio and can be gamed by repeating
+    a call. Also the off-trajectory rate over the two arms and the steps in each."""
     from kami_drills.episode import run_episode
     free, budget = (run_episode(drill, model, arm) for arm in ("free", "budget"))
-    return {"action_ratio": action_ratio(free["tools"], budget["tools"]),
-            "actions": {"free": free["actions"], "budget": budget["actions"]}, "path_actions": drill["trajectory_actions"],
+    mf, mb = matched_actions(free), matched_actions(budget)
+    return {"action_ratio": action_ratio(free["tools"], budget["tools"]), "matched_ratio": mf / mb if mb else None,
+            "actions": {"free": free["actions"], "budget": budget["actions"]},
+            "matched_actions": {"free": mf, "budget": mb}, "path_actions": free["path_actions"],
+            "coverage": {"free": mf / free["path_actions"], "budget": mb / free["path_actions"]},
             "off_trajectory_rate": (free["off_trajectory"] + budget["off_trajectory"]) / 2,
             "steps": {"free": free["steps"], "budget": budget["steps"]}, "free": free, "budget": budget}

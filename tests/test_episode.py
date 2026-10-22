@@ -62,9 +62,40 @@ def test_follower_gets_ratio_one_and_never_leaves_the_path(d):
     r = cadence.run_budget_pair(d, follower(d))
     assert r["action_ratio"] == 1 and r["off_trajectory_rate"] == 0
     assert r["free"]["actions"] == r["budget"]["actions"] == followed_actions(d) <= d["trajectory_actions"]
-    assert r["actions"] == {"free": followed_actions(d), "budget": followed_actions(d)} and r["path_actions"] == d["trajectory_actions"]
+    assert r["actions"] == {"free": followed_actions(d), "budget": followed_actions(d)}
+    reachable = sum(cadence.is_state_changing(c["tool"]) and not c["error"] for c in path_of(d))
+    assert r["path_actions"] == reachable < d["trajectory_actions"]  # not the 13 total: reverts are skippable, not required
+    assert r["matched_actions"] == {"free": reachable, "budget": reachable} and r["coverage"] == {"free": 1, "budget": 1}
+    assert r["matched_ratio"] == 1 and cadence.pooled_budget_ratio([r]) == 1
     assert r["free"]["outcome"] == r["budget"]["outcome"] == "trajectory_end"
     assert r["steps"]["free"] == r["steps"]["budget"] <= d["trajectory_calls"]
+
+
+def test_spammer_is_separated_from_follower_by_matched_actions():
+    d = DRILLS[0]
+    spam = cadence.run_budget_pair(d, lambda h, arm: ("harvest_stop", {"kami_ids": [424242]}))  # one off-path call, then the episode ends
+    good = cadence.run_budget_pair(d, follower(d))
+    assert spam["action_ratio"] == good["action_ratio"] == 1  # the raw count cannot tell them apart
+    assert spam["matched_actions"] == {"free": 0, "budget": 0} and spam["coverage"] == {"free": 0, "budget": 0}
+    assert cadence.pooled_budget_ratio([spam]) is None and cadence.pooled_budget_ratio([good]) == 1
+    assert cadence.pooled_budget_ratio([good, spam]) == 1
+
+
+def test_skipping_recorded_reverts_is_not_penalised_and_repeating_them_is_not_rewarded():
+    d = next(d for d in DRILLS if any(c["error"] and cadence.is_state_changing(c["tool"]) for c in path_of(d)))
+    skip = [c for c in path_of(d) if not (cadence.is_state_changing(c["tool"]) and c["error"])]
+    it = {a: iter(skip) for a in ("free", "budget")}
+    pol = lambda h, arm: next(((c["tool"], c["args"]) for c in it[arm]), None)
+    r_skip, r_full = cadence.run_budget_pair(d, pol), cadence.run_budget_pair(d, follower(d))
+    assert r_skip["actions"]["budget"] < r_full["actions"]["budget"]  # raw count punishes the skipper
+    assert r_skip["matched_actions"] == r_full["matched_actions"] == {"free": r_full["path_actions"], "budget": r_full["path_actions"]}
+
+
+def test_act_sequence_is_one_unmatched_action_and_ends_the_episode():
+    e = ep.Episode(DRILLS[0], "budget")
+    e.call("act_sequence", {"steps": [{"action": "feed"}] * 64})
+    r = e.result()
+    assert r["outcome"] == "off_trajectory" and r["actions"] == 1 and r["matched_actions"] == 0  # documented limit: inner steps are not replayed
 
 
 def test_matched_calls_return_recorded_results():

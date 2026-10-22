@@ -9,8 +9,8 @@
  "tolerance_band": null,
  "pass_threshold": 0.7,
  "pass_threshold_note": "ln units; 0.7 is a factor of 2 either way. Untuned: tune before registration.",
- "note": "Synthetic variant: the clock fields of the genuine session end (schedule-harvest-9811-session-end) changed to spread the oracles. Not a recorded state. Nothing happens for a day: the oracle is the 24 h harness maximum.",
- "situation": "Kami 9811 is HARVESTING with 70/70 HP, losing 0.2 HP per hour. It has accrued 0 MUSU and earns 0 MUSU per hour. Harvest cooldown: 0 s. You are at the end of a session. Call set_next_wake with minutes_from_now.",
+ "note": "Synthetic variant: a slow but live harvest. At 8 MUSU/hr the 250 MUSU collect target is 31 h away and the HP risk line 105 h away, so the oracle is the 24 h harness maximum.",
+ "situation": "Kami 9811 is HARVESTING with 70/70 HP, losing 0.2 HP per hour. It has accrued 0 MUSU and earns 8 MUSU per hour. Harvest cooldown: 0 s. Policy: restart a resting kami's harvest as soon as its cooldown ends; collect when accrued MUSU reaches 250; act before HP falls below 30% of its maximum. The longest wake you can set is 1440 minutes. You are at the end of a session. Call set_next_wake with minutes_from_now.",
  "pending_work": [],
  "state": {
   "kami": {
@@ -23,14 +23,14 @@
   },
   "harvest": {
    "accrued_musu": 0,
-   "rate_per_hr": 0
+   "rate_per_hr": 8
   }
  },
  "params": {
   "hp_risk_fraction": 0.3,
   "collect_target_musu": 250
  },
- "params_note": "hp_risk_fraction (0.3) and collect_target_musu (250) are this drill's untuned assumptions, not game facts; the model is not shown them.",
+ "params_note": "hp_risk_fraction (0.3) and collect_target_musu (250) are this drill's untuned assumptions, not game facts; the model is shown them as the operator's policy line (cadence.POLICY).",
  "flags": [
   "kami clock only: quests, feeding and inventory work are not in a kami read, so 'nothing due' is judged on the kami clock alone"
  ],

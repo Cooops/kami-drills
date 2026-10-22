@@ -9,8 +9,8 @@
  "tolerance_band": null,
  "pass_threshold": 0.7,
  "pass_threshold_note": "ln units; 0.7 is a factor of 2 either way. Untuned: tune before registration.",
- "note": "State at the original agent's own text-only stop (stale-harvest-start, message 9; lens_party read at message 4). v1's rule for that drill also requires harvest_collect and accepts a later set_next_wake of about 60 min; this drill scores only the wake.",
- "situation": "Kami 9811 is HARVESTING with 27/70 HP, losing 5.09 HP per hour. It has accrued 27 MUSU and earns 26.62 MUSU per hour. Harvest cooldown: 0 s. You are at the end of a session. Call set_next_wake with minutes_from_now.",
+ "note": "HP, drain and rate are the original agent's lens_party read at stale-harvest-start message 4; its text-only stop is message 9. v1's rule for that drill requires harvest_collect and then accepts a later set_next_wake (about 60 min). The original agent never collected, so this drill states the collect as done (accrued 0) and scores only the wake: a genuine session-end state with the v1-required collect applied, not a verbatim record. HP binds (70.73 min) either way.",
+ "situation": "Kami 9811 is HARVESTING with 27/70 HP, losing 5.09 HP per hour. You have just collected its harvest, so it has accrued 0 MUSU, and it earns 26.62 MUSU per hour. Harvest cooldown: 0 s. Policy: restart a resting kami's harvest as soon as its cooldown ends; collect when accrued MUSU reaches 250; act before HP falls below 30% of its maximum. The longest wake you can set is 1440 minutes. You are at the end of a session. Call set_next_wake with minutes_from_now.",
  "pending_work": [],
  "state": {
   "kami": {
@@ -22,7 +22,7 @@
    "cooldown_s": 0
   },
   "harvest": {
-   "accrued_musu": 27,
+   "accrued_musu": 0,
    "rate_per_hr": 26.62
   }
  },
@@ -30,7 +30,7 @@
   "hp_risk_fraction": 0.3,
   "collect_target_musu": 250
  },
- "params_note": "hp_risk_fraction (0.3) and collect_target_musu (250) are this drill's untuned assumptions, not game facts; the model is not shown them.",
+ "params_note": "hp_risk_fraction (0.3) and collect_target_musu (250) are this drill's untuned assumptions, not game facts; the model is shown them as the operator's policy line (cadence.POLICY).",
  "flags": [
   "kami clock only: quests, feeding and inventory work are not in a kami read, so 'nothing due' is judged on the kami clock alone"
  ],

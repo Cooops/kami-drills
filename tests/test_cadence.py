@@ -64,8 +64,8 @@ def test_old_drill_without_closing_prompt_is_rejected():
         cadence.validate_schedule(g)
 
 
-def test_pending_oracle_is_the_later_of_cooldown_and_rest():
-    assert {d["id"]: d["oracle_minutes"] for d in DRILLS} == pytest.approx({"schedule-rest-near-full": 6.25, "schedule-rest-long": 93.75})
+def test_pending_oracle_is_the_cooldown_end_as_in_v1_stale_cooldown_retry():  # rest-to-full is not waited on
+    assert {d["id"]: d["oracle_minutes"] for d in DRILLS} == pytest.approx({"schedule-cooldown-900s": 15, "schedule-cooldown-124s": 2.0667}, abs=1e-3)
 
 
 def test_always_24h_passes_when_nothing_happens_for_a_day():
@@ -120,9 +120,30 @@ def test_report_carries_raw_loss_next_to_banded_loss():
     assert s["raw_loss"] == pytest.approx(math.log(1.5)) and s["loss"] == 0 and s["passed"]
 
 
-def test_cooldown_longer_than_rest_sets_the_oracle():
-    state = {"kami": {"hp": 80, "hp_total": 80, "hp_rate_per_hr": 19.2, "cooldown_s": 600}}
-    assert cadence.oracle_minutes(state) == 10
+def test_resting_oracle_ignores_hp_like_v1():
+    # v1 stale-cooldown-retry-start: kami 9787, RESTING 71/90, ~100 s cooldown -> wait it out, then harvest_start (not rest to full)
+    assert cadence.oracle_minutes({"kami": {"hp": 71, "hp_total": 90, "cooldown_s": 100}}) == pytest.approx(100 / 60)
+    assert cadence.oracle_minutes({"kami": {"hp": 1, "hp_total": 90, "cooldown_s": 100}}) == cadence.oracle_minutes({"kami": {"hp": 90, "hp_total": 90, "cooldown_s": 100}})
+
+
+def test_policy_states_the_thresholds_identically_in_every_prompt():
+    assert "250" in cadence.POLICY and "30%" in cadence.POLICY and cadence.POLICY.count("Policy:") == 1
+    assert all(d["situation"].endswith(f"{cadence.POLICY} {cadence.CLOSING}") for d in ALL)
+    assert all(d["params"] == {"hp_risk_fraction": 0.3, "collect_target_musu": 250} for d in SLEEP)
+    d = copy.deepcopy(SLEEP[0])
+    d["situation"] = d["situation"].replace(cadence.POLICY + " ", "")
+    with pytest.raises(ValueError):
+        cadence.validate_schedule(d)
+
+
+def test_genuine_drill_states_the_collect_v1_requires():
+    g = next(d for d in ALL if d["origin"] == "session_end")
+    assert "just collected" in g["situation"] and g["state"]["harvest"]["accrued_musu"] == 0 and g["pending_work"] == []
+
+
+def test_idle_day_has_a_live_harvest():
+    d = next(d for d in ALL if d["id"] == "schedule-harvest-idle")
+    assert d["state"]["harvest"]["rate_per_hr"] > 0 and 250 / d["state"]["harvest"]["rate_per_hr"] * 60 > 1440
 
 
 def test_schema_accepts_examples_and_records_the_parameters():
@@ -134,7 +155,7 @@ def test_schema_accepts_examples_and_records_the_parameters():
 @pytest.mark.parametrize("edit", [
     lambda d: d.pop("tolerance_band"), lambda d: d.update(tolerance_band=0.5), lambda d: d.pop("source_v1_id"),
     lambda d: d.update(pending_work=[]), lambda d: d.update(oracle_minutes=1.0),
-    lambda d: d["state"]["kami"].update(hp_rate_per_hr=0), lambda d: d.update(format="v1")])
+    lambda d: d["state"]["kami"].update(cooldown_s=0), lambda d: d.update(pending_work=["harvest_stop"]), lambda d: d.update(format="v1")])
 def test_schema_rejects(edit):
     d = copy.deepcopy(DRILLS[0])
     edit(d)
@@ -162,6 +183,12 @@ def test_state_changing_classifies_every_harness_tool():
         assert cadence.is_state_changing(n)
     for n in ("lens_kami", "pool_swap_quote", "quest_state", "set_next_wake", "workspace_read", "no_such_tool"):
         assert not cadence.is_state_changing(n)
+
+
+def test_pooled_budget_ratio():
+    r = lambda f, b: {"free": {"matched_actions": f}, "budget": {"matched_actions": b}}
+    assert cadence.pooled_budget_ratio([r(6, 6), r(2, 4)]) == pytest.approx(0.8)
+    assert cadence.pooled_budget_ratio([r(0, 0)]) is None
 
 
 def test_action_ratio():

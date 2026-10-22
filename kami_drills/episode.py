@@ -81,6 +81,10 @@ class Episode:
                 return None
         return None
 
+    def path_actions(self):
+        """What a perfect follower can match: the path's state changes that did not revert."""
+        return sum(cadence.is_state_changing(p["tool"]) and not p["error"] for p in self.path)
+
     def _live_actions(self):
         """Recorded state changes still worth doing: errors left on the path are skippable, so they do not keep it open."""
         return [i for i in self._actions() if not self.path[i]["error"]]
@@ -100,7 +104,7 @@ class Episode:
         """One model call -> the recorded result text. Records the call and sets self.outcome when the episode ends."""
         if self.outcome:
             return "Episode over."
-        args, matched = args or {}, False
+        args, matched, revert = args or {}, False, False
         if tool in DONE_TOOLS:
             if self.arm == "free":
                 text, self.outcome = "Session ended.", "done"
@@ -111,7 +115,7 @@ class Episode:
             if not self._live_actions() and j is None:  # nothing left to answer with but skippable errors
                 text, self.outcome = "Recorded path ended.", "trajectory_end"
             elif j is not None:
-                text, matched, self.pos = self.path[j]["text"], True, j + 1
+                text, matched, revert, self.pos = self.path[j]["text"], True, self.path[j]["error"], j + 1
                 if not self._live_actions():
                     self.outcome = "trajectory_end"
             else:
@@ -120,7 +124,7 @@ class Episode:
             found = self._read(tool, args)
             matched = found is not None
             text = found if matched else f"Error executing tool {tool}: not available in this drill (no recorded response)."
-        self.calls.append({"tool": tool, "args": args, "text": text, "matched": matched})
+        self.calls.append({"tool": tool, "args": args, "text": text, "matched": matched, "revert": revert})
         if not self.outcome and len(self.calls) >= self.budget:
             self.outcome = "budget_exhausted"
         return text
@@ -131,6 +135,8 @@ class Episode:
         tools = [c["tool"] for c in self.calls]
         return {"arm": self.arm, "outcome": self.outcome or "stopped", "steps": len(self.calls), "tools": tools,
                 "actions": cadence.action_count(tools), "path_actions_matched": sum(c["matched"] and cadence.is_state_changing(c["tool"]) for c in self.calls),
+                "matched_actions": sum(c["matched"] and cadence.is_state_changing(c["tool"]) and not c["revert"] for c in self.calls),
+                "path_actions": self.path_actions(),
                 "off_trajectory": self.outcome == "off_trajectory"}
 
 
