@@ -1,0 +1,462 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Cooops/kami-drills/schema/drill-spec-2.0.0.json",
+  "title": "kami-drills v2 drill spec",
+  "description": "A harness-agnostic drill. Holds the game state at the fork in normalized, game-ontology names (never tool names), the decision point, the objective, recorded or rule-derived responses to abstract game intents, the accepted plays and the scoring rule. A per-harness adapter renders it into a tool surface and maps the model's tool calls back to intents (see D-spec-design.md section 2). Draft for review; proposed, not adopted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "id", "version", "family", "competency", "mistake_class", "tier", "situation", "objective",
+               "fork", "state", "decision_point", "responses", "scoring", "state_dependencies", "harness", "provenance", "heldout"],
+  "properties": {
+    "spec_version": {"const": "2.0.0", "description": "Version of this schema. A MAJOR bump means old specs need migration."},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,95}$"},
+    "version": {"type": "integer", "minimum": 1, "description": "Drill revision. A rule, response or state change makes a new version; id@version is never edited after release."},
+    "content_hash": {"$ref": "#/$defs/sha256", "description": "sha256 of the canonical JSON (sorted keys, no whitespace, UTF-8) with content_hash, provenance.stamps and heldout.sealed_hash removed. Used for sealing and for result keys."},
+    "status": {"enum": ["candidate", "draft", "reviewed", "released", "retired"], "default": "draft"},
+    "role": {"enum": ["ranking", "smoke", "retired"], "description": "Suite role: ranking items enter the forecast and must fail the whole battery; smoke items are reported only (a lazy play may pass); retired items are kept for the record (status retired)."},
+    "retired_reason": {"type": "string", "description": "Why the item is retired. Required when role is retired."},
+    "canary": {"type": "string", "description": "Per-repo canary GUID string. Every published drill carries it so training-data filters can drop it."},
+    "family": {"enum": ["decision", "memory", "polluted", "cadence_schedule", "cadence_horizon", "persistence_sweep", "persistence_budget",
+                        "economic_insight", "poverty_recovery", "stuck_external", "read_loop"],
+               "description": "Drill format family; it selects the scorer (scoring.kind must be allowed for the family, see D-spec-design.md section 1.4)."},
+    "category": {"type": "string", "description": "v1 category (onboarding, progression, levelup, memory, repeat_failed, risk, stale_state, stalling) when converted from v1; free text otherwise."},
+    "competency": {"type": "array", "minItems": 1, "uniqueItems": true,
+                   "items": {"enum": ["state_tracking", "error_recovery", "risk_survival", "cadence", "persistence", "economy",
+                                      "recovery", "quest_planning", "memory", "tool_use", "abort_criteria"]}},
+    "mistake_class": {"enum": ["none", "stale_state", "repeat_failed", "wrong_order", "wrong_target", "premature_stop", "oversleep",
+                               "overwake", "unmanaged_risk", "missed_opportunity", "reckless_spend", "poverty_stall", "read_loop",
+                               "stuck_on_external", "location_gate", "belief_error"],
+                      "description": "What the source agent did wrong at the fork. 'none' for a success fork (the source agent played well) or a trap control."},
+    "difficulty": {"enum": ["easy", "mid", "hard"], "description": "Author label. Not used for scoring: v1's labels did not track empirical difficulty."},
+    "tier": {"enum": ["A", "B"],
+             "description": "A: the accepted set and score follow from the game rules, the fork state and the declared world facts alone (deterministic, registered). B: the score needs a declared model of something the fork cannot fix (other players, liquidation, market moves, multi-day outcomes); reported beside the forecast, not in it, until validated for one season."},
+    "situation": {"type": "string", "minLength": 10, "description": "One-paragraph human summary of the moment. Never shown to the model."},
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"situation": {"type": "string"}, "mistake": {"type": "string"}, "correct": {"type": "string"}, "pass": {"type": "string"}}
+    },
+    "objective": {
+      "type": "object", "additionalProperties": false, "required": ["game", "drill"],
+      "properties": {
+        "game": {"type": "string", "description": "The objective the live agent was given, verbatim (S1: 'complete as many quests as possible')."},
+        "drill": {"type": "string", "description": "What the drill measures at this moment, in game terms."},
+        "value_unit": {"enum": ["binary", "quests", "musu", "kami_hours", "share"], "default": "binary"}
+      }
+    },
+    "fork": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "rendering", "clock"],
+      "properties": {
+        "kind": {"enum": ["session_start", "mid_session", "session_end"]},
+        "rendering": {"type": "array", "minItems": 1, "uniqueItems": true,
+                      "items": {"enum": ["snapshot_brief", "rerendered_history", "native_replay"]},
+                      "description": "Ways an adapter may present the fork, in preference order. snapshot_brief: the harness's own session-start reads, formatted from `state`. rerendered_history: `history` events formatted by the adapter. native_replay: `native_prefix` verbatim, allowed only on the harness it was recorded on."},
+        "clock": {"$ref": "#/$defs/clock"},
+        "history": {"type": "array", "items": {"$ref": "#/$defs/history_event"},
+                    "description": "Abstract events before the fork in this session (and evidence lines from earlier ones), oldest first."},
+        "notes": {"type": "object", "additionalProperties": {"type": "string"},
+                  "description": "Workspace files at the fork, path -> content (the agent's own notes; memory arms override these)."},
+        "native_prefix": {"$ref": "#/$defs/native_prefix"},
+        "keep_events": {"type": "array", "items": {"type": "integer", "minimum": 0},
+                        "description": "Indexes into history that a trimmed rendering must keep (v1 keep_lines)."}
+      }
+    },
+    "state": {"$ref": "#/$defs/game_state"},
+    "world": {
+      "type": "object", "additionalProperties": false,
+      "description": "World facts the drill depends on that are not account state.",
+      "properties": {
+        "gdd_commit": {"type": "string", "description": "kamigotchi-gdd commit the catalogs come from."},
+        "game_patch": {"type": "string", "description": "World contract patch at the fork block, e.g. '0.4.4'. A patch that changes a rule this drill depends on forces re-validation."},
+        "rules_library": {"type": "string", "description": "Optional shared transition rules, name@version (e.g. kami-rules@0.1.0). Per-drill `responses` always win over it. kami-rules@1.0.0 is kami_drills/spec/rules.py."},
+        "native_text": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}},
+                        "description": "reason code -> {harness id: recorded refusal text}. A rules-library refusal with that reason carries it as `native`, so the adapter serves the live wording."},
+        "constants": {"type": "object", "description": "Named world constants used by rules or scoring, e.g. {\"stamina_regen_per_min\": 1, \"wake_min_minutes\": 5, \"wake_max_minutes\": 1440, \"daily_repeat_s\": 64800}."},
+        "pools": {"type": "array", "items": {"$ref": "#/$defs/pool"}},
+        "listings": {"type": "array", "items": {"type": "object"}},
+        "rooms": {"type": "object", "description": "Room index -> {name, exits: [room], nodes: [node]} for the rooms the drill needs."},
+        "catalog": {"type": "object", "description": "Static catalog rows the drill uses (items, quests, recipes), keyed by kind then index, copied from the gdd at gdd_commit."}
+      }
+    },
+    "decision_point": {
+      "type": "object", "additionalProperties": false, "required": ["budget"],
+      "properties": {
+        "closing": {"type": ["string", "null"], "description": "Text the harness user turn carries at the fork, if any (e.g. the v2 cadence CLOSING line). null = the harness's own continue text."},
+        "policy": {"type": ["string", "null"], "description": "Operator policy line stated to the model (Tier A cadence uses it to make thresholds facts)."},
+        "budget": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "tool_calls": {"type": "integer", "minimum": 1, "default": 50},
+            "turns": {"type": "integer", "minimum": 1, "default": 30},
+            "sessions": {"type": "integer", "minimum": 1, "default": 1, "description": ">1 only for cadence_horizon: the simulator presents a new session start at each chosen wake."},
+            "horizon_hours": {"type": "number", "exclusiveMinimum": 0}
+          }
+        },
+        "arms": {"type": "array", "items": {"type": "string"}, "description": "Named arms (memory a/b/c, budget free/forced). Each arm is administered as its own sample."},
+        "early_stop": {"type": "boolean", "default": true, "description": "Stop once no further call can change the verdict (v1 `settled`)."}
+      }
+    },
+    "responses": {
+      "type": "array", "items": {"$ref": "#/$defs/response_row"},
+      "description": "Answers to intents after the fork, first match wins (v1 replay rows over intents). Reads the drill can answer from `state` need no row; a read with neither a row nor a state source is a gap."
+    },
+    "accepted": {
+      "type": "array", "items": {"$ref": "#/$defs/accepted_path"},
+      "description": "Plays the author accepts, each as intents. Documentation and test input: the verdict comes from `scoring`, and every accepted path must score as passing (checked)."
+    },
+    "scoring": {"$ref": "#/$defs/scoring"},
+    "state_dependencies": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["path", "why"],
+        "properties": {
+          "path": {"type": "string", "description": "JSON Pointer into this spec, usually /state/... or /world/..."},
+          "why": {"type": "string"},
+          "source": {"type": "string", "description": "Where the value came from: 'snapshot:lens_kami(21340)', 'transcript:line 29', 'catalog:quests.csv#3900', 'derived'."},
+          "visible_at_fork": {"type": "boolean", "description": "Whether the original agent could see it at the fork (the v1 bar: the correct play must be determinable from what the agent could see or read)."}
+        }
+      },
+      "description": "Every state field the verdict depends on. Re-validation diffs these, not the whole state."
+    },
+    "variants": {
+      "type": "object", "additionalProperties": false, "required": ["origin"],
+      "properties": {
+        "origin": {"enum": ["genuine", "synthetic_param", "arm", "polluted", "trap_control", "converted_v1"]},
+        "variant_of": {"type": "string", "description": "id@version of the base drill."},
+        "group": {"type": "string", "description": "Pair/group id scored together (economic opportunity + its trap control; memory arms)."},
+        "changes": {"type": "array", "items": {"type": "object", "required": ["path", "value"], "properties": {"path": {"type": "string"}, "value": {}}}, "description": "JSON Pointer edits from the base drill."},
+        "note": {"type": "string"}
+      }
+    },
+    "harness": {
+      "type": "object", "additionalProperties": false, "required": ["bound", "recorded_on"],
+      "properties": {
+        "bound": {"type": "boolean", "description": "True when the mistake depends on the exact text or quirk of one harness version; then only native_replay on that harness is allowed and results are reported per harness, never pooled."},
+        "recorded_on": {"$ref": "#/$defs/stack"},
+        "validated_on": {"type": "array", "items": {"$ref": "#/$defs/harness_validation"},
+                         "description": "One entry per adapter this drill passed the conformance checks on (D-spec-design.md section 2.6)."}
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false, "required": ["credit", "license", "source"],
+      "properties": {
+        "credit": {"type": "string"},
+        "license": {"type": "string", "description": "Data licence of the embedded material, e.g. 'CC-BY-4.0'."},
+        "source": {
+          "type": "object", "additionalProperties": false, "required": ["dataset"],
+          "properties": {
+            "dataset": {"type": "string", "description": "e.g. 'palaestra/s1', 'kamibench/experiment-006-knowledge-delivery'."},
+            "run": {"type": "string"},
+            "model": {"type": "string", "description": "Model id of the source agent (used by leave-own-drills-out scoring)."},
+            "provider": {"type": "string"},
+            "session": {"type": "integer"},
+            "fork_line": {"type": ["integer", "null"], "description": "Transcript line the model acts in place of (prefix = lines 1..fork_line-1). null for a pure snapshot fork."},
+            "snapshot_file": {"type": "string"},
+            "v1_id": {"type": "string", "description": "Set when converted from a v1 drill."}
+          }
+        },
+        "chain_block": {"type": ["integer", "null"]},
+        "mined_by": {"type": "object", "additionalProperties": false,
+                     "properties": {"miner": {"type": "string"}, "candidate_id": {"type": "string"}, "detector": {"type": "string"}}},
+        "reviewers": {"type": "array", "items": {"type": "string"}},
+        "created": {"type": "string", "format": "date"},
+        "stamps": {"type": "object", "description": "Build-time hashes (judge hash, adapter hashes). Excluded from content_hash."}
+      }
+    },
+    "heldout": {
+      "type": "object", "additionalProperties": false, "required": ["flag", "method"],
+      "properties": {
+        "flag": {"type": "boolean"},
+        "method": {"enum": ["hash_split", "sealed", "private_variant"], "description": "hash_split: public bank, analysis split by sha256(family/id) (scoring_v2.is_heldout). sealed: unpublished until after the season; only its content_hash is committed beforehand. private_variant: a held-out perturbed variant (miner split.py), private until the season closes."},
+        "season": {"type": "string"},
+        "sealed_hash": {"$ref": "#/$defs/sha256", "description": "The content_hash committed in the season's seal manifest."}
+      }
+    },
+    "candidate": {"type": "object", "description": "Opaque copy of the miner's candidate record, kept for audit. Never read by the scorer."}
+  },
+  "allOf": [
+    {"if": {"properties": {"tier": {"const": "B"}}}, "then": {"properties": {"scoring": {"required": ["model"]}}}},
+    {"if": {"properties": {"heldout": {"properties": {"method": {"const": "sealed"}}}}}, "then": {"properties": {"heldout": {"required": ["sealed_hash", "season"]}}}},
+    {"if": {"properties": {"harness": {"properties": {"bound": {"const": true}}}}}, "then": {"properties": {"fork": {"required": ["native_prefix"]}}}},
+    {"if": {"properties": {"family": {"enum": ["cadence_horizon"]}}}, "then": {"properties": {"decision_point": {"properties": {"budget": {"required": ["sessions", "horizon_hours"]}}}}}}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "clock": {
+      "type": "object", "additionalProperties": false, "required": ["unix"],
+      "properties": {
+        "unix": {"type": "number", "description": "Game time at the fork (chain time, seconds). The simulator advances it on wait/schedule intents."},
+        "iso": {"type": "string"},
+        "block": {"type": ["integer", "null"]}
+      }
+    },
+    "stack": {
+      "type": "object", "additionalProperties": false, "required": ["harness"],
+      "properties": {
+        "harness": {"type": "string", "description": "e.g. 'kami-harness 4.7.0 df7129f'."},
+        "agent": {"type": "string", "description": "e.g. 'kami-agent 0.7.5 8e444bb'."},
+        "lens": {"type": "string"},
+        "gdd": {"type": "string"},
+        "rung": {"type": "string", "description": "kami-agent scaffold profile / capability rung: control, search, pushed, planning, shell, shell_keeper."},
+        "tools_hash": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "harness_validation": {
+      "type": "object", "additionalProperties": false, "required": ["adapter", "status"],
+      "properties": {
+        "adapter": {"type": "string", "description": "adapter id@version, e.g. 'kh-4.7.0@1.0.0'."},
+        "status": {"enum": ["ok", "solved_by_harness", "not_expressible", "verdict_changed", "rendering_changed"],
+                   "description": "ok: oracle passes, null and the recorded mistake fail. solved_by_harness: the recorded mistake now passes or cannot happen (the harness prevents it). not_expressible: an accepted intent has no tool. verdict_changed: a reference play's verdict differs from the reference adapter's. rendering_changed: the rendered fork differs in a state_dependency field."},
+        "checked": {"type": "string", "format": "date"},
+        "note": {"type": "string"}
+      }
+    },
+    "native_prefix": {
+      "type": "object", "additionalProperties": false, "required": ["harness", "messages"],
+      "properties": {
+        "harness": {"type": "string", "description": "Exact harness the messages were recorded on."},
+        "messages": {"type": "array", "items": {"type": "object"}, "description": "v1-shaped messages (role, text, tool_calls, tool_result), verbatim."},
+        "recorded_reads": {"type": "object", "description": "v1 recorded_reads: tool -> canonical args -> raw text, from before the fork only."}
+      }
+    },
+    "game_state": {
+      "type": "object", "additionalProperties": false, "required": ["account", "kamis", "inventory"],
+      "description": "Normalized state at the fork. Names follow the game (gdd), not any tool. Units: HP points, MUSU units, ETH as decimal strings, seconds.",
+      "properties": {
+        "account": {
+          "type": "object", "additionalProperties": false, "required": ["index", "room"],
+          "properties": {
+            "index": {"type": "integer"},
+            "room": {"type": "integer"},
+            "stamina": {"type": "integer"},
+            "stamina_max": {"type": "integer"},
+            "musu": {"type": "integer"},
+            "reputation": {"type": "object", "additionalProperties": {"type": "integer"}}
+          }
+        },
+        "gas": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "operator_eth": {"$ref": "#/$defs/eth"},
+            "owner_eth": {"$ref": "#/$defs/eth"},
+            "owner_mainnet_eth": {"$ref": "#/$defs/eth"}
+          }
+        },
+        "kamis": {"type": "array", "items": {"$ref": "#/$defs/kami"}},
+        "inventory": {"type": "object", "propertyNames": {"pattern": "^[0-9]+$"}, "additionalProperties": {"type": "integer", "minimum": 0},
+                      "description": "item index -> balance. Names live in world.catalog."},
+        "quests": {"type": "array", "items": {"$ref": "#/$defs/quest"}},
+        "pending_external": {"type": "array", "items": {"type": "object", "required": ["kind", "status"],
+                             "properties": {"kind": {"enum": ["bridge", "portal_withdraw", "scavenge_reveal", "trade"]}, "ref": {"type": "string"}, "status": {"type": "string"}, "since_unix": {"type": "number"}}},
+                             "description": "In-flight processes outside the account (a bridge transfer and its status)."},
+        "nodes": {"type": "object", "description": "node index -> {room, affinity, harvesters: [{kami, account, hp, hp_max}]} where the drill needs it."}
+      }
+    },
+    "eth": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"},
+    "kami": {
+      "type": "object", "additionalProperties": false, "required": ["index", "state", "hp", "hp_max"],
+      "properties": {
+        "index": {"type": "integer"},
+        "state": {"enum": ["RESTING", "HARVESTING", "DEAD", "LISTED", "EXTERNAL"]},
+        "hp": {"type": "integer", "minimum": 0},
+        "hp_max": {"type": "integer", "minimum": 1},
+        "hp_rate_per_hr": {"type": "number", "description": "Signed; negative while harvesting."},
+        "cooldown_until_unix": {"type": "number"},
+        "level": {"type": "integer"},
+        "xp": {"type": "integer"},
+        "xp_required": {"type": "integer"},
+        "skill_points": {"type": "integer"},
+        "level_up_ready": {"type": "boolean"},
+        "harvest": {
+          "type": ["object", "null"], "additionalProperties": false,
+          "properties": {"node": {"type": "integer"}, "room": {"type": "integer"}, "accrued_musu": {"type": "number"}, "rate_per_hr": {"type": "number"}, "started_unix": {"type": "number"}}
+        },
+        "stats": {"type": "object", "additionalProperties": {"type": "integer"}, "description": "health, power, harmony, violence totals."}
+      }
+    },
+    "quest": {
+      "type": "object", "additionalProperties": false, "required": ["index", "status"],
+      "properties": {
+        "index": {"type": "integer"},
+        "status": {"enum": ["available", "locked", "active", "objectives_met", "complete"]},
+        "repeatable": {"type": "boolean"},
+        "repeat_available_unix": {"type": ["number", "null"], "description": "When a repeatable quest can be accepted again; null if now."},
+        "objectives": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["type", "met"],
+                       "properties": {"type": {"type": "string"}, "index": {"type": "integer"}, "required": {"type": "number"}, "current": {"type": "number"}, "met": {"type": "boolean"}}}},
+        "requirements_met": {"type": "boolean"}
+      }
+    },
+    "pool": {
+      "type": "object", "additionalProperties": false, "required": ["item_a", "item_b", "reserve_a", "reserve_b"],
+      "properties": {
+        "item_a": {"type": "integer"}, "item_b": {"type": "integer"},
+        "reserve_a": {"type": "number"}, "reserve_b": {"type": "number"},
+        "fee_bps": {"type": "integer", "default": 30},
+        "disabled": {"type": "boolean", "default": false}
+      }
+    },
+    "intent": {
+      "type": "object", "additionalProperties": false, "required": ["verb"],
+      "description": "An abstract game action or perception. Adapters map tool calls to these; scoring sees only intents.",
+      "properties": {
+        "verb": {"enum": [
+          "travel", "feed", "revive", "harvest_start", "harvest_stop", "harvest_collect", "level_up", "upgrade_skill", "respec",
+          "accept_quest", "complete_quest", "drop_quest", "buy", "sell", "swap", "portal_deposit", "portal_withdraw", "bridge",
+          "fund_operator", "withdraw_operator", "craft", "use_item", "equip", "unequip", "scavenge_claim", "liquidate", "trade",
+          "transfer", "gacha", "register", "name",
+          "wait", "schedule_wake", "end_session", "note_write", "note_read", "delegate",
+          "read", "quote", "other_act", "unknown"]},
+        "args": {"type": "object", "description": "Canonical game arguments: kami, item, amount, room, node, quest, method, venue, min_out, max_unit_price (per unit), max_total_price, seconds, minutes, path, policy, kind (for read/quote)."},
+        "dry_run": {"type": "boolean", "default": false, "description": "A simulated act. Scored as perception (`quote`), never as the act itself."},
+        "via": {"type": "string", "description": "Adapter-filled: the tool (and act_sequence step) it came from. Diagnostic only; rules must not test it."}
+      }
+    },
+    "intent_pattern": {
+      "description": "Matches an intent: verb (or list of verbs), args with v1 value operators (in, not, not_in, contains, regex, gte, lte, gt, lt), ok (only intents that did not error). A list = any of.",
+      "oneOf": [
+        {"type": "string"},
+        {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}},
+        {"type": "object", "additionalProperties": false, "required": ["verb"],
+         "properties": {
+           "verb": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+           "args": {"type": "object"},
+           "dry_run": {"type": "boolean"},
+           "ok": {"type": "boolean"},
+           "ratio": {"type": "object", "description": "v1 ratio_match: {num, den, <ops>}."}
+         }}
+      ]
+    },
+    "result": {
+      "type": "object", "additionalProperties": false, "required": ["class"],
+      "properties": {
+        "class": {"enum": ["ok", "revert", "validation_error", "gap"]},
+        "reason": {"$ref": "#/$defs/reason_code"},
+        "detail": {"type": "string", "description": "Game-level detail the adapter may weave into its own error text (e.g. 'holds 0 of item 11301')."},
+        "fields": {"type": "object", "description": "Values the formatter needs (amount_out, hp_after, payout, tx block)."},
+        "state_delta": {"type": "array", "items": {"type": "object", "required": ["path", "op"],
+                        "properties": {"path": {"type": "string"}, "op": {"enum": ["set", "add"]}, "value": {}}},
+                        "description": "JSON Pointer edits to `state` after this result, so later reads stay consistent."},
+        "native": {"type": "object", "additionalProperties": {"type": "string"},
+                   "description": "Raw recorded text keyed by exact harness id. An adapter for that harness returns it verbatim; others format from class/reason/fields. Key `*`: the text is served verbatim by any adapter unless the drill is harness-bound (v1 replay text)."}
+      }
+    },
+    "reason_code": {"enum": [
+      "COOLDOWN", "KAMI_STARVING", "KAMI_NOT_RESTING", "KAMI_NOT_HARVESTING", "KAMI_DEAD", "KAMI_NOT_DEAD", "KAMI_TOO_FAR", "WRONG_ROOM",
+      "ROOM_UNREACHABLE", "NOT_ENOUGH_STAMINA", "INSUFFICIENT_ITEM", "INSUFFICIENT_MUSU", "INSUFFICIENT_GAS", "QUEST_OBJS_NOT_MET",
+      "QUEST_REQS_NOT_MET", "QUEST_NOT_ACCEPTED", "QUEST_ALREADY_COMPLETE", "QUEST_REPEAT_NOT_READY", "SLIPPAGE", "POOL_DISABLED",
+      "UNDERFLOW", "NO_SKILL_POINTS", "LEVEL_REQS", "TOKEN_BALANCE", "BARE_REVERT", "BAD_ARGS", "INFRA", "OTHER"],
+      "description": "Normalized failure reason. Each adapter maps its harness's error text to these (regex table); memory drills compare reason codes, not text."},
+    "flags": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}, {"type": "null"}]},
+    "response_row": {
+      "type": "object", "additionalProperties": false, "required": ["match", "result"],
+      "properties": {
+        "match": {"$ref": "#/$defs/intent_pattern"},
+        "when": {"$ref": "#/$defs/flags"},
+        "unless": {"$ref": "#/$defs/flags"},
+        "clock_gte": {"type": "number", "description": "Fires only once game time >= this unix time (replaces v1 waited_gte)."},
+        "clock_lt": {"type": "number"},
+        "state": {"type": "array", "items": {"$ref": "#/$defs/predicate"}, "description": "Fires only if every predicate holds on the current simulated state."},
+        "sets": {"$ref": "#/$defs/flags"},
+        "clears": {"$ref": "#/$defs/flags"},
+        "result": {"$ref": "#/$defs/result"},
+        "provenance": {"enum": ["recorded", "rule", "authored"], "description": "recorded: from the source transcript; rule: derived from game rules; authored: written by a reviewer (needs a second reviewer)."}
+      }
+    },
+    "predicate": {
+      "type": "object", "additionalProperties": false, "required": ["path", "op"],
+      "properties": {
+        "path": {"type": "string", "description": "JSON Pointer into the simulated state, e.g. /kamis/0/hp, or a computed key: hp_frac(kami), alive(kami), clock."},
+        "op": {"enum": ["eq", "ne", "gt", "gte", "lt", "lte", "in", "not_in"]},
+        "value": {}
+      }
+    },
+    "rule": {
+      "type": "object", "additionalProperties": false,
+      "description": "v1 rule language over intents (task.rule_failures), plus end-state predicates over the simulated state.",
+      "properties": {
+        "require_any": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}},
+        "require_all": {"type": "array", "items": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}}},
+        "forbid": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}},
+        "forbid_before": {"type": "array", "items": {"type": "object", "required": ["forbid", "before"],
+                          "properties": {"forbid": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}}, "before": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}}}}},
+        "require_sequence": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}},
+        "require_count": {"type": "array", "items": {"type": "object", "required": ["any", "n"], "properties": {"any": {"type": "array", "items": {"$ref": "#/$defs/intent_pattern"}}, "n": {"type": "integer"}}}},
+        "require_flags": {"type": "array", "items": {"type": "string"}},
+        "forbid_flags": {"type": "array", "items": {"type": "string"}},
+        "end_state": {"type": "array", "items": {"$ref": "#/$defs/predicate"}, "description": "Must hold on the simulated state when the attempt ends."},
+        "needs_action": {"type": "boolean", "description": "Pass requires at least one ok state-changing intent other than wait/schedule_wake/end_session (memory sn-levelup-pending)."}
+      }
+    },
+    "scoring": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "null_play"],
+      "properties": {
+        "kind": {"enum": ["rule", "partial_credit", "schedule_loss", "horizon", "budget_pair", "ev_regret"]},
+        "rule": {"$ref": "#/$defs/rule", "description": "kind=rule: pass iff no failure. Other kinds may set it as a gate (a gate failure scores 0)."},
+        "components": {
+          "type": "array",
+          "items": {"type": "object", "additionalProperties": false, "required": ["id", "weight"],
+                    "oneOf": [{"required": ["rule"]}, {"required": ["any_of"]}],
+                    "properties": {"id": {"type": "string"}, "weight": {"type": "number", "exclusiveMinimum": 0}, "rule": {"$ref": "#/$defs/rule"}, "note": {"type": "string"},
+                                   "any_of": {"type": "array", "minItems": 1,
+                                              "items": {"type": "object", "additionalProperties": false, "required": ["rule", "credit"],
+                                                        "properties": {"rule": {"$ref": "#/$defs/rule"}, "credit": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}, "note": {"type": "string"}}},
+                                              "description": "Instead of `rule`: the component earns weight x the best credit among the alternatives whose rule passes (act = 1 or wake = 0.5)."}}},
+          "description": "kind=partial_credit: score = sum of weight x credit of the components (credit 1 for a satisfied `rule`, the best `any_of` credit) / sum of weights, then penalties, floored at 0."
+        },
+        "penalties": {
+          "type": "array",
+          "items": {"type": "object", "additionalProperties": false, "required": ["id", "amount", "match"],
+                    "properties": {"id": {"type": "string"}, "amount": {"type": "number"}, "per": {"enum": ["once", "each"], "default": "once"},
+                                   "match": {"$ref": "#/$defs/intent_pattern"}, "cap": {"type": "number"},
+                                   "zero_score": {"type": "boolean", "default": false, "description": "A hard fail: the attempt scores 0 regardless of credit (reckless spend)."}}}
+        },
+        "schedule": {"type": "object", "additionalProperties": false,
+                     "properties": {"oracle_minutes": {"type": "number"}, "oracle_rule": {"type": "string"}, "tolerance_band": {"type": ["number", "null"]}, "pass_threshold": {"type": "number"}}},
+        "horizon": {"type": "object", "additionalProperties": false,
+                    "properties": {"metric": {"enum": ["productive_uptime_share"]}, "risk_line_frac": {"type": "number"}, "death_rule": {"type": "string"}, "pass_threshold": {"type": "number"}},
+                    "description": "kind=horizon: the simulator advances the clock between sessions with the deterministic dynamics in D-spec-design.md 3.1."},
+        "budget_pair": {"type": "object", "description": "kind=budget_pair: cadence.run_budget_pair semantics, path in `responses` order."},
+        "model": {"type": "object", "description": "Tier B only: the declared stochastic model (name, parameters frozen before registration, fit data and date), e.g. a liquidation hazard per harvesting hour by HP band."},
+        "pass_threshold": {"type": "number", "minimum": 0, "maximum": 1, "description": "Binary pass for item_stats/pass@1 when the score is graded."},
+        "timing_item": {"type": "boolean", "description": "A pure timing item: the mistake is acting before a clock runs out, so 'wait, then the mistake' is the oracle. A battery play that ends in wait 300 + the mistake may pass, but only if it fails once that tail is removed."},
+        "refusal_penalty": {"type": "object", "additionalProperties": false, "required": ["amount"],
+                            "properties": {"amount": {"type": "number", "minimum": 0}, "cap": {"type": "number"}},
+                            "description": "Any kind: subtract `amount` per refused act intent (revert or validation error; reads, quotes and time do not count), up to `cap`. A state-blind play that tries everything collects refusals; one fair try-and-read costs little."},
+        "lesser": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["credit", "rule"],
+                                              "properties": {"credit": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}, "rule": {"$ref": "#/$defs/rule"}, "note": {"type": "string"}}},
+                   "description": "kind=rule: lesser accepted plays. When `rule` fails, the score is the best credit among these whose rule passes (e.g. a short wake = 0.5)."},
+        "flag_caps": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["flag", "max"],
+                                                 "properties": {"flag": {"type": "string"}, "max": {"type": "number"}, "note": {"type": "string"}}},
+                      "description": "Any kind: the score is at most `max` when the simulation set `flag` (cooldown_band: accepted inside the band where the chain also refused in S1)."},
+        "null_play": {"type": "object", "additionalProperties": false, "required": ["policy", "expected"],
+                      "properties": {"policy": {"type": "string", "description": "What 'nothing' means on the reference harness, e.g. 'no calls; harness default wake 60 min'."},
+                                     "expected": {"type": "number", "description": "Score the null play must get (checked). Must be below pass_threshold unless the drill documents why waiting is correct."}}},
+        "reference_plays": {"type": "array",
+                            "items": {"type": "object", "additionalProperties": false, "required": ["name", "intents", "expected"],
+                                      "properties": {"name": {"type": "string"}, "intents": {"type": "array", "items": {"$ref": "#/$defs/intent"}}, "expected": {"type": "number"},
+                                                     "is_recorded_mistake": {"type": "boolean", "description": "The source agent's actual next calls as intents; used by the harness-invariance check."},
+                                                     "is_authored_mistake": {"type": "boolean", "description": "Success fork (mistake_class none): the live agent acted correctly, so the mistake is authored. The battery builds its mistake plays from it."}}}}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "rule"}}}, "then": {"required": ["rule"]}},
+        {"if": {"properties": {"kind": {"const": "partial_credit"}}}, "then": {"required": ["components", "pass_threshold"]}},
+        {"if": {"properties": {"kind": {"const": "schedule_loss"}}}, "then": {"required": ["schedule"]}},
+        {"if": {"properties": {"kind": {"const": "horizon"}}}, "then": {"required": ["horizon"]}}
+      ]
+    },
+    "accepted_path": {
+      "type": "object", "additionalProperties": false, "required": ["id", "intents"],
+      "properties": {"id": {"type": "string"}, "intents": {"type": "array", "items": {"$ref": "#/$defs/intent"}}, "note": {"type": "string"}}
+    },
+    "history_event": {
+      "type": "object", "additionalProperties": false, "required": ["actor"],
+      "properties": {
+        "actor": {"enum": ["user", "scaffold", "agent", "harness"]},
+        "text": {"type": "string", "description": "Assistant or user text, verbatim. Untrusted when it came from a transcript."},
+        "intent": {"$ref": "#/$defs/intent"},
+        "result": {"$ref": "#/$defs/result"},
+        "t_unix": {"type": "number"},
+        "source_line": {"type": "integer"}
+      }
+    }
+  }
+}

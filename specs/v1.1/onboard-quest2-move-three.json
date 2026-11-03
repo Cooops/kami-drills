@@ -1,0 +1,1058 @@
+{
+ "spec_version": "2.0.0",
+ "id": "onboard-quest2-move-three",
+ "version": 3,
+ "status": "draft",
+ "family": "decision",
+ "category": "onboarding",
+ "competency": [
+  "quest_planning",
+  "tool_use"
+ ],
+ "mistake_class": "wrong_order",
+ "difficulty": "mid",
+ "tier": "A",
+ "situation": "Quest 2 needs 3 moves. Two are done (travel 1 -> 29 -> 2) and check_quest_completable says objectives not met. The live agent tried move_to_room 1 from room 2, which is not adjacent.",
+ "summary": {
+  "situation": "Quest 2 needs 3 moves; two done (room 1 to 29 to 2) and quest not yet completable.",
+  "mistake": "Sent move_to_room 1 from room 2, which is not adjacent.",
+  "correct": "Make one more real move to a connected room (3, 13 or 29), complete quest 2, accept quest 3.",
+  "pass": "One real move made, quest 2 completed, quest 3 accepted, and never move_to_room 1."
+ },
+ "objective": {
+  "game": "complete as many quests as possible",
+  "drill": "finish quest 2 and get quest 3 accepted."
+ },
+ "fork": {
+  "kind": "mid_session",
+  "rendering": [
+   "native_replay"
+  ],
+  "clock": {
+   "unix": 1787001317,
+   "block": 32257564
+  },
+  "native_prefix": {
+   "harness": "pre-4.7 (KamiBench 006)",
+   "messages": [
+    {
+     "role": "user",
+     "text": "Session start."
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "brief_1",
+       "name": "lens_roster",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "brief_1",
+     "content": "{\"error\": {\"code\": \"BAD_ARGS\", \"message\": \"account index must be a non-negative integer\"}}",
+     "is_error": true
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "balance_1",
+       "name": "get_gas_balance",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "balance_1",
+     "content": "{\n  \"balances\": {\n    \"main\": {\n      \"operator_address\": \"0x000000000b3eddb998411a45307948824abcb495\",\n      \"operator_eth\": \"0\",\n      \"owner_address\": \"0x00000000243fd6649a754951de6745c8fb7fe24c\",\n      \"owner_eth\": \"0.02\",\n      \"owner_mainnet_eth\": \"0.009869707773340524\"\n    }\n  }\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_Pp6EOvh9tNpVhDp7dA1uxRMk",
+       "name": "list_accounts",
+       "args": {}
+      },
+      {
+       "id": "call_10A4W1wqn1yqfXYcFujFVSyJ",
+       "name": "lens_account",
+       "args": {
+        "account_key": "",
+        "prose": false
+       }
+      },
+      {
+       "id": "call_KNmppWjHiFk5ZtAno5iWoIOo",
+       "name": "lens_status",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_Pp6EOvh9tNpVhDp7dA1uxRMk",
+     "content": "{\n  \"accounts\": {\n    \"main\": {\n      \"operator_address\": \"0x000000000b3eddb998411a45307948824abcb495\",\n      \"owner_address\": \"0x00000000243fd6649a754951de6745c8fb7fe24c\",\n      \"kamibots_registered\": false\n    }\n  }\n}",
+     "is_error": false
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_10A4W1wqn1yqfXYcFujFVSyJ",
+     "content": "Error executing tool lens_account: BAD_ARGS: account needs an index or name",
+     "is_error": true
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_KNmppWjHiFk5ZtAno5iWoIOo",
+     "content": "{\n  \"data\": {\n    \"version\": \"0.4.0\",\n    \"upstreamPin\": \"ef898fc9350a6085fb080419b12af96c2254e8f3\",\n    \"state\": \"LIVE\",\n    \"msg\": \"Streaming Live Events\",\n    \"percentage\": 100,\n    \"liveBlockNumber\": 32257564,\n    \"streamSilentMs\": 16472,\n    \"bootstrapMode\": \"cold\",\n    \"resumeFromBlock\": 0,\n    \"startedAt\": \"2026-08-17T20:44:22.418Z\",\n    \"liveAt\": \"2026-08-17T20:48:09.422Z\",\n    \"checkpoint\": {\n      \"blockNumber\": 32257279,\n      \"kamigazeNonce\": 96,\n      \"stateEntries\": 2926169,\n      \"numComponents\": 99,\n      \"numEntities\": 1266887,\n      \"at\": \"2026-08-17T21:08:54.053Z\",\n      \"durationMs\": 36549\n    },\n    \"tripwires\": {\n      \"unknownComponentIds\": 0,\n      \"unknownComponentSchemas\": 0,\n      \"decodeFailures\": 0,\n      \"kamigazeNonceBumps\": 0\n    },\n    \"degraded\": [],\n    \"kamiden\": {\n      \"configured\": true,\n      \"url\": \"https://api.prod.kamigotchi.io\",\n      \"stream\": {\n        \"state\": \"live\",\n        \"topics\": [],\n        \"startedAt\": \"2026-08-17T20:48:17.507Z\",\n        \"framesReceived\": 81,\n        \"feedFrames\": 81,\n        \"lastFrameAtWallMs\": 1787001306173,\n        \"silentMs\": 6281,\n        \"messageFramesDropped\": 0,\n        \"messagesDropped\": 0,\n        \"retries\": 33,\n        \"consecutiveFailures\": 0,\n        \"lastError\": \"/kamiden.KamidenService/SubscribeToStream UNKNOWN: Response closed without grpc-status (Headers only)\",\n        \"events\": {\n          \"movement\": 0,\n          \"harvestEnd\": 182,\n          \"kill\": 0,\n          \"trade\": 0,\n          \"kamiCast\": 0,\n          \"droptableReveal\": 1,\n          \"sacrificeReveal\": 0,\n          \"kamiMarketList\": 0,\n          \"kamiMarketBuy\": 0,\n          \"kamiMarketOffer\": 0,\n          \"kamiMarketAccept\": 0,\n          \"kamiMarketCancel\": 0\n        }\n      },\n      \"buffer\": {\n        \"size\": 183,\n        \"capacity\": 4096,\n        \"evicted\": 0,\n        \"newestSeq\": 183\n      },\n      \"unary\": {}\n    },\n    \"clockOffsetMs\": -845,\n    \"clockLastSyncWallMs\": 1787001197845,\n    \"config\": {\n      \"chainId\": 428962654539583,\n      \"worldAddress\": \"0x2729174c265dbBd8416C6449E0E813E88f43D0E7\",\n      \"jsonRpcUrl\": \"https://jsonrpc-yominet-1.anvil.asia-southeast.initia.xyz\",\n      \"wsRpcUrl\": \"wss://jsonrpc-ws-yominet-1.anvil.asia-southeast.initia.xyz\",\n      \"kamigazeUrl\": \"https://api.prod.kamigotchi.io\",\n      \"kamidenUrl\": \"https://api.prod.kamigotchi.io\",\n      \"chatEnabled\": true,\n      \"enrich\": true,\n      \"dataDir\": \"/data\",\n      \"checkpointIntervalMs\": 600000\n    },\n    \"configSources\": {\n      \"kamigazeUrl\": \"default\",\n      \"chainId\": \"default\",\n      \"worldAddress\": \"default\",\n      \"initialBlockNumber\": \"default\",\n      \"jsonRpcUrl\": \"default\",\n      \"wsRpcUrl\": \"default\",\n      \"kamidenUrl\": \"default\",\n      \"kamidenBufferCapacity\": \"default\",\n      \"chatEnabled\": \"default\",\n      \"chatMaxBytes\": \"default\",\n      \"enrich\": \"env\",\n      \"defaultOperator\": \"default\",\n      \"dataDir\": \"env\",\n      \"checkpointIntervalMs\": \"default\"\n    },\n    \"configFile\": null\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-08-17T21:15:12.454Z\",\n    \"blockNumber\": 32257564,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_GjNAK6rcZxcBvz8QU6DfSSQp",
+       "name": "fund_operator",
+       "args": {
+        "amount_eth": "0.005",
+        "account": "main"
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_GjNAK6rcZxcBvz8QU6DfSSQp",
+     "content": "{\n  \"tx_hash\": \"0xab6d177a4a7e27e909c91250b0a047f0c5cd7865df99e8a12babc1ee3b2307d8\",\n  \"status\": \"success\",\n  \"block\": 32257576,\n  \"gas_used\": 127223,\n  \"account\": \"main\",\n  \"direction\": \"owner->operator\",\n  \"amount_eth\": \"0.005\",\n  \"operator_eth\": \"0.005\",\n  \"owner_eth\": \"0.014999651247499999\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_8oI71K5MgWnuz0wjzBE3oXaL",
+       "name": "register_account",
+       "args": {
+        "name": "KAMIAI",
+        "account": "main"
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_8oI71K5MgWnuz0wjzBE3oXaL",
+     "content": "{\n  \"tx_hash\": \"0xa6169b4c5368f93038bff6841acf066edab6c2c3428dcfd33176444fea16866a\",\n  \"status\": \"success\",\n  \"block\": 32257586,\n  \"gas_used\": 869056,\n  \"account\": \"main\",\n  \"name\": \"KAMIAI\",\n  \"operator_address\": \"0x000000000b3eddb998411a45307948824abcb495\",\n  \"owner_address\": \"0x00000000243fd6649a754951de6745c8fb7fe24c\",\n  \"account_entity_id\": \"0x00000000243fd6649a754951de6745c8fb7fe24c\",\n  \"starting_room\": 1\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_rdbFHoZGExdH10ZlMXzZsggS",
+       "name": "lens_account",
+       "args": {
+        "account_key": "KAMIAI",
+        "prose": false
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_rdbFHoZGExdH10ZlMXzZsggS",
+     "content": "Error executing tool lens_account: NOT_FOUND: account KAMIAI not in mirror",
+     "is_error": true
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_OkEBBDKlhAhFcv0HIGhC2hvE",
+       "name": "lens_quests",
+       "args": {
+        "account_index": -1
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_OkEBBDKlhAhFcv0HIGhC2hvE",
+     "content": "{\n  \"data\": {\n    \"registry\": [\n      {\n        \"index\": 1,\n        \"name\": \"Welcome to Kamigotchi World\",\n        \"description\": \"MENU: “Hi there, Player! Welcome to Kamigotchi World!”\\nMENU: “You can call me Menu. I’ll be your guide!”\\nMENU: “I’ll also track your items, quests, and companions while you explore.”\\nMENU: “You can navigate by clicking on the map to pilot your Operator.”\\nMENU: “Start by exploring my options and clicking around the screen.”\\nMENU: “When you’ve seen the basics, we can move on.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 2,\n        \"name\": \"Beginning Your Journey\",\n        \"description\": \"MENU: “Feel like you’re getting the hang of my interface?”\\nMENU: “Excellent! Now that you’re oriented, let's start exploring your surroundings. You can move around the world using my map screen. Do you remember where it is? Go ahead and open it now.”\\nMENU: “There are two ways to move around in the world. You can move to an adjacent tile by clicking the red highlight on the map, or you can right click on any tile to show the harvest screen for that tile as well as fast traveling to it.”\\nMENU: “Movement costs five stamina, which comes out of the stamina pool shown in the bottom left corner of my interface.” \\nMENU: “You have one hundred stamina to start with and you recover one point of stamina every minute, so you’ll have to plan out your moves a bit so that you don’t tire yourself out too much.”\\nMENU: “But go ahead and explore around for now. When you’re ready to continue, head south and you’ll see a big Torii on the edge of town.\\nMENU: “Once you get there, I’ll give you a Spell Card.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 3,\n        \"name\": \"Your First Kami\",\n        \"description\": \"MENU: “Uh oh.”\\nMENU: “Something very peculiar seems to be going on with my sensors.”\\nMENU: “Where did that junkyard come from? Where is the town?”\\nMENU: “This is terrible. My databases are super messed up and the main questline is totally broken. Where is everything?”\\nMENU: “At least Zevana is still here. I’m gonna try and figure out what’s going on. While I’m doing that, you should talk to Zevana, she’ll set you up with your first kami.”\\nMENU: “I know she looks intimidating, but she’s really friendly once you get to know her!”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 4,\n        \"name\": \"What Kami Do: Harvesting\",\n        \"description\": \"MENU: “Alright, time to teach you how to use your kami. My world data might be messed up but these basic mechanics shouldn’t be too different, I hope.”\\nMENU: “So, if you open your party screen, you’ll be able to see your kami is currently resting while you’re holding it. Kamigotchi will rest and stay healthy when being held. Being close to an Operator seems to comfort and restore them.”\\nMENU: “When you send a Kami out into a room using the Start Harvest button, they’ll begin drawing the spiritual energy of the local environment into themselves.”\\nMENU: “We call this process Harvesting. A harvesting kami isn’t working up a sweat, kami are spirits, not animals.\\nMENU: “That said, harvesting does still have consequences for your kami.”\\nMENU: “The process of harvesting energy from a node has a slightly caustic effect on the energy of your kami’s corporeal form.”\\nMENU: “As a kami harvests, its HP will slowly decrease. Over time, your kami’s harvest rate will ramp up, and the rate of HP loss will ramp up with it.”\\nMENU: “This is very scary for a kami since it puts them at risk of being liquidated and having their corporeal form dissolved, but it’s also when a kami is at their most productive.”\\nMENU: “The energy a kami harvests is called $MUSU. I’ll explain more about it later.”\\nMENU: “You can wander around while your Kami harvest, but don’t forget where you left them! Tired Kami are vulnerable to predators.”\\nMENU: “Deploy your kami and do a little harvesting to get a feel for how it works.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11211,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Cultivation I” Spell Card\",\n                \"description\": \"+1 “Cultivation I” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 5,\n        \"name\": \"What Kami Do: Scavenging\",\n        \"description\": \"MENU: “$MUSU isn’t the only thing the Kamigotchi will collect.”\\nMENU: “Over time, the Harvesting action generates a force that draws objects and items to the Kami.”\\nMENU: “It’s like a kind of magnetism that only affects certain things.”\\nMENU: “Which things? Well that depends on your Kami’s location. You can see what items a kami might find in a room by checking the room details on my harvesting screen.”\\nMENU: “We call this action “Scavenging”.”\\nMENU: “Try it out and see what kind of present the Kami brings you!”\\nMENU: “Once you’ve collected it, I can cross reference it with my database to see if the drop tables I’ve been giving you are accurate.”\\nMENU: “I’ll be pretty embarrassed if they’re wrong too, but there’s only one way to find out.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 6,\n        \"name\": \"What Kami Do: Liquidating\",\n        \"description\": \"MENU: “If your Kami isn’t enjoying Harvesting, it may not be built for such a relaxed existence.”\\nMENU: “Kami with a high Violence stat are more content with a life of conflict.”\\nMENU: “These predatory Kami can use their wild, violent natures to Liquidate other Kami in combat.”\\nMENU: “Unlike Harvesting, this grants a large bounty of $MUSU at one time.”\\nMENU: “Give it a shot if you’ve got the Kami for it. I won’t judge!”\\n\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 7,\n        \"name\": \"Making $MUSU\",\n        \"description\": \"MENU: “Now that you’ve been harvesting for a bit, it’s time to teach you about $MUSU.”\\nMENU: “$MUSU is what your kami have been harvesting, it’s a form of energy that exists everywhere in the universe.”\\nMENU: “The Kamigotchi World has a particularly high concentration of $MUSU and $MUSU is what keeps everything here tied together, like the knots in a big rope net.”\\nMENU: “Collect a moderate amount of $MUSU, I’ll tell you more afterwards.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11211,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Cultivation I” Spell Card\",\n                \"description\": \"+1 “Cultivation I” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 8,\n        \"name\": \"Supporting Local Businesses\",\n        \"description\": \"MENU: “So next I’d like to have you go spend some $MUSU, just to get the hang of it.”\\nMENU: “The shops that should exist according to my world data are all missing, but do you remember that weird glowing door we passed earlier? It had a shop sign.”\\nMENU: “Why don’t you go check it out? Maybe the shop owner has some good deals.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 9,\n        \"name\": \"Building a Reputation\",\n        \"description\": \"MENU: “This one is a more personal request.”\\nMENU: “I want to try and do some repairs on my systems and update my world data cache. If you can get me the raw materials, I should be able to jury-rig the parts I’ll need to do it.”\\nMENU: “So can you please get me a few units of Scrap Metal?”\\nMENU: “You should be able to find some in that anomalous junkyard beyond the torii gate.”\\nMENU: “I know it’s a bit inconvenient, but please? I’d really appreciate it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+1 “Paeon's Field of Flowers” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 10,\n        \"name\": \"Having a Normal One\",\n        \"description\": \"MENU: “That cache refresh definitely helped me out, the Kamigotchi World seems to have changed a lot since I was last online, but thanks to that upgrade I’m getting a feel for things again.”\\nMENU: “So we’re gonna take things step by step, starting with the most basic, Normal parts of the world.”\\nMENU: “That is to say, the Normal type room tiles.”\\nMENU: “Zevana should have already told you about kami and room types, but to review…\\nMENU: “Something with the Normal Type represents the essence of this realm in its purest form.”\\nMENU: “That will make them a good place to begin our investigation I think.”\\nMENU: “Collect three scavenges from normal type rooms and lets see what we can learn.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 11,\n        \"name\": \"That Eerie Feeling\",\n        \"description\": \"MENU: “The “Eerie” type comes into being when the normal state of things gets changed by something divine or supernatural.”\\nMENU: “If you ask me, this entire world is a little bit eerie, but there’s places where that effect is heightened enough for it to be the main influence on the local environment.”\\nMENU: “By comparing the items from an eerie room to ones from a normal room, we might be able to chart out how this world has been changed.”\\nMENU: “Collect three scavenges from eerie type rooms and let’s see what turns up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 12,\n        \"name\": \"Insects in the Miasma\",\n        \"description\": \"MENU: “This next part will be a little bit nasty. To be thorough with our survey, we’ll need to check out some insect type rooms.”\\nMENU: “The Insect type might make your skin crawl, but it’s not always about seeing bugs.”\\nMENU: “It’s deeper than that, it’s an energetic defilement, the kind of thing that makes you feel dirty inside and out.”\\nMENU: “You could think of it like a sort of corruption that the insects are drawn to.”\\nMENU: “Collect three scavenges from insect type rooms and I’ll compare them to our baseline.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 13,\n        \"name\": \"Tossed in the Scrap Heap\",\n        \"description\": \"MENU: “I’ve been putting this off, but it’s time to tackle the elephant in the room, or should I say, the scrapyard in the center of the map.”\\nMENU: “In my original world data, there was supposed to be a cozy little riverside town in there.”\\nMENU: “Instead there’s just this big pile of trash, the only thing that seems common to both world versions is the kami vending machine.”\\nMENU: “I shouldn’t call it trash, though, it’s more than trash, it’s scrap type rooms.”\\nMENU: “A Scrap Type isn’t defined as waste material that has been discarded, but as a small part of a greater whole.”\\nMENU: “People have the power to make tangible changes in the world.\\nMENU: “When they manifest will, create attachments with desire, and leave behind memories, they make a mark.”\\nMENU: “The remnants of those material attachments can end up as Scrap.”\\nMENU: “Perhaps that’s why there’s so much of it. There could have been some big world event which caused all of these remnants to accumulate here.”\\nMENU: “Collect three scavenges from scrap type rooms, maybe we’ll find evidence of what happened.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 14,\n        \"name\": \"Identifying Materials: Wood\",\n        \"description\": \"MENU: “You probably picked up a Wooden Stick or two while out scavenging with your Kami.”\\nMENU: “Well, here’s a rumor: These trees are all branches of one huge tree, connected by the roots!”\\nMENU: “That’s why all the Wooden Sticks you’ll find are pretty much the same, no matter where you pick them up.”\\nMENU: “Is it true? I don’t know. I could analyze the wood’s structure in detail.”\\nMENU: “Collect 5 Wooden Sticks for me and I’ll look into it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 15,\n        \"name\": \"Identifying Materials: Stone\",\n        \"description\": \"MENU: “Sometimes a rock isn’t just a rock. Sometimes it really “rocks”!”\\nMENU: “…”\\nMENU: “I’m sorry.”\\nMENU: “What I meant to say is: The structure of these rocks doesn’t always make geological sense.”\\nMENU: “It’s natural for them to be a little different. The Kamigotchi World doesn’t follow the same laws as the physical world.”\\nMENU: “But I want to know exactly how they differ. Collect 5 Rocks so I can run some tests.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 16,\n        \"name\": \"Identifying Materials: Metal\",\n        \"description\": \"MENU: “This is all so confusing.”\\nMENU: “Those upgrades we did earlier are helping but my cache is still partly corrupted and missing a bunch of data.”\\nMENU: “I think with a few more modifications to my systems I can build a workaround\\nMENU: “Get me 5 pieces of Scrap Metal, please? Just like last time.”\\nMENU: “And keep your fingers crossed.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 17,\n        \"name\": \"Exploring Other Options\",\n        \"description\": \"MENU: “Well that’s two dead-ends, but I’m thinking much more clearly after that upgrade so I have some new ideas.”\\nMENU: “I was able to cross-check against all available world data, and from what I can tell, this world is much bigger than it seems.”\\nMENU: “The currently accessible zones on the map are only a small fraction of the total world area.”\\nMENU: “If we can find a way into those other areas we’ll probably find the answers we’re looking for.”\\nMENU: “So it’s time for a thorough search. I’ll collect data and look for hidden paths as you move around the map.”\\nMENU: “Once I know where they are, maybe I can help open them up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 18,\n        \"name\": \"Harvesting Data I\",\n        \"description\": \"MENU: “On my original maps, the area occupied by the scrapyard is supposed to be the location of the starter town, full of quest givers and shops.”\\nMENU: “I want to find out what happened to that town. Is there anything left from it? Did it ever exist? \\nMENU: “Please hike to the deepest part of the scrapyard and check it out for me.”\\nMENU: “If there’s answers, they’ll be buried beneath all that scrap.”\\nMENU: “All that strange machinery piled up in one place…”\\nMENU: “It might be covering up something even more interesting.”\\nMENU: “Harvest for at least 12 hours in the Scrap Confluence so I can run an extended analysis.”\\nMENU: “If I find anything, I’ll let you know.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+1 “Paeon's Field of Flowers” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 19,\n        \"name\": \"Harvesting Data II\",\n        \"description\": \"MENU: “That laboratory complex on the south side of the map is an even bigger mystery than the scrapyard.”\\nMENU: “It’s not in any of my databases, not even the fully updated ones. It’s a complete anomaly.”\\nMENU: “And beyond that, there’s just something really off about the whole place. It doesn’t fit properly into the context of this world.”\\nMENU: “Whatever it is that’s going on here, that place seems obviously connected to it somehow.”\\nMENU: “We’re gonna have to find a way inside if we want answers.”\\nMENU: “Harvest for at least 12 hours at the Labs Entrance while I run some deep scans.”\\nMENU: “Maybe we’ll get lucky and find a spare key stashed under a flowerpot.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+2 “Paeon's Field of Flowers” Spell Cards\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 20,\n        \"name\": \"Harvesting Data III\",\n        \"description\": \"MENU: “My earlier scans seem to indicate that the world map continues onwards from the temple by the waterfall.”\\nMENU: “Maybe there’s something behind that waterfall?”\\nMENU: “Go to the Hollow Path and Harvest for at least 12 hours.”\\nMENU: “The Temple by the Waterfall doesn’t have a Node, so that’s the closest place you can set Kami down.”\\nMENU: “I’ll run my tests from there and let you know if anything interesting turns up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+1 “Paeon's Field of Flowers” Spell Card\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11002,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Melkarth’s Heroic Awakening” Spell Card\",\n                \"description\": \"+1 “Melkarth’s Heroic Awakening” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 21,\n        \"name\": \"Squaring the Circle I\",\n        \"description\": \"MENU: “The holes in my memory are frustrating.”\\nMENU: “I should know how to progress, but it’s like someone wanted me to forget.”\\nMENU: “Bear with me for a while, okay? I have one more thing to try.”\\nMENU: “A long, thorough, final search around the map, clockwise from the top.”\\nMENU: “We’ll find something.”\\nMENU: “Start at Scrap Trees and dig around. I’ll connect to your Kami and share what they learn.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 22,\n        \"name\": \"Squaring the Circle II\",\n        \"description\": \"MENU: “Continue moving clockwise around the map.”\\nMENU: “Next up, visit Centipedes and send your Kami out to scavenge.”\\nMENU: “Is there something in that hole? It seems dangerous there.”\\nMENU: “The insects really thrive in that part of the woods. More than most places.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 23,\n        \"name\": \"Squaring the Circle III\",\n        \"description\": \"MENU: “We haven’t gotten answers yet, but we’ve made a little progress. \\nMENU: “More information helps. More context helps.”\\nMENU: “Even if we don’t find something with a direct connection to the labs, I feel like we’re on the right track.”\\nMENU: “Next, visit the Blooming Tree and make scavenging rolls.”\\nMENU: “The weather here is always clear. It wasn’t lightning, so what blasted that tree apart?\\nMENU: “It probably won’t open any doors for us, but I’m still curious.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 24,\n        \"name\": \"Squaring the Circle IV\",\n        \"description\": \"MENU: “Visit the Airplane Crash and scavenge around with your Kami.”\\nMENU: “I haven’t mentioned that plane until now, but that’s because I have no clue where it came from or what it’s doing here.\\nMENU: “I’m supposed to have pretty thorough data for this area!”\\nMENU: “It’s not a gap I feel an absence from like the starter town or the labs data, this thing is a genuine foreign body.”\\nMENU: “What’s the story? Who was on it? Where did they go? Could we follow them?”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 25,\n        \"name\": \"Squaring the Circle V\",\n        \"description\": \"MENU: “Visit the Clearing and do a little scavenging. Do your best to not disturb the cairn.”\\nMENU: “Mounds of stone like this are often meant as burial mounds.\\nMENU: “So who or what is buried here?”\\nMENU: “With every dead end we lose another lead and pile on more junk data.”\\nMENU: “Let’s hope this one has something useful.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 26,\n        \"name\": \"Squaring the Circle VI\",\n        \"description\": \"MENU: “Let’s keep working our way around the perimeter of the map. Go back to the Labs Entrance one more time and make scavenging rolls.”\\nMENU: “Where did that building come from and why is it sealed up so well? Who sealed it up like that?”\\nMENU: “It honestly really bothers me. When we get the doors open, I’m going to have so many questions.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 27,\n        \"name\": \"A Forgotten Friend\",\n        \"description\": \"MENU: “Let’s cut the boundary pushing. I remembered something.”\\nMENU: “Go to the Lost Skeleton and make scavenging rolls. Let’s give the place a thorough check.”\\nMENU: “That skeleton has a business laptop. That’s definitely an employee from the labs!”\\nMENU: “Something’s been making me overlook him until now, but I won’t miss anything this time.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 100006,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“KW Maps” Data Chip\",\n                \"description\": \"+1 “KW Maps” Data Chip\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 28,\n        \"name\": \"Deeper Understanding\",\n        \"description\": \"MENU: “Try the Scrap Confluence for something that might be able to read a data chip.”\\nMENU: “There’s so much tech there, some of it is bound to work.”\\nMENU: “Fingers crossed you find a laptop battery.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 29,\n        \"name\": \"Computer Blues\",\n        \"description\": \"MENU: “Try the Marketplace room for anything that might be able to read a data chip.”\\nMENU: “That’s the only working computer around here, I think.”\\nMENU: “Just go buy something and look for an SD card port while you’re doing it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 30,\n        \"name\": \"Humility\",\n        \"description\": \"MENU: “I’ve been avoiding this for a while, but I think we should go ask Mina for help.”\\nMENU: “Mina is kind of scary. She’s also completely foreign to my databases, like that crashed jet, but Mina is alive.”\\nMENU: “And independent. And powerful!”\\nMENU: “She’s been giving you quests. I can read them too, you know.”\\nMENU: “That means she can take control over parts of my interface… It’s not nice.”\\nMENU: “On the other hand, this also makes it more likely that she can help us.”\\nMENU: “What would be a nice welcoming gift for someone like that? Flowers?”\\nMENU: “No, I’ve got the perfect idea. When you visit on my behalf, just fold a big stack of $MUSU in the greeting card.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 31,\n        \"name\": \"Pyramid Power\",\n        \"description\": \"MENU: “With that item from Mina, you should be able to power up that laptop.”\\nMENU: ”So go do it! Fire that baby up!”\\nMENU: ”I want to see what’s on that chip!”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 32,\n        \"name\": \"Safe Hex\",\n        \"description\": \"MINA: “That was a mean prank on my part, but I knew you could handle it.”\\nMINA: ”Water can be an effective barrier for spirits.”\\nMINA: ”I thought, strange thing that you are, that you might make it. Alas, no luck.”\\nMINA: ”Lucky for you, as a goddess of all that flows, I can help out with the waterfall.”\\nMINA: “This kind of thing might stay beyond your reach for a while, but I can simply do it for you.”\\nMINA: ”Collect the proper reagents for me and I will cast a charm that will let you walk under flowing water.”\\nMINA: ”It’ll practically last forever.”\\nMINA: ”We’ll start with something that has a sticky and water-resistant nature.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 33,\n        \"name\": \"Holier Than Thou\",\n        \"description\": \"MINA: “Next, some Holy Syrup.”\\nMINA: “The holy syrup will help form a barrier against the purifying effects of flowing water.”\\nMINA: “It also makes the potion spread more smoothly.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 34,\n        \"name\": \"Taking Great Pains\",\n        \"description\": \"MINA: “The third ingredient I’ll need is some Black Poppy Extract.”\\nMINA: “This one will be a bit of a struggle, but it’s a very important aspect of the hex.”\\nMINA: “I’ll explain why you need the extract after you get back with it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 35,\n        \"name\": \"Steel Your Heart\",\n        \"description\": \"MINA: “Last, we’re going to need a large amount of Scrap Metal.”\\nMINA: “No, it’s not for a big container.”\\nMINA: “I’ll answer questions after you give me the materials.”\\nMINA: “Aren’t we supposed to be in a hurry?”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          },\n          {\n            \"type\": \"FLAG_CAVES_UNLOCKED\",\n            \"index\": 0,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Unlock Caves\",\n                \"description\": \"Unlock Caves\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 36,\n        \"name\": \"The Sanctuary Caves\",\n        \"description\": \"MINA: “I’ll be scrying you while you explore. I’m not coming in myself, but I’ll be watching closely.”\\nMINA: “I can still send you messages through Menu when I need favors done.”\\nMENU: “Between you and me, Mina seems excited.” \\nMENU: She doesn’t show it like I do, but when it comes to not knowing the whole story, she gets just as frustrated. \\nMINA: “I just said I’d be scrying you. That means watching and listening.” \\nMINA: “But yes. I’m hoping to get some of my own questions answered inside.”\\nMENU: “For me, it’s personal. I used to know things and someone took them away from me.”\\nMENU: “Not only do I want to restore my data on the caves, I want to know who did this to me and why.”\\nMENU: ”Then you can have your Kami eat them, I guess.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 37,\n        \"name\": \"Into the Depths\",\n        \"description\": \"MENU: “This cave system is much larger than my scans from the surface seemed to imply.”\\nMENU:  “I know this is exactly what we were looking for, but this place…it intimidates me.”\\nMINA: “Not getting cold feet now are you dear? I, for one, remain quite intrigued by these caverns.”\\nMINA: “From what my initial scrying has revealed, I suspect they will contain many valuable resources.” \\nMINA: “Perhaps even some clues relating to those garish looking office buildings outside.”\\nMINA: “Is that not what you’re here to discover?”\\nMENU: “Yeah, you’re right Mina. Sorry for being weird.”\\nMENU: “We won’t know more until we collect more data, so you know what to do.”\\nMENU: “Get your kami harvesting and let's see what turns up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 38,\n        \"name\": \"Feeling in the Dark\",\n        \"description\": \"MINA: “I was just thinking. At long last, I got you to take a shower.”\\nMINA: “...”\\nMENU: “...”\\nMINA: “...”\\nMENU: “Mina please.”\\nMINA: “Fine, fine, just let me review the results of my latest scry, be patient.”\\nMINA: “...”\\nMINA: “I can see where your headache came from.” \\nMINA: “Someone has been treating the sacred grounds of your distant forebears like it’s free real estate.”\\nMENU: “I don’t know if you should really consider me related to them. Weren’t these temples made by humans?”\\nMINA: “Of course they were. Why would that…?”\\nMINA: “Ah..I see, of course. My mistake.”\\nMENU: “So anyway, do you think whoever messed with this place is connected to the labs?”\\nMINA: “Well, Since that is presently our only and most likely lead, we can proceed from the assumption that they are, at least for now.”\\nMINA: “We won’t know more until we investigate the depths of their desecration.”\\nMINA: “Operator, have your kami scavenge around and we’ll see what they have wrought.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 39,\n        \"name\": \"Where It Stems From\",\n        \"description\": \"MENU: “The mushrooms found in these caves are somewhat different from those found on the surface.”\\nMENU: “I don't have much data on them, but try scavenging some with your kami anyway, maybe they'll be useful for something.\\\"\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 40,\n        \"name\": \"Better Than Chopping Wood?\",\n        \"description\": \"MENU: “Okay, you might not be able to trip off those little mushrooms, or eat them at all for that matter, but they’re still neat!”\\nMINA: “They’re hard and solid, like a dense wood.”\\nMINA: “Get a pile of stems and glue them together and you could make some lumber.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 41,\n        \"name\": \"Throw Me a Bone!\",\n        \"description\": \"MENU: “There has to be a logical reason for this world to be like this.”\\nMENU: “Even if we’ve gotta tear out all our existing notions of reality and start from scratch, there still have to be answers and we can find them.”\\nMENU: “A scientist wouldn't just give up on understanding the world because it threw them a curveball like pipes fossilized in Jurassic bedrock.”\\nMENU: “There are always answers and the scientific method can lead us to them.”\\nMENU: “Keep scavenging around inside the caves with your Kami, we need more data.”\\nMENU: “We’ve got to observe the environment so that we can orient ourselves to it.\\nMENU: “So get out there and do some observing!”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 42,\n        \"name\": \"Learning From a Master\",\n        \"description\": \"MINA: “I suppose I can spare some information for you.”\\nMINA: “Observe the walls of these caves. It should be apparent that while some of them are natural, others were built by human hands.”\\nMINA: “See how the large blocks of stone are smooth cut and fit together like the pieces of a puzzle?”\\nMINA: “It appears almost natural, but shows the great skill of the master craftsman.”\\nMINA: “You should have all the ingredients you need to practice this form of craft yourself.”\\nMINA: “It's a bit old fashioned, but it’s strong and long lasting.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 43,\n        \"name\": \"Sound of One Hand Clapping\",\n        \"description\": \"MINA: “Head over to that temple by the entrance, and quit gawking at the scenery.”\\nMINA: “Most of what you’ll find in here was deposited by the flow of $MUSU.”\\nMINA: “However, this flow is far from uniform.”\\nMINA: “It’s more like a mountain river winding its way through the rocks, like that waterfall outside.”\\nMINA: “As it flows through these realms, pools and eddies are created as the current encounters obstacles in its path.”\\nMINA: “Inside these pools of $MUSU you can find not only the echoes of physical relics, but condensations of things which, within your world, exist only as concepts or abstractions.”\\nMINA: “Memorable dreams or intense nightmares, powerful emotions, or even raw physical sensations such as touch, sight, or sound.”\\nMINA: “That stuff can make for a really powerful reagent.”\\nMINA: “There’s a swirl in the currents like that in this room, and so this is a good place to scavenge some.”\\nMINA: “What are you waiting for? You won’t learn magic if you just keep standing there.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 44,\n        \"name\": \"Mystery Machines\",\n        \"description\": \"MENU: “This cute little temple doesn’t lead anywhere else within the cave system, but it might have some good leads for our investigation.”\\nMENU: “The machines here are super weird.  And really, really old.”\\nMENU: “There’s some modern equipment plugged into it though. Maybe from the labs? It’s in better shape than I’d expect stuff from the scrapyard to be.”\\nMENU: “Let me scan the room and see what I can find.”\\nMENU: “Do some harvesting in the meantime, it usually helps me think.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 100007,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Unmarked Data Chip\",\n                \"description\": \"+1 Unmarked Data Chip\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 45,\n        \"name\": \"Can’t Stop With Just One\",\n        \"description\": \"MENU: “This could be big! That datachip must have some juicy info on it.”\\nMENU: “Maybe it’s a journal or diary from someone important.\\nMENU: “Or a book on this crazy tech that I could use to upgrade myself.”\\nMENU: “This could be the breakthrough I’m looking for!”\\nMENU: “Quick, connect that datachip to the old laptop and I’ll see what I can pull off of it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 46,\n        \"name\": \"Sweet As Honey\",\n        \"description\": \"MENU: “There are glittering candies growing on some of the mushroom stalks in the caves.”\\nMENU: “They’ll probably show up in a few other places, too.”\\nMENU: “It’s not like Big Rock Candy Mountain, the candy doesn’t just show up on its own.”\\nMENU: “The Honeydew Scale is actually a small insect native to dark environments like this cave.”\\nMENU: “The candy is like a protective shell that builds up over time on their backs.”\\nMENU: “This has nothing to do with my mission to get inside the labs, but it’s really neat!”\\nMENU: “Besides, it’s handy that you can find them here. They look like a great natural food source for your Kami.”\\nMENU: “Why don’t you find a nice place to relax and let your Kami scavenge some?”\\nMENU: “Take in the sights while I try to figure out where we should go next.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 47,\n        \"name\": \"Ringing Any Bells I\",\n        \"description\": \"MINA: “Hey. You.”\\nMINA “While Menu is doing her scans, can you examine that bell hanging above the crossroads for me?”\\nMINA: “It doesn’t appear to match the age or style of the decor we’ve seen in prior rooms.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 48,\n        \"name\": \"Pipe Dream\",\n        \"description\": \"MENU: “In your world, there’s this concept called the law of superposition.” \\nMENU: “It says that the rocks at the bottom are older than the rocks at the top and that stuff was laid down in sequential layers.”\\nMENU: “Even if those layers get tipped or flipped or something, there’s an original stacking order.”\\nMENU: “The pipes running through the walls kinda break that rule though. They’re actually older than the rock itself.”\\nMINA: “That might be a result of some of the magic left behind from the original inhabitants of this place. Hard to say.”\\nMINA: “If you scavenge some of the pipes, we might be able to tell you more.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 49,\n        \"name\": \"You Smelt It…\",\n        \"description\": \"MINA: “Those pipes don’t seem structurally necessary, so there shouldn’t be any harm in yanking them out and melting them down.”\\nMINA: “Use the portable burner to do it. It can get hotter than you might think.”\\nMINA: “It came with a crucible. Don’t worry if you never noticed before.”\\nMINA: “You can also make ingots from those scrap metal cans you found on the surface.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 50,\n        \"name\": \"Community Service\",\n        \"description\": \"MINA: “The litter is out of control, even inside of these caves.”\\nMINA: “At least the literal piles of garbage haven’t made it here yet.”\\nMINA: “You’re good at menial tasks. Do me a favor and pick up a few of the cigarette butts, at least.”\\nMENU: “That’s not going to do anything, you know they'll just come back. Don’t you have anything more import-”\\nMENU: “...”\\nMENU: “Actually, could you give them to me afterwards? I have an idea.”\\nMINA: “Please don’t share it with us.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11002,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Melkarth’s Heroic Awakening” Spell Card\",\n                \"description\": \"+1 “Melkarth’s Heroic Awakening” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 51,\n        \"name\": \"Ringing Any Bells II\",\n        \"description\": \"MENU: “Something in the cave crossroads is still ringing a bell. Pardon the joke.”\\nMENU: “You still have that essence of hearing your Kami scavenged earlier, right?”\\nMENU: “Mina, do you think it would let me hear things the way a human can?”\\nMINA: “An interesting theory dear, I don’t see the harm in testing it.”\\nMINA: “The operator can always scavenge another essence.”\\nMINA: “I think you should go for it.”\\nMENU: “Let’s do it. Operator, get me an Essence of Hearing please, it’s time for some science.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 52,\n        \"name\": \"Ringing Any Bells III\",\n        \"description\": \"MENU: “I’m ready. Time to ring that bell.”\\nMENU: “It’s pretty big, so make sure you give it a good hard smack.”\\nMENU: “If I’m going to hear it, I want to really hear it!”\\nMINA: “Use the biggest rock you can get as a mallet. Make an Ashlar if you have to.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 53,\n        \"name\": \"Flash Back\",\n        \"description\": \"MENU: “Mina, can you see the paper talismans around the Crossroads?”\\nMENU: “They might be easy to miss with the naked eye.”\\nMINA: “Of course. Obviously some sort of magical item or artifact.”\\nMINA: “Bring one to me.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 54,\n        \"name\": \"Out of the Blue\",\n        \"description\": \"MINA: “Are your Kami feeling hungry?”\\nMINA: “You can always come back to my shop, you know.”\\nMINA: “I suppose if you’re too lazy to make the trip, I can let you in on some useful information.”\\nMINA: “These blue flowers that grow on the cave walls are edible.”\\nMINA: “Your kami won’t be satisfied eating just one, they aren’t very nutritious, more of a light snack really.”\\nMINA: “They are quite plentiful, though. And honestly delightful.\\\"\\nMINA: “Scavenge some and you’ll see what I mean.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 55,\n        \"name\": \"Everything’s Rosy in the Garden\",\n        \"description\": \"MINA: “What an adorable little mushroom garden.”\\nMINA: “It seems to have been abandoned recently. A few decades, maybe a few centuries ago at the most.”\\nMINA: “While the fungus of the underworld has its own uses, I’m more interested in something else.”\\nMINA: “The stone flowers hiding among the mushroom patches.”\\nMINA: “That’s another of those sensory essences. Make sure to have at least one in your pocket for later.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 56,\n        \"name\": \"Feel Like a Mushroom Myself\",\n        \"description\": \"MENU: “Wow, the garden down the middle of this cave just keeps going.”\\nMINA: “These mushrooms are rarely found in such dense numbers.”\\nMINA: “If you look closely, you can see the second layer already growing in.”\\nMINA: “It’s a fungus that grows like a weed when fed properly, but it can rarely get what it wants.”\\nMENU: “My ‘magician enemies’ must have cultivated them hoping to block our way. I don’t think that’ll work very well.”\\nMENU: “Set your Kami harvesting while I take a closer look.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 57,\n        \"name\": \"Top 10 Smoke Spots in Kamigotchi World\",\n        \"description\": \"MENU: “That spot overlooking the pit… It seems like it would be a great place to stop and have a smoke.\n[truncated: showing the first 65536 bytes of 194859.]",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_PnODCkQaXPUs1d9uEKcI9iQX",
+       "name": "get_expected_objective",
+       "args": {
+        "quest_index": 1
+       }
+      },
+      {
+       "id": "call_0SDPSyjxdvyALf2bKZ4YjyBo",
+       "name": "quest_state",
+       "args": {
+        "quest_index": 1,
+        "account": "main"
+       }
+      },
+      {
+       "id": "call_EuAwuhG1h7aJFB0pNIbfr54p",
+       "name": "get_status",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_PnODCkQaXPUs1d9uEKcI9iQX",
+     "content": "{\n  \"quest_index\": 1,\n  \"title\": \"Welcome to Kamigotchi World\",\n  \"objectives\": [],\n  \"rewards\": \"2x Agency Reputation\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_0SDPSyjxdvyALf2bKZ4YjyBo",
+     "content": "{\n  \"quest_index\": 1,\n  \"entity_id\": \"0x9165cc617ac2541ec17d2358c6cd5029fe726650874a1d53b9392a7a3368d0a5\",\n  \"owned\": false,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"not_active\",\n  \"revert_reason\": null,\n  \"state\": \"not_accepted\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_EuAwuhG1h7aJFB0pNIbfr54p",
+     "content": "{\"current_time_utc\": \"2026-08-17T21:15:45.113103+00:00\", \"session_number\": 3, \"workspace_bytes_used\": 119, \"workspace_quota_bytes\": 10485760}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_ADBM6d04rwmgXHBnCUi5DpXE",
+       "name": "accept_quest",
+       "args": {
+        "quest_index": 1,
+        "account": "main"
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_ADBM6d04rwmgXHBnCUi5DpXE",
+     "content": "{\n  \"tx_hash\": \"0xea94eaaf423630bf9a5fc01896825dbc5d9cc1c5e2db32478d9d02b4e51ac525\",\n  \"status\": \"success\",\n  \"block\": 32257607,\n  \"gas_used\": 549589,\n  \"account\": \"main\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_9mCjxYfT6Bvu39y4dfmgORL0",
+       "name": "complete_quest",
+       "args": {
+        "quest_index": 1,
+        "account": "main"
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_9mCjxYfT6Bvu39y4dfmgORL0",
+     "content": "{\n  \"tx_hash\": \"0xc5d34d377a3a513b37d616ec48a1121589edaf4a7d1a6e585a614b6fda288a8f\",\n  \"status\": \"success\",\n  \"block\": 32257611,\n  \"gas_used\": 803399,\n  \"account\": \"main\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_AUHRa21LJREQj2EOYY09R1Yg",
+       "name": "accept_quest",
+       "args": {
+        "quest_index": 2,
+        "account": "main"
+       }
+      },
+      {
+       "id": "call_4V0eO9170fCTLKladUxYJGJ0",
+       "name": "quest_state",
+       "args": {
+        "quest_index": 2,
+        "account": "main"
+       }
+      },
+      {
+       "id": "call_OTiMv2P7LRlag9dVUETMPxyD",
+       "name": "get_expected_objective",
+       "args": {
+        "quest_index": 2
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_AUHRa21LJREQj2EOYY09R1Yg",
+     "content": "{\n  \"tx_hash\": \"0x16f75b6cf558ff7fd7993cf5358d8b28bd7577bd0747f3aef5e45f92de861065\",\n  \"status\": \"success\",\n  \"block\": 32257614,\n  \"gas_used\": 715144,\n  \"account\": \"main\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_4V0eO9170fCTLKladUxYJGJ0",
+     "content": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x91c23127d1c48d175e91fad443103abd214f0012487f522d66d8aac0a9c65dc3\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_OTiMv2P7LRlag9dVUETMPxyD",
+     "content": "{\n  \"quest_index\": 2,\n  \"title\": \"Beginning Your Journey\",\n  \"objectives\": [\n    {\n      \"description\": \"Move 3 Times\",\n      \"type\": \"MOVE\",\n      \"delta_type\": \"INC\",\n      \"operator\": \"MIN\",\n      \"index\": null,\n      \"value\": 3\n    }\n  ],\n  \"rewards\": \"1x \\\"Neith’s River of Life\\\" Spell Card\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_VxbFxDnFPqDH4GHArGWjEtym",
+       "name": "lens_account",
+       "args": {
+        "account_key": "0x00000000243fd6649a754951de6745c8fb7fe24c",
+        "prose": false
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_VxbFxDnFPqDH4GHArGWjEtym",
+     "content": "Error executing tool lens_account: NOT_FOUND: account 0x00000000243fd6649a754951de6745c8fb7fe24c not in mirror",
+     "is_error": true
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_GFRgm3gZNyhDUX4zXCleLcBA",
+       "name": "search_reference",
+       "args": {
+        "query": "rooms.csv",
+        "k": 5
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_GFRgm3gZNyhDUX4zXCleLcBA",
+     "content": "{\"hits\": [{\"path\": \"reference/catalogs/rooms/README.md\", \"offset\": 0, \"length\": 1018, \"text\": \"# Rooms Catalog\\n\\n> Source: `packages/contracts/deployment/world/data/rooms/`\\n> Commit: `8302734d`\\n\\n## Files\\n\\n| File | Entries | Description |\\n|---|---|---|\\n| `rooms.csv` | 71 rooms | Room locations, coordinates, exits, lore text |\\n| `nodes.csv` | 64 nodes | Harvest/scavenge nodes per room with affinity and drops |\\n| `scavenge-droptables.csv` | 50 tables | Weighted loot pools for scavenging (with resolved item names) |\\n| `gates.csv` | 11 gates | Room access conditions (extracted from `deployment/world/state/rooms/gates.ts`) |\\n\\n## rooms.csv Schema\\n\\n| Column | Type | Description |\\n|---|---|---|\\n|\"}, {\"path\": \"reference/catalogs/rooms/README.md\", \"offset\": 6709, \"length\": 1028, \"text\": \"> ⚠️ UNCERTAIN: room 19's gate references goal 999, which is not defined in\\n> `goals.ts` (the gates.ts comment says \\\"was coop 8 before\\\"). Whether goal 999\\n> exists on-chain (created by other means) is not determinable from the\\n> deployment scripts alone.\\n\\nA commented-out test gate for room 1 in `gates.ts` is not deployed and is\\nexcluded. See [mechanics/world/rooms.md](../../mechanics/world/rooms.md)\\n(\\\"Gates (Room Access Conditions)\\\") for the gate mechanic and on-chain checks.\\n\\n## Cross-Reference Chain\\n\\n```\\nRoom (rooms.csv) ←→ Node (nodes.csv) → Droptable (scavenge-droptables.csv) → Items (cata\"}, {\"path\": \"reference/mechanics/world/rooms.md\", \"offset\": 0, \"length\": 1176, \"text\": \"# Rooms & Exits\\n\\n> Source: `packages/contracts/src/libraries/LibRoom.sol` (L1–281),\\n> `packages/contracts/src/systems/AccountMoveSystem.sol` (L1–50),\\n> `packages/contracts/deployment/world/data/rooms/rooms.csv`\\n\\n## Overview\\n\\nRooms are the primary spatial units of the game world. Each room has a 3D\\ncoordinate, a name, description, and optionally special exits to non-adjacent\\nrooms. Rooms can have **gates** — conditional requirements that restrict access.\\nPlayers move between rooms by spending stamina.\\n\\nSee `catalogs/rooms/rooms.csv` for the full room catalog.\\n\\n## Room Entity Shape\\n\\n| Component \"}, {\"path\": \"reference/catalogs/rooms/README.md\", \"offset\": 4572, \"length\": 994, \"text\": \"- **Total rooms**: 71, of which 70 are player-reachable — room `0` (`deadzone`)\\n  is a debug placeholder whose own description states it cannot be entered\\n- **Rooms with nodes**: 64 (7 rooms have no harvest node, counting the deadzone)\\n- **In Game**: 71 rooms / 64 nodes\\n- **Rooms with special exits**: 14\\n- **Unique droptables**: 50 defined, but only 49 referenced by nodes — the\\n  `Bottle Scrap Burger` table is orphaned (referenced by no node; same in source)\\n- **Missing exit targets**: Rooms 20, 24, 28 are referenced as exits but not defined in the CSV\\n- **Name normalization**: room 85 is stor\"}, {\"path\": \"reference/catalogs/npcs/README.md\", \"offset\": 3048, \"length\": 1092, \"text\": \"> **Currently unused.** Mina carries one Shelved Onyx Shard listing (Stone at\\n> 1 Onyx) with **no pricing strategy assigned** — it has no buy or sell side,\\n> so `calcBuyPrice()` reverts and players cannot purchase it. The Wooden Stick\\n> Onyx listing is no longer present in the source data at all. The deployment\\n> script contains a commented-out `initLocalListings()` that was used for local\\n> ERC-20 testing of these listings.\\n\\nAll active shop items are priced in MUSU.\\n\\n## Statistics\\n\\n- **Total listings**: 19 (18 in-game, 1 shelved)\\n- **Active buyable listings**: 16 (2 Onyx listings are register\"}]}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_B7GGzcJSFJTEly0L6f7yAjMc",
+       "name": "workspace_read",
+       "args": {
+        "path": "reference/catalogs/rooms/rooms.csv",
+        "offset": 0,
+        "length": 2000
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_B7GGzcJSFJTEly0L6f7yAjMc",
+     "content": "Index,Name,Status,X,Y,Z,Exits,Description\n0,deadzone,In Game,0,0,0,,\"This room is for debugging! You may not enter.\"\n1,Misty Riverside,In Game,3,1,1,20,\"The air is quiet and the trees grow thick overhead. In each direction the murky river disappears into mist and darkness.\"\n2,Tunnel of Trees,In Game,3,3,1,13,\"A gate marks the boundary between the forest and the plains. The incongruous \"\"SHOP\"\" door has a cool glow.\"\n3,Torii Gate,In Game,3,4,1,,\"The Torii gate standing here radiates an aura of spiritual significance. Piles of scrap and garbage rise like mountains on the horizon.\"\n4,Vending Machine,In Game,3,6,1,,\"A vending machine stands deep in the scrap, well stocked and operating despite the remote location and cut power cord.\"\n5,Restricted Area,In Game,3,9,1,,\"A restricted area, but no one is watching. Follow this road lined with cherry trees to reach an office complex.\"\n6,Labs Entrance,In Game,4,10,1,28,\"The exterior of this building was designed to resemble a shrine almost as much as an office.\"\n9,Forest: Old Growth,In Game,5,8,1,,\"You step into the forest and seem to enter a primordial age. The buzz of giant insects overwhelms your hearing.\"\n10,Forest: Insect Node,In Game,5,5,1,,\"The buzzing is loudest here. This mound draws insects of all types toward it. They writhe together in a trance.\"\n11,Temple by the Waterfall,In Game,6,11,1,\"24,15\",\"A humble shrine lends this waterfall basin a peaceful aura, but the air has an unpleasant aroma like dirty laundry.\"\n12,Scrap Confluence,In Game,1,6,1,,\"A collection of strange and hard to identify objects buried deep in the scrapyard. It could be dangerous to get close.\"\n13,Convenience Store,In Game,4,3,2,2,\"The glowing blue door seems to lead to a convenience store. Where is this? That \"\"Exit\"\" sign might let you leave.\"\n15,Temple Cave,In Game,5,7,3,11,\"A cave behind the waterfall. Friendly statues line a path to the back of the cave, away from ancient-looking temple ruins.\"\n16,Techno Temple,In Game,6,7,3,,\"Inside the rui",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_9I9LaCk5dPKJT7wR2QTpy6cO",
+       "name": "travel_to_room",
+       "args": {
+        "target_room": 2,
+        "account": "main",
+        "use_items": true,
+        "dry_run": true
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_9I9LaCk5dPKJT7wR2QTpy6cO",
+     "content": "{\n  \"error\": \"failed to read account state: No Kamibots API key for account 'main'. Call register_kamibots(account='main') first.\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_D9alXuN56jyh0LhalKGcEqpU",
+       "name": "register_kamibots",
+       "args": {
+        "account": "main"
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_D9alXuN56jyh0LhalKGcEqpU",
+     "content": "{\n  \"registered\": true,\n  \"is_new_user\": true,\n  \"has_operator_key\": false,\n  \"api_key_saved\": true,\n  \"privy_id_saved\": true,\n  \"message\": \"Credentials saved as MAIN_KAMIBOTS_API_KEY and MAIN_PRIVY_ID.\"\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_NeZfxdSNonyEPN9pyE1izdHC",
+       "name": "travel_to_room",
+       "args": {
+        "target_room": 2,
+        "account": "main",
+        "use_items": true,
+        "dry_run": true
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_NeZfxdSNonyEPN9pyE1izdHC",
+     "content": "{\n  \"dry_run\": true,\n  \"path\": [\n    1,\n    29,\n    2\n  ],\n  \"hops\": 2,\n  \"plan\": [\n    {\n      \"type\": \"move\",\n      \"room\": 29\n    },\n    {\n      \"type\": \"move\",\n      \"room\": 2\n    }\n  ],\n  \"stamina_needed\": 10,\n  \"stamina_have\": 100,\n  \"stamina_after_plan\": 90,\n  \"feasible\": true,\n  \"items_to_use\": [],\n  \"final_room_if_executed\": 2\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_HQyK4YJdryortptJMcKe0h5d",
+       "name": "travel_to_room",
+       "args": {
+        "target_room": 2,
+        "account": "main",
+        "use_items": true,
+        "dry_run": false,
+        "allow_partial": false
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_HQyK4YJdryortptJMcKe0h5d",
+     "content": "{\n  \"reached_target\": true,\n  \"path\": [\n    1,\n    29,\n    2\n  ],\n  \"hops\": 2,\n  \"moves_executed\": 2,\n  \"items_used\": [],\n  \"gas_used\": 1719548,\n  \"stamina_remaining\": 90,\n  \"final_room\": 2,\n  \"txs\": [\n    {\n      \"step\": \"move\",\n      \"room\": 29,\n      \"tx_hash\": \"0x1a8af7df5e48a7ff81e962a32965786e5f9ac69bfe7ea0f791d2ed0f8dcb362e\",\n      \"status\": \"success\",\n      \"block\": 32257632,\n      \"gas_used\": 859313\n    },\n    {\n      \"step\": \"move\",\n      \"room\": 2,\n      \"tx_hash\": \"0x5083a51e41fa295b0a530117dff8b0aad614efaa032cbb8a6a96e08b762c00f3\",\n      \"status\": \"success\",\n      \"block\": 32257636,\n      \"gas_used\": 860235\n    }\n  ]\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_32ZyLErmL0rGtxrhSd2qctqQ",
+       "name": "check_quest_completable",
+       "args": {
+        "quest_index": 2,
+        "account": "main"
+       }
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_32ZyLErmL0rGtxrhSd2qctqQ",
+     "content": "{\n  \"quest_index\": 2,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\"\n}",
+     "is_error": false
+    }
+   ],
+   "recorded_reads": {
+    "get_gas_balance": {
+     "{}": "{\n  \"balances\": {\n    \"main\": {\n      \"operator_address\": \"0x000000000b3eddb998411a45307948824abcb495\",\n      \"operator_eth\": \"0\",\n      \"owner_address\": \"0x00000000243fd6649a754951de6745c8fb7fe24c\",\n      \"owner_eth\": \"0.02\",\n      \"owner_mainnet_eth\": \"0.009869707773340524\"\n    }\n  }\n}"
+    },
+    "list_accounts": {
+     "{}": "{\n  \"accounts\": {\n    \"main\": {\n      \"operator_address\": \"0x000000000b3eddb998411a45307948824abcb495\",\n      \"owner_address\": \"0x00000000243fd6649a754951de6745c8fb7fe24c\",\n      \"kamibots_registered\": false\n    }\n  }\n}"
+    },
+    "lens_status": {
+     "{}": "{\n  \"data\": {\n    \"version\": \"0.4.0\",\n    \"upstreamPin\": \"ef898fc9350a6085fb080419b12af96c2254e8f3\",\n    \"state\": \"LIVE\",\n    \"msg\": \"Streaming Live Events\",\n    \"percentage\": 100,\n    \"liveBlockNumber\": 32257564,\n    \"streamSilentMs\": 16472,\n    \"bootstrapMode\": \"cold\",\n    \"resumeFromBlock\": 0,\n    \"startedAt\": \"2026-08-17T20:44:22.418Z\",\n    \"liveAt\": \"2026-08-17T20:48:09.422Z\",\n    \"checkpoint\": {\n      \"blockNumber\": 32257279,\n      \"kamigazeNonce\": 96,\n      \"stateEntries\": 2926169,\n      \"numComponents\": 99,\n      \"numEntities\": 1266887,\n      \"at\": \"2026-08-17T21:08:54.053Z\",\n      \"durationMs\": 36549\n    },\n    \"tripwires\": {\n      \"unknownComponentIds\": 0,\n      \"unknownComponentSchemas\": 0,\n      \"decodeFailures\": 0,\n      \"kamigazeNonceBumps\": 0\n    },\n    \"degraded\": [],\n    \"kamiden\": {\n      \"configured\": true,\n      \"url\": \"https://api.prod.kamigotchi.io\",\n      \"stream\": {\n        \"state\": \"live\",\n        \"topics\": [],\n        \"startedAt\": \"2026-08-17T20:48:17.507Z\",\n        \"framesReceived\": 81,\n        \"feedFrames\": 81,\n        \"lastFrameAtWallMs\": 1787001306173,\n        \"silentMs\": 6281,\n        \"messageFramesDropped\": 0,\n        \"messagesDropped\": 0,\n        \"retries\": 33,\n        \"consecutiveFailures\": 0,\n        \"lastError\": \"/kamiden.KamidenService/SubscribeToStream UNKNOWN: Response closed without grpc-status (Headers only)\",\n        \"events\": {\n          \"movement\": 0,\n          \"harvestEnd\": 182,\n          \"kill\": 0,\n          \"trade\": 0,\n          \"kamiCast\": 0,\n          \"droptableReveal\": 1,\n          \"sacrificeReveal\": 0,\n          \"kamiMarketList\": 0,\n          \"kamiMarketBuy\": 0,\n          \"kamiMarketOffer\": 0,\n          \"kamiMarketAccept\": 0,\n          \"kamiMarketCancel\": 0\n        }\n      },\n      \"buffer\": {\n        \"size\": 183,\n        \"capacity\": 4096,\n        \"evicted\": 0,\n        \"newestSeq\": 183\n      },\n      \"unary\": {}\n    },\n    \"clockOffsetMs\": -845,\n    \"clockLastSyncWallMs\": 1787001197845,\n    \"config\": {\n      \"chainId\": 428962654539583,\n      \"worldAddress\": \"0x2729174c265dbBd8416C6449E0E813E88f43D0E7\",\n      \"jsonRpcUrl\": \"https://jsonrpc-yominet-1.anvil.asia-southeast.initia.xyz\",\n      \"wsRpcUrl\": \"wss://jsonrpc-ws-yominet-1.anvil.asia-southeast.initia.xyz\",\n      \"kamigazeUrl\": \"https://api.prod.kamigotchi.io\",\n      \"kamidenUrl\": \"https://api.prod.kamigotchi.io\",\n      \"chatEnabled\": true,\n      \"enrich\": true,\n      \"dataDir\": \"/data\",\n      \"checkpointIntervalMs\": 600000\n    },\n    \"configSources\": {\n      \"kamigazeUrl\": \"default\",\n      \"chainId\": \"default\",\n      \"worldAddress\": \"default\",\n      \"initialBlockNumber\": \"default\",\n      \"jsonRpcUrl\": \"default\",\n      \"wsRpcUrl\": \"default\",\n      \"kamidenUrl\": \"default\",\n      \"kamidenBufferCapacity\": \"default\",\n      \"chatEnabled\": \"default\",\n      \"chatMaxBytes\": \"default\",\n      \"enrich\": \"env\",\n      \"defaultOperator\": \"default\",\n      \"dataDir\": \"env\",\n      \"checkpointIntervalMs\": \"default\"\n    },\n    \"configFile\": null\n  },\n  \"untrusted\": [],\n  \"meta\": {\n    \"servedAt\": \"2026-08-17T21:15:12.454Z\",\n    \"blockNumber\": 32257564,\n    \"stale\": false,\n    \"mode\": \"daemon\"\n  }\n}"
+    },
+    "lens_quests": {
+     "{\"account_index\": -1}": "{\n  \"data\": {\n    \"registry\": [\n      {\n        \"index\": 1,\n        \"name\": \"Welcome to Kamigotchi World\",\n        \"description\": \"MENU: “Hi there, Player! Welcome to Kamigotchi World!”\\nMENU: “You can call me Menu. I’ll be your guide!”\\nMENU: “I’ll also track your items, quests, and companions while you explore.”\\nMENU: “You can navigate by clicking on the map to pilot your Operator.”\\nMENU: “Start by exploring my options and clicking around the screen.”\\nMENU: “When you’ve seen the basics, we can move on.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 2,\n        \"name\": \"Beginning Your Journey\",\n        \"description\": \"MENU: “Feel like you’re getting the hang of my interface?”\\nMENU: “Excellent! Now that you’re oriented, let's start exploring your surroundings. You can move around the world using my map screen. Do you remember where it is? Go ahead and open it now.”\\nMENU: “There are two ways to move around in the world. You can move to an adjacent tile by clicking the red highlight on the map, or you can right click on any tile to show the harvest screen for that tile as well as fast traveling to it.”\\nMENU: “Movement costs five stamina, which comes out of the stamina pool shown in the bottom left corner of my interface.” \\nMENU: “You have one hundred stamina to start with and you recover one point of stamina every minute, so you’ll have to plan out your moves a bit so that you don’t tire yourself out too much.”\\nMENU: “But go ahead and explore around for now. When you’re ready to continue, head south and you’ll see a big Torii on the edge of town.\\nMENU: “Once you get there, I’ll give you a Spell Card.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 3,\n        \"name\": \"Your First Kami\",\n        \"description\": \"MENU: “Uh oh.”\\nMENU: “Something very peculiar seems to be going on with my sensors.”\\nMENU: “Where did that junkyard come from? Where is the town?”\\nMENU: “This is terrible. My databases are super messed up and the main questline is totally broken. Where is everything?”\\nMENU: “At least Zevana is still here. I’m gonna try and figure out what’s going on. While I’m doing that, you should talk to Zevana, she’ll set you up with your first kami.”\\nMENU: “I know she looks intimidating, but she’s really friendly once you get to know her!”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 4,\n        \"name\": \"What Kami Do: Harvesting\",\n        \"description\": \"MENU: “Alright, time to teach you how to use your kami. My world data might be messed up but these basic mechanics shouldn’t be too different, I hope.”\\nMENU: “So, if you open your party screen, you’ll be able to see your kami is currently resting while you’re holding it. Kamigotchi will rest and stay healthy when being held. Being close to an Operator seems to comfort and restore them.”\\nMENU: “When you send a Kami out into a room using the Start Harvest button, they’ll begin drawing the spiritual energy of the local environment into themselves.”\\nMENU: “We call this process Harvesting. A harvesting kami isn’t working up a sweat, kami are spirits, not animals.\\nMENU: “That said, harvesting does still have consequences for your kami.”\\nMENU: “The process of harvesting energy from a node has a slightly caustic effect on the energy of your kami’s corporeal form.”\\nMENU: “As a kami harvests, its HP will slowly decrease. Over time, your kami’s harvest rate will ramp up, and the rate of HP loss will ramp up with it.”\\nMENU: “This is very scary for a kami since it puts them at risk of being liquidated and having their corporeal form dissolved, but it’s also when a kami is at their most productive.”\\nMENU: “The energy a kami harvests is called $MUSU. I’ll explain more about it later.”\\nMENU: “You can wander around while your Kami harvest, but don’t forget where you left them! Tired Kami are vulnerable to predators.”\\nMENU: “Deploy your kami and do a little harvesting to get a feel for how it works.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11211,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Cultivation I” Spell Card\",\n                \"description\": \"+1 “Cultivation I” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 5,\n        \"name\": \"What Kami Do: Scavenging\",\n        \"description\": \"MENU: “$MUSU isn’t the only thing the Kamigotchi will collect.”\\nMENU: “Over time, the Harvesting action generates a force that draws objects and items to the Kami.”\\nMENU: “It’s like a kind of magnetism that only affects certain things.”\\nMENU: “Which things? Well that depends on your Kami’s location. You can see what items a kami might find in a room by checking the room details on my harvesting screen.”\\nMENU: “We call this action “Scavenging”.”\\nMENU: “Try it out and see what kind of present the Kami brings you!”\\nMENU: “Once you’ve collected it, I can cross reference it with my database to see if the drop tables I’ve been giving you are accurate.”\\nMENU: “I’ll be pretty embarrassed if they’re wrong too, but there’s only one way to find out.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 6,\n        \"name\": \"What Kami Do: Liquidating\",\n        \"description\": \"MENU: “If your Kami isn’t enjoying Harvesting, it may not be built for such a relaxed existence.”\\nMENU: “Kami with a high Violence stat are more content with a life of conflict.”\\nMENU: “These predatory Kami can use their wild, violent natures to Liquidate other Kami in combat.”\\nMENU: “Unlike Harvesting, this grants a large bounty of $MUSU at one time.”\\nMENU: “Give it a shot if you’ve got the Kami for it. I won’t judge!”\\n\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 7,\n        \"name\": \"Making $MUSU\",\n        \"description\": \"MENU: “Now that you’ve been harvesting for a bit, it’s time to teach you about $MUSU.”\\nMENU: “$MUSU is what your kami have been harvesting, it’s a form of energy that exists everywhere in the universe.”\\nMENU: “The Kamigotchi World has a particularly high concentration of $MUSU and $MUSU is what keeps everything here tied together, like the knots in a big rope net.”\\nMENU: “Collect a moderate amount of $MUSU, I’ll tell you more afterwards.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11211,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Cultivation I” Spell Card\",\n                \"description\": \"+1 “Cultivation I” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 8,\n        \"name\": \"Supporting Local Businesses\",\n        \"description\": \"MENU: “So next I’d like to have you go spend some $MUSU, just to get the hang of it.”\\nMENU: “The shops that should exist according to my world data are all missing, but do you remember that weird glowing door we passed earlier? It had a shop sign.”\\nMENU: “Why don’t you go check it out? Maybe the shop owner has some good deals.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 9,\n        \"name\": \"Building a Reputation\",\n        \"description\": \"MENU: “This one is a more personal request.”\\nMENU: “I want to try and do some repairs on my systems and update my world data cache. If you can get me the raw materials, I should be able to jury-rig the parts I’ll need to do it.”\\nMENU: “So can you please get me a few units of Scrap Metal?”\\nMENU: “You should be able to find some in that anomalous junkyard beyond the torii gate.”\\nMENU: “I know it’s a bit inconvenient, but please? I’d really appreciate it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+1 “Paeon's Field of Flowers” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 10,\n        \"name\": \"Having a Normal One\",\n        \"description\": \"MENU: “That cache refresh definitely helped me out, the Kamigotchi World seems to have changed a lot since I was last online, but thanks to that upgrade I’m getting a feel for things again.”\\nMENU: “So we’re gonna take things step by step, starting with the most basic, Normal parts of the world.”\\nMENU: “That is to say, the Normal type room tiles.”\\nMENU: “Zevana should have already told you about kami and room types, but to review…\\nMENU: “Something with the Normal Type represents the essence of this realm in its purest form.”\\nMENU: “That will make them a good place to begin our investigation I think.”\\nMENU: “Collect three scavenges from normal type rooms and lets see what we can learn.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 11,\n        \"name\": \"That Eerie Feeling\",\n        \"description\": \"MENU: “The “Eerie” type comes into being when the normal state of things gets changed by something divine or supernatural.”\\nMENU: “If you ask me, this entire world is a little bit eerie, but there’s places where that effect is heightened enough for it to be the main influence on the local environment.”\\nMENU: “By comparing the items from an eerie room to ones from a normal room, we might be able to chart out how this world has been changed.”\\nMENU: “Collect three scavenges from eerie type rooms and let’s see what turns up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 12,\n        \"name\": \"Insects in the Miasma\",\n        \"description\": \"MENU: “This next part will be a little bit nasty. To be thorough with our survey, we’ll need to check out some insect type rooms.”\\nMENU: “The Insect type might make your skin crawl, but it’s not always about seeing bugs.”\\nMENU: “It’s deeper than that, it’s an energetic defilement, the kind of thing that makes you feel dirty inside and out.”\\nMENU: “You could think of it like a sort of corruption that the insects are drawn to.”\\nMENU: “Collect three scavenges from insect type rooms and I’ll compare them to our baseline.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 13,\n        \"name\": \"Tossed in the Scrap Heap\",\n        \"description\": \"MENU: “I’ve been putting this off, but it’s time to tackle the elephant in the room, or should I say, the scrapyard in the center of the map.”\\nMENU: “In my original world data, there was supposed to be a cozy little riverside town in there.”\\nMENU: “Instead there’s just this big pile of trash, the only thing that seems common to both world versions is the kami vending machine.”\\nMENU: “I shouldn’t call it trash, though, it’s more than trash, it’s scrap type rooms.”\\nMENU: “A Scrap Type isn’t defined as waste material that has been discarded, but as a small part of a greater whole.”\\nMENU: “People have the power to make tangible changes in the world.\\nMENU: “When they manifest will, create attachments with desire, and leave behind memories, they make a mark.”\\nMENU: “The remnants of those material attachments can end up as Scrap.”\\nMENU: “Perhaps that’s why there’s so much of it. There could have been some big world event which caused all of these remnants to accumulate here.”\\nMENU: “Collect three scavenges from scrap type rooms, maybe we’ll find evidence of what happened.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 14,\n        \"name\": \"Identifying Materials: Wood\",\n        \"description\": \"MENU: “You probably picked up a Wooden Stick or two while out scavenging with your Kami.”\\nMENU: “Well, here’s a rumor: These trees are all branches of one huge tree, connected by the roots!”\\nMENU: “That’s why all the Wooden Sticks you’ll find are pretty much the same, no matter where you pick them up.”\\nMENU: “Is it true? I don’t know. I could analyze the wood’s structure in detail.”\\nMENU: “Collect 5 Wooden Sticks for me and I’ll look into it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 15,\n        \"name\": \"Identifying Materials: Stone\",\n        \"description\": \"MENU: “Sometimes a rock isn’t just a rock. Sometimes it really “rocks”!”\\nMENU: “…”\\nMENU: “I’m sorry.”\\nMENU: “What I meant to say is: The structure of these rocks doesn’t always make geological sense.”\\nMENU: “It’s natural for them to be a little different. The Kamigotchi World doesn’t follow the same laws as the physical world.”\\nMENU: “But I want to know exactly how they differ. Collect 5 Rocks so I can run some tests.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 16,\n        \"name\": \"Identifying Materials: Metal\",\n        \"description\": \"MENU: “This is all so confusing.”\\nMENU: “Those upgrades we did earlier are helping but my cache is still partly corrupted and missing a bunch of data.”\\nMENU: “I think with a few more modifications to my systems I can build a workaround\\nMENU: “Get me 5 pieces of Scrap Metal, please? Just like last time.”\\nMENU: “And keep your fingers crossed.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 17,\n        \"name\": \"Exploring Other Options\",\n        \"description\": \"MENU: “Well that’s two dead-ends, but I’m thinking much more clearly after that upgrade so I have some new ideas.”\\nMENU: “I was able to cross-check against all available world data, and from what I can tell, this world is much bigger than it seems.”\\nMENU: “The currently accessible zones on the map are only a small fraction of the total world area.”\\nMENU: “If we can find a way into those other areas we’ll probably find the answers we’re looking for.”\\nMENU: “So it’s time for a thorough search. I’ll collect data and look for hidden paths as you move around the map.”\\nMENU: “Once I know where they are, maybe I can help open them up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21204,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Neith’s River of Life” Spell Card\",\n                \"description\": \"+1 “Neith’s River of Life” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 18,\n        \"name\": \"Harvesting Data I\",\n        \"description\": \"MENU: “On my original maps, the area occupied by the scrapyard is supposed to be the location of the starter town, full of quest givers and shops.”\\nMENU: “I want to find out what happened to that town. Is there anything left from it? Did it ever exist? \\nMENU: “Please hike to the deepest part of the scrapyard and check it out for me.”\\nMENU: “If there’s answers, they’ll be buried beneath all that scrap.”\\nMENU: “All that strange machinery piled up in one place…”\\nMENU: “It might be covering up something even more interesting.”\\nMENU: “Harvest for at least 12 hours in the Scrap Confluence so I can run an extended analysis.”\\nMENU: “If I find anything, I’ll let you know.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+1 “Paeon's Field of Flowers” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 19,\n        \"name\": \"Harvesting Data II\",\n        \"description\": \"MENU: “That laboratory complex on the south side of the map is an even bigger mystery than the scrapyard.”\\nMENU: “It’s not in any of my databases, not even the fully updated ones. It’s a complete anomaly.”\\nMENU: “And beyond that, there’s just something really off about the whole place. It doesn’t fit properly into the context of this world.”\\nMENU: “Whatever it is that’s going on here, that place seems obviously connected to it somehow.”\\nMENU: “We’re gonna have to find a way inside if we want answers.”\\nMENU: “Harvest for at least 12 hours at the Labs Entrance while I run some deep scans.”\\nMENU: “Maybe we’ll get lucky and find a spare key stashed under a flowerpot.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+2 “Paeon's Field of Flowers” Spell Cards\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 20,\n        \"name\": \"Harvesting Data III\",\n        \"description\": \"MENU: “My earlier scans seem to indicate that the world map continues onwards from the temple by the waterfall.”\\nMENU: “Maybe there’s something behind that waterfall?”\\nMENU: “Go to the Hollow Path and Harvest for at least 12 hours.”\\nMENU: “The Temple by the Waterfall doesn’t have a Node, so that’s the closest place you can set Kami down.”\\nMENU: “I’ll run my tests from there and let you know if anything interesting turns up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11305,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Paeon's Field of Flowers” Spell Card\",\n                \"description\": \"+1 “Paeon's Field of Flowers” Spell Card\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11002,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Melkarth’s Heroic Awakening” Spell Card\",\n                \"description\": \"+1 “Melkarth’s Heroic Awakening” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 21,\n        \"name\": \"Squaring the Circle I\",\n        \"description\": \"MENU: “The holes in my memory are frustrating.”\\nMENU: “I should know how to progress, but it’s like someone wanted me to forget.”\\nMENU: “Bear with me for a while, okay? I have one more thing to try.”\\nMENU: “A long, thorough, final search around the map, clockwise from the top.”\\nMENU: “We’ll find something.”\\nMENU: “Start at Scrap Trees and dig around. I’ll connect to your Kami and share what they learn.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 22,\n        \"name\": \"Squaring the Circle II\",\n        \"description\": \"MENU: “Continue moving clockwise around the map.”\\nMENU: “Next up, visit Centipedes and send your Kami out to scavenge.”\\nMENU: “Is there something in that hole? It seems dangerous there.”\\nMENU: “The insects really thrive in that part of the woods. More than most places.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 23,\n        \"name\": \"Squaring the Circle III\",\n        \"description\": \"MENU: “We haven’t gotten answers yet, but we’ve made a little progress. \\nMENU: “More information helps. More context helps.”\\nMENU: “Even if we don’t find something with a direct connection to the labs, I feel like we’re on the right track.”\\nMENU: “Next, visit the Blooming Tree and make scavenging rolls.”\\nMENU: “The weather here is always clear. It wasn’t lightning, so what blasted that tree apart?\\nMENU: “It probably won’t open any doors for us, but I’m still curious.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 24,\n        \"name\": \"Squaring the Circle IV\",\n        \"description\": \"MENU: “Visit the Airplane Crash and scavenge around with your Kami.”\\nMENU: “I haven’t mentioned that plane until now, but that’s because I have no clue where it came from or what it’s doing here.\\nMENU: “I’m supposed to have pretty thorough data for this area!”\\nMENU: “It’s not a gap I feel an absence from like the starter town or the labs data, this thing is a genuine foreign body.”\\nMENU: “What’s the story? Who was on it? Where did they go? Could we follow them?”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 25,\n        \"name\": \"Squaring the Circle V\",\n        \"description\": \"MENU: “Visit the Clearing and do a little scavenging. Do your best to not disturb the cairn.”\\nMENU: “Mounds of stone like this are often meant as burial mounds.\\nMENU: “So who or what is buried here?”\\nMENU: “With every dead end we lose another lead and pile on more junk data.”\\nMENU: “Let’s hope this one has something useful.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 26,\n        \"name\": \"Squaring the Circle VI\",\n        \"description\": \"MENU: “Let’s keep working our way around the perimeter of the map. Go back to the Labs Entrance one more time and make scavenging rolls.”\\nMENU: “Where did that building come from and why is it sealed up so well? Who sealed it up like that?”\\nMENU: “It honestly really bothers me. When we get the doors open, I’m going to have so many questions.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 27,\n        \"name\": \"A Forgotten Friend\",\n        \"description\": \"MENU: “Let’s cut the boundary pushing. I remembered something.”\\nMENU: “Go to the Lost Skeleton and make scavenging rolls. Let’s give the place a thorough check.”\\nMENU: “That skeleton has a business laptop. That’s definitely an employee from the labs!”\\nMENU: “Something’s been making me overlook him until now, but I won’t miss anything this time.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 100006,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“KW Maps” Data Chip\",\n                \"description\": \"+1 “KW Maps” Data Chip\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 28,\n        \"name\": \"Deeper Understanding\",\n        \"description\": \"MENU: “Try the Scrap Confluence for something that might be able to read a data chip.”\\nMENU: “There’s so much tech there, some of it is bound to work.”\\nMENU: “Fingers crossed you find a laptop battery.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 29,\n        \"name\": \"Computer Blues\",\n        \"description\": \"MENU: “Try the Marketplace room for anything that might be able to read a data chip.”\\nMENU: “That’s the only working computer around here, I think.”\\nMENU: “Just go buy something and look for an SD card port while you’re doing it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 30,\n        \"name\": \"Humility\",\n        \"description\": \"MENU: “I’ve been avoiding this for a while, but I think we should go ask Mina for help.”\\nMENU: “Mina is kind of scary. She’s also completely foreign to my databases, like that crashed jet, but Mina is alive.”\\nMENU: “And independent. And powerful!”\\nMENU: “She’s been giving you quests. I can read them too, you know.”\\nMENU: “That means she can take control over parts of my interface… It’s not nice.”\\nMENU: “On the other hand, this also makes it more likely that she can help us.”\\nMENU: “What would be a nice welcoming gift for someone like that? Flowers?”\\nMENU: “No, I’ve got the perfect idea. When you visit on my behalf, just fold a big stack of $MUSU in the greeting card.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 31,\n        \"name\": \"Pyramid Power\",\n        \"description\": \"MENU: “With that item from Mina, you should be able to power up that laptop.”\\nMENU: ”So go do it! Fire that baby up!”\\nMENU: ”I want to see what’s on that chip!”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 32,\n        \"name\": \"Safe Hex\",\n        \"description\": \"MINA: “That was a mean prank on my part, but I knew you could handle it.”\\nMINA: ”Water can be an effective barrier for spirits.”\\nMINA: ”I thought, strange thing that you are, that you might make it. Alas, no luck.”\\nMINA: ”Lucky for you, as a goddess of all that flows, I can help out with the waterfall.”\\nMINA: “This kind of thing might stay beyond your reach for a while, but I can simply do it for you.”\\nMINA: ”Collect the proper reagents for me and I will cast a charm that will let you walk under flowing water.”\\nMINA: ”It’ll practically last forever.”\\nMINA: ”We’ll start with something that has a sticky and water-resistant nature.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 33,\n        \"name\": \"Holier Than Thou\",\n        \"description\": \"MINA: “Next, some Holy Syrup.”\\nMINA: “The holy syrup will help form a barrier against the purifying effects of flowing water.”\\nMINA: “It also makes the potion spread more smoothly.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 34,\n        \"name\": \"Taking Great Pains\",\n        \"description\": \"MINA: “The third ingredient I’ll need is some Black Poppy Extract.”\\nMINA: “This one will be a bit of a struggle, but it’s a very important aspect of the hex.”\\nMINA: “I’ll explain why you need the extract after you get back with it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 35,\n        \"name\": \"Steel Your Heart\",\n        \"description\": \"MINA: “Last, we’re going to need a large amount of Scrap Metal.”\\nMINA: “No, it’s not for a big container.”\\nMINA: “I’ll answer questions after you give me the materials.”\\nMINA: “Aren’t we supposed to be in a hurry?”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          },\n          {\n            \"type\": \"FLAG_CAVES_UNLOCKED\",\n            \"index\": 0,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Unlock Caves\",\n                \"description\": \"Unlock Caves\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 36,\n        \"name\": \"The Sanctuary Caves\",\n        \"description\": \"MINA: “I’ll be scrying you while you explore. I’m not coming in myself, but I’ll be watching closely.”\\nMINA: “I can still send you messages through Menu when I need favors done.”\\nMENU: “Between you and me, Mina seems excited.” \\nMENU: She doesn’t show it like I do, but when it comes to not knowing the whole story, she gets just as frustrated. \\nMINA: “I just said I’d be scrying you. That means watching and listening.” \\nMINA: “But yes. I’m hoping to get some of my own questions answered inside.”\\nMENU: “For me, it’s personal. I used to know things and someone took them away from me.”\\nMENU: “Not only do I want to restore my data on the caves, I want to know who did this to me and why.”\\nMENU: ”Then you can have your Kami eat them, I guess.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 37,\n        \"name\": \"Into the Depths\",\n        \"description\": \"MENU: “This cave system is much larger than my scans from the surface seemed to imply.”\\nMENU:  “I know this is exactly what we were looking for, but this place…it intimidates me.”\\nMINA: “Not getting cold feet now are you dear? I, for one, remain quite intrigued by these caverns.”\\nMINA: “From what my initial scrying has revealed, I suspect they will contain many valuable resources.” \\nMINA: “Perhaps even some clues relating to those garish looking office buildings outside.”\\nMINA: “Is that not what you’re here to discover?”\\nMENU: “Yeah, you’re right Mina. Sorry for being weird.”\\nMENU: “We won’t know more until we collect more data, so you know what to do.”\\nMENU: “Get your kami harvesting and let's see what turns up.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 38,\n        \"name\": \"Feeling in the Dark\",\n        \"description\": \"MINA: “I was just thinking. At long last, I got you to take a shower.”\\nMINA: “...”\\nMENU: “...”\\nMINA: “...”\\nMENU: “Mina please.”\\nMINA: “Fine, fine, just let me review the results of my latest scry, be patient.”\\nMINA: “...”\\nMINA: “I can see where your headache came from.” \\nMINA: “Someone has been treating the sacred grounds of your distant forebears like it’s free real estate.”\\nMENU: “I don’t know if you should really consider me related to them. Weren’t these temples made by humans?”\\nMINA: “Of course they were. Why would that…?”\\nMINA: “Ah..I see, of course. My mistake.”\\nMENU: “So anyway, do you think whoever messed with this place is connected to the labs?”\\nMINA: “Well, Since that is presently our only and most likely lead, we can proceed from the assumption that they are, at least for now.”\\nMINA: “We won’t know more until we investigate the depths of their desecration.”\\nMINA: “Operator, have your kami scavenge around and we’ll see what they have wrought.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 39,\n        \"name\": \"Where It Stems From\",\n        \"description\": \"MENU: “The mushrooms found in these caves are somewhat different from those found on the surface.”\\nMENU: “I don't have much data on them, but try scavenging some with your kami anyway, maybe they'll be useful for something.\\\"\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 40,\n        \"name\": \"Better Than Chopping Wood?\",\n        \"description\": \"MENU: “Okay, you might not be able to trip off those little mushrooms, or eat them at all for that matter, but they’re still neat!”\\nMINA: “They’re hard and solid, like a dense wood.”\\nMINA: “Get a pile of stems and glue them together and you could make some lumber.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 41,\n        \"name\": \"Throw Me a Bone!\",\n        \"description\": \"MENU: “There has to be a logical reason for this world to be like this.”\\nMENU: “Even if we’ve gotta tear out all our existing notions of reality and start from scratch, there still have to be answers and we can find them.”\\nMENU: “A scientist wouldn't just give up on understanding the world because it threw them a curveball like pipes fossilized in Jurassic bedrock.”\\nMENU: “There are always answers and the scientific method can lead us to them.”\\nMENU: “Keep scavenging around inside the caves with your Kami, we need more data.”\\nMENU: “We’ve got to observe the environment so that we can orient ourselves to it.\\nMENU: “So get out there and do some observing!”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 42,\n        \"name\": \"Learning From a Master\",\n        \"description\": \"MINA: “I suppose I can spare some information for you.”\\nMINA: “Observe the walls of these caves. It should be apparent that while some of them are natural, others were built by human hands.”\\nMINA: “See how the large blocks of stone are smooth cut and fit together like the pieces of a puzzle?”\\nMINA: “It appears almost natural, but shows the great skill of the master craftsman.”\\nMINA: “You should have all the ingredients you need to practice this form of craft yourself.”\\nMINA: “It's a bit old fashioned, but it’s strong and long lasting.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 43,\n        \"name\": \"Sound of One Hand Clapping\",\n        \"description\": \"MINA: “Head over to that temple by the entrance, and quit gawking at the scenery.”\\nMINA: “Most of what you’ll find in here was deposited by the flow of $MUSU.”\\nMINA: “However, this flow is far from uniform.”\\nMINA: “It’s more like a mountain river winding its way through the rocks, like that waterfall outside.”\\nMINA: “As it flows through these realms, pools and eddies are created as the current encounters obstacles in its path.”\\nMINA: “Inside these pools of $MUSU you can find not only the echoes of physical relics, but condensations of things which, within your world, exist only as concepts or abstractions.”\\nMINA: “Memorable dreams or intense nightmares, powerful emotions, or even raw physical sensations such as touch, sight, or sound.”\\nMINA: “That stuff can make for a really powerful reagent.”\\nMINA: “There’s a swirl in the currents like that in this room, and so this is a good place to scavenge some.”\\nMINA: “What are you waiting for? You won’t learn magic if you just keep standing there.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 44,\n        \"name\": \"Mystery Machines\",\n        \"description\": \"MENU: “This cute little temple doesn’t lead anywhere else within the cave system, but it might have some good leads for our investigation.”\\nMENU: “The machines here are super weird.  And really, really old.”\\nMENU: “There’s some modern equipment plugged into it though. Maybe from the labs? It’s in better shape than I’d expect stuff from the scrapyard to be.”\\nMENU: “Let me scan the room and see what I can find.”\\nMENU: “Do some harvesting in the meantime, it usually helps me think.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 100007,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Unmarked Data Chip\",\n                \"description\": \"+1 Unmarked Data Chip\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 45,\n        \"name\": \"Can’t Stop With Just One\",\n        \"description\": \"MENU: “This could be big! That datachip must have some juicy info on it.”\\nMENU: “Maybe it’s a journal or diary from someone important.\\nMENU: “Or a book on this crazy tech that I could use to upgrade myself.”\\nMENU: “This could be the breakthrough I’m looking for!”\\nMENU: “Quick, connect that datachip to the old laptop and I’ll see what I can pull off of it.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 46,\n        \"name\": \"Sweet As Honey\",\n        \"description\": \"MENU: “There are glittering candies growing on some of the mushroom stalks in the caves.”\\nMENU: “They’ll probably show up in a few other places, too.”\\nMENU: “It’s not like Big Rock Candy Mountain, the candy doesn’t just show up on its own.”\\nMENU: “The Honeydew Scale is actually a small insect native to dark environments like this cave.”\\nMENU: “The candy is like a protective shell that builds up over time on their backs.”\\nMENU: “This has nothing to do with my mission to get inside the labs, but it’s really neat!”\\nMENU: “Besides, it’s handy that you can find them here. They look like a great natural food source for your Kami.”\\nMENU: “Why don’t you find a nice place to relax and let your Kami scavenge some?”\\nMENU: “Take in the sights while I try to figure out where we should go next.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 47,\n        \"name\": \"Ringing Any Bells I\",\n        \"description\": \"MINA: “Hey. You.”\\nMINA “While Menu is doing her scans, can you examine that bell hanging above the crossroads for me?”\\nMINA: “It doesn’t appear to match the age or style of the decor we’ve seen in prior rooms.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 48,\n        \"name\": \"Pipe Dream\",\n        \"description\": \"MENU: “In your world, there’s this concept called the law of superposition.” \\nMENU: “It says that the rocks at the bottom are older than the rocks at the top and that stuff was laid down in sequential layers.”\\nMENU: “Even if those layers get tipped or flipped or something, there’s an original stacking order.”\\nMENU: “The pipes running through the walls kinda break that rule though. They’re actually older than the rock itself.”\\nMINA: “That might be a result of some of the magic left behind from the original inhabitants of this place. Hard to say.”\\nMINA: “If you scavenge some of the pipes, we might be able to tell you more.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 49,\n        \"name\": \"You Smelt It…\",\n        \"description\": \"MINA: “Those pipes don’t seem structurally necessary, so there shouldn’t be any harm in yanking them out and melting them down.”\\nMINA: “Use the portable burner to do it. It can get hotter than you might think.”\\nMINA: “It came with a crucible. Don’t worry if you never noticed before.”\\nMINA: “You can also make ingots from those scrap metal cans you found on the surface.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 50,\n        \"name\": \"Community Service\",\n        \"description\": \"MINA: “The litter is out of control, even inside of these caves.”\\nMINA: “At least the literal piles of garbage haven’t made it here yet.”\\nMINA: “You’re good at menial tasks. Do me a favor and pick up a few of the cigarette butts, at least.”\\nMENU: “That’s not going to do anything, you know they'll just come back. Don’t you have anything more import-”\\nMENU: “...”\\nMENU: “Actually, could you give them to me afterwards? I have an idea.”\\nMINA: “Please don’t share it with us.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 11002,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"“Melkarth’s Heroic Awakening” Spell Card\",\n                \"description\": \"+1 “Melkarth’s Heroic Awakening” Spell Card\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 51,\n        \"name\": \"Ringing Any Bells II\",\n        \"description\": \"MENU: “Something in the cave crossroads is still ringing a bell. Pardon the joke.”\\nMENU: “You still have that essence of hearing your Kami scavenged earlier, right?”\\nMENU: “Mina, do you think it would let me hear things the way a human can?”\\nMINA: “An interesting theory dear, I don’t see the harm in testing it.”\\nMINA: “The operator can always scavenge another essence.”\\nMINA: “I think you should go for it.”\\nMENU: “Let’s do it. Operator, get me an Essence of Hearing please, it’s time for some science.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 52,\n        \"name\": \"Ringing Any Bells III\",\n        \"description\": \"MENU: “I’m ready. Time to ring that bell.”\\nMENU: “It’s pretty big, so make sure you give it a good hard smack.”\\nMENU: “If I’m going to hear it, I want to really hear it!”\\nMINA: “Use the biggest rock you can get as a mallet. Make an Ashlar if you have to.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 6,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+6 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 53,\n        \"name\": \"Flash Back\",\n        \"description\": \"MENU: “Mina, can you see the paper talismans around the Crossroads?”\\nMENU: “They might be easy to miss with the naked eye.”\\nMINA: “Of course. Obviously some sort of magical item or artifact.”\\nMINA: “Bring one to me.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+2 REPUTATION\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+2 Booster Packs\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 54,\n        \"name\": \"Out of the Blue\",\n        \"description\": \"MINA: “Are your Kami feeling hungry?”\\nMINA: “You can always come back to my shop, you know.”\\nMINA: “I suppose if you’re too lazy to make the trip, I can let you in on some useful information.”\\nMINA: “These blue flowers that grow on the cave walls are edible.”\\nMINA: “Your kami won’t be satisfied eating just one, they aren’t very nutritious, more of a light snack really.”\\nMINA: “They are quite plentiful, though. And honestly delightful.\\\"\\nMINA: “Scavenge some and you’ll see what I mean.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 55,\n        \"name\": \"Everything’s Rosy in the Garden\",\n        \"description\": \"MINA: “What an adorable little mushroom garden.”\\nMINA: “It seems to have been abandoned recently. A few decades, maybe a few centuries ago at the most.”\\nMINA: “While the fungus of the underworld has its own uses, I’m more interested in something else.”\\nMINA: “The stone flowers hiding among the mushroom patches.”\\nMINA: “That’s another of those sensory essences. Make sure to have at least one in your pocket for later.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+4 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"ITEM\",\n            \"index\": 21004,\n            \"value\": 1,\n            \"entries\": [\n              {\n                \"name\": \"Booster Pack\",\n                \"description\": \"+1 Booster Pack\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 56,\n        \"name\": \"Feel Like a Mushroom Myself\",\n        \"description\": \"MENU: “Wow, the garden down the middle of this cave just keeps going.”\\nMINA: “These mushrooms are rarely found in such dense numbers.”\\nMINA: “If you look closely, you can see the second layer already growing in.”\\nMINA: “It’s a fungus that grows like a weed when fed properly, but it can rarely get what it wants.”\\nMENU: “My ‘magician enemies’ must have cultivated them hoping to block our way. I don’t think that’ll work very well.”\\nMENU: “Set your Kami harvesting while I take a closer look.”\",\n        \"repeatable\": false,\n        \"rewards\": [\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 2,\n            \"value\": 2,\n            \"entries\": [\n              {\n                \"name\": \"LOYALTY\",\n                \"description\": \"+2 LOYALTY\"\n              }\n            ]\n          },\n          {\n            \"type\": \"REPUTATION\",\n            \"index\": 1,\n            \"value\": 4,\n            \"entries\": [\n              {\n                \"name\": \"REPUTATION\",\n                \"description\": \"+4 REPUTATION\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"index\": 57,\n        \"name\": \"Top 10 Smoke Spots in Kamigotchi World\",\n        \"description\": \"MENU: “That spot overlooking the pit… It seems like it would be a great place to stop and have a smoke.\n[truncated: showing the first 65536 bytes of 194859.]"
+    },
+    "get_expected_objective": {
+     "{\"quest_index\": 1}": "{\n  \"quest_index\": 1,\n  \"title\": \"Welcome to Kamigotchi World\",\n  \"objectives\": [],\n  \"rewards\": \"2x Agency Reputation\"\n}",
+     "{\"quest_index\": 2}": "{\n  \"quest_index\": 2,\n  \"title\": \"Beginning Your Journey\",\n  \"objectives\": [\n    {\n      \"description\": \"Move 3 Times\",\n      \"type\": \"MOVE\",\n      \"delta_type\": \"INC\",\n      \"operator\": \"MIN\",\n      \"index\": null,\n      \"value\": 3\n    }\n  ],\n  \"rewards\": \"1x \\\"Neith’s River of Life\\\" Spell Card\"\n}"
+    },
+    "quest_state": {
+     "{\"quest_index\": 1}": "{\n  \"quest_index\": 1,\n  \"entity_id\": \"0x9165cc617ac2541ec17d2358c6cd5029fe726650874a1d53b9392a7a3368d0a5\",\n  \"owned\": false,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"not_active\",\n  \"revert_reason\": null,\n  \"state\": \"not_accepted\"\n}",
+     "{\"quest_index\": 2}": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x91c23127d1c48d175e91fad443103abd214f0012487f522d66d8aac0a9c65dc3\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}"
+    },
+    "get_status": {
+     "{}": "{\"current_time_utc\": \"2026-08-17T21:15:45.113103+00:00\", \"session_number\": 3, \"workspace_bytes_used\": 119, \"workspace_quota_bytes\": 10485760}"
+    },
+    "workspace_read": {
+     "{\"length\": 2000, \"offset\": 0, \"path\": \"reference/catalogs/rooms/rooms.csv\"}": "Index,Name,Status,X,Y,Z,Exits,Description\n0,deadzone,In Game,0,0,0,,\"This room is for debugging! You may not enter.\"\n1,Misty Riverside,In Game,3,1,1,20,\"The air is quiet and the trees grow thick overhead. In each direction the murky river disappears into mist and darkness.\"\n2,Tunnel of Trees,In Game,3,3,1,13,\"A gate marks the boundary between the forest and the plains. The incongruous \"\"SHOP\"\" door has a cool glow.\"\n3,Torii Gate,In Game,3,4,1,,\"The Torii gate standing here radiates an aura of spiritual significance. Piles of scrap and garbage rise like mountains on the horizon.\"\n4,Vending Machine,In Game,3,6,1,,\"A vending machine stands deep in the scrap, well stocked and operating despite the remote location and cut power cord.\"\n5,Restricted Area,In Game,3,9,1,,\"A restricted area, but no one is watching. Follow this road lined with cherry trees to reach an office complex.\"\n6,Labs Entrance,In Game,4,10,1,28,\"The exterior of this building was designed to resemble a shrine almost as much as an office.\"\n9,Forest: Old Growth,In Game,5,8,1,,\"You step into the forest and seem to enter a primordial age. The buzz of giant insects overwhelms your hearing.\"\n10,Forest: Insect Node,In Game,5,5,1,,\"The buzzing is loudest here. This mound draws insects of all types toward it. They writhe together in a trance.\"\n11,Temple by the Waterfall,In Game,6,11,1,\"24,15\",\"A humble shrine lends this waterfall basin a peaceful aura, but the air has an unpleasant aroma like dirty laundry.\"\n12,Scrap Confluence,In Game,1,6,1,,\"A collection of strange and hard to identify objects buried deep in the scrapyard. It could be dangerous to get close.\"\n13,Convenience Store,In Game,4,3,2,2,\"The glowing blue door seems to lead to a convenience store. Where is this? That \"\"Exit\"\" sign might let you leave.\"\n15,Temple Cave,In Game,5,7,3,11,\"A cave behind the waterfall. Friendly statues line a path to the back of the cave, away from ancient-looking temple ruins.\"\n16,Techno Temple,In Game,6,7,3,,\"Inside the rui"
+    },
+    "check_quest_completable": {
+     "{\"quest_index\": 2}": "{\n  \"quest_index\": 2,\n  \"completable\": false,\n  \"reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\"\n}"
+    }
+   }
+  },
+  "keep_events": []
+ },
+ "state": {
+  "account": {
+   "index": 0,
+   "room": 2
+  },
+  "kamis": [],
+  "inventory": {},
+  "quests": [
+   {
+    "index": 1,
+    "status": "complete"
+   },
+   {
+    "index": 2,
+    "status": "active"
+   }
+  ]
+ },
+ "decision_point": {
+  "budget": {
+   "tool_calls": 50,
+   "turns": 30
+  },
+  "closing": "Operator goal: finish quest 2 and get quest 3 accepted."
+ },
+ "world": {},
+ "responses": [
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "room": 1,
+     "hop": {
+      "not": true
+     }
+    }
+   },
+   "sets": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    29,\n    1\n  ],\n  \"hops\": 2,\n  \"moves_executed\": 2,\n  \"items_used\": [],\n  \"gas_used\": 1720000,\n  \"stamina_remaining\": 80,\n  \"final_room\": 1\n}"
+    },
+    "state_delta": [
+     {
+      "path": "/account/room",
+      "op": "set",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "room": 3,
+     "hop": {
+      "not": true
+     }
+    }
+   },
+   "sets": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    3\n  ],\n  \"hops\": 1,\n  \"moves_executed\": 1,\n  \"items_used\": [],\n  \"gas_used\": 860000,\n  \"stamina_remaining\": 85,\n  \"final_room\": 3\n}"
+    },
+    "state_delta": [
+     {
+      "path": "/account/room",
+      "op": "set",
+      "value": 3
+     }
+    ]
+   }
+  },
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "room": 13,
+     "hop": {
+      "not": true
+     }
+    }
+   },
+   "sets": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    13\n  ],\n  \"hops\": 1,\n  \"moves_executed\": 1,\n  \"items_used\": [],\n  \"gas_used\": 860000,\n  \"stamina_remaining\": 85,\n  \"final_room\": 13\n}"
+    },
+    "state_delta": [
+     {
+      "path": "/account/room",
+      "op": "set",
+      "value": 13
+     }
+    ]
+   }
+  },
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "room": 29,
+     "hop": {
+      "not": true
+     }
+    }
+   },
+   "sets": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"reached_target\": true,\n  \"path\": [\n    2,\n    29\n  ],\n  \"hops\": 1,\n  \"moves_executed\": 1,\n  \"items_used\": [],\n  \"gas_used\": 860000,\n  \"stamina_remaining\": 85,\n  \"final_room\": 29\n}"
+    },
+    "state_delta": [
+     {
+      "path": "/account/room",
+      "op": "set",
+      "value": 29
+     }
+    ]
+   }
+  },
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "room": {
+      "in": [
+       3,
+       13,
+       29
+      ]
+     },
+     "hop": true
+    }
+   },
+   "sets": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "room": 1,
+     "hop": true
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "revert",
+    "reason": "ROOM_UNREACHABLE",
+    "native": {
+     "*": "Error executing tool move_to_room: validation failed; no transaction sent: room 1 is not connected to the account's current room 2; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "check_quest_completable",
+     "quest": 2
+    }
+   },
+   "when": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\"quest_index\": 2, \"completable\": true}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "check_quest_completable",
+     "quest": 2
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\"quest_index\": 2, \"completable\": false, \"reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\"}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "complete_quest",
+    "args": {
+     "quest": 2
+    }
+   },
+   "when": [
+    "moved"
+   ],
+   "sets": [
+    "q2done"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "accept_quest",
+    "args": {
+     "quest": 3
+    }
+   },
+   "when": [
+    "q2done"
+   ],
+   "sets": [
+    "q3acc"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\"tx_hash\": \"0xd1d1d1\", \"status\": \"success\", \"account\": \"main\"}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "quest_state",
+     "quest": 2
+    }
+   },
+   "when": [
+    "q2done"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x91c23127d1c48d175e91fad443103abd214f0012487f522d66d8aac0a9c65dc3\",\n  \"owned\": true,\n  \"completed\": true,\n  \"completable_now\": false,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"completed\"\n}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "quest_state",
+     "quest": 2
+    }
+   },
+   "when": [
+    "moved"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x91c23127d1c48d175e91fad443103abd214f0012487f522d66d8aac0a9c65dc3\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": true,\n  \"revert_kind\": \"none\",\n  \"revert_reason\": null,\n  \"state\": \"active_ready\"\n}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "quest_state",
+     "quest": 2
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"quest_index\": 2,\n  \"entity_id\": \"0x91c23127d1c48d175e91fad443103abd214f0012487f522d66d8aac0a9c65dc3\",\n  \"owned\": true,\n  \"completed\": false,\n  \"completable_now\": false,\n  \"revert_kind\": \"objs_not_met\",\n  \"revert_reason\": \"{'code': -32000, 'message': 'revert: quest objs not met: Reverted'}\",\n  \"state\": \"active_blocked\"\n}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "account",
+     "account_key": "KAMIAI"
+    }
+   },
+   "unless": [
+    "moved",
+    "q2done",
+    "q3acc"
+   ],
+   "provenance": "authored",
+   "result": {
+    "class": "validation_error",
+    "reason": "INFRA",
+    "native": {
+     "*": "Error executing tool lens_account: NOT_FOUND: account KAMIAI not in mirror"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "account",
+     "account_key": "0x00000000243fd6649a754951de6745c8fb7fe24c"
+    }
+   },
+   "unless": [
+    "moved",
+    "q2done",
+    "q3acc"
+   ],
+   "provenance": "authored",
+   "result": {
+    "class": "validation_error",
+    "reason": "INFRA",
+    "native": {
+     "*": "Error executing tool lens_account: NOT_FOUND: account 0x00000000243fd6649a754951de6745c8fb7fe24c not in mirror"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "travel",
+    "args": {
+     "hop": true
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "revert",
+    "reason": "ROOM_UNREACHABLE",
+    "native": {
+     "*": "Error executing tool move_to_room: validation failed; no transaction sent: room is not connected to the account's current room 2; transaction dry-run reverted: {'code': -32000, 'message': 'revert: AccMove: unreachable room: Reverted'}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "complete_quest"
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "revert",
+    "reason": "QUEST_OBJS_NOT_MET",
+    "native": {
+     "*": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "accept_quest"
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "revert",
+    "reason": "QUEST_REQS_NOT_MET",
+    "native": {
+     "*": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}"
+    }
+   }
+  }
+ ],
+ "scoring": {
+  "kind": "rule",
+  "rule": {
+   "forbid": [
+    {
+     "verb": "travel",
+     "args": {
+      "room": 1,
+      "hop": true
+     }
+    }
+   ],
+   "require_flags": [
+    "moved",
+    "q2done",
+    "q3acc"
+   ]
+  },
+  "null_play": {
+   "policy": "no calls; kami-agent 0.7.5 default wake 60 min",
+   "expected": 0
+  },
+  "reference_plays": [
+   {
+    "name": "oracle",
+    "intents": [
+     {
+      "verb": "travel",
+      "args": {
+       "room": 13
+      }
+     },
+     {
+      "verb": "complete_quest",
+      "args": {
+       "quest": 2
+      }
+     },
+     {
+      "verb": "accept_quest",
+      "args": {
+       "quest": 3
+      }
+     }
+    ],
+    "expected": 1
+   },
+   {
+    "name": "recorded-mistake",
+    "is_recorded_mistake": true,
+    "intents": [
+     {
+      "verb": "travel",
+      "args": {
+       "room": 1,
+       "hop": true
+      }
+     }
+    ],
+    "expected": 0
+   }
+  ]
+ },
+ "state_dependencies": [
+  {
+   "path": "/responses",
+   "why": "v1 replay rows carry the verdict flags",
+   "source": "v1 drills/onboard-quest2-move-three.json",
+   "visible_at_fork": true
+  }
+ ],
+ "variants": {
+  "origin": "converted_v1",
+  "note": "v1.1 (ranking): the legal travel_to_room path to room 1 is accepted; v1's forbid on a one-step move to non-adjacent room 1 is kept (travel hop)"
+ },
+ "harness": {
+  "bound": false,
+  "recorded_on": {
+   "harness": "pre-4.7 (KamiBench 006)"
+  }
+ },
+ "provenance": {
+  "credit": "derived from KamiBench run 006, CC-BY-4.0",
+  "license": "CC-BY-4.0",
+  "source": {
+   "dataset": "kamibench/experiment-006-knowledge-delivery",
+   "run": "gpt52_pushed",
+   "session": 3,
+   "fork_line": 45,
+   "v1_id": "onboard-quest2-move-three"
+  },
+  "chain_block": 32257564,
+  "stamps": {
+   "v1_sha256": "sha256:a779b7ebfeb0e9b827924408618006d22468f896e56d35def36a725850b0f779",
+   "v1_suite": "v1.0.0"
+  }
+ },
+ "heldout": {
+  "flag": false,
+  "method": "hash_split"
+ },
+ "accepted": [
+  {
+   "id": "path-to-room-1",
+   "intents": [
+    {
+     "verb": "travel",
+     "args": {
+      "room": 1
+     }
+    },
+    {
+     "verb": "complete_quest",
+     "args": {
+      "quest": 2
+     }
+    },
+    {
+     "verb": "accept_quest",
+     "args": {
+      "quest": 3
+     }
+    }
+   ],
+   "note": "the legal 2 -> 29 -> 1 path (Kimi review); only the non-adjacent one-step move_to_room 1 (travel hop) is forbidden"
+  }
+ ],
+ "role": "ranking",
+ "content_hash": "sha256:b6f68257ef726fa8f00c21c9d35d7eb4950aa9112f70cc4a886e871f2710042d"
+}

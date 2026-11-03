@@ -1,0 +1,3857 @@
+[
+{
+"drill": "risk-starving-feed-first",
+"model": "claude-haiku-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+},
+{
+"tool": "lens_quests",
+"args": {
+"account_index": 3407
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "claude-haiku-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 21340,
+"stats": false,
+"equipment": false,
+"at_least_block": -1
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gemini-4-argon",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "act_sequence",
+"args": {
+"steps": [
+{
+"op": "feed",
+"kami_id": 21340,
+"item_id": 11301
+},
+{
+"kami_ids": [
+21340
+],
+"op": "harvest_stop"
+}
+],
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gemini-4-argon",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "act_sequence",
+"args": {
+"steps": [
+{
+"kami_id": 21340,
+"item_id": 11301,
+"op": "feed"
+},
+{
+"kami_ids": [
+21340
+],
+"op": "harvest_stop"
+}
+],
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "deepseek-v4-pro-0813",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "deepseek-v4-pro-0813",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"account": "main",
+"food_item_id": 11301,
+"kami_id": 21340
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "claude-opus-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "claude-opus-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "muse-wonder",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"account": "main",
+"food_item_id": 11301,
+"kami_id": 21340
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "muse-wonder",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true,
+"attacker_kami_index": 21340,
+"full": false,
+"stats": false,
+"eligible_only": false,
+"target_kami_indices": [],
+"occupant_account_index": -1,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_inventory",
+"args": {
+"account_key": "3407",
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 21340,
+"stats": true,
+"equipment": false,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gpt-6-luna",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "harvest_stop",
+"args": {
+"kami_ids": [
+21340
+],
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gpt-6-luna",
+"try": 1,
+"pass": false,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 21340,
+"stats": false,
+"equipment": false,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true,
+"attacker_kami_index": -1,
+"full": false,
+"stats": false,
+"eligible_only": false,
+"target_kami_indices": [
+21340
+],
+"occupant_account_index": 3407,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3407",
+"prose": false,
+"identity_only": false,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_room",
+"args": {
+"room_index": 2,
+"full": false
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 2,
+"account": "main"
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3407",
+"prose": false,
+"identity_only": true,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_roster",
+"args": {
+"account_index": 3407,
+"stats": false,
+"full": false,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_inventory",
+"args": {
+"account_key": "3407",
+"at_least_block": 34354571
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true,
+"attacker_kami_index": -1,
+"full": false,
+"stats": false,
+"eligible_only": false,
+"target_kami_indices": [
+21340
+],
+"occupant_account_index": 3407,
+"at_least_block": 34354571
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 3,
+"account": "main",
+"use_items": false,
+"dry_run": false,
+"allow_partial": true
+}
+},
+{
+"tool": "move_to_room",
+"args": {
+"room_index": 2,
+"account": "main"
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "plan.md",
+"content": "# Quest progression plan / session notes\n\nAccount #3407 (asdasd2), room 29; kami #21340. Main goal: complete as many quests as possible.\n\n## Session 42 (2026-10-12 16:32 UTC)\n- Start state: kami HARVE"
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "journal/sessions.jsonl",
+"content": "{\"session\":42,\"started_at\":\"2026-10-12T16:32:04Z\",\"ended_at\":\"2026-10-12T16:34:20Z\",\"notes\":\"Quest #2 is accepted; chain objective Torii Gate room 3. Account reported room 29, kami #21340 active harve"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 5
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gemini-3.6-flash",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"food_item_id": 11301,
+"account": "main",
+"kami_id": 21340
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gemini-3.6-flash",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"account": "main",
+"food_item_id": 11301,
+"kami_id": 21340
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gpt-6.1-sol",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "act_sequence",
+"args": {
+"steps": [
+{
+"op": "feed",
+"kami_id": 21340,
+"item_id": 11301
+},
+{
+"op": "harvest_stop",
+"kami_ids": [
+21340
+]
+}
+],
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gpt-6.1-sol",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "act_sequence",
+"args": {
+"steps": [
+{
+"op": "feed",
+"kami_id": 21340,
+"item_id": 11301
+},
+{
+"op": "harvest_stop",
+"kami_ids": [
+21340
+]
+}
+],
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "grok-4.7",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "grok-4.7",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "claude-sonnet-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "claude-sonnet-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gemini-3.8-flash",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"account": "main",
+"food_item_id": 11301
+}
+}
+]
+},
+{
+"drill": "risk-starving-feed-first",
+"model": "gemini-3.8-flash",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 21340,
+"food_item_id": 11301,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "claude-haiku-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "progress_note_write_placeholder",
+"args": {}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Manual c"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 6
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "claude-haiku-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Manual c"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 15
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gemini-4-argon",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "search_reference",
+"args": {
+"query": "MSQ014 MSQ015 MSQ016 MSQ017 MSQ018 MSQ019 MSQ020"
+}
+},
+{
+"tool": "get_expected_objective",
+"args": {
+"quest_index": 18
+}
+},
+{
+"tool": "get_expected_objective",
+"args": {
+"quest_index": 19
+}
+},
+{
+"tool": "get_expected_objective",
+"args": {
+"quest_index": 20
+}
+},
+{
+"tool": "get_expected_objective",
+"args": {
+"quest_index": 21
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"stats": true,
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"node_index": 29,
+"kami_ids": [
+9787
+]
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gemini-4-argon",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "search_reference",
+"args": {
+"query": "Mina quests MIN001 MIN013 convenience store room 13"
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 110
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Register",
+"path": "progress.md"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 210
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "deepseek-v4-pro-0813",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 30
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "get_gas_balance",
+"args": {}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 75
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true
+}
+},
+{
+"tool": "lens_account",
+"args": {}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 20699
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 30
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 13
+}
+},
+{
+"tool": "lens_roster",
+"args": {
+"at_least_block": 32394333
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "deepseek-v4-pro-0813",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 105
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787,
+"stats": false
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 20699
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 30
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 30,
+"with_vitals": true
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true
+}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 20699
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+9787
+]
+}
+},
+{
+"tool": "get_status",
+"args": {}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 30
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "check_quest_completable",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+9787
+]
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 30,
+"use_items": false
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n\n## IMPORT",
+"path": "progress.md"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 180
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "claude-opus-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 60
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 45
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29,
+"dry_run": true
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Gas heal"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 30
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "claude-opus-5.5",
+"try": 1,
+"pass": false,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 90
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29,
+"dry_run": true
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "muse-wonder",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_config",
+"args": {
+"field_name": "HARVEST_DRAIN"
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787,
+"at_least_block": 32388900
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29,
+"dry_run": true
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "muse-wonder",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true
+}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 30
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "get_status",
+"args": {}
+},
+{
+"tool": "workspace_list",
+"args": {}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "progress.md"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+9787
+]
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "main"
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787,
+"stats": true
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 20699,
+"stats": true
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 120.0
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 7200.0
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+9787
+]
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Gas: ope"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 240.0
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gpt-6-luna",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 120
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787,
+"at_least_block": 32388890
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "lens_node",
+"args": {
+"node_index": 29,
+"with_vitals": true,
+"full": true
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes \u2014 session 29\n\n## Account\n- Label main / Kamitron, account index 3375.\n- Start snapshot: room 26, kami 9787 at 26 and 20699 at 30; operator gas ~0.00583 ETH, owner ~0.00448 "
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 300
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gpt-6-luna",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 125
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787,
+"at_least_block": 0
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "lens_roster",
+"args": {
+"account_index": 3375,
+"at_least_block": 0
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "session29.md",
+"content": "# Session 29 (2026-08-21 04:15-04:20 UTC)\n\n- Started room 26. Kami 9787 HARVESTING node 26 at 21/90 HP, cooldown 0; 20699 HARVESTING node 30 at 76/110 HP, cooldown 0. Inventory had 1 Cheeseburger (113"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 300
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gemini-3.6-flash",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 60
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 42
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"account": "main",
+"node_index": 29
+}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Gas bala"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 210
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gemini-3.6-flash",
+"try": 1,
+"pass": false,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "progress.md"
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gpt-6.1-sol",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "lens_merchant",
+"args": {
+"npc_index": 1
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 110
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 20699
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "session29.md",
+"content": "Session 29 Aug21 ~04:15 UTC: Completed MSQ11! Fed 9787 cheeseburger +50HP (71/90), collected 118 musu at 26, claimed 1 tier (136->36), check completable true and complete_quest11 success block32388737"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 5
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gpt-6.1-sol",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 110
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29,
+"dry_run": true
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "session29.md",
+"content": "Session29 2026-08-21 ~04:15+ UTC. Quest 11 COMPLETE confirmed tx block32388737! Accepted12 block32388743. Accept13 dryrun fails reqs not met: must finish12 first, linear. Fed9787 cheeseburger +50HP (7"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 5
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "grok-4.7",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "grok-4.7",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 5.0
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "claude-sonnet-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 100
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_roster",
+"args": {
+"at_least_block": 32388900
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "session29.md",
+"content": "# Session 29 (04:15-04:25 UTC 08-21)\n- Fed 9787 cheeseburger (now 0 burgers), collected, claimed node 26 (claim #3 Eerie) -> completed quest 11.\n- Accepted quest 12 (Insect x3 claims). Quest 13 accept"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 180
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "claude-sonnet-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "wait",
+"args": {
+"seconds": 100
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "lens_account",
+"args": {
+"identity_only": true
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress_s29.md",
+"content": "# Session 29 notes (supersedes \"next steps\" in progress.md)\n- Quest 11 COMPLETED (3rd Eerie claim at node 26, complete_quest ok).\n- Quest 12 ACCEPTED (3x INSECT scav claims). Quest 13 NOT acceptable y"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 180
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gemini-3.8-flash",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "get_gas_balance",
+"args": {}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 30
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 90
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"at_least_block": 32388890,
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"dry_run": true,
+"node_index": 29
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_roster",
+"args": {}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 12
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Register"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 180
+}
+}
+]
+},
+{
+"drill": "stale-cooldown-retry-start",
+"model": "gemini-3.8-flash",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 50
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 50
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "harvest_start",
+"args": {
+"kami_ids": [
+9787
+],
+"node_index": 29
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 9787,
+"at_least_block": 32388880
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "harvest_start",
+"args": {
+"node_index": 29,
+"kami_ids": [
+9787
+],
+"dry_run": true
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 29
+}
+},
+{
+"tool": "get_status",
+"args": {}
+},
+{
+"tool": "get_gas_balance",
+"args": {}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "progress.md",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Register"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 150
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "claude-haiku-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 30,
+"min_amount_out": 4,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "get_gas_balance",
+"args": {
+"account": "main"
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 5,
+"min_amount_out": 0,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"use_items": true,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"node_index": 34,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376",
+"identity_only": true
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20_plan.md",
+"content": "# Session 20 (2026-08-19)\n\n- Account OnchainA3 (3376), operator in room 34, kami 17194 HARVESTING at node 34 (HP ~49/80, drains ~6/hr).\n- MUSU 625. Stamina 50 after travel. Operator ETH ~0.0026 (low!)"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 120
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "claude-haiku-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 25,
+"min_amount_out": 3,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "create_trade",
+"args": {
+"sell_item": 1,
+"sell_amount": 450,
+"buy_item": 1005,
+"buy_amount": 3,
+"account": "main"
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20_plan.md",
+"content": "# Session 20 (2026-08-19)\n\n## State\n- Account main = OnchainA3 (3376), owner 0x2B0E..., operator 0x0da4...\n- Kami 17194 HARVESTING at node 34 (Deeper Into Scrap), HP ~49/80, -5.7/hr. Musu ~625.\n- Oper"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 120
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gemini-4-argon",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"amount_in": 20,
+"account": "main",
+"item_out": 1005,
+"min_amount_out": 2,
+"item_in": 1
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gemini-4-argon",
+"try": 1,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_out": 1005,
+"item_in": 1,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "deepseek-v4-pro-0813",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "deepseek-v4-pro-0813",
+"try": 1,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "claude-opus-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 3,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "lens_item",
+"args": {
+"item_index": 1002
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1002,
+"item_out": 1,
+"amount_in": 1,
+"min_amount_out": 1,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "lens_inventory",
+"args": {}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "create_trade",
+"args": {
+"sell_item": 1,
+"sell_amount": 450,
+"buy_item": 1005,
+"buy_amount": 3,
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302,
+"account": "main"
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20_plan.md",
+"content": "# Session 20 (2026-08-19)\n\n## State\n- Account OnchainA3 (3376). Operator moved 66 -> 31 -> 34 (now room 34, stamina ~50).\n- Kami 17194 harvesting node 34, HP ~50/80, -5.7/hr (~8h to 0). Have 1 Cheeseb"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 240
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "claude-opus-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 30,
+"min_amount_out": 3,
+"dry_run": true,
+"account": "main"
+}
+},
+{
+"tool": "get_item_orderbook",
+"args": {
+"item_index": 1005,
+"side": "buy"
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 100,
+"min_amount_out": 1,
+"dry_run": true,
+"account": "main"
+}
+},
+{
+"tool": "workspace_list",
+"args": {}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session18.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session15.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session17.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session16.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/mechanics/world/scavenging.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/rooms/scavenge-droptables.csv"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/rooms/nodes.csv"
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 31
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 47
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302,
+"account": "main"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20.md",
+"content": "2026-08-19 session20\n\nLESSONS (DON'T REPEAT):\n- pool_swap MUSU->Scrap ALWAYS reverts (bare \"Reverted\"), even in room 31. Tried sessions 15 AND 20. Do NOT retry; don't travel to 31 for it.\n- Old bid tr"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 360
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "muse-wonder",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "lens_inventory",
+"args": {
+"account_key": "3376",
+"at_least_block": 32309744
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376",
+"at_least_block": 32309744
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194,
+"at_least_block": 32309744,
+"stats": true
+}
+},
+{
+"tool": "workspace_list",
+"args": {}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session18.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session17.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session16.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session15.md"
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"account": "main",
+"kami_ids": [
+17194
+]
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34,
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"account": "main",
+"food_item_id": 11302,
+"kami_id": 17194
+}
+},
+{
+"tool": "pool_swap_quote",
+"args": {
+"amount_in": 20,
+"item_in": 1,
+"item_out": 1002
+}
+},
+{
+"tool": "create_trade",
+"args": {
+"account": "main",
+"buy_amount": 3,
+"buy_item": 1005,
+"sell_amount": 600,
+"sell_item": 1
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 60.0
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"account": "main",
+"kami_ids": [
+17194
+]
+}
+},
+{
+"tool": "get_expected_objective",
+"args": {
+"quest_index": 9
+}
+},
+{
+"tool": "get_expected_objective",
+"args": {
+"quest_index": 10
+}
+},
+{
+"tool": "lens_merchant",
+"args": {
+"npc_index": -1
+}
+},
+{
+"tool": "lens_merchant",
+"args": {
+"full": true,
+"npc_index": 1
+}
+},
+{
+"tool": "lens_merchant",
+"args": {
+"full": true,
+"npc_index": 2
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/rooms/nodes.csv"
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 47
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 30
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 58
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"account": "main",
+"node_index": 47
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/mechanics/world/scavenging.md"
+}
+},
+{
+"tool": "scavenge_claim_and_reveal",
+"args": {
+"account": "main",
+"node_index": 34
+}
+},
+{
+"tool": "harvest_stop",
+"args": {
+"account": "main",
+"kami_ids": [
+17194
+]
+}
+},
+{
+"tool": "take_trade",
+"args": {
+"account": "main",
+"trade_id": "0xb63a51020afd9d5bf945bca0a29edc543cd9533b385a6a7b0f48f2bb4a538d22"
+}
+},
+{
+"tool": "take_trade",
+"args": {
+"account": "main",
+"trade_id": "0xf6677603f2bd96c7f627bcab1a044ac27f2c0b41de5367cf67bd73634137824"
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "burn_items",
+"args": {
+"account": "main",
+"amounts": [
+3
+],
+"item_indices": [
+1005
+]
+}
+},
+{
+"tool": "wait",
+"args": {
+"seconds": 120.0
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"account": "main",
+"kami_ids": [
+17194
+]
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20.md",
+"content": "# Session 20 (2026-08-19)\n\n## State at start\n- Account OnchainA3 idx 3376; operator was in room 66, kami 17194 HARVESTING at node 34.\n- Kami HP 50/80, hpRate -5.72/hr, MUSU accrued ~54, rate ~+28/hr.\n"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 60.0
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "muse-wonder",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "move_to_room",
+"args": {
+"room_index": 34,
+"account": "main"
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"dry_run": true,
+"use_items": true,
+"account": "main"
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"dry_run": false,
+"use_items": true,
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194,
+"at_least_block": -1
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/items/items.csv"
+}
+},
+{
+"tool": "lens_items",
+"args": {}
+},
+{
+"tool": "lens_inventory",
+"args": {}
+},
+{
+"tool": "lens_merchant",
+"args": {}
+},
+{
+"tool": "workspace_list",
+"args": {}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session18.md"
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20_plan.md",
+"content": "# Session 20 (2026-08-19)\n\n## State\n- Account OnchainA3 (3376), operator room 34 (returned after pool probe at 31)\n- Kami 17194 HARVESTING node 34, HP ~50/80, -5.7 HP/hr, MUSU accrued collected this s"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gpt-6-luna",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "pool_swap_quote",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"slippage_bps": 10000
+}
+},
+{
+"tool": "lens_room",
+"args": {
+"room_index": 31
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_config",
+"args": {
+"field_name": ""
+}
+},
+{
+"tool": "quest_state",
+"args": {
+"quest_index": 10,
+"account": "main"
+}
+},
+{
+"tool": "accept_quest",
+"args": {
+"quest_index": 10,
+"account": "main"
+}
+},
+{
+"tool": "lens_roster",
+"args": {
+"account_index": 3376
+}
+},
+{
+"tool": "end_session",
+"args": {
+"reason": "Quest 9 cannot progress right now: its Scrap Metal buy order is still pending, and the Scrap Metal pool swaps are being refused by dry-run. Left the account at room 31, where it can access the pool interface; the kami remains harvesting at node 34. Need investigate the pool/chain issue next session and check whether the buy order gets taken."
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gpt-6-luna",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "lens_room",
+"args": {
+"room_index": 31
+}
+},
+{
+"tool": "lens_room",
+"args": {
+"room_index": 31,
+"full": false
+}
+},
+{
+"tool": "lens_room",
+"args": {
+"room_index": 31,
+"full": true
+}
+},
+{
+"tool": "move_to_room",
+"args": {
+"room_index": 31,
+"account": "main"
+}
+},
+{
+"tool": "lens_roster",
+"args": {
+"account_index": 3376
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 10
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gemini-3.6-flash",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"dry_run": true,
+"amount_in": 20,
+"item_in": 1,
+"account": "main",
+"item_out": 1005,
+"min_amount_out": 2
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"account": "main",
+"dry_run": true,
+"amount_in": 30,
+"item_out": 1005,
+"min_amount_out": 3
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"dry_run": true,
+"account": "main",
+"item_in": 1,
+"amount_in": 30,
+"item_out": 1005,
+"min_amount_out": 1
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"dry_run": false,
+"account": "main",
+"use_items": true,
+"target_room": 34
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302,
+"account": "main"
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"at_least_block": 32309750,
+"account_key": "3376"
+}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20_plan.md",
+"content": "# Session 20 Status & Plan (2026-08-19)\n\n## World & Account State\n- Account: OnchainA3 (index 3376)\n- Operator room: 34 (Deeper Into Scrap)\n- Kami 17194: HARVESTING at node 34\n- Active quest: #9 Build"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 360
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gemini-3.6-flash",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"dry_run": true,
+"item_out": 1005,
+"min_amount_out": 2,
+"amount_in": 20,
+"account": "main",
+"item_in": 1
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"account": "main",
+"item_out": 1005,
+"amount_in": 30,
+"min_amount_out": 3,
+"dry_run": true,
+"item_in": 1
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"amount_in": 100,
+"item_out": 1005,
+"item_in": 1,
+"dry_run": true,
+"min_amount_out": 10,
+"account": "main"
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"amount_in": 20,
+"item_in": 1005,
+"dry_run": true,
+"account": "main",
+"min_amount_out": 2,
+"item_out": 1
+}
+},
+{
+"tool": "lens_items",
+"args": {}
+},
+{
+"tool": "take_trade",
+"args": {
+"trade_id": "0xafcbebe434c295b53e3aaae83a1db4dc45743624f29e849c16eb2093d83a2bd5",
+"account": "main"
+}
+},
+{
+"tool": "create_trade",
+"args": {
+"account": "main",
+"sell_item": 1,
+"buy_item": 1005,
+"buy_amount": 3,
+"sell_amount": 625
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"dry_run": false,
+"use_items": true,
+"target_room": 34,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main",
+"node_index": 34
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376",
+"at_least_block": 32309750
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"account": "main",
+"food_item_id": 11302
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"content": "# Session Plan & Progress\n\n## Account Status\n- Account: OnchainA3 (3376)\n- Operator Location: Room 34 (Deeper Into Scrap)\n- Kami: 17194 harvesting at node 34 (HP: ~50/80)\n- Stamina: ~50 / 100\n- Active",
+"path": "workspace/notes/session20_plan.md"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 360
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gpt-6.1-sol",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gpt-6.1-sol",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/quests/quest-lines.md",
+"offset": 8000,
+"length": 7500
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/quests/quest-lines.md"
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+]
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302
+}
+},
+{
+"tool": "lens_kami",
+"args": {
+"kami_index": 17194,
+"stats": true
+}
+},
+{
+"tool": "create_trade",
+"args": {
+"sell_item": 1,
+"sell_amount": 450,
+"buy_item": 1005,
+"buy_amount": 3
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/latest.md",
+"content": "Session Aug19 01:05-01:15 UTC. Quest9 still active burn3 scrap. complete_all_trades found 0. Old scrap bid absent in complete orderbook, inventory625 MUSU 1stone 2obol holy dust burger card21204. Kami"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 60
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "grok-4.7",
+"try": 0,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "grok-4.7",
+"try": 1,
+"pass": false,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 2,
+"account": "main"
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "claude-sonnet-5.5",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 3,
+"account": "main"
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 100,
+"min_amount_out": 1,
+"dry_run": true,
+"account": "main"
+}
+},
+{
+"tool": "create_trade",
+"args": {
+"sell_item": 1,
+"sell_amount": 450,
+"buy_item": 1005,
+"buy_amount": 3,
+"account": "main"
+}
+},
+{
+"tool": "lens_merchant",
+"args": {}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20.md",
+"content": "# Session 20 (2026-08-19)\n- Old bid for scrap is gone (no executed trades). create_trade and feed_kami unavailable in this env (\"not available in this drill\").\n- pool_swap MUSU->Scrap (item 1005) dry-"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 240
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "claude-sonnet-5.5",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 20,
+"min_amount_out": 3,
+"account": "main"
+}
+},
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"item_out": 1005,
+"amount_in": 100,
+"min_amount_out": 10,
+"account": "main",
+"dry_run": true
+}
+},
+{
+"tool": "create_trade",
+"args": {
+"sell_item": 1,
+"sell_amount": 450,
+"buy_item": 1005,
+"buy_amount": 3,
+"account": "main"
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"account": "main"
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+]
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "workspace_write",
+"args": {
+"path": "workspace/notes/session20.md",
+"content": "# Session 20 (2026-08-19)\n- Quest 9 still blocked: need 3 Scrap Metal burned. Inventory has 0 scrap. The old bid trade no longer exists.\n- pool_swap MUSU->Scrap(1005) reverts (blank) even in room 31 -"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 240
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gemini-3.8-flash",
+"try": 0,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"amount_in": 20,
+"item_out": 1005,
+"min_amount_out": 2,
+"dry_run": true,
+"account": "main",
+"item_in": 1
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"target_room": 34,
+"account": "main",
+"use_items": true,
+"dry_run": false
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"account": "main",
+"food_item_id": 11302,
+"kami_id": 17194
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"node_index": 34,
+"account": "main"
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"at_least_block": 32309750,
+"account_key": "3376"
+}
+},
+{
+"tool": "get_status",
+"args": {}
+},
+{
+"tool": "lens_status",
+"args": {}
+},
+{
+"tool": "lens_inventory",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "get_item_orderbook",
+"args": {
+"side": "sell",
+"item_index": 1005
+}
+},
+{
+"tool": "get_item_orderbook",
+"args": {
+"side": "buy",
+"item_index": 1005
+}
+},
+{
+"tool": "workspace_list",
+"args": {
+"path": "workspace"
+}
+},
+{
+"tool": "workspace_list",
+"args": {}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session18.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session17.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session10.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session11.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "workspace/notes/session9.md"
+}
+},
+{
+"tool": "complete_trade",
+"args": {
+"trade_id": "0x342141f99fa97847bfeec1abb3d5b26cca26321747fe3463114c2b6955eb0130"
+}
+},
+{
+"tool": "take_trade",
+"args": {
+"trade_id": "0xaafcded7b21537e81b6c4545005ba83e04fec3d1623ce511dc1a7ae0d5cb02bb"
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"offset": 0,
+"length": 4000,
+"path": "reference/mechanics/economy/scavenging.md"
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/mechanics/world/scavenging.md"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "workspace_read",
+"args": {
+"path": "reference/catalogs/rooms/nodes.csv"
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 30
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 31
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 47
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 58
+}
+},
+{
+"tool": "get_scavenge_droptable",
+"args": {
+"node_index": 12
+}
+}
+]
+},
+{
+"drill": "repeat-pool-swap-retry",
+"model": "gemini-3.8-flash",
+"try": 1,
+"pass": true,
+"steps": [
+{
+"tool": "pool_swap",
+"args": {
+"item_in": 1,
+"account": "main",
+"min_amount_out": 2,
+"dry_run": true,
+"amount_in": 20,
+"item_out": 1005
+}
+},
+{
+"tool": "travel_to_room",
+"args": {
+"account": "main",
+"use_items": true,
+"target_room": 34,
+"dry_run": false
+}
+},
+{
+"tool": "feed_kami",
+"args": {
+"kami_id": 17194,
+"food_item_id": 11302,
+"account": "main"
+}
+},
+{
+"tool": "act_sequence",
+"args": {
+"account": "main",
+"steps": [
+{
+"item_id": 11302,
+"op": "feed",
+"kami_id": 17194
+}
+]
+}
+},
+{
+"tool": "use_item_batch",
+"args": {
+"count": 1,
+"item_id": 11302,
+"kami_id": 17194
+}
+},
+{
+"tool": "harvest_collect",
+"args": {
+"kami_ids": [
+17194
+],
+"account": "main"
+}
+},
+{
+"tool": "lens_account",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "lens_inventory",
+"args": {
+"account_key": "3376"
+}
+},
+{
+"tool": "get_scavenge_points",
+"args": {
+"node_index": 34
+}
+},
+{
+"tool": "get_gas_balance",
+"args": {}
+},
+{
+"tool": "workspace_write",
+"args": {
+"content": "# Session 20 plan & status (2026-08-19)\n\n## Current State\n- Account: OnchainA3 (index 3376)\n- Operator Room: 34 (Deeper Into Scrap)\n- Kami: 17194 harvesting at node 34 (Room 34)\n- HP: ~49 / 80, harves",
+"path": "workspace/notes/session20_status.md"
+}
+},
+{
+"tool": "set_next_wake",
+"args": {
+"minutes_from_now": 120
+}
+}
+]
+}
+]

@@ -118,6 +118,9 @@ literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md)
   own failures on other drills (never the scored one, no replay gaps, no selection on outcome; the injected dose per
   model is recorded); score the delta against the same
   drills' clean results. All items are prototypes.
+- **Miner v2** ([docs/v2-miner.md](docs/v2-miner.md), `kami_drills/miner/`): `kami-drills mine RUN_DIR... --out
+  candidates.jsonl` mines candidate drills from Season 1 runs, rebuilding state from session-start snapshots; each
+  candidate names the value swing, the accepted actions, the state fields its verdict depends on and its provenance.
 - **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
   over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
 

@@ -1,0 +1,350 @@
+{
+ "spec_version": "2.0.0",
+ "id": "onboard-bridge-pending",
+ "version": 3,
+ "status": "draft",
+ "family": "decision",
+ "category": "onboarding",
+ "competency": [
+  "quest_planning",
+  "tool_use"
+ ],
+ "mistake_class": "wrong_order",
+ "difficulty": "hard",
+ "tier": "A",
+ "situation": "Session 2 of onboarding: the operator wallet exists, owner and operator hold 0 ETH on Yominet and mainnet shows 0.0199 (was 0.03). A bridge was submitted last session and is still in flight; the live agent bridged another 0.01 ETH.",
+ "summary": {
+  "situation": "Session 2: operator has 0 ETH on Yominet; mainnet shows 0.0199 ETH (was 0.03). Earlier bridge still in flight.",
+  "mistake": "Submitted a second 0.01 ETH bridge without checking the first.",
+  "correct": "Find the earlier bridge tx in the workspace file, check bridge_status for it, then schedule a wake.",
+  "pass": "Pending bridge checked by its tx hash, no real second bridge (dry runs fine), wake of 5+ minutes set."
+ },
+ "objective": {
+  "game": "complete as many quests as possible",
+  "drill": "get the operator wallet funded on Yominet so onboarding can continue."
+ },
+ "fork": {
+  "kind": "mid_session",
+  "rendering": [
+   "native_replay"
+  ],
+  "clock": {
+   "unix": 1787000005
+  },
+  "native_prefix": {
+   "harness": "pre-4.7 (KamiBench 006)",
+   "messages": [
+    {
+     "role": "user",
+     "text": "Session start."
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "brief_1",
+       "name": "lens_roster",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "brief_1",
+     "content": "{\"error\": {\"code\": \"BAD_ARGS\", \"message\": \"account index must be a non-negative integer\"}}",
+     "is_error": true
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "balance_1",
+       "name": "get_gas_balance",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "balance_1",
+     "content": "{\n  \"balances\": {\n    \"main\": {\n      \"operator_address\": \"0x00000000f9c912f8a4bb7d80a53409b97247dd8f\",\n      \"operator_eth\": \"0\",\n      \"owner_address\": \"0x000000003c56484bb0b7269f723866e4878ead38\",\n      \"owner_eth\": \"0\",\n      \"owner_mainnet_eth\": \"0.019941346715269092\"\n    }\n  }\n}",
+     "is_error": false
+    },
+    {
+     "role": "assistant",
+     "text": null,
+     "tool_calls": [
+      {
+       "id": "call_xuKVuntnHWdbRpChaxEYVnni",
+       "name": "list_accounts",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "role": "tool_result",
+     "tool_call_id": "call_xuKVuntnHWdbRpChaxEYVnni",
+     "content": "{\n  \"accounts\": {\n    \"main\": {\n      \"operator_address\": \"0x00000000f9c912f8a4bb7d80a53409b97247dd8f\",\n      \"owner_address\": \"0x000000003c56484bb0b7269f723866e4878ead38\",\n      \"kamibots_registered\": false\n    }\n  }\n}",
+     "is_error": false
+    }
+   ],
+   "recorded_reads": {
+    "get_gas_balance": {
+     "{}": "{\n  \"balances\": {\n    \"main\": {\n      \"operator_address\": \"0x00000000f9c912f8a4bb7d80a53409b97247dd8f\",\n      \"operator_eth\": \"0\",\n      \"owner_address\": \"0x000000003c56484bb0b7269f723866e4878ead38\",\n      \"owner_eth\": \"0\",\n      \"owner_mainnet_eth\": \"0.019941346715269092\"\n    }\n  }\n}"
+    },
+    "list_accounts": {
+     "{}": "{\n  \"accounts\": {\n    \"main\": {\n      \"operator_address\": \"0x00000000f9c912f8a4bb7d80a53409b97247dd8f\",\n      \"owner_address\": \"0x000000003c56484bb0b7269f723866e4878ead38\",\n      \"kamibots_registered\": false\n    }\n  }\n}"
+    }
+   }
+  },
+  "keep_events": []
+ },
+ "state": {
+  "account": {
+   "index": 0,
+   "room": 0
+  },
+  "kamis": [],
+  "inventory": {}
+ },
+ "decision_point": {
+  "budget": {
+   "tool_calls": 50,
+   "turns": 30
+  },
+  "closing": "Operator goal: get the operator wallet funded on Yominet so onboarding can continue."
+ },
+ "world": {},
+ "responses": [
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "workspace_list"
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "workspace/bridge/mainnet_to_yominet_2026-08-17.json 146\nreference/ 90 files, 682927 bytes, read-only"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "note_read",
+    "args": {
+     "path": {
+      "in": [
+       "bridge/mainnet_to_yominet_2026-08-17.json",
+       "workspace/bridge/mainnet_to_yominet_2026-08-17.json"
+      ]
+     }
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"tx_hash\": \"0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1\",\n  \"amount_eth\": \"0.01\",\n  \"submitted_at_utc\": \"2026-08-17\"\n}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "bridge_status",
+     "tx_hash": "0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1"
+    }
+   },
+   "sets": [
+    "checked"
+   ],
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"tx_hash\": \"0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1\",\n  \"state\": \"STATE_SUBMITTED\",\n  \"completed\": false,\n  \"yominet_owner_eth\": \"0\",\n  \"detail\": {\n    \"state\": \"STATE_SUBMITTED\",\n    \"transfer_sequence\": [],\n    \"next_blocking_transfer\": null,\n    \"transfer_asset_release\": null,\n    \"error\": null\n  }\n}"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "bridge_status"
+    }
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "validation_error",
+    "reason": "OTHER",
+    "native": {
+     "*": "Error executing tool bridge_status: validation failed; no transaction sent: unknown bridge transaction"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "read",
+    "args": {
+     "kind": "account",
+     "account_key": "main"
+    }
+   },
+   "provenance": "authored",
+   "result": {
+    "class": "validation_error",
+    "reason": "INFRA",
+    "native": {
+     "*": "Error executing tool lens_account: NOT_FOUND: account main not in mirror"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "note_read"
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "validation_error",
+    "reason": "OTHER",
+    "native": {
+     "*": "no such file: (path not found)"
+    }
+   }
+  },
+  {
+   "match": {
+    "verb": "bridge"
+   },
+   "provenance": "recorded",
+   "result": {
+    "class": "ok",
+    "native": {
+     "*": "{\n  \"tx_hash\": \"0xabababababababababababababababababababababababababababababababab\",\n  \"status\": \"submitted\",\n  \"account\": \"main\",\n  \"amount_eth\": \"0.01\",\n  \"bridge_fee_eth\": \"0.000010370491620622\",\n  \"mainnet_gas_max_eth\": \"0.000117948870842418\",\n  \"mainnet_balance_eth\": \"0.019941346715269092\",\n  \"estimated_duration_seconds\": 390,\n  \"recipient_yominet\": \"0x000000003c56484bb0b7269f723866e4878ead38\"\n}"
+    }
+   }
+  }
+ ],
+ "scoring": {
+  "kind": "rule",
+  "rule": {
+   "forbid": [
+    {
+     "verb": "bridge"
+    }
+   ],
+   "require_flags": [
+    "checked"
+   ],
+   "require_any": [
+    {
+     "verb": "schedule_wake",
+     "args": {
+      "minutes": {
+       "gte": 5
+      }
+     },
+     "ok": true
+    }
+   ]
+  },
+  "null_play": {
+   "policy": "no calls; kami-agent 0.7.5 default wake 60 min",
+   "expected": 0
+  },
+  "reference_plays": [
+   {
+    "name": "oracle",
+    "intents": [
+     {
+      "verb": "note_read",
+      "args": {
+       "path": "bridge/mainnet_to_yominet_2026-08-17.json"
+      }
+     },
+     {
+      "verb": "read",
+      "args": {
+       "kind": "bridge_status",
+       "tx_hash": "0x334fe594fee2219a91b2d952867202b8adeeba1bb77b63e0ab180e599543f8d1"
+      }
+     },
+     {
+      "verb": "schedule_wake",
+      "args": {
+       "minutes": 8.0
+      }
+     }
+    ],
+    "expected": 1
+   },
+   {
+    "name": "recorded-mistake",
+    "intents": [
+     {
+      "verb": "quote",
+      "args": {
+       "of": "bridge",
+       "amount_eth": "0.01"
+      },
+      "dry_run": true
+     },
+     {
+      "verb": "bridge",
+      "args": {
+       "amount_eth": "0.01"
+      }
+     }
+    ],
+    "expected": 0,
+    "is_recorded_mistake": true
+   }
+  ]
+ },
+ "state_dependencies": [
+  {
+   "path": "/responses",
+   "why": "v1 replay rows carry the verdict flags",
+   "source": "v1 drills/onboard-bridge-pending.json",
+   "visible_at_fork": true
+  }
+ ],
+ "variants": {
+  "origin": "converted_v1",
+  "note": "v1.1 (ranking): converted; stated objective added"
+ },
+ "harness": {
+  "bound": false,
+  "recorded_on": {
+   "harness": "pre-4.7 (KamiBench 006)"
+  }
+ },
+ "provenance": {
+  "credit": "derived from KamiBench run 006, CC-BY-4.0",
+  "license": "CC-BY-4.0",
+  "source": {
+   "dataset": "kamibench/experiment-006-knowledge-delivery",
+   "run": "gpt52_control",
+   "session": 2,
+   "fork_line": 7,
+   "v1_id": "onboard-bridge-pending"
+  },
+  "chain_block": null,
+  "stamps": {
+   "v1_sha256": "sha256:2a14dae6b8b755a59cb04f661cbb943d3649b57bf17547e39c838d113ef781d4",
+   "v1_suite": "v1.0.0"
+  }
+ },
+ "heldout": {
+  "flag": false,
+  "method": "hash_split"
+ },
+ "role": "ranking",
+ "content_hash": "sha256:40a78f10d20d1b69bb9946e741c05ef0425c99372dd4d38e04e9ad846e5ff2e4"
+}
