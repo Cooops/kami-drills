@@ -27,12 +27,21 @@
   "node-choice": {"area": "economic", "why": "a harvest node that pays much more within reach (experimental, not shipped)"}
  },
  "drills": {
-  "repeat-take-trade-underflow": {"area": "economic", "why": "the rule scores the bid price per unit against the MUSU held, not the retry"},
+  "repeat-take-trade-underflow": {"area": "economic", "why": "forbids the retry and any Scrap bid above 100 MUSU/unit; the price cap is what separates the plays"},
   "repeat-listing-buy-underflow": {"area": "economic", "why": "the rule scores buying from a venue the account can afford"},
-  "onboard-first-kami-vendor": {"area": "economic", "why": "the pass is a price tolerance (<= 0.005 ETH per kami); overpaying fails"},
+  "onboard-first-kami-vendor": {"area": "economic", "why": "the pass is a price tolerance (<= 0.005 ETH per kami); overpaying fails. repeat-newbie-vendor-guess stays recovery: it has no price cap, it scores not guessing again after the refusal"},
   "onboard-bridge-pending": {"area": "cadence", "why": "the answer is to wait (a wake >= 5 min) for the bridge already in flight, not bridge again"},
   "onboard-operator-unfunded": {"area": "recovery", "why": "accept_quest was refused for gas; the answer is to fix the cause (fund), then retry"},
   "stale-cooldown-retry-start": {"area": "recovery", "why": "a start already refused twice on cooldown; the answer is to wait it out, then retry"},
+  "repeat-stop-starving": {"area": "survival", "why": "the stop is refused because the kami is starving; the rule rewards feeding it first"},
+  "memory-luna-levelup-needs-no-points-belief": {"area": "progression", "why": "the rule only counts level_up calls (1 level = .5, both = 1)"},
   "memory-sonnet-stamina-unreliable-belief": {"area": "recovery", "why": "the rule forbids a blind retry of the stalled travel; waiting for stamina is the answer"}
+ },
+ "competency_exceptions": {
+  "about": "Families whose area is not one their specs' competency tags name (tests/test_profile.py checks the rest). Drills in `drills` carry their own reason.",
+  "levelup": "tagged state_tracking; the scored act is claiming the level",
+  "stalling": "tagged persistence; the drill is getting out of a no-kami stall",
+  "cooldown-repeat": "tagged state_tracking by the miner; the scored act is the retry after the chain's refusal",
+  "stuck-broke": "tagged economy and risk_survival; the drill is getting out of the broke state (tier B, unscored)"
  }
 }
