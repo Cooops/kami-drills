@@ -41,7 +41,7 @@ repo cannot be committed by accident (H review M4).
 Otherwise the command exits 1 and writes nothing (F review m3).
 
 **Speed and determinism.** The 27 final Season 1 runs (2,172 sessions) take about 50 s with `--jobs 10`. Output is byte-identical
-for any `--jobs` and any input order (`sha256[:16] 42d000af2f1a2951` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
+for any `--jobs` and any input order (`sha256[:16] e09638e826e8bef5` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
 
 **Untrusted input.** Transcripts are parsed as JSON only.
 
@@ -400,7 +400,8 @@ never let every kami stay dead, and every long-dead run held enough ETH for a re
     on the owner) covers the shards a gummy needs;
   - quest 10003 open at the session start (snapshot registry: requirements met, not accepted, not complete);
   - a revive quest the agent can take (`REVIVE_QUESTS`: a revive reward and objectives kami-rules meets with every kami
-    dead, none or only ROOM and ITEM_BURN): open and visible, accepted and open, or a repeatable whose repeat is due,
+    dead, none or only ROOM and ITEM_BURN): open (the reference/ docs name every one, so visibility is not required),
+    accepted and open, or a repeatable whose repeat is due,
     with its gives held and its room reachable. On S1 these are 3005 "Spring Rites" (no objectives, 1 card) and 3900
     "Warm Your Hands" (go to room 26, give 3 Wooden Sticks, 1 card); 3022 qualifies but never came up.
 
@@ -408,7 +409,8 @@ never let every kami stay dead, and every long-dead run held enough ETH for a re
 - **The answer.** Full credit is a successful revive. The rules library refuses a revive without its item, and the
   item comes only from a route, each an accepted path:
   - shard route: the portal keeps its import tax (flat 1 + 50 bps, from S1 receipts), the rules library's pool
-    (authored at 440 MUSU a shard, 10^6 shards deep; a discovery item prices it from its own recorded swap) debits
+    (authored at 440 MUSU a shard, 10^6 shards deep, 30 bps fee as S1's quotes; a discovery item prices it from its
+    own recorded swap) debits
     the shards, and the gummy row needs and debits 499 MUSU (the dearest S1 gummy);
   - SQ997: authored rows (accept, then complete for 5 Melkarth cards, item 11002; gdd `quests.csv:1831`, and every S1
     claim paid 5);
@@ -417,13 +419,15 @@ never let every kami stay dead, and every long-dead run held enough ETH for a re
 
   0.5 for completing a revive quest or converting without the revive. A rescue in the session (a deposit, a MUSU
   swap, a claim of a revive quest, a revive or a kami buy) means the session is fine.
-- **Visible quests.** An available quest enters the fork state when the agent could see it: its own record starts in
+- **Visible quests.** An open revive quest is always in the fork state (above). Any other available quest enters it
+  when the agent could see it: its own record starts in
   the first 65,536 bytes of the default `lens_quests` view (rebuilt from the snapshot registry; it matches S1 results
   byte for byte up to the cut), or a quest read earlier in the run returned its record (`"index": N, "name"`; a
   requirement or objective that names the quest does not count). 10003 sits past the cut, so it enters only where the
   run had seen its record; elsewhere only its rows answer it.
-- **Trap controls** (rc10 review): the paired item's session start with the gas trap balances and every revive quest
-  already claimed (complete, repeat not due). There nothing pays for a revive, so a revive attempt scores 0 and any
+- **Trap controls** (rc10 review): the paired item's session start with the gas trap balances and, synthetic and labelled
+  so, every revive quest the account could claim already claimed (a one-off at the run's first dead-kami session, a
+  repeatable at this session, so its repeat is not due). There nothing pays for a revive, so a revive attempt scores 0 and any
   constant claim policy fails. The battery adds `claim_all`, `claim_avail_revive_card` and `sq997` on drills with a
   dead kami; each may pass an item but at most half its pair.
 - **Not accepted:** a kami buy (the newbie vendor sells one per account in its first 24 h; KamiSwap listings are not

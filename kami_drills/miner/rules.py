@@ -1341,7 +1341,9 @@ def seen_quests(run, s, line):
 def available_quests(run, s, line):
     """State rows for the quests open to the account at the session start (snapshot registry) that the agent could see
     by `line`: the record starts inside the 4.7.0 cut of the default lens_quests, or a quest read earlier in the run
-    returned it. The fork state lists them, so the rules library answers accept and complete."""
+    returned it. Open revive quests (REVIVE_QUESTS) are always listed: the reference/ docs every agent holds name them
+    (quests.csv), the one visibility policy for every revive quest (10003 answers through its rows instead). The fork
+    state lists them, so the rules library answers accept and complete."""
     from kami_drills.adapters.harness_4_7 import quest_entry, visible_available
     q, reg = _registry(s)
     if not q:
@@ -1350,13 +1352,14 @@ def available_quests(run, s, line):
     open_ = [r for r in reg.values() if (r.get("account") or {}).get("requirementsMet") and not r["account"].get("accepted")
              and not r["account"].get("complete")]
     shown = {r["index"] for r in visible_available(q)}
-    return [quest_entry(r, "available") for r in sorted(open_, key=lambda r: r["index"]) if r["index"] in shown | seen]
+    docs = set(REVIVE_QUESTS) - {SQ997}
+    return [quest_entry(r, "available") for r in sorted(open_, key=lambda r: r["index"]) if r["index"] in shown | seen | docs]
 
 
 def revive_quest_routes(run, s, fork, st, k0):
     """[(quest, calls)] for each quest in REVIVE_QUESTS (10003 aside: it has its own rows) the agent can take at the fork:
-    open and visible, accepted and open, or a repeatable whose repeat is due; its gives covered by held items and its
-    room reachable. The route ends with a revive of k0 by the reward card."""
+    open (the docs name it, as they name 10003), accepted and open, or a repeatable whose repeat is due; its gives
+    covered by held items and its room reachable. The route ends with a revive of k0 by the reward card."""
     _, reg = _registry(s)
     t = time_at(s, fork)
     room = st.account.get("room")

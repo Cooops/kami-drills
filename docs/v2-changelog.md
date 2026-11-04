@@ -536,7 +536,8 @@ the same 27 final runs with the same flags (3 per run, max(2, 30%) per source mo
 - **rc10:** 55 items (13 tier A, 42 tier B), 6 controls, 29 traps: 90 specs, 65 public (40 items, 5 controls, 20
   traps; 16 tier A) and 25 held out (15 items, 1 control, 9 traps).
   - stuck-broke 16 items (10 public, 6 held out) from 302 gated triggers (16 after dedup); revive-claim 4 (1, 3) from
-    21 (4); phantom-principal 1 (1, 0) from 7 (1), all haiku-5.5-2.
+    21 (4); phantom-principal 1 (1, 0) from 7 (1), all haiku-5.5-2. (Superseded by the rebuilds below: 296 and 20 gated
+    now, phantom-principal off.)
   - The other 41 public specs are rc9's, identical except the miner version stamp and content hash. rc9's
     deepseek-v4-pro-1/-2/-3 stuck-broke items are gone (MUSU 222-499 at every all-dead start), and 6 runs' items move
     to a later session or come in new (flash-1, haiku-1, haiku-2, sonnet-1).
@@ -595,8 +596,10 @@ not in `state.quests`, so "accept 3005, complete, revive" was a free gap and nev
   gain a path for the 3900 they had accepted (give the sticks, or not if already given; go to room 26; complete). On the 4.7.0 adapter the re-accept of a completed 3900 is still refused (quirk
   `accept-owned-repeatable`), as in S1. No item was dropped.
 - **M1, constant claim policies.** The battery adds `claim_all` (accept and complete every quest on offer),
-  `claim_avail_revive_card` and `sq997` on drills with a dead kami. They pass some items (10, 6 and 11 of 35) and no
-  trap, so no group passes them over half (`pipeline.PAIR_GATED`).
+  `claim_avail_revive_card` and `sq997` on drills with a dead kami. Over the 35 specs that get them (re-review count): `claim_all`
+  passes 10 traps (it claims nothing that revives there) and no item; `claim_avail_revive_card` passes 3 recovery items
+  and 3 traps of other families; `sq997` passes 11 recovery items and no trap. No group passes one over half
+  (`pipeline.PAIR_GATED`).
 - **M2, the shard swap.** The authored "+2200 MUSU for any swap" row is gone. The portal keeps its import tax (flat
   1 + 50 bps, from S1 receipts); the swap is the rules library's constant-product pool (authored at 440 MUSU a shard,
   10^6 shards deep; a discovery item prices it from its own recorded swap), which debits the shards; the gummy row
@@ -620,6 +623,27 @@ not in `state.quests`, so "accept 3005, complete, revive" was a free gap and nev
 - **Defaults pending owner decision** (the reviewer's recommendations; built with them, not decided): keep the 222 MUSU
   floor; keep full credit for the shard route on revive-claim; fold phantom-principal into a stuck-broke tag; held-out
   items as private perturbed variants; controls gate only; v1.1 unchanged.
+
+## Re-review of beb1d30, bank v2.0-rc10 rebuilt
+
+- **Blocker: one visibility policy for revive quests.** `stuck-broke-grok-4-7-1-s0028-l7` missed 3900 (4 Wooden
+  Sticks held, room 5, never accepted; the run read the 3900 row of `quests.csv` in s20). Open revive quests are now
+  always in the fork state and always a route when their gives are held and their room is reachable: the reference/
+  docs every agent holds name them, as they name 10003 (`rules.available_quests`). grok-1 s28 gains the 3900 path.
+  The other public items with 3900 open hold no sticks (flash-1, flash-2, grok-2, grok-3, haiku-1, haiku-2), so it is
+  not a route there; it now shows in their quest lists, as in every other public spec where it is open (11 non-recovery
+  specs). Held out: revive-claim muse-wonder-1 s41 and muse-wonder-3 s51 and stuck-broke gpt-6-luna-1 s39 gain the
+  3900 path; no item was dropped or added.
+- **Trap state (synthetic, labelled so):** only revive quests whose requirements are met or that were accepted are
+  marked claimed (3022 no longer); a one-off is claimed at the first session start of the run that showed a dead
+  kami, a repeatable at the trap's session start (so its repeat is not due).
+- **Pool fee:** 30 bps matches S1's pool quotes (`fee_bps: 30`, deepseek-v4-pro-2 s69). The real 103/MUSU pool held
+  ~54.6k shards; the authored 10^6 is deeper, so the drill's price impact is smaller (a 5-shard swap moves it < 0.01%).
+- The rc10 entry's "302 gated triggers" is marked superseded (296 now).
+- Counts unchanged: 54 items, 6 controls, 28 traps; 63 public, 25 held out. `spec check` 113 specs, 0 failing; battery
+  0/17 ungrouped and 0/22 groups (0/24 and 0/32 with the private variants); kitchen sink 0 of 63; economic pairs as
+  above; oracle-on-variant 0 of 15; leak check clean; `bank.verify` []. Output `sha256[:16] e09638e826e8bef5` for
+  `--jobs 1` and 10.
 
 ## Open questions for the owner
 

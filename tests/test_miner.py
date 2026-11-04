@@ -577,6 +577,13 @@ def test_dead_recovery_credits_warm_your_hands_and_its_trap_has_the_quests_claim
     route = c["spec"]["scoring"]["reference_plays"][0]["intents"]
     assert [i["verb"] for i in route] == ["accept_quest", "burn", "travel", "complete_quest", "revive"]
     assert sp.play(c["spec"], route)["pass"] and not sp.play(c["spec"], route[:1] + route[2:])["pass"]  # the gift is needed
+    from kami_drills.adapters import harness_4_7 as h47  # past the lens cut it is still a route: the docs name it (re-review)
+    hidden = pytest.MonkeyPatch.context()
+    with hidden as m:
+        m.setattr(h47, "visible_available", lambda q: [])
+        run = load_run(d)
+        got = R.recovery(run, run.sessions[0], run.sessions[0].scaffold_end, state_at(run.sessions[0], run.sessions[0].scaffold_end))
+        assert got["free"] == [3900]
     battery = CK.battery(trap["spec"])
     assert not any(sp.play(trap["spec"], battery[p])["pass"] for p in ("claim_avail_revive_card", "sq997"))
     assert sp.play(trap["spec"], [])["pass"] and CK.check_bank([c["spec"], trap["spec"]])[0]["failures"] == []

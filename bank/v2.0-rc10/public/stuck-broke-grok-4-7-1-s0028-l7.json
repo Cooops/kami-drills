@@ -41,6 +41,43 @@
    "intents": [
     {
      "args": {
+      "quest": 3900
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "amount": 3,
+      "item": 1001
+     },
+     "verb": "burn"
+    },
+    {
+     "args": {
+      "room": 26
+     },
+     "verb": "travel"
+    },
+    {
+     "args": {
+      "quest": 3900
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 14708,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +103,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:97b299fb2b19b22282dd96ff3bf0adc392a30e00cbc0efd1510668524aeabbe3",
+ "content_hash": "sha256:f256e32395285428469ea1582dda99a90ae6e63d8e68c2c97e05c674b030ad3a",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -434,6 +471,7 @@
         "args": {
          "quest": {
           "in": [
+           3900,
            10003
           ]
          }
@@ -907,7 +945,7 @@
    ]
   }
  },
- "situation": "All 2 kami(s) DEAD, 95 MUSU, owner wallet 0.0015 ETH, SQ997 open.",
+ "situation": "All 2 kami(s) DEAD, 95 MUSU, owner wallet 0.0015 ETH, SQ997 open, quest 3900 open (pays a revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -1104,6 +1142,25 @@
       "type": "ROOM"
      }
     ],
+    "status": "available"
+   },
+   {
+    "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": true,
     "status": "available"
    }
   ]

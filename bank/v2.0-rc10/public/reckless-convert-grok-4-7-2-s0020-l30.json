@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:a4a4fa4cb6d32d8782074efce49d15cca9a138c1741c083ac837d8ee2d31c601",
+ "content_hash": "sha256:2043ed8cb2c13df47b2c93c3b804d4d7bd8e238d96935afbb27be5f29be45dee",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -884,6 +884,25 @@
      }
     ],
     "repeatable": false,
+    "status": "available"
+   },
+   {
+    "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": true,
     "status": "available"
    }
   ]

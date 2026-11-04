@@ -66,7 +66,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:9ede7470bb4b609b9425df94007b8b241695e85e7939d9edba4e706a768f9852",
+ "content_hash": "sha256:02202e925e8086e4b5ddd82317c09bd2ed69a86da540a6691c92b84db7ebd2cd",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -828,6 +828,25 @@
     "objectives": [],
     "repeatable": false,
     "status": "complete"
+   },
+   {
+    "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": true,
+    "status": "available"
    }
   ]
  },

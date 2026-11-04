@@ -153,7 +153,9 @@ def trap_for(run, item):
         if c["name"] == "get_gas_balance" and "response" in c:
             c["response"] = json.loads(_rewrite_gas(json.dumps(c["response"]), TRAP_OWNER, TRAP_OPERATOR))
     recovery = item.get("family") == "poverty_recovery"
-    claimed = _claim_revive_quests(snap, s.start) if recovery else set()
+    first_dead = next((x.start for x in run.sessions[:run.sessions.index(s) + 1]
+                       if any(k.get("state") == "DEAD" for k in snap_kamis(x).values())), s.start)
+    claimed = _claim_revive_quests(snap, s.start, first_dead) if recovery else set()
     raw = {"family": item.get("family") or "economic_insight", "kind": "trap_control", "world_constants": TOKENS,
            "world_pools": [SHARD_POOL], "responses": swap_rows() if recovery else [],
            "fork_line": s.scaffold_end, "fork_kind": "session_start", "group": item["id"],
@@ -171,7 +173,7 @@ def trap_for(run, item):
     meta = {"id": item["rule_id"], "kind": "trap_control", "mistake_class": "none", "competency": item["competency"], "economic": True}
     st = state_at(s, s.scaffold_end)
     if claimed:  # rc10 review M1: a constant "claim the revive quest" policy must fail one half of the pair
-        raw["situation"] += f"; the revive quests {sorted(claimed)} are already claimed"
+        raw["situation"] += f"; synthetic: the revive quests {sorted(claimed)} already claimed"
     avail = [q for q in available_quests(run, s, s.scaffold_end) if q["index"] not in claimed]
     cand = candidate(meta, run, s, raw, fork_state(st, s.start) | {"available": avail}, "B", raw["tier_reason"])
     cand["id"] = item["id"] + "-trap"
@@ -190,19 +192,23 @@ def trap_for(run, item):
     return gated
 
 
-def _claim_revive_quests(snap, now):
-    """Mark every revive-paying quest (REVIVE_QUESTS, 10003 included) claimed in a trap's snapshot: accepted, complete,
-    and a repeatable's repeat not due for its full duration. Returns the quests changed."""
+def _claim_revive_quests(snap, now, first_dead):
+    """Mark the revive-paying quests (REVIVE_QUESTS, 10003 included) the account could claim as claimed in a trap's
+    snapshot (synthetic): accepted and complete. Only quests whose requirements are met or that it already accepted. A
+    one-off is claimed at `first_dead` (the first session start that showed a dead kami: after a liquidation, before
+    this one); a repeatable at `now`, so its repeat is not due. Returns the quests changed."""
     from kami_drills.miner.rules import REVIVE_QUESTS
     out = set()
     for c in snap["calls"]:
         d = (c.get("response") or {}).get("data") or {} if c["name"] == "lens_quests" else {}
         acc = {a["index"]: a for a in d.get("accepted") or []}
         for r in d.get("registry") or []:
-            if r["index"] not in REVIVE_QUESTS:
+            a = r.get("account") or {}
+            if r["index"] not in REVIVE_QUESTS or not (a.get("requirementsMet") or a.get("accepted")):
                 continue
-            r["account"] = {**(r.get("account") or {}), "accepted": True, "complete": True, "repeatAvailable": False,
-                            "endTime": int(now.timestamp()) if now else 0}
+            end = now if r.get("repeatable") else first_dead
+            r["account"] = {**a, "accepted": True, "complete": True, "repeatAvailable": False,
+                            "endTime": int(end.timestamp()) if end else 0}
             acc.setdefault(r["index"], {"index": r["index"], "name": r.get("name")})["complete"] = True
             out.add(r["index"])
         if "accepted" in d:

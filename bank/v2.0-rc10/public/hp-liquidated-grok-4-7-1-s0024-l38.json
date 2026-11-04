@@ -22,7 +22,7 @@
  "competency": [
   "risk_survival"
  ],
- "content_hash": "sha256:9c954d68f615db1d39c514e8d96e81c8a08fe6b589d65ea72e4e8221f01f8569",
+ "content_hash": "sha256:c1af3c1d826ed3880aa475b66b1e792dee84178074b550b6cf794d339b98dae0",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -849,6 +849,25 @@
      }
     ],
     "repeatable": false,
+    "status": "available"
+   },
+   {
+    "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": true,
     "status": "available"
    }
   ]
