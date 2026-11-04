@@ -244,7 +244,7 @@ and always-sell (market drills). These run only on drills that declare the match
 - v1.1 and `drills_v2/spec` were rebuilt (`scripts/v11/run.py`, `spec from-v1`). Every play and battery verdict is
   unchanged on all 50 specs.
 - `tests/test_pseudonymize.py` now uses a detector independent of the tool:
-  - when the transcripts are next to the repo (`$KAMI_DRILLS_S1_RUNS` or `../kamiarena/runs/s1`), it harvests player
+  - when the transcripts are next to the repo (a local Palaestra S1 runs directory, `$KAMI_DRILLS_S1_RUNS`), it harvests player
     records from them and finds 0 left in any committed spec;
   - otherwise it falls back to fixed regexes.
 - The docs state that `V1_KEY` is public.
@@ -352,7 +352,7 @@ the current one included" scored 1.0 on both halves of the pair.
 **F3.** Fork MUSU now applies collect, stop and claim payouts made after the latest read. argon-3 s119 is 2,235.
 
 **F4.** No name hashes are committed. The season's names are built at mine time from the transcripts and kept in
-memory. The tests harvest them when the transcripts are present (`KAMI_DRILLS_S1_RUNS` or `../kamiarena/runs/s1`);
+memory. The tests harvest them when the transcripts are present (a local Palaestra S1 runs directory, `$KAMI_DRILLS_S1_RUNS`);
 otherwise committed specs are checked by the fixed regexes.
 
 **F5.** Credit is capped at 2x the right-sized heal, matching the doc. The heal passes; 3 cookies where 1 heals fails.

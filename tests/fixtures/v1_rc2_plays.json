@@ -581,7 +581,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Manual c"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Manual c"
 }
 },
 {
@@ -602,7 +602,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Manual c"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Manual c"
 }
 },
 {
@@ -721,7 +721,7 @@
 {
 "tool": "workspace_write",
 "args": {
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Register",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Register",
 "path": "progress.md"
 }
 },
@@ -1015,7 +1015,7 @@
 {
 "tool": "workspace_write",
 "args": {
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n\n## IMPORT",
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n\n## IMPORT",
 "path": "progress.md"
 }
 },
@@ -1088,7 +1088,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Gas heal"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Gas heal"
 }
 },
 {
@@ -1288,7 +1288,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Gas: ope"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Gas: ope"
 }
 },
 {
@@ -1499,7 +1499,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Gas bala"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Gas bala"
 }
 },
 {
@@ -1900,7 +1900,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Register"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Register"
 }
 },
 {
@@ -2001,7 +2001,7 @@
 "tool": "workspace_write",
 "args": {
 "path": "progress.md",
-"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0xf130f9f4B905f48B207B7127A027270b25a0B18e\n- Operator: 0x10C614Bd562f358FE104D101FBd7Ef81718B4D3A\n- Register"
+"content": "# Kamigotchi Progress Notes\n\n## Account\n- Label: main, Name: Kamitron, index: 3375\n- Owner: 0x0000000000b1006255d93587a17fc28a2834b1a7\n- Operator: 0x0000000093778945c38ddd76e2e0c111b6f20fa3\n- Register"
 }
 },
 {

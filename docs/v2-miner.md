@@ -17,7 +17,7 @@ scorer** (`kami_drills/spec`, [v2-spec.md](v2-spec.md)): the simulator, rules li
 
 ```bash
 # the split key ($KAMI_DRILLS_SPLIT_KEY, or an untracked .split-key at the repo root) is needed to split and to freeze
-uv run kami-drills mine ~/…/kamiarena/runs/s1 --out out/candidates.jsonl --stats out/stats.md [--bank bank/v2.0-rc8]
+uv run kami-drills mine "$KAMI_DRILLS_S1_RUNS" --out out/candidates.jsonl --stats out/stats.md [--bank bank/v2.0-rc8]
 ```
 
 **Input.** A run directory (`transcripts/`, `snapshots/`, `telemetry.jsonl`, `config.yaml`) or a directory of them.
@@ -494,6 +494,7 @@ sink passes 0 of the 56 public specs.
 - Tier B items declare a model name only. They are reported beside the forecast, never in it.
 - Public specs embed S1 transcript prefixes. Third-party wallets and player records are pseudonymized, but the prose,
   kami names and other free text are as recorded (see Bank, "Personal data").
+- Aliases deter casual linking only; kami indices, trade ids and tx hashes are kept and still resolve on chain.
 - node-choice: the rate model is the gdd formula on stats read at the fork; skill bonuses to intensity are not in the
   state (taken as up to 2x). Predators at an accepted node are unknown unless the prefix read it, as at the choice. Room
   gates are not in the rules library, so gated rooms are never alternatives. Quests the agent had not accepted yet but

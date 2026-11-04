@@ -12,7 +12,7 @@ can change what the model sees but never how a trace is judged.
 ```bash
 uv run kami-drills spec check drills_v2/spec              # schema, three plays, lazy battery, adapter check (offline, free)
 uv run kami-drills spec from-v1 drills_v2/spec/*.json     # refresh converted v1 specs from drills/
-uv run kami-drills spec from-miner candidates.jsonl --runs ~/…/kamiarena/runs/s1 --out out/specs
+uv run kami-drills spec from-miner candidates.jsonl --runs "$KAMI_DRILLS_S1_RUNS" --out out/specs
 uv run inspect eval kami_drills/adapters/harness_4_7.py -T paths=drills_v2/spec --model <model>
 uv run inspect eval kami_drills/adapters/harness_4_7.py -T policy=oracle --model mockllm/model   # must pass
 ```

@@ -16,7 +16,7 @@ EXAMPLES = """examples:
   kami-drills report logs/
   kami-drills report old_logs/ --override fixed_drill_logs/
   kami-drills spec check drills_v2/spec
-  kami-drills spec from-miner candidates.jsonl --runs ~/kamiarena/runs/s1 --out out/specs
+  kami-drills spec from-miner candidates.jsonl --runs "$KAMI_DRILLS_S1_RUNS" --out out/specs
 """
 CATS = {"levelup": "level", "memory": "memory", "onboarding": "onboard", "progression": "progress",
         "repeat_failed": "repeat", "risk": "risk", "stale_state": "stale", "stalling": "stall"}
