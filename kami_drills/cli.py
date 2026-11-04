@@ -15,6 +15,7 @@ EXAMPLES = """examples:
   kami-drills run --model openrouter/anthropic/claude-haiku-5.5 --epochs 2
   kami-drills report logs/
   kami-drills report old_logs/ --override fixed_drill_logs/
+  kami-drills profile plays.json --specs specs/v1.1
   kami-drills spec check drills_v2/spec
   kami-drills spec from-miner candidates.jsonl --runs "$KAMI_DRILLS_S1_RUNS" --out out/specs
 """
@@ -333,6 +334,48 @@ def cmd_mine(args):
     return 0
 
 
+def cmd_profile(args):
+    """Per-skill-area profile (docs/v2-profile.md): models x areas, the equal-weight aggregate, n and bootstrap CIs."""
+    from kami_drills import profile as pf
+    from kami_drills import spec as sp
+
+    try:
+        specs = sp.load(args.specs)
+        rows = [r for f in args.results for r in pf.tries(json.loads(Path(f).expanduser().read_text()))]
+        out = pf.profile(specs, rows, seed=args.seed, min_n=args.min_n)
+    except (OSError, ValueError) as e:
+        fail(str(e))
+    if not out["models"]:
+        fail("no scored drill has a recorded try in " + " ".join(args.results))
+    if args.json:
+        return print(json.dumps(out, indent=1))
+    n = out["n_by_area"]
+    head = [f"{a} (n={n[a]}{', thin' if n[a] < args.min_n else ''})" for a in pf.AREAS]
+    ci = lambda c: f"[{c['ci95'][0]:.2f}-{c['ci95'][1]:.2f}]" if c["ci95"] else "[no CI]"
+    cell = lambda c, a: "-" if c["score"] is None else f"{c['score']:.2f} {ci(c)}" + ("" if c["n"] == n[a] else f" n={c['n']}")
+    ms = sorted(out["models"].items(), key=lambda kv: -kv[1]["equal_weight"])
+    table(["model", "equal-weight", "drill-weighted", *head],
+          [[m, f"{p['equal_weight']:.2f}", f"{p['drill_weighted']:.2f}", *(cell(p["areas"][a], a) for a in pf.AREAS)]
+           for m, p in ms])
+    print(f"\nequal-weight: mean of the {len(pf.AREAS)} area scores (each area counts the same). drill-weighted: mean over "
+          f"all {sum(n.values())} scored drills. [ ]: bootstrap 95% CI over the area's drills (none for one drill). "
+          f"thin: n < {args.min_n}, read the CI.")
+    print("not scored: " + (", ".join(f"{k} {v}" for k, v in sorted(out["excluded"].items())) or "none")
+          + ". Controls and traps are gate-only; tier B items are reported beside a score, never in it.")
+    if out["not_administered"]:
+        print(f"scored drills with no recorded try: {len(out['not_administered'])}")
+    if out["r_with_rest"]:
+        print("area r with the mean of the other areas, across models: "
+              + ", ".join(f"{a} {'-' if r is None else f'{r:+.2f}'}" for a, r in out["r_with_rest"].items()))
+    if args.bars:
+        for m, p in ms:
+            print(f"\n{m}")
+            for a in [*pf.AREAS, "equal_weight"]:
+                v = p["equal_weight"] if a == "equal_weight" else p["areas"][a]["score"]
+                print(f"  {a:12s} {'' if v is None else '#' * round(20 * v):20s} {'-' if v is None else f'{v:.2f}'}")
+    return 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="kami-drills", description="Offline decision drills for Kamigotchi agents (Inspect).",
                                 epilog=EXAMPLES, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -365,6 +408,17 @@ def main(argv=None):
     s.add_argument("--json", action="store_true", help="machine-readable output")
     s.add_argument("-v", "--verbose", action="store_true", help="list every pair, not only q < .05")
     s.set_defaults(fn=cmd_report)
+
+    s = sub.add_parser("profile", help="per-skill-area profile of recorded tries: areas, equal-weight aggregate, n, CIs")
+    s.add_argument("results", nargs="+", help="plays.json ({model: {drill: [tries]}}), a list of try rows, or "
+                   "results/<suite>/models/*.json (v1 verdicts as recorded)")
+    s.add_argument("--specs", nargs="+", default=[str(ROOT / "specs" / "v1.1")], help="spec files, directories or a bank "
+                   "root (default specs/v1.1)")
+    s.add_argument("--min-n", type=int, default=5, help="flag areas with fewer scored drills as thin (default 5)")
+    s.add_argument("--seed", type=int, default=0, help="bootstrap seed (default 0)")
+    s.add_argument("--bars", action="store_true", help="also print a text bar chart per model")
+    s.add_argument("--json", action="store_true", help="machine-readable output")
+    s.set_defaults(fn=cmd_profile)
 
     s = sub.add_parser("spec", help="v2 harness-agnostic drill specs (experimental)")
     ss = s.add_subparsers(dest="spec_cmd", required=True, metavar="action")
