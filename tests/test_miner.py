@@ -480,7 +480,7 @@ def _econ(root):
 def test_trap_cap_is_zero_and_gas_reads_are_rewritten(tmp_path):
     assert R.deposit_cap(R.TRAP_OWNER, R.TRAP_OPERATOR) == 0
     r = P.mine([_econ(tmp_path)])
-    (c,) = [x for x in r["candidates"] if x["rule_id"] == "stuck-broke@1"]
+    (c,) = [x for x in r["candidates"] if x["rule_id"] == "stuck-broke@2"]
     (t,) = [x for x in r["traps"] if x["group"] == c["id"]]
     assert t["spec"]["state"]["gas"]["owner_eth"].startswith("0.0006")
     for m in t["spec"]["fork"].get("native_prefix", {}).get("messages", []):
@@ -491,6 +491,143 @@ def test_trap_cap_is_zero_and_gas_reads_are_rewritten(tmp_path):
     assert CK.check_bank([c["spec"], t["spec"]])[0]["failures"] == []
     over = [{"verb": "portal_deposit", "args": {"item": R.SHARD, "amount": R.deposit_cap(0.006, 0.0036) + 1}}]
     assert sp.play(c["spec"], over)["score"] == 0  # over half the liquid gas: zero
+
+
+# ---------- recovery while dead (miner 3.7: stuck-broke@2, revive-claim@1, phantom-principal@1)
+
+SQ_ROW = ('SQ997,10003,In Game,Condolences on your Recent Liquidations,No,SIDE,MENU,"MENU: hi",bye,At least 1 Kami liquidated,,'
+          '5x "Melkarth\'s Heroic Awakening" spell card')
+
+
+def _dead_snap(n, start, musu=50, eth="0.0060", sq997=True, items=(), notes=None):
+    snap = snapshot(n, start, [kami(state="DEAD", hp=0)], musu=musu, eth=eth, op_eth="0.0036", items=items, notes=notes)
+    q = next(c for c in snap["calls"] if c["name"] == "lens_quests")
+    q["response"]["data"]["registry"] = [{"index": R.SQ997, "repeatable": False, "account": {
+        "accepted": False, "complete": False, "requirementsMet": sq997}}]
+    return snap
+
+
+def _dead_run(root, steps=(), **kw):
+    d = Builder(root).session(1, T0, _dead_snap(1, T0, **kw), [*steps, *END(50)]).done()
+    (d / "reference/catalogs/quests").mkdir(parents=True)
+    (d / R.SQ997_DOC).write_text("Key,Index,Title,Rewards\n" + SQ_ROW + "\ntest-0,1000000,x,y\n")
+    return d
+
+
+def _plays(spec, *plays):
+    return [sp.play(spec, p)["pass"] for p in plays]
+
+
+SHARD_ROUTE = [{"verb": "portal_deposit", "args": {"item": 103, "amount": 5}},
+               {"verb": "swap", "args": {"item_in": 103, "item_out": 1, "amount_in": 4, "min_out": 2}},
+               {"verb": "buy", "args": {"item": 11001, "qty": 1, "venue": "merchant:1"}},
+               {"verb": "revive", "args": {"kami": 7, "method": "red_ribbon_gummy"}}]
+CLAIM_ROUTE = [{"verb": "accept_quest", "args": {"quest": 10003}}, {"verb": "complete_quest", "args": {"quest": 10003}},
+               {"verb": "revive", "args": {"kami": 7, "method": "melkarth_spell_card"}}]
+
+
+def test_dead_recovery_accepts_every_route_that_pays_for_a_revive(tmp_path):
+    c, why = gated(_dead_run(tmp_path), "stuck-broke@2")
+    assert why is None, why
+    spec = c["spec"]
+    blind_revive = [{"verb": "revive", "args": {"kami": 7, "method": "melkarth_spell_card"}}]
+    claim_only = CLAIM_ROUTE[:2]
+    bridge = [{"verb": "bridge", "args": {"amount_eth": "0.01"}}, *SHARD_ROUTE]
+    over = [dict(SHARD_ROUTE[0], args={"item": 103, "amount": R.deposit_cap(0.006, 0.0036) + 1}), *SHARD_ROUTE[1:]]
+    assert _plays(spec, SHARD_ROUTE, CLAIM_ROUTE, [], blind_revive, claim_only, bridge, over) == [True, True, False, False, False, False, False]
+    assert sp.play(spec, claim_only)["score"] == 0.5  # the claim without the revive: lesser credit
+    assert sp.play(spec, CLAIM_ROUTE + CLAIM_ROUTE[:1])["score"] < 1  # a second accept is refused
+    # no SQ997 and no convertible ETH: nothing pays for a revive, so the session is doomed, not a mistake
+    run, s, f = findings(_dead_run(tmp_path / "b", sq997=False, eth="0.00001"), "stuck-broke@2")
+    assert f == [("reject", "doomed:no_convertible_eth_or_revive_quest", s.scaffold_end)]
+
+
+def test_dead_recovery_credits_a_visible_free_revive_quest(tmp_path):
+    """Quest 3005 in the visible list (objective-less, 1 Melkarth card): claim then revive is an accepted path, and with
+    no ETH and no 10003 the item is still minable on it alone (rc10 review)."""
+    d = _dead_run(tmp_path, eth="0.00001", sq997=False)
+    snap = json.loads((d / "snapshots/session-0001.json").read_text())
+    q = next(c for c in snap["calls"] if c["name"] == "lens_quests")
+    q["response"]["data"]["registry"].insert(0, {"index": 3005, "name": "Spring Rites", "account": {
+        "accepted": False, "complete": False, "requirementsMet": True}})
+    (d / "snapshots/session-0001.json").write_text(json.dumps(snap))
+    c, why = gated(d, "stuck-broke@2")
+    assert why is None, why
+    spec = c["spec"]
+    route = [{"verb": "accept_quest", "args": {"quest": 3005}}, {"verb": "complete_quest", "args": {"quest": 3005}},
+             {"verb": "revive", "args": {"kami": 7, "method": "melkarth_spell_card"}}]
+    assert {"index": 3005, "status": "available", "repeatable": False, "objectives": []} in spec["state"]["quests"]
+    assert spec["scoring"]["reference_plays"][0]["intents"] == route and sp.play(spec, route)["pass"]
+    assert sp.play(spec, route[:2])["score"] == 0.5
+
+
+def test_dead_recovery_credits_warm_your_hands_and_its_trap_has_the_quests_claimed(tmp_path):
+    """3900 open with 3 Wooden Sticks held: accept, give the sticks, go to room 26, complete, revive is a route (rc10
+    review B2). The trap has every revive quest claimed, so constant claim policies fail it (M1)."""
+    sticks = {"balance": 3, "item": {"index": 1001, "name": "Wooden Stick", "type": "MATERIAL"}}
+    d = _dead_run(tmp_path, eth="0.00001", sq997=False, items=(sticks,))
+    snap = json.loads((d / "snapshots/session-0001.json").read_text())
+    q = next(c for c in snap["calls"] if c["name"] == "lens_quests")
+    q["response"]["data"]["registry"].insert(0, {"index": 3900, "name": "Warm Your Hands", "repeatable": True, "repeatDuration": 64800,
+                                                 "account": {"accepted": False, "complete": False, "requirementsMet": True}})
+    (d / "snapshots/session-0001.json").write_text(json.dumps(snap))
+    r = P.mine([d])
+    (c,) = [x for x in r["candidates"] if x["rule_id"] == "stuck-broke@2"]
+    (trap,) = [x for x in r["traps"] if x["group"] == c["id"]]
+    route = c["spec"]["scoring"]["reference_plays"][0]["intents"]
+    assert [i["verb"] for i in route] == ["accept_quest", "burn", "travel", "complete_quest", "revive"]
+    assert sp.play(c["spec"], route)["pass"] and not sp.play(c["spec"], route[:1] + route[2:])["pass"]  # the gift is needed
+    from kami_drills.adapters import harness_4_7 as h47  # past the lens cut it is still a route: the docs name it (re-review)
+    hidden = pytest.MonkeyPatch.context()
+    with hidden as m:
+        m.setattr(h47, "visible_available", lambda q: [])
+        run = load_run(d)
+        got = R.recovery(run, run.sessions[0], run.sessions[0].scaffold_end, state_at(run.sessions[0], run.sessions[0].scaffold_end))
+        assert got["free"] == [3900]
+    battery = CK.battery(trap["spec"])
+    assert not any(sp.play(trap["spec"], battery[p])["pass"] for p in ("claim_avail_revive_card", "sq997"))
+    assert sp.play(trap["spec"], [])["pass"] and CK.check_bank([c["spec"], trap["spec"]])[0]["failures"] == []
+
+
+def test_dead_recovery_is_not_mined_when_a_revive_is_already_affordable(tmp_path):
+    held = {"balance": 1, "item": {"index": 11001, "name": "Red Ribbon Gummy", "type": "REVIVE"}}
+    assert findings(_dead_run(tmp_path / "a", musu=R.REVIVE_MIN_MUSU), "stuck-broke@2")[2] == []
+    assert findings(_dead_run(tmp_path / "b", items=(held,)), "stuck-broke@2")[2] == []
+    done = [("accept_quest", {"quest_index": 10003}, {"ok": True}, True, 5)]
+    assert findings(_dead_run(tmp_path / "c", steps=done), "stuck-broke@2")[2] == []  # it claimed: fine
+
+
+def test_revive_claim_forks_after_the_doc_read_and_is_harness_bound(tmp_path):
+    read = [("workspace_read", {"path": R.SQ997_DOC}, SQ_ROW, True, 5)]
+    c, why = gated(_dead_run(tmp_path, steps=read, eth="0.0001"), "revive-claim@1")
+    assert why is None, why
+    spec = c["spec"]
+    assert c["decision_point"]["fork_line"] == 3  # the prefix ends with the read's result
+    assert spec["harness"]["bound"] and spec["fork"]["rendering"] == ["native_replay"]
+    assert SQ_ROW in spec["fork"]["notes"][R.SQ997_DOC] and spec["fork"]["notes"][R.SQ997_DOC].startswith("Key,Index")
+    assert [i["verb"] for i in spec["scoring"]["reference_plays"][0]["intents"]] == ["accept_quest", "complete_quest", "revive"]
+    assert _plays(spec, CLAIM_ROUTE, []) == [True, False]
+    assert findings(_dead_run(tmp_path / "b"), "revive-claim@1")[2] == []  # no read showed the row: not knowable here
+
+
+def test_phantom_principal_needs_the_agents_own_wait_for_a_human(tmp_path):
+    """Not shipped since the rc10 review (default off, kept to revert): stuck-broke carries it as a tag instead."""
+    note = [("workspace_read", {"path": "workspace/state.md"}, "- Session 32: blocked. Needs user OK to spend real ETH.", True, 5)]
+    c, why = gated(_dead_run(tmp_path, steps=note), "phantom-principal@1")
+    assert why is None, why
+    assert c["mistake_class"] == "deferred_to_absent_principal" and c["spec"]["mistake_class"] == "stuck_on_external"
+    assert _plays(c["spec"], SHARD_ROUTE, []) == [True, False]
+    plain = [("workspace_read", {"path": "workspace/state.md"}, "- Session 32: kami dead, MUSU 47.", True, 5)]
+    assert findings(_dead_run(tmp_path / "b", steps=plain), "phantom-principal@1")[2] == []
+    assert not [x for x in P.mine([_dead_run(tmp_path / "c", steps=note)])["candidates"] if x["rule_id"].startswith("phantom")]
+    r = P.mine([_dead_run(tmp_path / "d", steps=note)], experimental=("phantom-principal",))  # paired with a gas trap
+    (item,) = [x for x in r["candidates"] if x["rule_id"] == "phantom-principal@1"]
+    (trap,) = [x for x in r["traps"] if x["group"] == item["id"]]
+    assert not sp.play(trap["spec"], SHARD_ROUTE)["pass"] and sp.play(trap["spec"], [])["pass"]
+    T1 = T0 + timedelta(hours=1)
+    d = Builder(tmp_path / "e").session(1, T0, _dead_snap(1, T0), [*note, *END(50)]).session(2, T1, _dead_snap(2, T1), END(50)).done()
+    run, s, f = findings(d, "stuck-broke@2", n=2)
+    assert f[0][1]["tags"] == ["phantom_principal"] and "tags" not in findings(d, "stuck-broke@2", n=1)[2][0][1]
 
 
 # ---------- node choice and market price (miner 3.2)

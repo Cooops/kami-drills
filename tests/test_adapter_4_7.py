@@ -48,7 +48,7 @@ def V(intents):
     ("lens_kami", {"kami_index": 7, "at_least_block": 5}, [("read", {"kind": "kami", "kami": 7}, False)]),
     ("portal_deposit", {"item": 100, "amount": 1}, [("portal_deposit", {"item": 100, "amount": 1}, False)]),
     ("listing_buy", {"merchant_index": 1, "item_indices": [11001], "amounts": [2]}, [("buy", {"item": 11001, "qty": 2, "venue": "merchant:1"}, False)]),
-    ("burn_items", {"item_indices": [1], "amounts": [1]}, [("other_act", {"tool": "burn_items"}, False)]),
+    ("burn_items", {"item_indices": [1], "amounts": [1]}, [("burn", {"item": 1, "amount": 1}, False)]),
     ("newbie_vendor_buy", {"kami_index": 3149, "max_price_eth": "0.006"},
      [("buy", {"item": "kami", "qty": 1, "venue": "newbie_vendor", "max_unit_price": "0.006", "kami": 3149}, False)]),
     ("buy_kami", {"kami_ids": [7, 8], "max_total_eth": "0.01"},  # the cap is a total: per unit = total / qty

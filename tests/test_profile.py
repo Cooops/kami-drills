@@ -11,7 +11,7 @@ from kami_drills import spec as sp
 
 ROOT = Path(__file__).parent.parent
 V11 = sp.load([ROOT / "specs" / "v1.1"])
-BANK = sp.load([ROOT / "bank" / "v2.0-rc9"])
+BANK = sp.load([ROOT / "bank" / "v2.0-rc10"])
 ALL = V11 + BANK + sp.load([ROOT / "drills_v2" / "spec"])
 FIX = ROOT / "tests" / "fixtures" / "v1_rc2_plays.json"
 

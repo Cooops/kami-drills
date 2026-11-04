@@ -22,7 +22,7 @@ from pathlib import Path
 
 from kami_drills.adapters import harness_4_7 as h47
 from kami_drills.miner import MINER_VERSION, SCHEMA
-from kami_drills.miner.rules import COOLDOWN, ROOM, RULES, STARVING, snapshot_reads
+from kami_drills.miner.rules import COOLDOWN, ROOM, RULES, STARVING, available_quests, snapshot_reads
 from kami_drills.miner.trace import REVIVES, TRANSIENT, block_at, load_run, state_at, time_at
 from kami_drills import spec as sp
 from kami_drills.spec import check as CK
@@ -31,10 +31,11 @@ from kami_drills.spec import from_miner
 COVERED = re.compile("|".join(r.pattern for r in (COOLDOWN, ROOM, STARVING)), re.I)
 HARNESS_BOUND = re.compile(r"quest 3900 is already completed", re.I)  # kami-harness 4.7.0 refuses the daily re-accept
 STATIC_SOURCES = ("reference/", "game_rule", "telemetry", "call_argument")
-# blind plays the node-choice and market drills meet with their pair (control / trap): the item may pass them, and
+# blind plays the node-choice, market and recovery drills meet with their pair (control / trap): the item may pass them, and
 # check_bank holds them to at most half the pair (an unpaired item is dropped there)
 PAIR_GATED = {"start_here", "nearest_node", "highest_node", "highest_cap_node", "body_match_node", "hand_match_node",
-              "buy_cheapest", "bulk_cheapest", "sticker_lo", "sticker_hi"}
+              "buy_cheapest", "bulk_cheapest", "sticker_lo", "sticker_hi",
+              "claim_all", "claim_avail_revive_card", "sq997"}  # recovery: the trap has the revive quests claimed
 CONSTANT_PLAYS = {"always_level": "level_up", "always_stop": "harvest_stop", "complete_all_quests": "complete_quest"}
 GATED_TOOLS = ("harvest_start", "harvest_stop", "harvest_collect", "feed_kami", "liquidate_kami", "use_item_batch")
 ADAPTERS = (h47,)
@@ -169,7 +170,7 @@ def candidate(meta, run, s, raw, fs, tier, tier_reason):
                            "time": t.isoformat() if t else None, **block_at(s, fork)},
         "agent_action": agent, "expected": raw["expected"], "actual": raw["actual"], "why": raw["why"],
         "scoring": raw["scoring"], "oracle": raw["oracle"], "accepted_actions": raw["accepted_actions"],
-        "accepted_paths": raw.get("accepted_paths", []), **{k: raw[k] for k in ("market", "node") if raw.get(k)},
+        "accepted_paths": raw.get("accepted_paths", []), **{k: raw[k] for k in ("market", "node", "harness_bound", "fork_notes", "world_pools", "tags") if raw.get(k)},
         "fork_state": fs, "world_constants": raw.get("world_constants"), "dependencies": raw["dependencies"],
         "depends_on_non_snapshot": sorted({d["field"] for d in raw["dependencies"]
                                            if not str(d.get("source")).startswith("snapshot:")}),
@@ -216,7 +217,7 @@ def gate(meta, run, s, raw):
     if gaps:
         return None, "replay_gap:" + gaps[0].split(":")[0]
     st, t = state_at(s, fork), time_at(s, fork)
-    fs = fork_state(st, t) | raw.get("fork_state_overrides", {})
+    fs = fork_state(st, t) | {"available": available_quests(run, s, fork)} | raw.get("fork_state_overrides", {})
     if ev := cooldown_evidence(s, fork, fs):
         fs["cooldown_evidence"] = ev
     tier = raw.get("tier_hint", "A")

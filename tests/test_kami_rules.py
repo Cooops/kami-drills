@@ -111,6 +111,55 @@ def test_quests_completable_only_when_met_and_not_contradicted():
     assert [g[2] for g in got] == [None, "QUEST_OBJS_NOT_MET", "QUEST_REQS_NOT_MET", "QUEST_NOT_ACCEPTED", "QUEST_ALREADY_COMPLETE"]
 
 
+def test_an_objectiveless_quest_is_met_on_accept_and_pays_its_reward():
+    """3005 "Spring Rites": no objectives, 1 Melkarth card (gdd quests.csv), so accept, complete, revive works; a quest
+    with objectives stays active on accept."""
+    assert R.WORLD["quests"]["3005"]["rewards"] == {"11002": 1}
+    s = spec([K(state="DEAD", hp=0)], quests=[{"index": 3005, "status": "available", "objectives": []},
+                                              {"index": 7, "status": "available"}])
+    got, sim = results(s, [I("revive", kami=7, method="melkarth_spell_card"), I("accept_quest", quest=3005),
+                           I("complete_quest", quest=3005), I("revive", kami=7, method="melkarth_spell_card"),
+                           I("accept_quest", quest=7), I("complete_quest", quest=7)])
+    assert [g[1:] for g in got] == [("validation_error", "INSUFFICIENT_ITEM"), ("ok", None), ("ok", None), ("ok", None),
+                                    ("ok", None), ("revert", "QUEST_OBJS_NOT_MET")]
+    assert sim.kami(7)["state"] == "RESTING" and sim.state["inventory"]["11002"] == 0
+
+
+def test_room_and_give_objectives_repeat_timer_and_room_requirements():
+    """3900 "Warm Your Hands": accept, give 3 Wooden Sticks (counted from acceptance), be in room 26 at completion; a
+    repeat waits for its timer; an In-Room requirement is checked on accept (rc10 review B2 and LOW)."""
+    q3900 = {"index": 3900, "status": "available", "repeatable": True, "objectives": [
+        {"type": "ROOM", "index": 26, "met": False}, {"type": "ITEM_BURN", "index": 1001, "required": 3, "current": 0, "met": False}]}
+    s = spec([K(state="DEAD", hp=0)], room=25, inventory={"1001": 4}, quests=[q3900, {"index": 3028, "status": "available",
+                                                                                   "requirements": [{"type": "ROOM", "index": 5}]}])
+    got, sim = results(s, [I("burn", item=1001, amount=1), I("accept_quest", quest=3900), I("complete_quest", quest=3900),
+                           I("burn", item=1001, amount=3), I("complete_quest", quest=3900), I("travel", room=26),
+                           I("complete_quest", quest=3900), I("revive", kami=7, method="melkarth_spell_card"),
+                           I("accept_quest", quest=3900), I("accept_quest", quest=3028)])
+    assert [g[2] for g in got] == [None, None, "QUEST_OBJS_NOT_MET", None, "QUEST_OBJS_NOT_MET", None, None, None,
+                                   "QUEST_REPEAT_NOT_READY", "QUEST_REQS_NOT_MET"]
+    assert sim.state["inventory"]["1001"] == 0 and sim.kami(7)["state"] == "RESTING"
+
+
+def test_portal_tax_and_the_pool_debit_what_they_move():
+    s = spec([K()], inventory={"1": 0}, gas={"owner_eth": "0.001"}, constants={"portal_tokens": {"103": {
+        "balance": "/gas/owner_eth", "unit_eth": 1e-5, "tax_flat": 1, "tax_bps": 50}}},
+        pools=[{"item_a": 103, "item_b": 1, "reserve_a": 10 ** 6, "reserve_b": 440 * 10 ** 6, "fee_bps": 30}])
+    s["state"]["gas"] = {"owner_eth": "0.001"}
+    got, sim = results(s, [I("portal_deposit", item=103, amount=1), I("portal_deposit", item=103, amount=3),
+                           I("swap", item_in=103, item_out=1, amount_in=3, min_out=2), I("swap", item_in=103, item_out=1, amount_in=2, min_out=2)])
+    assert [g[2] for g in got] == ["BAD_ARGS", None, "INSUFFICIENT_ITEM", None]  # 3 deposited, 2 credited
+    assert sim.state["inventory"]["103"] == 0 and 870 <= sim.state["inventory"]["1"] <= 880
+
+
+def test_visible_available_quests_follow_the_4_7_truncation():
+    reg = [{"index": q, "name": "x" * pad, "account": {"accepted": False, "complete": False, "requirementsMet": met}}
+           for q, pad, met in ((3005, 10, True), (3028, 70000, False), (10003, 10, True), (3039, 10, True))]
+    assert [r["index"] for r in h.visible_available({"data": {"registry": reg}})] == [3005]  # 10003 and 3039 start past the 64 KB cut
+    state, _, _ = h.normalize_snapshot([{"name": "lens_quests", "response": {"data": {"registry": reg, "accepted": []}}}])
+    assert state["quests"] == [{"index": 3005, "status": "available", "repeatable": False, "objectives": []}]
+
+
 def test_token_deposit_is_bounded_by_the_declared_balance():
     s = spec([K()], constants={"portal_tokens": {"100": {"balance": "/gas/owner_eth", "unit_eth": 1e-4}}})
     s["state"]["gas"] = {"owner_eth": "0.0005"}

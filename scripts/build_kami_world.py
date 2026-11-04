@@ -64,7 +64,28 @@ def main(gdd):
             shop = shop or t == "LISTING_BUY_TOTAL"
         return {"nodes": sorted(tn), "items": sorted(ti), **({"liquidate": True} if hunt else {}),
                 **({"harvest_any_node": True} if anywhere else {}), **({"shop": True} if shop else {})}
-    quests = {r["Index"]: {"title": r["Title"], "has_objectives": bool(r["Objectives"].strip()), **ties(r["Objectives"])}
+    # item rewards the rules library pays on completion: only items it models (foods and revives), by name
+    norm = lambda s: re.sub(r"[\"“”‘’']", "", s).replace("’", "'").strip().lower()
+    by_name = {norm(v["name"]): int(k) for k, v in items.items()}
+
+    def rewards(text):
+        out = {}
+        for m in re.finditer(r"(\d+)x ([^,]+)", text or ""):
+            if (i := by_name.get(norm(m.group(2)))) is not None:
+                out[str(i)] = out.get(str(i), 0) + int(m.group(1))
+        return {"rewards": out} if out else {}
+    def objectives(text):  # each objective's type, index and value (the rules library meets ROOM and ITEM_BURN itself)
+        out = []
+        for d in (x.strip() for x in (text or "").split(",") if x.strip()):
+            o = objs.get(d) or {}
+            out.append({"type": o.get("Type") or "UNKNOWN",
+                        **({"index": int(o["Index"])} if (o.get("Index") or "").strip().isdigit() else {}),
+                        **({"value": int(o["Value"])} if (o.get("Value") or "").strip().isdigit() else {})})
+        return {"objectives": out} if out else {}
+    quests = {r["Index"]: {"title": r["Title"], "has_objectives": bool(r["Objectives"].strip()), **ties(r["Objectives"]),
+                           **rewards(r["Rewards"]), **objectives(r["Objectives"]),
+                           # a daily repeats 18 h after completion (S1 lens_quests registry: repeatDuration 64800)
+                           **({"repeat_s": 64800} if r["Daily"].strip() == "Yes" else {})}
               for r in rows(gdd / "catalogs/quests/quests.csv") if r["Status"] == "In Game"}
     rooms = {int(r["Index"]): r for r in rows(gdd / "catalogs/rooms/rooms.csv") if r["Status"] == "In Game" and r["Index"] != "0"}
     pos = {i: (int(r["X"]), int(r["Y"]), int(r["Z"])) for i, r in rooms.items()}
@@ -79,7 +100,7 @@ def main(gdd):
                 adj[a].add(int(e))
                 adj[int(e)].add(a)
     out = {"source": f"kamigotchi-gdd {sha}: catalogs/items/items.csv (Food/Revive/Potion rows), catalogs/rooms/nodes.csv "
-                     "(level caps, affinities, yield items), catalogs/quests/quests.csv + objectives.csv (objectives and the nodes and items they tie to), catalogs/rooms/rooms.csv (adjacency as "
+                     "(level caps, affinities, yield items), catalogs/quests/quests.csv + objectives.csv (objectives and the nodes and items they tie to; food and revive rewards), catalogs/rooms/rooms.csv (adjacency as "
                      "kami-harness rooms_graph.py), catalogs/rooms/gates.csv (gated rooms); scripts/build_kami_world.py",
            "items": items, "nodes": nodes, "quests": quests, "rooms": {str(a): sorted(adj[a]) for a in sorted(adj)},
            "gated_rooms": gated}

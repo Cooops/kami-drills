@@ -87,6 +87,15 @@ class Rules:
             flags.add("late")  # waited out the cooldown, then idled: a lesser play where the drill declares one
         return None
 
+    def objective_met(self, o):
+        """ROOM ("Move to …") is met while the account is there; ITEM_BURN counts gives since acceptance; any other
+        objective keeps the met flag the fork state recorded (the library cannot advance it)."""
+        if o["type"] == "ROOM" and "index" in o:
+            return self.sim.state["account"]["room"] == o["index"]
+        if o["type"] == "ITEM_BURN" and "required" in o:
+            return o.get("current", 0) >= o["required"]
+        return bool(o.get("met"))
+
     # ---- the rules
     def act(self, intent):
         """(result, apply) or None. `apply()` commits the effects; a dry run never calls it."""
@@ -203,11 +212,15 @@ class Rules:
                     res = _refuse("QUEST_ALREADY_COMPLETE", f"quest {q['index']} is already completed by account", "validation_error")
                 elif q.get("requirements_met") is False:
                     res = _refuse("QUEST_REQS_NOT_MET", "reqs not met")
-                elif q["status"] != "objectives_met":
+                elif q["status"] != "objectives_met" and not (q.get("objectives") is not None and all(self.objective_met(o) for o in q["objectives"])):
                     res = _refuse("QUEST_OBJS_NOT_MET", "quest objs not met")
                 else:
-                    def apply():
+                    def apply():  # gdd progression/quests.md: rewards are paid on completion (foods and revives modelled)
                         q["status"] = "complete"
+                        if q.get("repeatable"):
+                            q["repeat_available_unix"] = t + (WORLD["quests"].get(str(q["index"])) or {}).get("repeat_s", 0)
+                        for item, n in (WORLD["quests"].get(str(q["index"])) or {}).get("rewards", {}).items():
+                            s["inventory"][item] = self.held(item) + n
             else:
                 if q is None:
                     return None  # a quest the fork state says nothing about
@@ -215,11 +228,31 @@ class Rules:
                     res = _refuse("QUEST_ALREADY_COMPLETE", f"quest {q['index']} is already accepted by account", "validation_error")
                 elif q["status"] == "complete" and not q.get("repeatable"):
                     res = _refuse("QUEST_ALREADY_COMPLETE", f"quest {q['index']} is already completed by account", "validation_error")
-                elif q["status"] == "locked":
+                elif q["status"] == "complete" and t < (q.get("repeat_available_unix") or 0):  # checkRepeat
+                    res = _refuse("QUEST_REPEAT_NOT_READY", f"quest {q['index']} can repeat in {q['repeat_available_unix'] - t:.0f} s")
+                elif q["status"] == "locked" or any(r["type"] == "ROOM" and r["index"] != room for r in q.get("requirements", [])):
                     res = _refuse("QUEST_REQS_NOT_MET", "reqs not met")
                 else:
-                    def apply():
-                        q["status"] = "active"
+                    def apply():  # objectives count from acceptance; a quest with none is met at once
+                        for o in q.get("objectives") or []:
+                            o["met"] = False
+                            if "current" in o:
+                                o["current"] = 0
+                        q["status"] = "objectives_met" if q.get("objectives") == [] else "active"
+        elif v == "burn":  # kami-harness burn_items; counts toward an accepted quest's ITEM_BURN ("Give N") objective
+            item, n = a.get("item"), int(a.get("amount") or 0)
+            if n <= 0:
+                res = _refuse("BAD_ARGS", "amounts must be positive", "validation_error")
+            elif self.inventory_known and self.held(item) < n:
+                res = _refuse("INSUFFICIENT_ITEM", f"holds {self.held(item)} of item {item}", "validation_error")
+            else:
+                def apply():
+                    if self.inventory_known:
+                        s["inventory"][str(item)] = self.held(item) - n
+                    for q in s.get("quests", []):
+                        for o in q.get("objectives") or [] if q["status"] == "active" else []:
+                            if o["type"] == "ITEM_BURN" and o.get("index") == item:
+                                o["current"] = o.get("current", 0) + n
         elif v == "travel":  # kami-harness move_to_room (one hop, adjacent only) / travel_to_room (BFS path)
             to = a.get("room")
             hops = path_len(room, to) if to in ADJ and room in ADJ else None
@@ -240,15 +273,19 @@ class Rules:
             from kami_drills.spec import get, pointer
             bal = float(get(s, tok["balance"]) or 0)
             cost = float(a.get("amount") or 0) * tok["unit_eth"]
+            # the portal keeps an import tax in items: flat + basis points (S1 receipts: flat 1, 50 bps)
+            tax = tok.get("tax_flat", 0) + int(float(a.get("amount") or 0) * tok.get("tax_bps", 0) / 1e4)
             if cost <= 0:
                 res = _refuse("BAD_ARGS", "amount must be positive", "validation_error")
+            elif float(a.get("amount") or 0) <= tax:
+                res = _refuse("BAD_ARGS", f"import tax ({tax}) must be below the amount", "validation_error")
             elif cost > bal + 1e-12:
                 res = _refuse("TOKEN_BALANCE", "token balance too low", "validation_error")
             else:
                 def apply():
                     parent, key = pointer(s, tok["balance"])
                     parent[key] = f"{bal - cost:.18f}".rstrip("0").rstrip(".")
-                    s["inventory"][str(a["item"])] = self.held(a["item"]) + int(a["amount"])
+                    s["inventory"][str(a["item"])] = self.held(a["item"]) + int(a["amount"]) - tax
         elif v == "swap":
             return self.swap(a, flags)
         else:
