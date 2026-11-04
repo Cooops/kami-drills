@@ -101,8 +101,8 @@ stamina (decisions late in long sessions and across sessions).
 
 ## v2 (experimental, for Season 2)
 
-v1 is the frozen Season 1 forecast suite: nothing below touches `drills/`, the v1 loader, the judge hash or
-`kami-drills run`. v2 is a draft for Season 2, set out in [docs/v2-proposal.md](docs/v2-proposal.md) with the
+v1 is the frozen Season 1 forecast suite: nothing below touches `drills/`, the v1 loader or the judge hash, and
+the default `--suite v1` path of `kami-drills run` is unchanged. v2 is a draft for Season 2, set out in [docs/v2-proposal.md](docs/v2-proposal.md) with the
 literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md). The pieces so far, all offline:
 
 - **Cadence** ([docs/v2-cadence.md](docs/v2-cadence.md), `kami_drills/cadence.py`): schedule drills score the chosen

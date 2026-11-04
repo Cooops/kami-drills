@@ -12,7 +12,7 @@ Inputs: `models/*.json` (pass per drill per try, gap flag per drill per try) and
 - **Clusters (headline: snapshot family).** A family is the source run plus the arm directory of the source session (`provenance.source.dataset` + first path part of `session_file`). This gives **9 clusters** (sizes 1, 2, 3, 4, 6, 6, 7, 8, 10). Sensitivities: by source run only (**5 clusters**: 30, 7, 4, 3, 3 drills; KamiBench run 006 holds 30 of 47) and by source session (43 clusters, nearly one per drill).
 - **CI:** percentile cluster bootstrap over drills, 10,000 resamples, seed 0, `cluster_bootstrap_ci`. With 9 (or 5) clusters these intervals are themselves rough.
 - **Item statistics:** respondents are the 22 model-tries, each scored 0/1 per drill. Pass rate, corrected point-biserial (drill vs the rest-of-suite total in the same try, `item_stats`), low-information (pass rate >= 0.95 or <= 0.05), reversed (corrected r < 0). As a cross-check, Spearman rho of the drill's per-model score against the rest-of-suite model score (11 models) is reported; "rank-confirmed" means both are negative.
-- **Tiers** are not defined in the repo. For this note only: top = rank 1-3, middle = 4-8, bottom = 9-11 (competition ranking, ties share a rank). The split is arbitrary; read the CI column too.
+- **Tiers** follow `scoring_v2.default_tier_sizes`, which gives 3/5/3 for N = 11: top = rank 1-3, middle = 4-8, bottom = 9-11 (competition ranking, ties share a rank). The split is a convention; read the CI column too.
 
 ## Per-model results
 

@@ -1,5 +1,6 @@
 """kami-drills command line: a thin wrapper over Inspect. `inspect view` is the deep-dive for any log."""
 import argparse
+import importlib.util
 import json
 import os
 import runpy
@@ -65,7 +66,9 @@ def cmd_check(args):
         except AssertionError as e:
             ok = False
             print(f"FAIL {test.name}: {e}")
-    if py:
+    if py and importlib.util.find_spec("pytest") is None:
+        print("skip pytest tests: pytest is not installed (uv sync --group dev)")
+    elif py:
         import subprocess
         if subprocess.run([sys.executable, "-m", "pytest", "-q", *map(str, py)]).returncode != 0:
             ok = False
@@ -113,14 +116,15 @@ def cmd_run(args):
     load_dotenv(find_dotenv(usecwd=True))  # Inspect reads .env too; load it first so the key check sees it
     if args.model.startswith("openrouter/") and not os.environ.get("OPENROUTER_API_KEY"):
         fail("OPENROUTER_API_KEY is not set; export it, or put it in a .env file in this directory")
-    known = {d["id"] for d in drills()}
+    task = suite[args.suite]()
+    known = {d["id"] for d in drills()} if args.suite == "v1" else {str(smp.id) for smp in task.dataset}
     ids = [i for i in (args.drills or "").split(",") if i]
-    if unknown := sorted(set(ids) - known) if args.suite == "v1" else []:
+    if unknown := sorted(set(ids) - known):
         fail(f"unknown drill id(s): {', '.join(unknown)} (see kami-drills list)")
     provider = args.model.removeprefix("openrouter/").split("/")[0]
     # their strict tool mode requires every parameter, and the harness surface has optional ones
     model_args = {"strict_tools": False} if provider in ("openai", "meta") else {}
-    logs = inspect_eval(suite[args.suite](), model=args.model, model_args=model_args, epochs=args.epochs, sample_id=ids or None,
+    logs = inspect_eval(task, model=args.model, model_args=model_args, epochs=args.epochs, sample_id=ids or None,
                         log_dir=args.log_dir, display="full" if args.verbose else "none")
     log = logs[0]
     if log.status != "success" or all(s.error for s in log.samples or []):
@@ -128,7 +132,8 @@ def cmd_run(args):
         return 1
     if args.suite != "v1":
         rows = [[smp.id, smp.epoch, next(iter(smp.scores.values())).value] for smp in log.samples or [] if smp.scores]
-        table(["drill", "try", "score"], rows, left=1)
+        # v2-budget's value is the raw action count, not the registered pooled budget score
+        table(["drill", "try", "actions" if args.suite == "v2-budget" else "score"], rows, left=1)
         print(f"log: {log.location}")
         return 0
     summary = summarise(args.model.removeprefix("openrouter/"), collect([log])[args.model.removeprefix("openrouter/")])

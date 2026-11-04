@@ -55,3 +55,11 @@ def test_polluted(tmp_path):
         spec = next(s.metadata["spec"] for s in polluted_v2().dataset if s.id == sid)
         assert run(polluted_v2(), sid, play(*map(tuple, spec["oracle"])), tmp_path)
         assert not run(polluted_v2(), sid, play(), tmp_path)
+
+
+@pytest.mark.parametrize("suite", ["v2-memory", "v2-schedule", "v2-polluted", "v2-budget"])
+def test_run_rejects_unknown_v2_drill_id(suite, capsys):
+    from kami_drills.cli import main
+    with pytest.raises(SystemExit) as e:
+        main(["run", "--model", M, "--suite", suite, "--drills", "nope"])
+    assert e.value.code == 2 and "unknown drill id(s): nope" in capsys.readouterr().err

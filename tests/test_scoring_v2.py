@@ -104,6 +104,8 @@ def test_cadence_score():
     flat = cadence_score({"a": [1], "b": [1]}, {"a": .2, "b": .8})
     assert flat["a"] == pytest.approx(-.5) and flat["b"] == pytest.approx(.5)  # schedule z is 0, budget z is -1/+1
     assert MAX_SCHEDULE_LOSS == pytest.approx(7.272, abs=1e-3)
+    with pytest.raises(ValueError, match="no schedule loss"):
+        cadence_score({"a": [1], "b": []}, {"a": .2, "b": .8})
 
 
 def test_composite():
@@ -153,6 +155,8 @@ def test_rho_cluster_ci():
     assert rho == pytest.approx(1) and lo == pytest.approx(1)
     rho, lo, hi = rho_cluster_ci(drill, {m: [v] for m, v in zip("abcdefgh", [3, 1, 4, 1, 5, 9, 2, 6])}, n=500)
     assert lo < rho < hi and lo < 0
+    with pytest.raises(ValueError, match="degenerate"):  # two models, seed 3: all 3 replicates draw one model twice
+        rho_cluster_ci({"a": 0, "b": 1}, {"a": [0], "b": [1]}, n=3, seed=3)
 
 
 def test_choose_k():
@@ -254,6 +258,8 @@ def test_forecast_end_to_end():
     assert p["m9"]["top"] > .5 and p["m0"]["bottom"] > .5
     assert sum(v["top"] for v in p.values()) == pytest.approx(3)
     assert p == forecast(dec, sched, budget, sizes, n=500, seed=0, clusters=clusters)
+    with pytest.raises(ValueError, match="schedule_losses has no entry"):
+        forecast(dec, {m: v for m, v in sched.items() if m != "m0"}, budget, sizes, n=10)
     # pooled budget ratios as fixed inputs; no clusters (item bootstrap within each stratum)
     fixed = {m: pooled_budget_score(list(b.values())) for m, b in budget.items()}
     q = forecast(dec, sched, fixed, sizes, n=300)

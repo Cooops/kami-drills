@@ -153,6 +153,8 @@ def cadence_score(schedule_losses, budget_scores):
     schedule_losses: {model: [cadence.schedule_loss per schedule drill]}; a missing or invalid wake (inf) counts as
     MAX_SCHEDULE_LOSS. budget_scores: {model: pooled budget score in [0, 1]} (cadence.pooled_budget_score /
     `pooled_budget_score`); None counts as 0."""
+    if empty := sorted(m for m, ls in schedule_losses.items() if not ls):
+        raise ValueError(f"no schedule loss for {empty}")
     sched = _z({m: -statistics.median(min(x, MAX_SCHEDULE_LOSS) for x in ls) for m, ls in schedule_losses.items()})
     budget = _z({m: b or 0.0 for m, b in budget_scores.items()})
     return {m: (sched[m] + budget[m]) / 2 for m in sched}
@@ -266,6 +268,9 @@ def forecast(decision_items, schedule_losses, budget_ratios, tier_sizes, n=10000
     resampled separately (`_resample`), and both scores, the composite and the ranking are recomputed each replicate."""
     decision_items, tier_sizes = _drop_unadministered(decision_items, tier_sizes)
     models = sorted(decision_items)
+    for name, data in (("schedule_losses", schedule_losses), ("budget_ratios", budget_ratios)):
+        if missing := [m for m in models if m not in data]:
+            raise ValueError(f"{name} has no entry for {missing}")
     per_model = {m: {} for m in models}
     for kind, data in (("decision", decision_items), ("schedule", schedule_losses), ("budget", budget_ratios)):
         for m in models:
@@ -374,6 +379,8 @@ def rho_cluster_ci(drill_score, live_runs, n=10000, seed=0):
             reps.append(statistics.correlation([drill_score[m] for m in pick], [live[m] for m in pick], method="ranked"))
         except statistics.StatisticsError:
             pass
+    if not reps:
+        raise ValueError("every bootstrap replicate is degenerate (constant ranks); need more models or varied scores")
     reps.sort()
     return rho, reps[int(.025 * len(reps))], reps[int(.975 * len(reps)) - 1]
 
