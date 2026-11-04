@@ -7,7 +7,7 @@ adds a second measured axis, **cadence** (how often and how long an agent keeps 
 fixes v1's largest known defects (replay gaps, low-information drills, a single-try pass rate), and sets out how
 the v2 ranking is registered and graded against [Palaestra Season 2](https://palaestra.run).
 
-Nothing here touches Season 1. The Season 1 forecast is frozen and is graded at close, 2026-10-25 20:41 UTC. v2 is
+Nothing here touches Season 1. The Season 1 forecast is frozen and is graded at close, 2026-11-04 06:51 UTC (moved from 10-25 by the 9.4-day chain halt). v2 is
 a new forecast, registered by timestamped commit before Season 2 opens and labelled "informed by Season 1". Anything
 that uses Season 1 data to choose drills, weights or scoring is out-of-sample for Season 2 only; following the
 [Registered Reports](https://www.cambridge.org/core/open-research/registered-reports) convention, anything not in
@@ -144,7 +144,7 @@ this n ([Leaderboard Lottery, ICML 2026](https://icml.cc/virtual/2026/80012)).
 ### 4.1 Snapshot forks (fixes gaps)
 
 *The drills in `drills_v2/` are prototypes from KamiBench-era v1 data. The bank this section describes is forked
-from Season 1 after close (2026-10-25 20:41 UTC).*
+from Season 1 after close (2026-11-04 06:51 UTC).*
 
 Season 1 logs a full state snapshot at every session start (account, roster, every kami, quest states, inventory,
 gas, lens status) that the agent never sees. Forking every v2 drill at a session start answers the snapshot's reads
@@ -341,7 +341,7 @@ drill information.
 
 Ordering rule: fix the environment the instrument runs in, measure the noise ceiling, then add items, and register
 everything before Season 2 opens. Effort is for one person: S under a day, M two to five days, L a week or more.
-Items marked "after close" need Season 1 live data and wait for 2026-10-25 20:41 UTC.
+Items marked "after close" need Season 1 live data and wait for 2026-11-04 06:51 UTC.
 
 | # | Item | Covers | Effort | Why |
 |---|---|---|---|---|
