@@ -54,9 +54,10 @@ def test_wallets_and_third_parties_are_replaced_and_verdicts_kept():
 # ---- an independent detector (owner decision: other players' wallets AND names are aliased; the owner's own handle
 # is a third party too, unless it is an S1 agent wallet). It does not call the tool: it harvests the raw player
 # records from the S1 transcripts when they are next to the repo ($KAMI_DRILLS_S1_RUNS, which should be the final copy
-# ../kamiarena/runs/s1-final; the default ../kamiarena/runs/s1 is the interim copy), and
+# ../kamiarena/runs/s1-final; by default it uses s1-final if present, else the interim ../kamiarena/runs/s1), and
 # otherwise falls back to fixed regexes over the committed text.
-S1 = Path(os.environ.get("KAMI_DRILLS_S1_RUNS") or ROOT.parent / "kamiarena" / "runs" / "s1")
+_RUNS = ROOT.parent / "kamiarena" / "runs"
+S1 = Path(os.environ.get("KAMI_DRILLS_S1_RUNS") or next((p for p in (_RUNS / "s1-final", _RUNS / "s1") if p.exists()), _RUNS / "s1"))
 Q, SEP = r'\\*"', r'(?:\s|\\+n)*'
 ACCOUNT_PARENTS = {"maker", "taker", "account", "accounts", "owner", "seller", "buyer", "players", "members", "friends",
                    "rows", "leaderboard", "data"}
