@@ -390,6 +390,16 @@ membership did not: 47 items, 5 controls, 24 traps.
 - Oracle-on-variant 0 of 12; the private variants hit no broken-alias pattern.
 - Output `sha256[:16] 2a23b0a148d55cdc`, identical for `--jobs 1` and 10.
 
+## Skill-area profiles (owner-approved 2026-11-03)
+
+- `kami-drills profile` and `kami_drills/profile.py`: per-model scores for survival, economic, progression, cadence
+  and recovery (mapping: `kami_drills/skill_areas.json`, one primary area per drill, seven v1.1 drills moved off their
+  v1 category), each with n and a deterministic bootstrap 95% CI over its drills, plus the equal-weight aggregate and
+  the drill-weighted mean. Thin areas (n < 5) are flagged; controls, traps, tier B, smoke and retired drills get no score.
+- On the rc2 tries under v1.1 (sensitivity): survival has 1 drill and economic 3; cadence separates models best;
+  mean area-to-area r +.24 ([v2-profile.md](v2-profile.md)).
+- `from_v1.equivalence` rows now also carry the spec score.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single

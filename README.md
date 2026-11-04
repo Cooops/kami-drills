@@ -50,7 +50,9 @@ decision, what everyone else did, and a faithful simulator. On a chain each come
 
 It is also public and reproducible, so anyone can rebuild and audit a drill, and the stakes are real. The limits:
 agent transcripts (stated intent, what was read) come from the harness logs, not the chain, and other players'
-future behaviour still has to be modelled. How a drill is built: [docs/method.md](docs/method.md).
+future behaviour still has to be modelled. How a drill is built: [docs/method.md](docs/method.md). Like HELM's
+per-scenario results, v2 results are reported per skill area (survival, economic, progression, cadence, recovery) plus
+an equal-weight aggregate ([docs/v2-profile.md](docs/v2-profile.md)).
 
 ## Quickstart
 

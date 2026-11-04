@@ -20,6 +20,10 @@ never reads `drills_v2/`. No model has been run on any v2 drill; there are no v2
   statistics (`kami_drills/scoring_v2.py`, [docs/v2-gap-coding.md](docs/v2-gap-coding.md)).
 - Docs: the proposal, a research digest, and [docs/adapting.md](docs/adapting.md) on building drills for another
   environment. `CITATION.cff` added.
+- `kami-drills profile RESULTS...`: a per-model profile over five skill areas (survival, economic, progression,
+  cadence, recovery) with n, a bootstrap 95% CI per area and an equal-weight aggregate beside the drill-weighted mean.
+  The mapping is `kami_drills/skill_areas.json`; controls, traps, tier B, smoke and retired drills get no score
+  ([docs/v2-profile.md](docs/v2-profile.md)).
 - `kami-drills check` now also runs the pytest-style v2 tests; `pytest` is a `dev` dependency group, installed by
   `uv sync`.
 

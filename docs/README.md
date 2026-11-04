@@ -13,6 +13,7 @@
 | [v2-gap-coding.md](v2-gap-coding.md) | Pre-registered rule for scoring replay gaps |
 | [v2-spec.md](v2-spec.md) | Harness-agnostic drill spec, intents, the kami-harness 4.7.0 adapter, `kami-drills spec check` |
 | [v2-miner.md](v2-miner.md) | Miner v2: candidate drills from Season 1 runs (`kami-drills mine`), the held-out policy, bank v2.0-rc8 |
+| [v2-profile.md](v2-profile.md) | `kami-drills profile`: per-skill-area scores, n and CIs, and the equal-weight aggregate |
 | [v2-changelog.md](v2-changelog.md) | Everything since `proposal/v2-season2`, and the open questions for the owner |
 
 Adding a v1 drill: [../CONTRIBUTING.md](../CONTRIBUTING.md). Everything under `v2-` is experimental and has no results.
