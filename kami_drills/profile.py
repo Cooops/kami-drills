@@ -88,12 +88,17 @@ def profile(specs, rows, n_boot=10000, seed=0, min_n=MIN_N):
         cells = {}
         for a in AREAS:
             items = {d: v for d, v in ds.items() if area_of[d] == a}
-            lo_hi = cluster_bootstrap_ci(items, {d: d for d in items}, n_boot, seed)[:2] if len(items) > 1 else None  # one drill: no CI
+            ok = len(items) >= max(min_n, 2)  # a thin area gets no CI: too few drills, treat it as anecdotal
+            lo_hi = cluster_bootstrap_ci(items, {d: d for d in items}, n_boot, seed)[:2] if ok else None
             cells[a] = {"n": len(items), "score": statistics.mean(items.values()) if items else None,
                         "ci95": list(lo_hi) if lo_hi else None, "thin": len(items) < min_n}
         present = [c["score"] for c in cells.values() if c["score"] is not None]
-        models[m] = {"areas": cells, "equal_weight": statistics.mean(present), "areas_in_equal_weight": len(present),
-                     "drill_weighted": statistics.mean(ds.values()), "drills": len(ds)}
+        full_n = [cells[a]["score"] for a in AREAS if not cells[a]["thin"]]
+        models[m] = {"areas": cells, "equal_weight": statistics.mean(full_n) if full_n else None,
+                     "areas_in_equal_weight": [a for a in AREAS if not cells[a]["thin"]],
+                     "thin_areas_excluded": [a for a in AREAS if cells[a]["thin"]],
+                     "equal_weight_all": statistics.mean(present), "drill_weighted": statistics.mean(ds.values()),
+                     "drills": len(ds)}
     used = {d for ds in scores.values() for d in ds}
     names = sorted(models)
     col = {a: [models[m]["areas"][a]["score"] for m in names] for a in AREAS}
@@ -109,8 +114,10 @@ def profile(specs, rows, n_boot=10000, seed=0, min_n=MIN_N):
         "excluded": dict(Counter(excluded(s) for s in specs if excluded(s))),
         "not_administered": sorted(s["id"] for s in scored if s["id"] not in used),
         "method": {"area": "mean drill score (a drill's score: mean over its tries)",
-                   "ci95": f"percentile bootstrap over the area's drills, {n_boot} resamples, seed {seed}",
-                   "equal_weight": "mean of the area scores, every area counts the same",
+                   "ci95": f"percentile bootstrap over the area's drills, {n_boot} resamples, seed {seed}; none when n < {min_n} "
+                           "(too few drills for a CI; treat as anecdotal)",
+                   "equal_weight": f"mean of the area scores with n >= {min_n}, every such area counts the same; None if none",
+                   "equal_weight_all": "mean of every area score, thin areas included",
                    "drill_weighted": "mean over every scored drill (areas with more drills count more)",
                    "unscored": "controls and traps are gate-only; tier B, smoke and retired drills get no score"},
     }
