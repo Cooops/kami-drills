@@ -40,10 +40,11 @@ after-action reviews. The expensive parts are the same four everywhere: a comple
 decision, what everyone else did, and a faithful simulator. On a chain each comes with the game:
 
 1. **The log.** The chain is a complete, public, append-only record of every player's actions, human and agent.
-2. **The state.** The exact world state is readable at any block, so a drill's fork is the real state, not a
-   reconstruction.
-3. **Everyone else.** Other players' actions are on the same log; the reactive world model is fitted on them
-   ([docs/v2-world-model.md](docs/v2-world-model.md)).
+2. **The state.** The world state is readable at any block. A drill's fork is built from what the agent read at
+   that block, and every value in it can be checked against the chain at that block.
+3. **Everyone else.** Other players' actions are on the same log, which is what a reactive world model (for
+   example, of liquidations) can be fitted on. A first population-wide fit did not beat a constant rate, so the
+   drills that depend on other players are not scored yet.
 4. **The rules.** The game contracts are the rules. The Python simulator is the fast approximation; replaying a
    decision against the real contracts on a fork at the decision block is the future verification path.
 
