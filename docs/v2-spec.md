@@ -19,7 +19,7 @@ uv run inspect eval kami_drills/adapters/harness_4_7.py -T policy=oracle --model
 
 Code: `kami_drills/spec/` (`__init__.py` load/validate/simulate/score, `rules.py` + `kami_world.json` the kami-rules
 library, `check.py`, `perturb.py`, `from_v1.py`, `from_miner.py`, `drill-spec.schema.json`),
-`kami_drills/adapters/harness_4_7.py`. Specs: `drills_v2/spec/` (converted v1), `bank/v2.0-rc8/` (mined). Tests:
+`kami_drills/adapters/harness_4_7.py`. Specs: `drills_v2/spec/` (converted v1), `bank/v2.0-rc9/` (mined). Tests:
 `tests/test_spec.py`, `tests/test_kami_rules.py`, `tests/test_adapter_4_7.py`, `tests/test_spec_convert.py`.
 
 This is the **one scorer**: the miner gates every mined item with `spec.check` ([v2-miner.md](v2-miner.md)), and a

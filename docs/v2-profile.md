@@ -7,7 +7,7 @@ the 4.7.0 adapter exactly as `scripts/v11/rescore.py` does.
 
 ```bash
 uv run kami-drills profile plays.json                          # v1.1 specs by default; plays.json is {model: {drill: [tries]}}
-uv run kami-drills profile plays.json --specs bank/v2.0-rc8 --json
+uv run kami-drills profile plays.json --specs bank/v2.0-rc9 --json
 uv run kami-drills profile results/v1.0.0-rc2/models/*.json --bars   # public: the v1 verdicts as recorded, not replayed
 ```
 
@@ -58,7 +58,7 @@ area: they are never scored.
 memory and persistence → cadence), unless the drill is an override above or its family is in `competency_exceptions`
 (levelup, stalling, cooldown-repeat, stuck-broke), each with its reason in the file.
 
-**v1.1 ranking drills per area:** survival 2, economic 3, progression 6, cadence 7, recovery 9 (27). Bank v2.0-rc8 adds
+**v1.1 ranking drills per area:** survival 2, economic 3, progression 6, cadence 7, recovery 9 (27). Bank v2.0-rc9 (like rc8) adds
 tier-A items to progression (8) and recovery (3) only: its survival and economic items are all tier B.
 
 ## What is scored

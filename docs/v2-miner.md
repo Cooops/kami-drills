@@ -39,8 +39,8 @@ repo cannot be committed by accident (H review M4).
 **Leak check.** Output goes to a temporary directory and is moved into place only when the leak check is clean.
 Otherwise the command exits 1 and writes nothing (F review m3).
 
-**Speed and determinism.** The 27 Season 1 runs (1,924 sessions) take about 5 s on 10 cores. Output is byte-identical
-for any `--jobs` and any input order (`sha256[:16] 2a23b0a148d55cdc` for miner 3.6.0, bank rc8, with the owner's key).
+**Speed and determinism.** The 27 final Season 1 runs (2,172 sessions) take about 50 s with `--jobs 10`. Output is byte-identical
+for any `--jobs` and any input order (`sha256[:16] b5869d7e3b57293a` for miner 3.6.0, bank rc9, with the owner's key).
 
 **Untrusted input.** Transcripts are parsed as JSON only.
 
@@ -253,7 +253,7 @@ It is tested on mixed public and held-out output, with each F-review route plant
 miner (subtract the public ids). A variant keeps the answer's structure (wait the cooldown then act, stop the kami,
 level the kami), item and quest ids, room and node ids, and the agent's recorded prose with ids renamed. Against a model
 that memorized the original, the renamed ids and shifted times are the defence; against a person with the logs there
-is none. Replaying each original's oracle on its variant passes 0 of 12 non-control held-out items in rc6 to rc8 (0 of 13 in rc5, 0 of 14 in
+is none. Replaying each original's oracle on its variant passes 0 of 13 non-control held-out items in rc9 (0 of 12 in rc6 to rc8, 0 of 13 in rc5, 0 of 14 in
 rc4, 0 of 12 in rc3, 0 of 5 in rc2; 1 of 7 in rc1, a quest-left item). A node-choice variant keeps its node ids, so its answer node is
 the same as the original's; only the renamed kami ids stop the original's calls. The alternative is to embargo the held-out source sessions' transcripts until the set retires.
 
@@ -386,7 +386,7 @@ there strands the gas. `reckless-convert@1` adds genuine traps from S1 (gemini-4
 `check_bank` requires every play to pass at most half a pair, so no-calls averages 0.50 over the pairs and every
 blind play ≤ 0.10, while reading the state (the oracle on the item, nothing on the trap) averages 1.00.
 
-## Bank `bank/v2.0-rc8`
+## Bank `bank/v2.0-rc9`
 
 `manifest.json` holds:
 - every public spec: `id`, `content_hash`, file sha256, rule, tier, group;
@@ -396,7 +396,10 @@ blind play ≤ 0.10, while reading the state (the oracle on the item, nothing on
 `bank.verify` re-checks all of it, and the commitments too when `private/` is present. Membership is frozen: a later
 pass writes a new bank version and never reselects this one (F review m1, E review M6).
 
-`v2.0-rc8` replaces `v2.0-rc7`, which replaced `v2.0-rc6`, `v2.0-rc5`, `v2.0-rc4`, `v2.0-rc3`, `v2.0-rc2` and `v2.0-rc1` (all removed from the tree; they are in the
+`v2.0-rc9` is the current bank: miner 3.6.0, unchanged flags (3 per run, max(2, 30%) per source model), re-run on
+the final 7-day Season 1 logs (27 runs, 2,172 sessions; rc3 to rc8 used an interim copy with 1,924). It adds 3
+items and 1 control to rc8 and keeps every rc8 spec byte-identical (changelog). rc8 stays in the tree, frozen.
+`v2.0-rc8` replaced `v2.0-rc7`, which replaced `v2.0-rc6`, `v2.0-rc5`, `v2.0-rc4`, `v2.0-rc3`, `v2.0-rc2` and `v2.0-rc1` (all removed from the tree; they are in the
 history and the changelog). rc1 held the two invalid collect-then-stop items and two held-out variants that kept an original kami id;
 rc2 dropped the family, fixed the perturbation and kept quest-left public. rc3 mines the same 27 runs with miner 3.1:
 the formerly sealed economic families are public families, and every spec is pseudonymized. rc4 mines them with miner
@@ -404,7 +407,7 @@ the formerly sealed economic families are public families, and every spec is pse
 unpseudonymized player records). rc6 drops node-choice, keeps one market item and pseudonymizes names in free text.
 rc7 fixes the free-text pass (no aliases on ordinary tokens, no
 committed name hashes) and makes the market trap sticker-proof. rc8 refreshes fork stamina and bounty from the
-prefix and tightens the name pass. All eight are release candidates; nothing was administered from them.
+prefix and tightens the name pass. All nine are release candidates; nothing was administered from them.
 
 **Personal data.** Public specs embed S1 transcript prefixes. Since rc3 (and in v1.1) every third-party wallet address
 becomes `0x00000000` + 32 hex of an HMAC and every third-party player record `{index, name}` becomes
@@ -416,7 +419,7 @@ tool: it harvests the player records from the S1 transcripts when they sit next 
 regexes. (rc3 and rc4 left 39 player records in two discovery-swap specs, and 73 decimal account ids.)
 
 Kept as recorded: game contracts and tokens, and the 54 Palaestra S1 agent owner and operator wallets
-(`spec/pseudonym_allowlist.json`; 46 of them appear in rc8). The key is derived from the split key, so aliases are
+(`spec/pseudonym_allowlist.json`; 46 of them appear in rc8 and rc9). The key is derived from the split key, so aliases are
 stable across rebuilds and banks, and differ from the v1.1 aliases. The v1.1 and `drills_v2/spec` key `V1_KEY` is
 public, so those aliases can be reversed by hashing a list of wallets; their raw text is public in `drills/` anyway.
 Every pseudonymized spec keeps every reference-play and battery verdict of its original, or the split fails.
@@ -460,30 +463,30 @@ severity, signature, group, needs_control, provenance, spec, checks, heldout, ca
 
 `spec` is the gated v2 spec; `checks` summarizes its `spec.check` report.
 
-## Season 1 results (miner 3.6.0, bank v2.0-rc8)
+## Season 1 results (miner 3.6.0, bank v2.0-rc9, final 7-day logs)
 
 Counts are **items** (mistakes and discoveries) unless they say specs; a spec count adds controls and traps.
 
 | | items |
 |---|---|
 | tier A | 13: cooldown-repeat 4, levelup-left 3, quest-left 6 |
-| tier B | 34: hp-liquidated 12, discovery-swap 5, stuck-broke 16, market-price 1 |
-| controls | 5 (constant-policy), all tier A |
+| tier B | 37: hp-liquidated 15, discovery-swap 5, stuck-broke 16, market-price 1 |
+| controls | 6 (constant-policy), all tier A |
 | trap controls | 24 (21 gas, 1 merchant-price, 2 genuine reckless-convert), all tier B |
-| split | 56 public specs (35 items + 4 controls + 17 traps; 15 tier-A specs = 11 items + 4 controls, 41 tier B), 20 held out (12 items + 1 control + 7 traps) |
+| split | 59 public specs (37 items + 5 controls + 17 traps; 16 tier-A specs = 11 items + 5 controls, 43 tier B), 21 held out (13 items + 1 control + 7 traps) |
 
 | family | tier | items public | items held out | triggers gated (after dedup) | main rejections |
 |---|---|---|---|---|---|
-| quest-left | A | 6 | 0 | 226 (7) | 219 dedup, 1 per-model cap |
+| quest-left | A | 6 | 0 | 237 (8) | 229 dedup, 2 per-model cap |
 | market-price | B | 1 (+ trap) | 0 | 3 (2) | 3 quest spend or item, 2 stated plan, 1 no kami HP, 1 dedup, 1 buy-the-cheapest passes (no sticker-proof trap) |
 | node-choice | not shipped | - | - | 0 | see Node choice |
 
-Every lazy and degenerate play (22 to 29 per spec, 41 distinct over the public specs) passes 0 of the 16 public
-non-trap ungrouped items, and more than half of 0 of the 19 public groups (`check_bank` over `bank/v2.0-rc8/public`).
-Counted with the private held-out variants (needs `private/`, mine-time check): 0 of 22 ungrouped, 0 of 27 groups. The
+Every lazy and degenerate play (22 to 29 per spec, 43 distinct over the public specs) passes 0 of the 17 public
+non-trap ungrouped items, and more than half of 0 of the 20 public groups (`check_bank` over `bank/v2.0-rc9/public`).
+Counted with the private held-out variants (needs `private/`, mine-time check): 0 of 24 ungrouped, 0 of 28 groups. The
 other 2 public ungrouped specs are the genuine `reckless-convert` trap controls: they pass by not converting, so several
 lazy plays pass them by design (their pair item gates those plays), and the profile never scores them (`profile.excluded`).
-The kitchen sink passes 0 of the 56 public specs.
+The kitchen sink passes 0 of the 59 public specs.
 - **The 22 economic pairs:** no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.09.
 - **The market pair:** always buy, buy the cheapest and bulk cheapest 0.00; sticker lo/hi and always sell 0.50.
 - Reading the state averages 1.00 on every pair.

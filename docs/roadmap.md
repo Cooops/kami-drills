@@ -5,14 +5,14 @@ many sessions) and memory (writing, trusting and repairing notes). These are the
 
 ## v1.1 — gap-free drills from snapshot runs
 
-Status: the v1.1 specs and the mined bank v2.0-rc8 are built (README, v2 section). The Season 1 re-mine on the full
-7-day logs comes after close. What is still open is listed under "deferred" below.
+Status: the v1.1 specs and the mined bank v2.0-rc9 (from the final 7-day Season 1 logs) are built (README, v2 section). What is still open is listed under "deferred" below.
 
 **At Season 1 close (2026-11-04 06:51 UTC), in order:**
 - [ ] **Grade the registered S1 forecast** (H1/H3 on day-7 quests, as pre-registered) after all 27 runs complete.
   Done = grading published with the Palaestra Season 1 results.
-- [ ] **Re-mine on the full 7-day logs**: re-sync the S1 logs, then `kami-drills mine ... --bank bank/v2.0-rcN` (a new
-  version; never overwrite rc8). Done = the new bank passes `spec check` and an independent review.
+- [x] **Re-mine on the full 7-day logs**: re-sync the S1 logs, then `kami-drills mine ... --bank bank/v2.0-rcN` (a new
+  version; never overwrite rc8). Done = the new bank passes `spec check` and an independent review. Mined as
+  `bank/v2.0-rc9` (2026-11-04; [v2-changelog.md](v2-changelog.md)): `spec check` 0 failing; the independent review is pending.
 - [ ] **Cross-benchmark check**: collect public agent-benchmark scores (e.g. Vending-Bench, τ-bench) for the 10 S1
   models; test which drill families track which benchmarks and what they add beyond overall model strength; pre-register
   it as an S2 hypothesis. Done = an analysis note and an S2 pre-registration entry.

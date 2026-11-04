@@ -413,6 +413,28 @@ membership did not: 47 items, 5 controls, 24 traps.
   content hashes changed. `spec check` 0 failing; `eq.py` 1027/1034. Bank rc8 had no such calldata (unchanged).
 - Not pseudonymized, as before: the frozen `drills/`, `defs/` and the v1-format `drills_v2/polluted/` variants.
 
+## Season 1 final re-mine, bank v2.0-rc9
+
+**Bank `v2.0-rc9`**, mined from the final Season 1 logs: the same 27 runs, now 2,172 sessions (every run past 168
+active hours; rc3 to rc8 used an interim copy with 1,924). Miner 3.6.0 with the rc8 flags (3 per run, max(2, 30%) per
+source model); only the input and the bank version changed. rc8 stays in the tree, unmodified.
+- 50 items (13 tier A, 37 tier B), 6 controls and 24 trap controls: 80 specs. 59 public (16 tier A, 43 tier B) and 21
+  held out (13 items, 1 control, 7 traps).
+- Added: 3 hp-liquidated items (12 → 15) from sessions after the interim copy, 2 public (deepseek-v4-pro-2 s86 with a
+  new paired control, grok-4.7-1 s50) and 1 held out. No new family; nothing dropped. All 76 rc8 specs (public and
+  private) are byte-identical in rc9.
+- quest-left: 237 gated triggers (8 after dedup); the extra signature is a gemini-4-argon one that the per-model cap
+  drops (2 cap drops, was 1), so the family keeps the same 6 items.
+- `spec check specs/v1.1 bank/v2.0-rc9`: 106 specs, 0 failing. `check_bank` 0 failures. Kitchen sink 0 of 59 public
+  (0 of 80 with the private variants). Every play passes 0 of 17 public non-trap ungrouped items and more than half of
+  0 of 20 public groups; with the private variants, 0 of 24 ungrouped and 0 of 28 groups.
+- Economic pairs unchanged (22): no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.09; state
+  reading 1.00. Oracle-on-variant 0 of 13. Leak check clean, `bank.verify` [].
+- Pseudonymization: `tests/test_pseudonymize.py` passes on rc9 with the final transcripts harvested; the private
+  variants hit no raw wallet, player record, harvested name or broken alias. 46 S1 agent wallets appear.
+- No fork session overlaps the indexer halt (2026-10-23 15:49 to 11-02 01:14 UTC).
+- Output `sha256[:16] b5869d7e3b57293a`, identical for `--jobs 1` and 10.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single
