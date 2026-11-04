@@ -6,8 +6,8 @@ another only at the same suite version and stack.
 ## Unreleased
 
 Experimental v2 material for Season 2 (see [docs/v2-proposal.md](docs/v2-proposal.md)). The v1 suite is
-unchanged: `drills/`, the v1 loader, `kami_drills/task.py` and the judge hash are untouched, and `kami-drills run`
-never reads `drills_v2/`. No model has been run on any v2 drill; there are no v2 results.
+unchanged: `drills/`, the v1 loader, `kami_drills/task.py` and the judge hash are untouched, and the default
+`--suite v1` path of `kami-drills run` is unchanged. No model has been run on any v2 drill; there are no v2 results.
 
 - Cadence drills: schedule specs in `drills_v2/cadence/` scored against the game clock, and the budget-use format
   (`kami_drills/cadence.py`, [docs/v2-cadence.md](docs/v2-cadence.md)). The budget-use drill runs offline by
