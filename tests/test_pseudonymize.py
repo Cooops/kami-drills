@@ -62,6 +62,8 @@ ACCOUNT_PARENTS = {"maker", "taker", "account", "accounts", "owner", "seller", "
 HEX40 = re.compile(r"(?<![0-9a-fA-Fx])0x[0-9a-fA-F]{40}(?![0-9a-fA-F])")
 HEXCUT = re.compile(r"(?<![0-9a-fA-Fx])0x[0-9a-fA-F]{36,39}(?![0-9a-fA-F])")
 DEC160 = re.compile(r"(?<!\d)\d{46,49}(?!\d)")
+DECCUT = re.compile(r"(?<!\d)\d{40,45}(?!\d)")
+HEXDATA = re.compile(r"0x([0-9a-fA-F]{64,})(?![0-9a-fA-F])")
 RECORD = re.compile(rf'\{{{SEP}{Q}id{Q}{SEP}:{SEP}{Q}0x[0-9a-fA-F]{{36,40}}{Q},{SEP}{Q}index{Q}{SEP}:{SEP}(\d+),{SEP}{Q}name{Q}{SEP}:{SEP}{Q}([^"\\]+){Q}')
 
 
@@ -99,6 +101,12 @@ def raw_people(spec):
     left = {a for a in HEX40.findall(text) if a.lower() not in allow and not a.startswith("0x00000000")}
     left |= {a for a in HEXCUT.findall(text) if not a.startswith("0x00000000") and not any(x.startswith(a.lower()) for x in allow)}
     left |= {d for d in DEC160.findall(text) if 2 ** 150 <= int(d) < 2 ** 160 and f"0x{int(d):040x}" not in allow}
+    left |= {d for d in DECCUT.findall(text) if not any(str(int(x, 16)).startswith(d) for x in allow)}
+    # a wallet as a 32-byte ABI word inside tx data or a topic (no 0x of its own); top 4 bytes zero = a uint or an alias
+    for h in HEXDATA.findall(text):
+        h = h.lower()
+        words = [h[i:i + 64] for i in range(8 if (len(h) - 8) % 64 == 0 else 0, len(h) - 63, 64)]
+        left |= {"0x" + w[24:] for w in words if w[:24] == "0" * 24 and w[24:32] != "0" * 8 and "0x" + w[24:] not in allow}
     left |= {f"{i}:{n}" for i, n in RECORD.findall(text) if int(i) != own and not re.fullmatch(r"player-[0-9a-f]{6}", n)}
     if S1.is_dir():
         for i, n in s1_players():
@@ -243,6 +251,24 @@ def test_ids_and_truncated_wallets_are_aliased():
     assert raw_people(out) == set() and "someseller" not in json.dumps(out)
     assert int(out["x"][1]) == int(out["x"][0], 16)  # the decimal id gets the same alias as the address
     assert P.pseudonymize(out, b"other")[0] == out
+
+
+def test_a_wallet_inside_calldata_is_aliased_and_uints_are_not():
+    a = "1111222233334444555566667777888899990000"  # a synthetic player wallet
+    agent = json.loads(P.ALLOWLIST.read_text())["palaestra_s1_agents"][0].lower()[2:]
+    uints = ["0" * 61 + "3e8", f"{2 ** 127 + 5:064x}", f"{10 ** 30:064x}"]  # 1000, a 2**127 amount, 1e30 wei
+    word = lambda x: "0" * 24 + x
+    data = "0xa9059cbb" + word(a) + uints[0] + word(agent) + uints[1] + uints[2]
+    cut = str(int(a, 16))[:42]  # a decimal account id cut off by a truncated result
+    s = {"state": {"account": {"index": 1}, "kamis": []}, "x": ["0x" + a, data, json.dumps({"data": data}), cut]}
+    assert {"0x" + a, cut} <= raw_people(s)  # the detector sees the padded wallet and the cut id
+    out, _ = P.pseudonymize(s, b"k")
+    alias, got = out["x"][0], out["x"][1]
+    assert raw_people(out) == set() and a not in json.dumps(out) and cut not in json.dumps(out)
+    assert got == "0xa9059cbb" + word(alias[2:]) + uints[0] + word(agent) + uints[1] + uints[2]  # the 0x form's alias
+    assert json.loads(out["x"][2])["data"] == got
+    assert P.pseudonymize(out, b"other")[0] == out  # idempotent
+    assert not any(P.padded_address(u[24:]) for u in uints) and P.padded_address(a)
 
 
 def test_a_maker_record_is_renamed():

@@ -11,7 +11,10 @@ By hand: KAMI_PSEUDO_KEY=... uv run kami-drills spec pseudonymize PATHS --key-en
 
 What changes, consistently across every spec under one key (the same input always gets the same alias):
 - every 0x-address (40 hex) except the allowlist -> 0x00000000 + HMAC(key, address)[:32]; the same address as a decimal
-  160-bit account id -> that alias as an integer; an address truncated to 36-39 hex -> a pseudonym of the same length. The allowlist is the vendored
+  160-bit account id -> that alias as an integer; an address as a 0{24}-padded ABI word in tx data or a topic -> the
+  same alias, padded (a word is an address only with a nonzero byte in its top 4 bytes, so no ordinary uint changes);
+  an address truncated to 36-39 hex -> a pseudonym of the same length; a decimal id truncated to 40-45 digits -> a
+  128-bit integer. The allowlist is the vendored
   harness surface's addresses plus pseudonym_allowlist.json: game contracts and tokens, and the Palaestra S1 agents'
   own owner and operator wallets (kept as recorded). A pseudonym starts 0x00000000, so it is recognizable and is
   never replaced again (the tool is idempotent);
@@ -36,8 +39,16 @@ DEC_LO, DEC_HI = 2 ** 150, 2 ** 160
 SURFACE = Path(__file__).parents[1] / "surface"
 ALLOWLIST = Path(__file__).parent / "pseudonym_allowlist.json"
 V1_KEY = b"kami-drills v1.1 pseudonyms"
+DEC_CUT = re.compile(r"(?<!\d)\d{40,45}(?!\d)")  # a decimal account id cut off by a truncated result
+WORDS_HEX = re.compile(r"(?<![0-9a-fA-Fx])0x([0-9a-fA-F]{64,})(?![0-9a-fA-F])")  # ABI data and topics: 32-byte words
 MARK = "0x00000000"  # pseudonym prefix: 8 zero nibbles, then 32 of the HMAC
 ALIAS = re.compile(r"player-[0-9a-f]{6}")
+
+
+def padded_address(tail):
+    """Whether the 40-hex tail of a 0{24}-padded ABI word is an address: a nonzero byte in its top 4 bytes. A uint below
+    2**128 (amounts, indices, timestamps) and a pseudonym (0x00000000...) never have one."""
+    return tail[:8] != "00000000"
 
 
 def allowlist():
@@ -277,6 +288,20 @@ def pseudonymize(spec, key, allow=None):
         return MARK + _mac(key, "addr|" + a.lower())[:32]
     blob = ADDR.sub(addr, blob)
 
+    def words(m):  # an address as an ABI word in tx data or a log topic: 0{24} + address -> 0{24} + its 0x form's alias
+        nonlocal n
+        h = m.group(1)
+        off = 8 if (len(h) - 8) % 64 == 0 else 0 if len(h) % 64 == 0 else None  # after a 4-byte selector, or bare words
+        if off is None:
+            return m.group(0)
+        for i in range(off, len(h), 64):
+            w = h[i + 24:i + 64].lower()
+            if h[i:i + 24] == "0" * 24 and padded_address(w) and "0x" + w not in allow:
+                n += 1
+                h = h[:i + 24] + _mac(key, "addr|0x" + w)[:32].rjust(40, "0") + h[i + 64:]
+        return "0x" + h
+    blob = WORDS_HEX.sub(words, blob)
+
     def trunc(m):
         nonlocal n
         a = m.group(0).lower()
@@ -296,6 +321,15 @@ def pseudonymize(spec, key, allow=None):
         n += 1
         return str(int(MARK + _mac(key, f"addr|0x{v:040x}")[:32], 16))  # the hex address's own alias, as an integer
     blob = DEC.sub(dec, blob)
+
+    def dec_cut(m):  # -> a <= 39-digit integer (a 128-bit alias), so a second pass leaves it alone
+        nonlocal n
+        d = m.group(0)
+        if any(str(int(a, 16)).startswith(d) for a in allow):
+            return d
+        n += 1
+        return str(int(_mac(key, "dtrunc|" + d)[:32], 16))
+    blob = DEC_CUT.sub(dec_cut, blob)
     return json.loads(blob), {"addresses": n, "accounts": len(accounts)}
 
 

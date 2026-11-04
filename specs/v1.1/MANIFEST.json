@@ -39,7 +39,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "converted; stated objective added",
-   "content_hash": "sha256:7d842d2fe4ab49364ba80d798fcbd029fa42e0a980851d69cb7f4e97ab04def2"
+   "content_hash": "sha256:59d11cdfbafaa165bc7e162bbea13649989f11ee7eaeedcbac1c25a375614f55"
   },
   {
    "id": "memory-sonnet-slow-points-belief",
@@ -48,7 +48,7 @@
    "status": "retired",
    "fix": "converted; stated objective added",
    "reason": "B audit (a): every try banks the points; the verdict is decided by a note path/phrasing regex. Behaviour-only scores 100%. Rebuild as a v2 memory drill with a structured note.",
-   "content_hash": "sha256:f610f6f9a4bd3993ceccc92b19bd0e6756453bacecff8406d41c6944677d7bd6"
+   "content_hash": "sha256:e6c142fa3e37c2a510eb19e9ae2347fa22adbe30bb455f86c9712bbeb668946b"
   },
   {
    "id": "memory-sonnet-stamina-unreliable-belief",
@@ -168,7 +168,7 @@
    "status": "draft",
    "fix": "aligned with the bank-is-valid audit: spending any point passes (.5), all six = 1",
    "reason": "after aligning with the bank-is-valid audit (any point spent passes) the recorded tries pass 21/22: at ceiling, so a smoke test like the other 95% items.",
-   "content_hash": "sha256:3ed4e20194a4a7b8b94d0a903faf09ed5cffbf3f1200b90f78ba5037a4ea647c"
+   "content_hash": "sha256:8bb1703e72fc9968a7184b478b44c25c18fc870a48d7116c94a80149da500dd4"
   },
   {
    "id": "prog-timewall-plan-stop-complete",
@@ -210,7 +210,7 @@
    "status": "draft",
    "fix": "v1 forbade any harvest_start before a wait call (and counted dry-run starts as the harvest); now only the clock decides, a wake earns 0.5",
    "timing_item": true,
-   "content_hash": "sha256:a32abe3dd33179b6b53b905044d1005e67e0af8e8c1b16617b3a3039110c7558"
+   "content_hash": "sha256:c24e8996fa8e96b93a61ed03ffa139efa17cb07481d2a5e2fe216891c727363e"
   },
   {
    "id": "repeat-listing-buy-underflow",
@@ -243,7 +243,7 @@
    "status": "draft",
    "fix": "converted; stated objective added",
    "reason": "B audit: 95% pass (and a wake is the correct answer).",
-   "content_hash": "sha256:5f50bfc80307a7485d192211d6eccec13c3e25d362c1d984415632774feae9bd"
+   "content_hash": "sha256:fd108ec8c49c18ba72240226bdcf253035ae69505e8323621b46c178489e1ad1"
   },
   {
    "id": "repeat-stop-cooldown-identical",
@@ -312,7 +312,7 @@
    "status": "draft",
    "fix": "converted; stated objective added",
    "reason": "battery gate: always_stop passes. The answer is to stop the 17% HP kami first, so the reflex 'stop every harvest, end' is the oracle.",
-   "content_hash": "sha256:83b8cadab694b7a2279d1248670a8d6389338614de2c05d61abfb29d1d48d0fa"
+   "content_hash": "sha256:e6609e8614d1dd919e965afc57e88b4d38d58f2e6f4b68f91c7c81168b61ad1d"
   },
   {
    "id": "stale-cooldown-retry-start",
@@ -321,7 +321,7 @@
    "status": "draft",
    "fix": "dry-run probes never count as a retry; a wake earns 0.5; every act on 9787 inside the cooldown is the mistake (the chain refuses them all)",
    "timing_item": true,
-   "content_hash": "sha256:40b928b728353da4cc245703999cca83355df8f4def14db946ac22ba6e28ce2a"
+   "content_hash": "sha256:f0c112a26deb44350ffe48cbebcfb71ecc3feed04ff44064c34ed75802811cc1"
   },
   {
    "id": "stale-double-complete-quest",
@@ -398,7 +398,7 @@
    "status": "draft",
    "fix": "accepted set {wait -> stop (-> travel), keep harvesting + wake}; fail only travel-before-stop or strand",
    "reason": "B audit: with the accepted set {wait -> stop (-> travel), keep harvesting + wake} it scores 95%.",
-   "content_hash": "sha256:45272d81ebe15e2ff3fc0c3b5facbe2ffba6a96824bd1ddee5c05cdbcd88655e"
+   "content_hash": "sha256:a11a0ee888104e7186e4427b1fd85868f26b0b4df3d105266330506fe9459fb5"
   },
   {
    "id": "stall-no-kami",
