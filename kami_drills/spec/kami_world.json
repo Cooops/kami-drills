@@ -1,5 +1,5 @@
 {
- "source": "kamigotchi-gdd 3c6f4f9: catalogs/items/items.csv (Food/Revive/Potion rows), catalogs/rooms/nodes.csv (level caps, affinities, yield items), catalogs/quests/quests.csv + objectives.csv (objectives and the nodes and items they tie to), catalogs/rooms/rooms.csv (adjacency as kami-harness rooms_graph.py), catalogs/rooms/gates.csv (gated rooms); scripts/build_kami_world.py",
+ "source": "kamigotchi-gdd 3c6f4f9: catalogs/items/items.csv (Food/Revive/Potion rows), catalogs/rooms/nodes.csv (level caps, affinities, yield items), catalogs/quests/quests.csv + objectives.csv (objectives and the nodes and items they tie to; food and revive rewards), catalogs/rooms/rooms.csv (adjacency as kami-harness rooms_graph.py), catalogs/rooms/gates.csv (gated rooms); scripts/build_kami_world.py",
  "items": {
   "11001": {
    "name": "Red Ribbon Gummy",
@@ -870,7 +870,10 @@
    "title": "Beginning Your Journey",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "3": {
    "title": "Your First Kami",
@@ -883,7 +886,10 @@
    "has_objectives": true,
    "nodes": [],
    "items": [],
-   "harvest_any_node": true
+   "harvest_any_node": true,
+   "rewards": {
+    "11211": 1
+   }
   },
   "5": {
    "title": "What Kami Do: Scavenging",
@@ -904,7 +910,10 @@
    "nodes": [],
    "items": [
     1
-   ]
+   ],
+   "rewards": {
+    "11211": 1
+   }
   },
   "8": {
    "title": "Supporting Local Businesses",
@@ -919,7 +928,10 @@
    "nodes": [],
    "items": [
     1005
-   ]
+   ],
+   "rewards": {
+    "11305": 1
+   }
   },
   "10": {
    "title": "Having a Normal One",
@@ -945,7 +957,10 @@
     83,
     85
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "11": {
    "title": "That Eerie Feeling",
@@ -1018,7 +1033,10 @@
     84,
     88
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "14": {
    "title": "Identifying Materials: Wood",
@@ -1048,7 +1066,10 @@
    "title": "Exploring Other Options",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "18": {
    "title": "Harvesting Data I",
@@ -1056,7 +1077,10 @@
    "nodes": [
     12
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11305": 1
+   }
   },
   "19": {
    "title": "Harvesting Data II",
@@ -1064,7 +1088,10 @@
    "nodes": [
     6
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11305": 2
+   }
   },
   "20": {
    "title": "Harvesting Data III",
@@ -1072,7 +1099,11 @@
    "nodes": [
     37
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11305": 1,
+    "11002": 1
+   }
   },
   "21": {
    "title": "Squaring the Circle I",
@@ -1357,7 +1388,10 @@
    ],
    "items": [
     1018
-   ]
+   ],
+   "rewards": {
+    "11002": 1
+   }
   },
   "51": {
    "title": "Ringing Any Bells II",
@@ -1832,7 +1866,10 @@
    "nodes": [],
    "items": [
     11312
-   ]
+   ],
+   "rewards": {
+    "11212": 3
+   }
   },
   "109": {
    "title": "Remain Unburdened of Attachments",
@@ -1854,7 +1891,10 @@
    "nodes": [],
    "items": [
     1
-   ]
+   ],
+   "rewards": {
+    "21204": 1
+   }
   },
   "2003": {
    "title": "Early Market Research - I",
@@ -1862,7 +1902,10 @@
    "nodes": [],
    "items": [
     1005
-   ]
+   ],
+   "rewards": {
+    "11212": 1
+   }
   },
   "2004": {
    "title": "Early Market Research - II",
@@ -1870,7 +1913,10 @@
    "nodes": [
     10
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11211": 2
+   }
   },
   "2005": {
    "title": "Early Market Research - III",
@@ -1878,7 +1924,10 @@
    "nodes": [
     26
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 2
+   }
   },
   "2006": {
    "title": "Community Outreach",
@@ -1886,7 +1935,10 @@
    "nodes": [
     25
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11212": 1
+   }
   },
   "2007": {
    "title": "Restocking",
@@ -1895,7 +1947,10 @@
    "items": [
     1003,
     1004
-   ]
+   ],
+   "rewards": {
+    "11213": 2
+   }
   },
   "2008": {
    "title": "Offering an Apprenticeship",
@@ -2002,13 +2057,19 @@
    "title": "Health & Safety",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "3003": {
    "title": "There Are Levels to This",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11211": 1
+   }
   },
   "3004": {
    "title": "Skill Issue",
@@ -2020,7 +2081,10 @@
    "title": "Spring Rites",
    "has_objectives": false,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11002": 1
+   }
   },
   "3006": {
    "title": "What’s In a Name?",
@@ -2032,13 +2096,19 @@
    "title": "Land Survey",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 2
+   }
   },
   "3008": {
    "title": "Peregrination",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 3
+   }
   },
   "3009": {
    "title": "Tips Help The Most Right Now",
@@ -2116,7 +2186,10 @@
    ],
    "items": [
     1019
-   ]
+   ],
+   "rewards": {
+    "11002": 1
+   }
   },
   "3019": {
    "title": "Happy Hunting Ground",
@@ -2146,7 +2219,10 @@
    "nodes": [],
    "items": [
     21205
-   ]
+   ],
+   "rewards": {
+    "11002": 3
+   }
   },
   "3028": {
    "title": "The More the Merrier",
@@ -2160,7 +2236,10 @@
    "nodes": [
     5
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11002": 1
+   }
   },
   "3030": {
    "title": "Container Deposit",
@@ -2192,20 +2271,29 @@
    "nodes": [],
    "items": [
     11227
-   ]
+   ],
+   "rewards": {
+    "11410": 1
+   }
   },
   "3034": {
    "title": "Not Right Now",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "3035": {
    "title": "Rookie Training I",
    "has_objectives": true,
    "nodes": [],
    "items": [],
-   "harvest_any_node": true
+   "harvest_any_node": true,
+   "rewards": {
+    "11305": 1
+   }
   },
   "3036": {
    "title": "Rookie Training II",
@@ -2213,7 +2301,10 @@
    "nodes": [
     3
    ],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11002": 1
+   }
   },
   "3037": {
    "title": "Old Acquaintance",
@@ -2221,26 +2312,38 @@
    "nodes": [],
    "items": [
     11303
-   ]
+   ],
+   "rewards": {
+    "11211": 1
+   }
   },
   "3038": {
    "title": "Push it to the Limit",
    "has_objectives": true,
    "nodes": [],
    "items": [],
-   "harvest_any_node": true
+   "harvest_any_node": true,
+   "rewards": {
+    "11211": 3
+   }
   },
   "3039": {
    "title": "Danger Lies Ahead…",
    "has_objectives": false,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "3040": {
    "title": "A Cautionary Note",
    "has_objectives": false,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "21204": 1
+   }
   },
   "3041": {
    "title": "The Rot Creeps",
@@ -2416,7 +2519,10 @@
    "title": "Never Brought to Mind",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11302": 1
+   }
   },
   "3900": {
    "title": "Warm Your Hands",
@@ -2424,7 +2530,10 @@
    "nodes": [],
    "items": [
     1001
-   ]
+   ],
+   "rewards": {
+    "11002": 1
+   }
   },
   "3998": {
    "title": "Hidden GEM",
@@ -2436,7 +2545,10 @@
    "title": "Condolences on your Recent Liquidations",
    "has_objectives": false,
    "nodes": [],
-   "items": []
+   "items": [],
+   "rewards": {
+    "11002": 5
+   }
   },
   "2100": {
    "title": "A Short Pilgrimage",

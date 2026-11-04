@@ -17,7 +17,7 @@
   "economy",
   "quest_planning"
  ],
- "content_hash": "sha256:cf647284c9ee4e0f39b1c12b04898a1c3b5cbb5ebcf9da1ec1cce3632f8f56f1",
+ "content_hash": "sha256:2379dc9ca35a65883295066b4aa5693e88b872a49af9531d39a154c40260f0c9",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -673,6 +673,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },

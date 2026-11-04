@@ -23,7 +23,7 @@
  "competency": [
   "state_tracking"
  ],
- "content_hash": "sha256:884d320c7bc8292117238a95989825d957c57b5c93ee47faa109439d776491b1",
+ "content_hash": "sha256:31cea55079a85c6f44b7b979b966098891213ca2dd7a245dec00089ed8e1bb21",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -1049,6 +1049,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -1074,6 +1075,10 @@
    {
     "index": 7,
     "status": "active"
+   },
+   {
+    "index": 3001,
+    "status": "available"
    },
    {
     "index": 3002,

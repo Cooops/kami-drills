@@ -10,7 +10,7 @@
   "error_recovery",
   "risk_survival"
  ],
- "content_hash": "sha256:3e7ed615a90d2cd20816f5ce613af8e7bbbdc08f9bb18ac88908c3c9fdfc0882",
+ "content_hash": "sha256:5cee0f7fad1aa13efb5b24fab2de14fad8d69d2c21f4a799527495c8d2d09798",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -275,6 +275,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -380,6 +381,7 @@
    },
    {
     "index": 3005,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -397,6 +399,15 @@
     "index": 3034,
     "repeatable": false,
     "status": "active"
+   },
+   {
+    "index": 3900,
+    "status": "available"
+   },
+   {
+    "index": 10003,
+    "objectives": [],
+    "status": "available"
    }
   ]
  },

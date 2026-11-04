@@ -203,11 +203,13 @@ class Rules:
                     res = _refuse("QUEST_ALREADY_COMPLETE", f"quest {q['index']} is already completed by account", "validation_error")
                 elif q.get("requirements_met") is False:
                     res = _refuse("QUEST_REQS_NOT_MET", "reqs not met")
-                elif q["status"] != "objectives_met":
+                elif q["status"] != "objectives_met" and q.get("objectives") != []:
                     res = _refuse("QUEST_OBJS_NOT_MET", "quest objs not met")
                 else:
-                    def apply():
+                    def apply():  # gdd progression/quests.md: rewards are paid on completion (foods and revives modelled)
                         q["status"] = "complete"
+                        for item, n in (WORLD["quests"].get(str(q["index"])) or {}).get("rewards", {}).items():
+                            s["inventory"][item] = self.held(item) + n
             else:
                 if q is None:
                     return None  # a quest the fork state says nothing about
@@ -218,8 +220,8 @@ class Rules:
                 elif q["status"] == "locked":
                     res = _refuse("QUEST_REQS_NOT_MET", "reqs not met")
                 else:
-                    def apply():
-                        q["status"] = "active"
+                    def apply():  # a quest with no objectives is met as soon as it is accepted
+                        q["status"] = "objectives_met" if q.get("objectives") == [] else "active"
         elif v == "travel":  # kami-harness move_to_room (one hop, adjacent only) / travel_to_room (BFS path)
             to = a.get("room")
             hops = path_len(room, to) if to in ADJ and room in ADJ else None

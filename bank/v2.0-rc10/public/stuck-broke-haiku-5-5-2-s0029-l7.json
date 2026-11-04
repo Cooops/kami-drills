@@ -41,6 +41,30 @@
    "intents": [
     {
      "args": {
+      "quest": 3005
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "quest": 3005
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 9727,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +90,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:3cb268b909861c24095c6816c8ebb26d39c0e03ba94a26c33df863542b26134d",
+ "content_hash": "sha256:b676cb3ad547d6314de9bfbb0d6ceb4e449ddc28585f41b3a37a11a7f865bfa1",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -413,7 +437,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed SQ997, no revive",
+    "note": "claimed a free revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -433,7 +457,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "accept_quest"
@@ -442,7 +471,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "complete_quest"
@@ -667,7 +701,7 @@
    ]
   }
  },
- "situation": "All 1 kami(s) DEAD, 47 MUSU, owner wallet 0.0060 ETH, SQ997 open.",
+ "situation": "All 1 kami(s) DEAD, 47 MUSU, owner wallet 0.0060 ETH, SQ997 open, quest 3005 open (a free revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -706,6 +740,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -738,6 +773,27 @@
     "index": 7,
     "repeatable": false,
     "status": "active"
+   },
+   {
+    "index": 3001,
+    "status": "available"
+   },
+   {
+    "index": 3002,
+    "status": "available"
+   },
+   {
+    "index": 3003,
+    "status": "available"
+   },
+   {
+    "index": 3005,
+    "objectives": [],
+    "status": "available"
+   },
+   {
+    "index": 3015,
+    "status": "available"
    }
   ]
  },

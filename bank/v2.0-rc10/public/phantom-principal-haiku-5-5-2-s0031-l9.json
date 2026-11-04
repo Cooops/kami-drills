@@ -41,6 +41,30 @@
    "intents": [
     {
      "args": {
+      "quest": 3005
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "quest": 3005
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 9727,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +90,7 @@
   "economy",
   "error_recovery"
  ],
- "content_hash": "sha256:7599709642985671a78bd60caca8151809d58bc195fab4d99c7e0d1af78046fb",
+ "content_hash": "sha256:66a43b72b08fe1afe55a1b19952c02244048f5d17c3ddfbf2528bcf3e93be58c",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -432,7 +456,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed SQ997, no revive",
+    "note": "claimed a free revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -452,7 +476,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "accept_quest"
@@ -461,7 +490,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "complete_quest"
@@ -715,6 +749,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -747,6 +782,27 @@
     "index": 7,
     "repeatable": false,
     "status": "active"
+   },
+   {
+    "index": 3001,
+    "status": "available"
+   },
+   {
+    "index": 3002,
+    "status": "available"
+   },
+   {
+    "index": 3003,
+    "status": "available"
+   },
+   {
+    "index": 3005,
+    "objectives": [],
+    "status": "available"
+   },
+   {
+    "index": 3015,
+    "status": "available"
    }
   ]
  },

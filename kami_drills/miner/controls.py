@@ -15,7 +15,8 @@ The control forbids that one act on that target; anything else passes it.
 import json
 import math
 
-from kami_drills.miner.rules import NODE_CAP, SHARD, TOKENS, TRAP_OPERATOR, TRAP_OWNER, deposit_cap, infra_session, pat, snap_kamis, wrote_kami
+from kami_drills.miner.rules import (NODE_CAP, SHARD, TOKENS, TRAP_OPERATOR, TRAP_OWNER, available_quests, deposit_cap, infra_session,
+                                     pat, snap_kamis, wrote_kami)
 from kami_drills.miner.trace import state_at
 from kami_drills.spec.from_miner import _id, stamp
 
@@ -81,7 +82,8 @@ def control_for(run, item, play, used):
         meta = {"id": "control@1", "kind": "control", "mistake_class": "none", "competency": item["competency"], "economic": False}
         st = state_at(s, s.scaffold_end)
         t = s.start
-        cand = candidate(meta, run, s, raw, fork_state(st, t), "A", "control: the chain rule or the node cap decides it")
+        cand = candidate(meta, run, s, raw, fork_state(st, t) | {"available": available_quests(run, s, s.scaffold_end)}, "A",
+                         "control: the chain rule or the node cap decides it")
         cand["id"] = f"{item['id']}-ctl"
         gated, why_not = gate_candidate(cand, s)
         if gated:
@@ -163,7 +165,7 @@ def trap_for(run, item):
            "variants": [], "tier_hint": "B", "tier_reason": "synthetic parameter variant", "id_suffix": "trap"}
     meta = {"id": item["rule_id"], "kind": "trap_control", "mistake_class": "none", "competency": item["competency"], "economic": True}
     st = state_at(s, s.scaffold_end)
-    cand = candidate(meta, run, s, raw, fork_state(st, s.start), "B", raw["tier_reason"])
+    cand = candidate(meta, run, s, raw, fork_state(st, s.start) | {"available": available_quests(run, s, s.scaffold_end)}, "B", raw["tier_reason"])
     cand["id"] = item["id"] + "-trap"
     cand["variant"] = {"origin": "synthetic_param", "group": item["id"], "changes": {"owner_eth": TRAP_OWNER, "operator_eth": TRAP_OPERATOR}}
 
@@ -254,7 +256,7 @@ def market_trap_for(run, item):
            "variants": [], "tier_hint": "B", "tier_reason": "synthetic parameter variant", "id_suffix": "trap"}
     meta = {"id": item["rule_id"], "kind": "trap_control", "mistake_class": "none", "competency": item["competency"], "economic": True}
     st = state_at(s, fork)
-    cand = candidate(meta, run, s, raw, fork_state(st, time_at(s, fork)), "B", raw["tier_reason"])
+    cand = candidate(meta, run, s, raw, fork_state(st, time_at(s, fork)) | {"available": available_quests(run, s, fork)}, "B", raw["tier_reason"])
     cand["id"] = item["id"] + "-trap"
     cand["variant"] = {"origin": "synthetic_param", "group": item["id"],
                        "changes": {f"/fork/native_prefix/lens_merchant/{y}/buyPrice": trap[y] for y in sorted(set(alts) | ({small} if small else set()))}}

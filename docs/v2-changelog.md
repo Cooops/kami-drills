@@ -546,6 +546,37 @@ the same 27 final runs with the same flags (3 per run, max(2, 30%) per source mo
   token move 0.02, always revive 0.08; state reading 1.00. Oracle-on-variant 0 of 15. Leak check clean, `bank.verify`
   []. Output `sha256[:16] 0b15fcdb22b2bfc3`, identical for `--jobs 1`, 4 and 10.
 
+## Free revive quests (review of rc10), bank v2.0-rc10 rebuilt
+
+A parallel scouting study (kamiarena `analysis/new-families/REPORT.md`) found that quest 3005 "Spring Rites" (no
+objectives, open after any liquidation, 1 Melkarth card) sat in the visible quest list at stuck-broke forks, but was
+not in `state.quests`, so "accept 3005, complete, revive" was a free gap and never an accepted path.
+- **Fork state.** Available quests (requirements met, not accepted, not complete) go into `state.quests` with status
+  `available` where the agent could see them: inside the 4.7.0 cut of a full `lens_quests` (the record starts in the
+  first 65,536 bytes, `harness_4_7.visible_available`, applied in `normalize_snapshot`), or named as a quest record in a
+  quest read or note earlier in the run (`rules.available_quests`, carried as `fork_state.available`). Objective-less
+  quests (`kami_world.quests[].has_objectives == false`) carry `objectives: []`. The hidden 10003 stays out unless the
+  run saw it.
+- **Rules library.** Accepting a quest with `objectives: []` makes it `objectives_met`, and an active one is
+  completable; completing a quest pays its food and revive rewards (`kami_world.quests[].rewards`, new, parsed from the
+  gdd `quests.csv` Rewards column by `scripts/build_kami_world.py`; nothing else in the world file changed).
+  `tests/test_kami_rules.py`.
+- **Recovery families.** A visible free revive quest (objective-less with a revive reward: 3005; 10003 has its own
+  rows) is a route: `accept q, complete q, revive` is an accepted path, the claim alone is the 0.5 lesser play, and a
+  session that claims one is not a mistake. No item needed `alt_route:free_revive_quest`: every visible free revive
+  quest is representable.
+- **Changed:** 4 public stuck-broke items gain the 3005 path (flash-1 s19, haiku-1 s62, haiku-2 s29, sonnet-1 s7), and
+  so does phantom-principal (haiku-2 s31). Dropped: luna-2 s38 and grok-1 s7, where the agent itself accepted 3005 (its
+  recorded play was the free route; rc10 had scored it a mistake). Their runs' items move to luna-2 s53 and grok-1 s28
+  (3005 already claimed there). The other recovery items had no visible free revive quest. Every other public spec
+  differs only in `state.quests` (available quests, `objectives: []`) and the hash. No held-out recovery item has a
+  visible free revive quest. Held revive cards were already excluded (`fine:can_revive_now`); two hp-liquidated items
+  hold cards, which does not change a stop-or-feed answer.
+- Counts unchanged (55 items, 6 controls, 29 traps; 65 public, 25 held out). `spec check` 115 specs, 0 failing;
+  battery 0/17 ungrouped and 0/23 groups public (0/24 and 0/33 with the private variants); kitchen sink 0 of 65;
+  economic pairs no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.07; oracle-on-variant 0 of 15;
+  leak check clean; `bank.verify` []. Output `sha256[:16] 8ccd3079d7ca2f86`.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single

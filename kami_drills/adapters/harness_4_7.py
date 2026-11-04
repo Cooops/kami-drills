@@ -26,6 +26,7 @@ from inspect_ai.tool._tool_params import ToolParams
 
 from kami_drills import spec as sp
 from kami_drills import task as kd
+from kami_drills.spec import rules as sp_rules
 
 ROOT = Path(__file__).parents[2]
 ID = "kh-4.7.0@1.0.0"
@@ -686,6 +687,23 @@ def spec_v2(paths: str = "drills_v2/spec", policy: str = "model"):
 
 # ---------- normalize (raw 4.7.0 / lens 1.0.5 reads -> spec state) and tool patterns -> intent patterns ----------
 
+def objectiveless(q):
+    return (sp_rules.WORLD["quests"].get(str(q)) or {}).get("has_objectives") is False
+
+
+def visible_available(lens_quests):
+    """Registry quests open to the account (requirements met, not accepted, not complete) that a full lens_quests shows
+    on 4.7.0: the record starts inside the first tool_result_max_bytes of the result (quirk quest-list-truncated)."""
+    text = json.dumps(lens_quests, indent=2)
+    out = []
+    for r in ((lens_quests.get("data") or {}).get("registry") or []):
+        a = r.get("account") or {}
+        if a.get("requirementsMet") and not a.get("accepted") and not a.get("complete") \
+                and 0 <= text.find(f'"index": {r["index"]},\n') < CAPS["tool_result_max_bytes"]:
+            out.append(r)
+    return out
+
+
 def normalize_snapshot(calls):
     """Season 1 session-start snapshot `calls` [{name, args, response}] -> (state, catalog items, recorded_reads)."""
     by = {c["name"]: c["response"] for c in calls if isinstance(c.get("response"), dict)}
@@ -718,8 +736,11 @@ def normalize_snapshot(calls):
     q = (by.get("lens_quests") or {}).get("data") or {}
     if q.get("accepted") is not None:
         rep = {r["index"]: r.get("repeatable", False) for r in q.get("registry", [])}
-        state["quests"] = [{"index": a["index"], "status": "complete" if a["complete"] else "active", "repeatable": rep.get(a["index"], False)}
-                           for a in q["accepted"]]
+        state["quests"] = [{"index": a["index"], "status": "complete" if a["complete"] else "active", "repeatable": rep.get(a["index"], False),
+                            **({"objectives": []} if objectiveless(a["index"]) else {})} for a in q["accepted"]]
+        state["quests"] += [{"index": r["index"], "status": "available", "repeatable": r.get("repeatable", False),
+                             **({"objectives": []} if objectiveless(r["index"]) else {})}
+                            for r in visible_available(by["lens_quests"])]
     reads = {}
     for c in calls:
         if "response" not in c:  # a snapshot read that failed (S1: lens outages) has no response to replay

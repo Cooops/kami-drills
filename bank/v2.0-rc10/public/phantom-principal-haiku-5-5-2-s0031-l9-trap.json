@@ -10,7 +10,7 @@
   "economy",
   "error_recovery"
  ],
- "content_hash": "sha256:798c266874e4a95f9e148dab3aad75028ca1772059283d11c73a8898abaf2c81",
+ "content_hash": "sha256:a8b5d50df812a22715d5797379721ede318358244769e3216fb5f13cfeaef395",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -251,6 +251,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -283,6 +284,27 @@
     "index": 7,
     "repeatable": false,
     "status": "active"
+   },
+   {
+    "index": 3001,
+    "status": "available"
+   },
+   {
+    "index": 3002,
+    "status": "available"
+   },
+   {
+    "index": 3003,
+    "status": "available"
+   },
+   {
+    "index": 3005,
+    "objectives": [],
+    "status": "available"
+   },
+   {
+    "index": 3015,
+    "status": "available"
    }
   ]
  },

@@ -22,7 +22,7 @@ from pathlib import Path
 
 from kami_drills.adapters import harness_4_7 as h47
 from kami_drills.miner import MINER_VERSION, SCHEMA
-from kami_drills.miner.rules import COOLDOWN, ROOM, RULES, STARVING, snapshot_reads
+from kami_drills.miner.rules import COOLDOWN, ROOM, RULES, STARVING, available_quests, snapshot_reads
 from kami_drills.miner.trace import REVIVES, TRANSIENT, block_at, load_run, state_at, time_at
 from kami_drills import spec as sp
 from kami_drills.spec import check as CK
@@ -216,7 +216,7 @@ def gate(meta, run, s, raw):
     if gaps:
         return None, "replay_gap:" + gaps[0].split(":")[0]
     st, t = state_at(s, fork), time_at(s, fork)
-    fs = fork_state(st, t) | raw.get("fork_state_overrides", {})
+    fs = fork_state(st, t) | {"available": available_quests(run, s, fork)} | raw.get("fork_state_overrides", {})
     if ev := cooldown_evidence(s, fork, fs):
         fs["cooldown_evidence"] = ev
     tier = raw.get("tier_hint", "A")

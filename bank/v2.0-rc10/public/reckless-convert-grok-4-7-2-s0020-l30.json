@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:494586a691b93964e86561da6652cd1e03c216138c89a199a280e853a449b6ab",
+ "content_hash": "sha256:0380bcf919ef6afe874cb9f90ca56b0ebc9c1c3c2825ac01bc1101849cdffb3f",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -764,6 +764,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -818,6 +819,10 @@
     "status": "active"
    },
    {
+    "index": 3001,
+    "status": "available"
+   },
+   {
     "index": 3002,
     "repeatable": false,
     "status": "complete"
@@ -831,6 +836,19 @@
     "index": 3004,
     "repeatable": false,
     "status": "complete"
+   },
+   {
+    "index": 3005,
+    "objectives": [],
+    "status": "available"
+   },
+   {
+    "index": 3006,
+    "status": "available"
+   },
+   {
+    "index": 3015,
+    "status": "available"
    }
   ]
  },

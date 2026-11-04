@@ -9,7 +9,7 @@
  "competency": [
   "risk_survival"
  ],
- "content_hash": "sha256:049e22001740d47e4bb1469cb71167760c007f113e911d2edd85c4b453d325ea",
+ "content_hash": "sha256:279b508419c2c292ec68a1533ed1f2a3ba99002aa7e49095e1e820ce64c26b98",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -306,6 +306,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -446,6 +447,7 @@
    },
    {
     "index": 3005,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -486,6 +488,7 @@
    },
    {
     "index": 3039,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -496,6 +499,7 @@
    },
    {
     "index": 10003,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    }

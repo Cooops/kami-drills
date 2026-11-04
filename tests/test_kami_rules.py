@@ -111,6 +111,28 @@ def test_quests_completable_only_when_met_and_not_contradicted():
     assert [g[2] for g in got] == [None, "QUEST_OBJS_NOT_MET", "QUEST_REQS_NOT_MET", "QUEST_NOT_ACCEPTED", "QUEST_ALREADY_COMPLETE"]
 
 
+def test_an_objectiveless_quest_is_met_on_accept_and_pays_its_reward():
+    """3005 "Spring Rites": no objectives, 1 Melkarth card (gdd quests.csv), so accept, complete, revive works; a quest
+    with objectives stays active on accept."""
+    assert R.WORLD["quests"]["3005"]["rewards"] == {"11002": 1}
+    s = spec([K(state="DEAD", hp=0)], quests=[{"index": 3005, "status": "available", "objectives": []},
+                                              {"index": 7, "status": "available"}])
+    got, sim = results(s, [I("revive", kami=7, method="melkarth_spell_card"), I("accept_quest", quest=3005),
+                           I("complete_quest", quest=3005), I("revive", kami=7, method="melkarth_spell_card"),
+                           I("accept_quest", quest=7), I("complete_quest", quest=7)])
+    assert [g[1:] for g in got] == [("validation_error", "INSUFFICIENT_ITEM"), ("ok", None), ("ok", None), ("ok", None),
+                                    ("ok", None), ("revert", "QUEST_OBJS_NOT_MET")]
+    assert sim.kami(7)["state"] == "RESTING" and sim.state["inventory"]["11002"] == 0
+
+
+def test_visible_available_quests_follow_the_4_7_truncation():
+    reg = [{"index": q, "name": "x" * pad, "account": {"accepted": False, "complete": False, "requirementsMet": met}}
+           for q, pad, met in ((3005, 10, True), (3028, 70000, False), (10003, 10, True), (3039, 10, True))]
+    assert [r["index"] for r in h.visible_available({"data": {"registry": reg}})] == [3005]  # 10003 and 3039 start past the 64 KB cut
+    state, _, _ = h.normalize_snapshot([{"name": "lens_quests", "response": {"data": {"registry": reg, "accepted": []}}}])
+    assert state["quests"] == [{"index": 3005, "status": "available", "repeatable": False, "objectives": []}]
+
+
 def test_token_deposit_is_bounded_by_the_declared_balance():
     s = spec([K()], constants={"portal_tokens": {"100": {"balance": "/gas/owner_eth", "unit_eth": 1e-4}}})
     s["state"]["gas"] = {"owner_eth": "0.0005"}

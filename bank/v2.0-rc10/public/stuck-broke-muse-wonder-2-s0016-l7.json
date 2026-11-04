@@ -66,7 +66,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:c69c6da59ccee569bb6d1925e3011c04c63bb270910feffbbed04fe4eabfc427",
+ "content_hash": "sha256:626231633811014993b5aeb77477ccb2f483e88f5f731c871bb258f73a7908fb",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -415,7 +415,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed SQ997, no revive",
+    "note": "claimed a free revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -435,7 +435,11 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "accept_quest"
@@ -444,7 +448,11 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "complete_quest"
@@ -1000,6 +1008,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -1034,6 +1043,10 @@
     "status": "active"
    },
    {
+    "index": 3001,
+    "status": "available"
+   },
+   {
     "index": 3002,
     "repeatable": false,
     "status": "complete"
@@ -1050,6 +1063,7 @@
    },
    {
     "index": 3005,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },

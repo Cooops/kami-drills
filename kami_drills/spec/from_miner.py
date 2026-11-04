@@ -102,6 +102,9 @@ def apply_fork_state(state, fs, mid_session):
         quests.setdefault(q, {"index": q, "status": "active"})["status"] = "objectives_met"
     for q in fs.get("uncompletable") or []:  # complete refused while the check said completable: do not trust the check
         quests.setdefault(q, {"index": q, "status": "active"})["requirements_met"] = False
+    for q in fs.get("available") or []:  # open to the account and visible by the fork (miner rules.available_quests)
+        if q not in quests:
+            quests[q] = {"index": q, "status": "available", **({"objectives": []} if h47.objectiveless(q) else {})}
     if quests:
         state["quests"] = sorted(quests.values(), key=lambda q: q["index"])
     return rows

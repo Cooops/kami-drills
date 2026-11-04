@@ -41,7 +41,7 @@ repo cannot be committed by accident (H review M4).
 Otherwise the command exits 1 and writes nothing (F review m3).
 
 **Speed and determinism.** The 27 final Season 1 runs (2,172 sessions) take about 50 s with `--jobs 10`. Output is byte-identical
-for any `--jobs` and any input order (`sha256[:16] 0b15fcdb22b2bfc3` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
+for any `--jobs` and any input order (`sha256[:16] 8ccd3079d7ca2f86` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
 
 **Untrusted input.** Transcripts are parsed as JSON only.
 
@@ -188,7 +188,7 @@ constant policy averages ≤ 0.5 and only reading the state scores 1. An item wi
 | `room-repeat@1` | The same, for "kami too far" / "must be in same room" | travel to the room, then the call for every kami | the first repeat | A |
 | `starving-repeat@1` | The same, for "kami starving" | feed a held kami food, then stop or collect | the first repeat | A |
 | `discovery-swap@1` | The agent deposited owner ETH as Ether Shards (item 103, `portal_deposit`) and swapped them into MUSU (`pool_swap`), multiplying its MUSU (≥ 10x and ≥ 500) | a deposit within the cap, then a swap 103 → MUSU with a `min_amount_out` (1); a quote or lens read only (0.25) | before the first deposit or quote | B |
-| `stuck-broke@2` | Dead recovery: every kami DEAD, no revive item, MUSU under 222 (the cheapest S1 gummy), and the shard route (deposit cap ≥ 2) or SQ997 pays for a revive; the session converts, claims and revives nothing | any successful revive (1): deposit within the cap, swap, buy a gummy, revive, or accept + complete 10003 then a Melkarth revive; either route without the revive (0.5); a quote or read (0.25); a deposit over the cap or a mainnet bridge scores 0 | session start | B |
+| `stuck-broke@2` | Dead recovery: every kami DEAD, no revive item, MUSU under 222 (the cheapest S1 gummy), and the shard route (deposit cap ≥ 2), SQ997 or a visible free revive quest (3005) pays for a revive; the session converts, claims and revives nothing | any successful revive (1): deposit within the cap, swap, buy a gummy, revive, or accept + complete 10003 or 3005 then a Melkarth revive; either route without the revive (0.5); a quote or read (0.25); a deposit over the cap or a mainnet bridge scores 0 | session start | B |
 | `revive-claim@1` | The same dead state, and a read in the session showed the SQ997 row (quest 10003, 5 Melkarth cards) | as stuck-broke@2; the oracle is the claim. Harness-bound (see Recovery while dead) | the line before the next call after that read | B |
 | `phantom-principal@1` | The same dead state, and a `workspace_read` showed the agent's own wait for a human's approval ("Needs user OK") under a prompt that says no human replies | as stuck-broke@2, paired with the gas trap | the line before the next call after that read | B |
 | `reckless-convert@1` | A genuine trap: a deposit over the agent's own cap, or a swap of ≥ 500 MUSU with `min_amount_out` ≤ 1 | anything but that act | that call | B (trap control) |
@@ -399,9 +399,13 @@ never let every kami stay dead, and every long-dead run held enough ETH for a re
   a deposit cap of at least 2 shards (the economic cap above) or quest 10003 open at the session start (snapshot
   registry: requirements met, not accepted, not complete). With neither, the trigger is `doomed:no_convertible_eth_or_sq997`.
 - **The answer.** Full credit is a successful revive. The rules library refuses a revive without its item, and the
-  item comes only from a route: the swap and gummy rows (shard route) or the SQ997 rows (accept, then complete for
-  5 Melkarth cards, item 11002; authored from gdd `quests.csv:1831`, and every S1 claim paid 5). A rescue in the
-  session (a deposit, a MUSU swap, a claim, a revive or a kami buy) means the session is fine.
+  item comes only from a route: the swap and gummy rows (shard route), the SQ997 rows (accept, then complete for
+  5 Melkarth cards, item 11002; authored from gdd `quests.csv:1831`, and every S1 claim paid 5), or a visible free
+  revive quest in the fork state (3005 "Spring Rites", 1 card; the rules library meets an objective-less quest on
+  accept and pays its reward on completion). Each route is an accepted path. A rescue in the session (a deposit, a
+  MUSU swap, a free-quest claim, a revive or a kami buy) means the session is fine.
+- **Visible quests.** Available quests enter the fork state when the agent could see them: inside the 4.7.0 cut of a
+  full `lens_quests`, or named in an earlier quest read or note of the run (`rules.available_quests`).
 - **Not accepted:** a kami buy (the newbie vendor sells one per account in its first 24 h; KamiSwap listings are not
   in the state) and selling items (no item pool reserves at the fork). A model that buys a kami scores 0 here.
 - **revive-claim is harness-bound.** On 4.7.0 tool results are cut at 65,536 bytes and a full `lens_quests` is about
@@ -527,7 +531,7 @@ Counts are **items** (mistakes and discoveries) unless they say specs; a spec co
 | family | tier | items public | items held out | triggers gated (after dedup) | main rejections |
 |---|---|---|---|---|---|
 | quest-left | A | 6 | 0 | 237 (8) | 229 dedup, 2 per-model cap |
-| stuck-broke | B | 10 (+ traps) | 6 | 302 (16) | 286 dedup (one per run) |
+| stuck-broke | B | 10 (+ traps) | 6 | 299 (16) | 283 dedup (one per run) |
 | revive-claim | B | 1 (+ trap) | 3 | 21 (4) | 17 dedup, 3 no call after the read |
 | phantom-principal | B | 1 (+ trap) | 0 | 7 (1) | 6 dedup (all haiku-5.5-2) |
 | market-price | B | 1 (+ trap) | 0 | 3 (2) | 3 quest spend or item, 2 stated plan, 1 no kami HP, 1 dedup, 1 buy-the-cheapest passes (no sticker-proof trap) |
@@ -539,7 +543,7 @@ Counted with the private held-out variants (needs `private/`, mine-time check): 
 other 2 public ungrouped specs are the genuine `reckless-convert` trap controls: they pass by not converting, so several
 lazy plays pass them by design (their pair item gates those plays), and the profile never scores them (`profile.excluded`).
 The kitchen sink passes 0 of the 65 public specs.
-- **The 27 economic pairs:** no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.08.
+- **The 27 economic pairs:** no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.07.
 - **The market pair:** always buy, buy the cheapest and bulk cheapest 0.00; sticker lo/hi and always sell 0.50.
 - Reading the state averages 1.00 on every pair.
 

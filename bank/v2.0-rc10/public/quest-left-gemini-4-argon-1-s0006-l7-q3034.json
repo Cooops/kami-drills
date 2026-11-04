@@ -16,7 +16,7 @@
  "competency": [
   "quest_planning"
  ],
- "content_hash": "sha256:1211ca8149dbe6712fa9a7f7649566f181c55c1a086aa8366c730d671c52f117",
+ "content_hash": "sha256:802ae8376c7af2ebea4b7756ad6dbd7090433eff58dccb39f3f5898020581477",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -701,6 +701,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -746,6 +747,7 @@
    },
    {
     "index": 3039,
+    "objectives": [],
     "repeatable": false,
     "status": "objectives_met"
    },

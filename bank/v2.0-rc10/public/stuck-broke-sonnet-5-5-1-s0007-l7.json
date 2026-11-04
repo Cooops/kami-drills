@@ -41,6 +41,30 @@
    "intents": [
     {
      "args": {
+      "quest": 3005
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "quest": 3005
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 20325,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +90,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:1020e96aeb2789d5d641826ebdaada1dbd4257f103bd3723cf4a697759980be8",
+ "content_hash": "sha256:2f3a73f7f62b9184bbf218f21b447493f5eddfd55c2dabec64633ec28a224631",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -413,7 +437,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed SQ997, no revive",
+    "note": "claimed a free revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -433,7 +457,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "accept_quest"
@@ -442,7 +471,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "complete_quest"
@@ -766,7 +800,7 @@
    ]
   }
  },
- "situation": "All 1 kami(s) DEAD, 169 MUSU, owner wallet 0.0020 ETH, SQ997 open.",
+ "situation": "All 1 kami(s) DEAD, 169 MUSU, owner wallet 0.0020 ETH, SQ997 open, quest 3005 open (a free revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -806,6 +840,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -830,9 +865,31 @@
     "status": "complete"
    },
    {
+    "index": 6,
+    "repeatable": false,
+    "status": "available"
+   },
+   {
     "index": 7,
     "repeatable": false,
     "status": "active"
+   },
+   {
+    "index": 3001,
+    "status": "available"
+   },
+   {
+    "index": 3002,
+    "status": "available"
+   },
+   {
+    "index": 3003,
+    "status": "available"
+   },
+   {
+    "index": 3005,
+    "objectives": [],
+    "status": "available"
    },
    {
     "index": 3900,

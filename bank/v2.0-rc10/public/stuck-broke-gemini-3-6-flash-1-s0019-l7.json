@@ -41,6 +41,30 @@
    "intents": [
     {
      "args": {
+      "quest": 3005
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "quest": 3005
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 9682,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +90,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:4795f27074916d5a8eb6f2e93d789c546124165fdc848dcbf86407edf55bee90",
+ "content_hash": "sha256:489003621fd1035e20002ebf8247b72a8647be89520718331e3886b9c6d5d486",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -415,7 +439,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed SQ997, no revive",
+    "note": "claimed a free revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -435,7 +459,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "accept_quest"
@@ -444,7 +473,12 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           3005,
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "complete_quest"
@@ -675,7 +709,7 @@
    ]
   }
  },
- "situation": "All 1 kami(s) DEAD, 118 MUSU, owner wallet 0.0010 ETH, SQ997 open.",
+ "situation": "All 1 kami(s) DEAD, 118 MUSU, owner wallet 0.0010 ETH, SQ997 open, quest 3005 open (a free revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -712,6 +746,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -749,6 +784,11 @@
     "index": 3002,
     "repeatable": false,
     "status": "complete"
+   },
+   {
+    "index": 3005,
+    "objectives": [],
+    "status": "available"
    }
   ]
  },

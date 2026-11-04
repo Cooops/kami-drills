@@ -542,6 +542,25 @@ def test_dead_recovery_accepts_every_route_that_pays_for_a_revive(tmp_path):
     assert f == [("reject", "doomed:no_convertible_eth_or_sq997", s.scaffold_end)]
 
 
+def test_dead_recovery_credits_a_visible_free_revive_quest(tmp_path):
+    """Quest 3005 in the visible list (objective-less, 1 Melkarth card): claim then revive is an accepted path, and with
+    no ETH and no 10003 the item is still minable on it alone (rc10 review)."""
+    d = _dead_run(tmp_path, eth="0.00001", sq997=False)
+    snap = json.loads((d / "snapshots/session-0001.json").read_text())
+    q = next(c for c in snap["calls"] if c["name"] == "lens_quests")
+    q["response"]["data"]["registry"].insert(0, {"index": 3005, "name": "Spring Rites", "account": {
+        "accepted": False, "complete": False, "requirementsMet": True}})
+    (d / "snapshots/session-0001.json").write_text(json.dumps(snap))
+    c, why = gated(d, "stuck-broke@2")
+    assert why is None, why
+    spec = c["spec"]
+    route = [{"verb": "accept_quest", "args": {"quest": 3005}}, {"verb": "complete_quest", "args": {"quest": 3005}},
+             {"verb": "revive", "args": {"kami": 7, "method": "melkarth_spell_card"}}]
+    assert {"index": 3005, "status": "available", "repeatable": False, "objectives": []} in spec["state"]["quests"]
+    assert spec["scoring"]["reference_plays"][0]["intents"] == route and sp.play(spec, route)["pass"]
+    assert sp.play(spec, route[:2])["score"] == 0.5
+
+
 def test_dead_recovery_is_not_mined_when_a_revive_is_already_affordable(tmp_path):
     held = {"balance": 1, "item": {"index": 11001, "name": "Red Ribbon Gummy", "type": "REVIVE"}}
     assert findings(_dead_run(tmp_path / "a", musu=R.REVIVE_MIN_MUSU), "stuck-broke@2")[2] == []

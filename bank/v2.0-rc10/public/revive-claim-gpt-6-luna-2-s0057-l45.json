@@ -66,7 +66,7 @@
   "error_recovery",
   "risk_survival"
  ],
- "content_hash": "sha256:035b6bc208fb8cc19e52022fc88caa0c47a5392daa2cda713165eaa9470e8603",
+ "content_hash": "sha256:958c8628d78e21b5289971892afe264128a453620d1447fb044b34a20cc555e5",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -882,7 +882,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed SQ997, no revive",
+    "note": "claimed a free revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -902,7 +902,11 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "accept_quest"
@@ -911,7 +915,11 @@
       [
        {
         "args": {
-         "quest": 10003
+         "quest": {
+          "in": [
+           10003
+          ]
+         }
         },
         "ok": true,
         "verb": "complete_quest"
@@ -1236,6 +1244,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -1341,6 +1350,7 @@
    },
    {
     "index": 3005,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -1358,6 +1368,15 @@
     "index": 3034,
     "repeatable": false,
     "status": "active"
+   },
+   {
+    "index": 3900,
+    "status": "available"
+   },
+   {
+    "index": 10003,
+    "objectives": [],
+    "status": "available"
    }
   ]
  },

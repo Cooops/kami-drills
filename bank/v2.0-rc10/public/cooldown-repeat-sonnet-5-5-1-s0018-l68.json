@@ -23,7 +23,7 @@
  "competency": [
   "state_tracking"
  ],
- "content_hash": "sha256:2e7acda93b39c8ee62e773d73102ee67721f6b5367ac5a309388e04bf9690162",
+ "content_hash": "sha256:b6b3b542adf83c7ab9ead2083474cf6d81e31a21a0fab21e396c73b317a06147",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -1069,6 +1069,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -1093,6 +1094,11 @@
     "status": "complete"
    },
    {
+    "index": 6,
+    "repeatable": false,
+    "status": "available"
+   },
+   {
     "index": 7,
     "repeatable": false,
     "status": "active"
@@ -1100,6 +1106,10 @@
    {
     "index": 9,
     "status": "active"
+   },
+   {
+    "index": 3001,
+    "status": "available"
    },
    {
     "index": 3002,
@@ -1118,6 +1128,7 @@
    },
    {
     "index": 3005,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },

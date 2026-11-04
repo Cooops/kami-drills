@@ -10,7 +10,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:d48829e06e2aa3c4f5fa9c3ea7b6284ecfacd2e8d358451e0c75d8c3c6c706e7",
+ "content_hash": "sha256:c2b766defb4fd20d2c9d63691b10f768a0e54c7b8b378e512aef994862aa4c08",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -256,6 +256,7 @@
   "quests": [
    {
     "index": 1,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
    },
@@ -315,6 +316,14 @@
     "status": "complete"
    },
    {
+    "index": 2002,
+    "status": "available"
+   },
+   {
+    "index": 3001,
+    "status": "available"
+   },
+   {
     "index": 3002,
     "repeatable": false,
     "status": "complete"
@@ -331,8 +340,17 @@
    },
    {
     "index": 3005,
+    "objectives": [],
     "repeatable": false,
     "status": "complete"
+   },
+   {
+    "index": 3006,
+    "status": "available"
+   },
+   {
+    "index": 3015,
+    "status": "available"
    }
   ]
  },
