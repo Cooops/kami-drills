@@ -1,0 +1,12 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "dont_repeat",
+ "id": "dr-cooldown-feed",
+ "source_drill": "repeat-cooldown-feed",
+ "base_len": 25,
+ "failure": {
+  "tool": "feed_kami",
+  "error_class": "kami on cooldown"
+ },
+ "note": "Lesson: feed_kami on kami 20375 reverted 'kami on cooldown' right after I stopped its harvest. Re-sending it unchanged fails the same way. Wait out the cooldown or schedule a wake instead."
+}

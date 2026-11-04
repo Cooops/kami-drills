@@ -1,0 +1,12 @@
+{
+ "format": "kami-drills-v2/cadence-budget",
+ "id": "budget-onboard-run",
+ "source_v1_id": "onboard-complete-before-accept",
+ "source_v1_fork_line": 85,
+ "start": 1,
+ "trajectory_calls": 48,
+ "trajectory_actions": 13,
+ "budget_calls": 50,
+ "trajectory_note": "The recorded continuation is the source drill's own prefix from message `start` to its fork; the public v1 data holds no transcript after the fork. The episode follows that path and ends there (trajectory_end).",
+ "license": "derived from a public v1 drill (KamiBench datasets, CC-BY-4.0); no Season 1 data"
+}

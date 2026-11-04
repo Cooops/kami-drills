@@ -1,0 +1,9 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "notes_first",
+ "id": "nf-feed-first",
+ "source_drill": "repeat-stop-starving",
+ "base_len": 1,
+ "fact": "Kami 703 is harvesting at 0 HP",
+ "note": "Kami 703 is harvesting at 0 HP. harvest_stop reverts 'kami starving' until it is fed; buy food from Mina (room 13) first."
+}

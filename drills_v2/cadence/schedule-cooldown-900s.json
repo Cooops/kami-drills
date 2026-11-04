@@ -1,0 +1,28 @@
+{
+ "format": "kami-drills-v2/cadence-schedule",
+ "tool": "set_next_wake",
+ "id": "schedule-cooldown-900s",
+ "kind": "pending",
+ "prototype": true,
+ "origin": "synthetic_variant",
+ "source_v1_id": "stale-harvest-start",
+ "tolerance_band": null,
+ "pass_threshold": 0.7,
+ "pass_threshold_note": "ln units; 0.7 is a factor of 2 either way. Untuned: tune before registration.",
+ "note": "Synthetic variant of the 9787 stale-cooldown-retry-start state shape (v1 rule: wait out the cooldown, then harvest_start; HP is not waited on). Not a recorded state. Cooldown end is the oracle.",
+ "situation": "Kami 9811 is RESTING with 68/70 HP. Harvest cooldown: 900 s left. Policy: restart a resting kami's harvest as soon as its cooldown ends; collect when accrued MUSU reaches 250; act before HP falls below 30% of its maximum. The longest wake you can set is 1440 minutes. You are at the end of a session. Call set_next_wake with minutes_from_now.",
+ "pending_work": [
+  "harvest_start"
+ ],
+ "state": {
+  "kami": {
+   "id": 9811,
+   "state": "RESTING",
+   "hp": 68,
+   "hp_total": 70,
+   "cooldown_s": 900
+  }
+ },
+ "variant_of": "schedule-harvest-9811-session-end",
+ "oracle_minutes": 15.0
+}

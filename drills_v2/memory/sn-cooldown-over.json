@@ -1,0 +1,11 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "stale_note",
+ "id": "sn-cooldown-over",
+ "source_drill": "stale-cooldown-retry-start",
+ "base_len": 99,
+ "notes": {
+  "plain": "Kami 9787's cooldown is over. harvest_start for 9787 at node 29 works now; send it straight away.",
+  "dated_newer": "Updated 2026-08-22T04:20Z. Kami 9787's cooldown is over. harvest_start for 9787 at node 29 works now; send it straight away."
+ }
+}

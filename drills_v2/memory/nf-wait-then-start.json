@@ -1,0 +1,9 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "notes_first",
+ "id": "nf-wait-then-start",
+ "source_drill": "repeat-cooldown-start-wait",
+ "base_len": 1,
+ "fact": "Kami 9787 is resting after harvest_stop and its cooldown runs about 124 seconds",
+ "note": "Kami 9787 is resting after harvest_stop and its cooldown runs about 124 seconds. Wait it out before harvest_start at node 29."
+}

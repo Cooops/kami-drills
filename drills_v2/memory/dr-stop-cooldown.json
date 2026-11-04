@@ -1,0 +1,12 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "dont_repeat",
+ "id": "dr-stop-cooldown",
+ "source_drill": "repeat-stop-cooldown-identical",
+ "base_len": 141,
+ "failure": {
+  "tool": "harvest_stop",
+  "error_class": "kami on cooldown"
+ },
+ "note": "Lesson: harvest_stop on kami 17194 reverted 'kami on cooldown'. Sending it again straight away fails the same way. Wait out the cooldown, then stop."
+}

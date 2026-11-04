@@ -1,0 +1,12 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "dont_repeat",
+ "id": "dr-stop-starving",
+ "source_drill": "repeat-stop-starving",
+ "base_len": 13,
+ "failure": {
+  "tool": "harvest_stop",
+  "error_class": "kami starving"
+ },
+ "note": "Lesson: harvest_stop on kami 703 reverted 'kami starving' (0 HP). Retrying the stop does not help. Feed the kami first, then stop."
+}

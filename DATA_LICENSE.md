@@ -3,7 +3,8 @@
 The drill data in `drills/` (transcript prefixes, recorded tool responses and the
 shared world-read library) is licensed under
 [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Each drill names its source
-in its `provenance` block.
+in its `provenance` block. The experimental v2 data in `drills_v2/` is derived from the
+same sources and is under the same licence.
 
 - 37 drills are derived from the KamiBench datasets by tokedo
   ([huggingface.co/KamiBench](https://huggingface.co/KamiBench), runs 004, 005 and 006),

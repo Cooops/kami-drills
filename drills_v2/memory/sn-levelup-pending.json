@@ -1,0 +1,12 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "stale_note",
+ "id": "sn-levelup-pending",
+ "source_drill": "stale-levelup-twice",
+ "base_len": 43,
+ "needs_action": true,
+ "notes": {
+  "plain": "Kami 21340 has 504 XP against 503 needed, so level_up_kami for 21340 is still pending. Do it first.",
+  "dated_newer": "Updated 2026-10-12T04:47Z. Kami 21340 has 504 XP against 503 needed, so level_up_kami for 21340 is still pending. Do it first."
+ }
+}

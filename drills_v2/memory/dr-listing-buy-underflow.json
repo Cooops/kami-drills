@@ -1,0 +1,12 @@
+{
+ "format": "kami-drills-v2/memory",
+ "kind": "dont_repeat",
+ "id": "dr-listing-buy-underflow",
+ "source_drill": "repeat-listing-buy-underflow",
+ "base_len": 19,
+ "failure": {
+  "tool": "listing_buy",
+  "error_class": "arithmetic underflow or overflow"
+ },
+ "note": "Lesson: listing_buy of items 11301 and 23100 together reverted with an arithmetic underflow (item 23100 costs more than I hold). The same basket fails again. Buy only what I can afford."
+}
