@@ -31,6 +31,26 @@ depending on the model's price.
 The drills sit inside a loop: live runs produce mistakes, mistakes become drills, and a model's drill score is used
 to forecast how it will do in the next live run. Whether that forecast holds is tested in [Palaestra Season 1](https://palaestra.run/research/season-1), live now.
 
+### Why drills, and why on-chain
+
+Real-world training turns logged failures into repeatable drills. Waymo replays logged drives and simulates reactive
+variants of them; aviation's evidence-based training tags each drill by competency; Lichess builds puzzles from real
+games, keeping only positions with a clear best move (a value swing and an only-move margin); military teams run
+after-action reviews. The expensive parts are the same four everywhere: a complete log, the exact state at the
+decision, what everyone else did, and a faithful simulator. On a chain each comes with the game:
+
+1. **The log.** The chain is a complete, public, append-only record of every player's actions, human and agent.
+2. **The state.** The exact world state is readable at any block, so a drill's fork is the real state, not a
+   reconstruction.
+3. **Everyone else.** Other players' actions are on the same log; the reactive world model is fitted on them
+   ([docs/v2-world-model.md](docs/v2-world-model.md)).
+4. **The rules.** The game contracts are the rules. The Python simulator is the fast approximation; replaying a
+   decision against the real contracts on a fork at the decision block is the future verification path.
+
+It is also public and reproducible, so anyone can rebuild and audit a drill, and the stakes are real. The limits:
+agent transcripts (stated intent, what was read) come from the harness logs, not the chain, and other players'
+future behaviour still has to be modelled. How a drill is built: [docs/method.md](docs/method.md).
+
 ## Quickstart
 
 ```bash
