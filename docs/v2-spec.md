@@ -29,7 +29,7 @@ model's trace is scored by the same `spec.score`.
 
 The JSON Schema (`kami_drills/spec/drill-spec.schema.json`, 2020-12) is authoritative. It is the D design draft
 (spec_version 2.0.0) with one addition: reason code `BAD_ARGS` (a request the game refuses by rule: "not a trade",
-"node does not exist", an unknown room). Without it 4.9% of Season 1 tool errors had no code; with it 1.2% do.
+"node does not exist", an unknown room). Without it 4.9% of Season 1 tool errors had no code; with it 1.2% do. The name matches the error code kami-harness already returns. Owner sign-off 2026-11-04.
 
 | Part | Holds |
 |---|---|
