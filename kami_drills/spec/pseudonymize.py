@@ -20,9 +20,13 @@ What changes, consistently across every spec under one key (the same input alway
   never replaced again (the tool is idempotent);
 - a third-party player account (a recorded {index, name} under maker/owner/account/... or with a 40-hex id, not the
   drill's own account): its name -> player-<hmac6> and its index in that record -> a fresh index above 10**7.
-- in free text, an account index after an account word ("(acct 3413, kami 2383)", "user index 729", a bare "acct
-  2704") -> the same alias as in a record, unless it is the drill's own index or kami or a season run account's index;
+- a name-less account record ("account": {"index": N}, "maker": {"index": N}, any key in BARE_KEYS) and an
+  *_account_index or account_key field: the index -> the same alias (PR #3 review).
+- in free text, an account index after an account word ("(acct 9101, kami 9898)", "user index 909", a bare "acct
+  9303") -> the same alias as in a record, unless it is the drill's own index or kami or a season run account's index;
   only a plausible index (3+ digits, or a harvested third-party index), so "user 2 options" stays (review rc9).
+Every index alias is index_alias (10**7 + hmac), so records, name-less records and free text agree. Kept raw: the
+drill's own index, its kamis, the S1 run accounts (pseudonym_allowlist.json "palaestra_s1_agent_indices") and aliases.
 
 What stays: the drill's own account index, kami ids and quest ids (scoring reads them), tx hashes and entity ids.
 Each output spec must keep every reference-play and battery verdict of its input (perturb.check_equivalent), else
@@ -68,6 +72,7 @@ def _mac(key, msg):
 
 ACCOUNT_KEYS = {"maker", "taker", "account", "accounts", "owner", "seller", "buyer", "killer", "victim", "players",
                 "members", "friends", "rows", "leaderboard"}
+BARE_KEYS = ACCOUNT_KEYS - {"rows"} | {"occupant"}  # a name-less {"index": N} under these is an account ("rows": anything)
 
 
 def _decoded(x, parent=None):
@@ -130,6 +135,7 @@ def real_name(name):
 # The season's player names, built at mine time from the transcripts (a private input; nothing about them is
 # committed: review rc6 F4). split.py sets it before pseudonymizing the bank; v1-derived specs leave it empty.
 SEASON = {"anywhere": set(), "plain": set(), "agents": set(), "agent_indices": set(), "player_indices": set()}
+RUN_INDICES = frozenset(json.loads(ALLOWLIST.read_text())["palaestra_s1_agent_indices"])  # S1 run accounts: kept raw
 WORDS = Path("/usr/share/dict/words")  # web2: English words and first names; without it every name counts as plain
 
 
@@ -213,8 +219,8 @@ def index_alias(key, i):
 
 
 def free_indices(blob, key, keep=(), known=()):
-    """Alias an account index after an account word in free text ("(acct 3413, kami 2383)", "user index 729", "acct
-    #2704") whatever follows it. Kept: the drill's own index and kamis (`keep`), the season's run accounts, aliases
+    """Alias an account index after an account word in free text ("(acct 9101, kami 9898)", "user index 909", "acct
+    #9303") whatever follows it. Kept: the drill's own index and kamis (`keep`), the season's run accounts, aliases
     (>= 10**7). Only a plausible index on the same line changes: 3+ digits, or a 2-digit known third-party index,
     so "user 2 options" and a numbered list ("account\\n2. Kami ...") stay. After "idx", which also names quests and
     items ("MIN004 (idx 2004)"), only a known index of 3+ digits changes: harvested, or a third-party record in the spec
@@ -224,7 +230,7 @@ def free_indices(blob, key, keep=(), known=()):
     def sub(m):
         d = m.group("d")
         i = int(d)
-        if i in keep or i in SEASON["agent_indices"] or i >= 10 ** 7:
+        if i in keep or i in SEASON["agent_indices"] or i in RUN_INDICES or i >= 10 ** 7:
             return m.group(0)
         if m.group("w").lower().startswith("idx") and not (len(d) >= 3 and i in known):
             return m.group(0)
@@ -236,7 +242,7 @@ def free_indices(blob, key, keep=(), known=()):
 
 def free_text(blob, names, key, own, anywhere=(), keep=(), known=()):
     """Replace player names in free text. Every name is replaced next to an account word, with or without an index
-    ("acct 3413 ShadowFox9", "(acct 807 \"today\")", "seller someseller"), and the index becomes the record alias (the
+    ("acct 9101 ShadowFox9", "(acct 9404 \"today\")", "seller someseller"), and the index becomes the record alias (the
     drill's own index stays), or followed by a kami, listing or account ("Bramble: kamiIndex 21629"). A distinctive name
     is also replaced anywhere it stands as a whole word; a plain word ("today", "Bramble") only in those contexts. Then
     every account index after an account word becomes its alias too (free_indices; `keep` and `own` stay)."""
@@ -253,7 +259,7 @@ def free_text(blob, names, key, own, anywhere=(), keep=(), known=()):
         if num:
             digits = num.lstrip("#")
             i = int(digits)
-            new = digits if i in keep or i in SEASON["agent_indices"] or i >= 10 ** 7 else str(index_alias(key, i))
+            new = digits if i in keep or i in SEASON["agent_indices"] or i in RUN_INDICES or i >= 10 ** 7 else str(index_alias(key, i))
             num = num[:len(num) - len(digits)] + new
         return m.group("w") + m.group("s1") + (num or "") + (m.group("s2") or "") + alias.get(canon(m.group("n")), m.group(0))
     sp = r"(?:\\+|[^A-Za-z0-9_:\\]){1,6}"
@@ -307,6 +313,20 @@ def pseudonymize(spec, key, allow=None):
         new_idx = idx if idx == own else index_alias(key, idx)  # the drill's own index stays
         return m.group(1) + str(new_idx) + m.group(3) + f"player-{_mac(key, 'name|' + name)[:6]}" + m.group(5)
     blob = re.sub(rf'(index{q}{sep}:{sep})(\d+)(,{sep}{q}name{q}{sep}:{sep}{q})((?:[^"\\]|\\+u[0-9a-fA-F]{{4}})+)({q})', record, blob)
+    # a name-less account record ("account": {"index": N}, "maker": {"index": N}, a record whose name was truncated)
+    # and an *_account_index / account_key field: the same alias; the drill's own index and kamis, run accounts stay
+    kamis = {k["index"] for k in spec["state"].get("kamis") or [] if isinstance(k.get("index"), int)}
+    bare_known = set()
+
+    def bare(m):
+        i = int(m.group(2))
+        if i in (0, own) or i in kamis or i in SEASON["agent_indices"] or i in RUN_INDICES or i >= 10 ** 7:  # 0: no account (a tool default)
+            return m.group(0)
+        bare_known.add(i)
+        return m.group(1) + str(index_alias(key, i))
+    nest = r'(?:[^{}]|\{[^{}]*\})*?'  # the record's own fields, stepping over one level of nested objects
+    blob = re.sub(rf'((?<![A-Za-z_])(?:{"|".join(sorted(BARE_KEYS))}){q}{sep}:{sep}\{{{nest}{q}index{q}{sep}:{sep})(\d+)(?!\d)', bare, blob)
+    blob = re.sub(rf'((?<![A-Za-z])(?:[A-Za-z]+_)?(?:account_index|account_key){q}{sep}:{sep}(?:{q})?)(\d+)(?![\w.])', bare, blob)
     # free text (notes, prose, truncated results): the record names above, the drill's own name, and any harvested S1
     # player name, wherever they are a player's name (free_text)
     names = {nm for _, nm in accounts if nm not in kami_names} | own_names | season_names(blob)
@@ -316,8 +336,7 @@ def pseudonymize(spec, key, allow=None):
     blob = json.dumps(held, ensure_ascii=False)
     blob = free_text(blob, sorted(names - SEASON["agents"], key=lambda x: (-len(x), x)), key, own,
                      anywhere={n for n in own_names if len(n) >= 4 and not n.isdigit()},
-                     keep={k["index"] for k in spec["state"].get("kamis") or [] if isinstance(k.get("index"), int)},
-                     known={i for i, _ in accounts})
+                     keep=kamis, known={i for i, _ in accounts} | bare_known)
     if native is not None:
         held = json.loads(blob)
         held["world"]["native_text"] = native

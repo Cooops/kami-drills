@@ -1,5 +1,5 @@
 {
- "note": "Addresses kami-drills pseudonymization keeps (spec/pseudonymize.py): game contracts and tokens, and the Palaestra Season 1 agents' own owner and operator wallets (owner decision, 2026-11-03). Every other 0x address in a public spec is pseudonymized.",
+ "note": "Addresses kami-drills pseudonymization keeps (spec/pseudonymize.py): game contracts and tokens, and the Palaestra Season 1 agents' own owner and operator wallets (owner decision, 2026-11-03). Every other 0x address in a public spec is pseudonymized. Account indices it keeps: the Palaestra S1 agents' own accounts (palaestra_s1_agent_indices), like their wallets.",
  "contracts": {
   "0x2729174c265dbbd8416c6449e0e813e88f43d0e7": "Kamigotchi world (worldAddress)",
   "0x0777687ec9feb7349c23a19ba7d11a1fe8cd35f1": "system contract (transaction target)",
@@ -62,5 +62,34 @@
   "0xea981ff53b35a5c91e2acefcb2ad9262ca9b30d4",
   "0xf2d0f4ace714af8796ae343bf1c41401f4517d8e",
   "0xf6531a968c7f26c9f2e24a7deace18af07e6ff33"
+ ],
+ "palaestra_s1_agent_indices": [
+  3419,
+  3420,
+  3421,
+  3422,
+  3423,
+  3424,
+  3425,
+  3426,
+  3427,
+  3428,
+  3429,
+  3430,
+  3431,
+  3432,
+  3433,
+  3434,
+  3435,
+  3436,
+  3437,
+  3438,
+  3439,
+  3440,
+  3441,
+  3442,
+  3443,
+  3444,
+  3445
  ]
 }

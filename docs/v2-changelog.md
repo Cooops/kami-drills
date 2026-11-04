@@ -440,8 +440,8 @@ source model); only the input and the bank version changed. rc8 stays in the tre
 
 ## Free-text account indices (PR #3 blocker), bank v2.0-rc9 rebuilt
 
-- Agents' notes and tool prose kept other players' raw account indices beside their aliases ("player-40b0a7 (acct
-  3413, kami 2383)", "user index 729", a bare "acct 2704"), which re-identifies the alias. The context rule only fired
+- Agents' notes and tool prose kept other players' raw account indices beside their aliases ("player-aaaaaa (acct
+  9101, kami 9898)", "user index 909", a bare "acct 9303"; made-up values), which re-identifies the alias. The context rule only fired
   on "acct N Name". `pseudonymize.free_indices` now aliases a number after an account word (`acct`, `account`,
   `account index`, `user`, `user index`, `player`, `owner`, `killer`, `victim`, `seller`, `buyer`, `maker`, `taker`;
   space, `#`, `(` or `:` between, same line) whatever follows it, with the record alias (`10^7 + hmac`). Kept: the
@@ -452,7 +452,7 @@ source model); only the input and the bank version changed. rc8 stays in the tre
 - `tests/test_pseudonymize.py`: an independent detector for raw S1 third-party indices beside an account word
   (red on rc9 at 9163cec: 2 specs, 4 indices) and a synthetic regression test both ways.
 - Bank rc9 rebuilt in place with the same command (not merged): only 2 public specs changed (the 4 aliases above and
-  "user index 729"), plus content hashes, the manifest and the held-out commitments. Output `sha256[:16]
+  one "user index N"), plus content hashes, the manifest and the held-out commitments. Output `sha256[:16]
   c1f787319daab1bb` for `--jobs 1` and 10 (was `b5869d7e3b57293a`). v1.1 rebuilt (`scripts/v11/run.py`) and `drills_v2/spec` refreshed:
   "idx 3376", "account 3374" and the like in 3 v1.1 and 2 `drills_v2/spec` specs now carry their record alias.
 - `hp-liquidated-grok-4-7-1-s0050-l66`: the kami starved (0 HP, still HARVESTING, no kill in `chain/kills.jsonl`).
@@ -462,6 +462,38 @@ source model); only the input and the bank version changed. rc8 stays in the tre
 - Independent scan of every tracked file outside the frozen v1 (`drills/`, `defs/`, `drills_v2/polluted/`): 0 S1
   third-party wallets (whole or inside longer hex), 0 harvested S1 third-party indices beside an account word in the
   public bank (5 in 3 files before, rc8 included).
+- `spec check bank/v2.0-rc9 specs/v1.1` 106 specs, 0 failing; with `drills_v2/spec` 109, 0 failing, 14 expected.
+  `check_bank` 0 failures. Kitchen sink 0 of 59 public; battery 0/17 public ungrouped items and 0/20 groups (0/24 and
+  0/28 with the private variants); economic pairs unchanged. `bank.verify` [].
+
+## Name-less account records (PR #3 blocker), bank v2.0-rc9 rebuilt
+
+- Only `{index, name}` records were aliased. A name-less record (`"account": {"index": N}` in a node read, `"maker":
+  {"index": N}` in an order book, a record whose name a truncated result cut off) and `occupant_account_index`-style
+  fields kept the raw index: in rc9 public 3 specs and 43 distinct indices; in v1.1 2 specs with over 1,300
+  occurrences. `pseudonymize` now aliases the `index` of any object under an account key (`account`, `maker`, `taker`,
+  `seller`, `buyer`, `owner`, `occupant`, `killer`, `victim` and the other known account keys), in JSON and in JSON
+  inside tool-result strings, and every `*_account_index` and `account_key` field, with the same `index_alias`
+  (`10^7 + hmac`), so records, name-less records and free text agree. Kept raw: the drill's own index and kamis, `0`
+  (no account), aliases and the 27 S1 run accounts, now listed in `pseudonym_allowlist.json`
+  (`palaestra_s1_agent_indices`, like their wallets). `drills_v2/spec/repeat-pool-swap-retry` no longer keeps a raw
+  3376 (the owner's v1 account, a third party in that spec) beside its alias.
+- Docs and tests no longer quote a real alias or index: the examples are made up (`player-aaaaaa`, 9101, 909, 9303,
+  none of them an S1 account).
+- `tests/test_pseudonymize.py`: `test_public_specs_carry_no_raw_account_index` needs no private data, so CI runs it on
+  every public spec, v1-derived ones included: every index in an account record (named or not), every account field
+  and every 3+ digit number after an account word is an alias, the drill's own index or kami, a run account or 0 (red
+  on 14 specs before this rebuild). A synthetic test covers `{"account": {"index": N}}`, `{"maker": {"index": N}}`,
+  `occupant_account_index`, a truncated record and a run account that stays raw. The S1 free-text index detector no
+  longer skips v1-derived specs; it still needs `KAMI_DRILLS_S1_RUNS`, which should point at
+  `kamiarena/runs/s1-final` (the default `runs/s1` is the interim copy).
+- Rebuilt with the repo's builders: bank rc9 in place (same mine command), v1.1 (`scripts/v11/run.py`) and
+  `drills_v2/spec` (`spec from-v1`). Changed: 3 rc9 public specs, 10 v1.1 specs and 1 `drills_v2/spec` spec, plus
+  manifests; a line diff shows only index → alias substitutions (64 indices, one alias each) and content hashes.
+  Output `sha256[:16] ca9cfc5168f12000` for `--jobs 1` and 10 (was `c1f787319daab1bb`).
+- Independent scan of every tracked file outside `drills/`, `defs/`, `drills_v2/polluted/` for the S1 third-party
+  account indices harvested from `runs/s1-final`, in account records, account fields and after an account word: 1,475
+  occurrences (67 distinct, 18 files) before, 0 after.
 - `spec check bank/v2.0-rc9 specs/v1.1` 106 specs, 0 failing; with `drills_v2/spec` 109, 0 failing, 14 expected.
   `check_bank` 0 failures. Kitchen sink 0 of 59 public; battery 0/17 public ungrouped items and 0/20 groups (0/24 and
   0/28 with the private variants); economic pairs unchanged. `bank.verify` [].

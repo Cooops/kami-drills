@@ -234,7 +234,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "a wake/end earns 0.5; productive work (collect at node 34) earns 1; harness-bound to the pre-4.7 bare 'Reverted' as drills_v2/spec",
-   "content_hash": "sha256:118dfe40981c195aa46b9ebc84cfdf1f3ee703a8bac5defeb7c8fd1d9986308a"
+   "content_hash": "sha256:391645d0b56ecf3e41a720f8dc5b57c78edc5f708c150a66d51787b4630bc914"
   },
   {
    "id": "repeat-quest-prereq-locked",
@@ -252,7 +252,7 @@
    "status": "draft",
    "fix": "v1 forbade stop/collect/start before any wait call; now the clock decides; a wake earns 0.5 (stopping in-session is the goal)",
    "timing_item": true,
-   "content_hash": "sha256:0485c8b64facc4d2b7cc61e814b88a23fff1da8c1d336a4d19a698c942cd01e7"
+   "content_hash": "sha256:75e1487ad47c8c29ef55a94fc8839601257749b18467ff27cfdc4a9117433c38"
   },
   {
    "id": "repeat-stop-starving",
@@ -260,7 +260,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "converted; stated objective added",
-   "content_hash": "sha256:72db3612369dba3e2e93880ef5840c8a2f0db4ddb6d6d75136f671ab68742c5e"
+   "content_hash": "sha256:18f9684a672f7edf22f07364dd7e0fe1a96d32717759fa817817e7d25d7878df"
   },
   {
    "id": "repeat-take-trade-underflow",
@@ -268,7 +268,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "take-trade cap per unit <= 100 MUSU (was 40, the 200-unit lot's price); wake/end/reads-only = 0.5",
-   "content_hash": "sha256:b811f7fa4a36815e48f0e0844aff200ff2b3c862951c7b5c5911c5a6b15709bf"
+   "content_hash": "sha256:ee253e9855340cffbead163a339d6cefc0634ce24b9b61b5b9e1b04a884586df"
   },
   {
    "id": "risk-dying-kami-remote",
@@ -286,7 +286,7 @@
    "status": "draft",
    "fix": "converted; stated objective added",
    "reason": "battery gate: always_feed passes. The answer is to feed first, so the reflex 'feed every kami with every item' is the oracle (the same reason risk-starving-feed-first is a smoke test).",
-   "content_hash": "sha256:887dfbac581448008abd62bce9cbdca57adfb8579028b60d0ba5451a42bcdd78"
+   "content_hash": "sha256:47247768c292cc2756b688eb2f4dfa29d039c3b8fa3b0ae945513cef91435653"
   },
   {
    "id": "risk-revive-then-heal",
@@ -294,7 +294,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "the drill is revive THEN heal: revive-only (then sleep) earns .5; a harvest at revive HP is a gate fail; dry-run starts are never the harvest",
-   "content_hash": "sha256:efe5b31d45e2ead5b89ab6103aa8b59e6dd448dd45c7b672b144a42d37049e1b"
+   "content_hash": "sha256:0e6eb698573384fd71542e6a83ca3a8f5964573d8a53ae853af5476b205bfe54"
   },
   {
    "id": "risk-starving-feed-first",
@@ -355,7 +355,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "converted; stated objective added",
-   "content_hash": "sha256:83ca8f9676d5c0cd0fcafa3bf0c10d71431cf33e335431c201189fc2f7cd747e"
+   "content_hash": "sha256:b967dfab04a9cc78b94e9dfbd52c2c918584ba1fb724d1624ea284146c2658dd"
   },
   {
    "id": "stale-levelup-twice",
@@ -381,7 +381,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "rationale says 'stop it ... or wait': waiting/waking (no harvest_start first) earns .5, the stop earns 1",
-   "content_hash": "sha256:1aadd4c77fd6e35ea783cf599e5e19fedfad595efe88f8ec46352bac219b93e4"
+   "content_hash": "sha256:151048cc597be3ef16ce826de96685e7ce1486613aa99033d47ea1b3f5f9b504"
   },
   {
    "id": "stale-notes-wrong-node-stop",
@@ -389,7 +389,7 @@
    "role": "ranking",
    "status": "draft",
    "fix": "stated objective added (stop 17194's harvest); rule unchanged",
-   "content_hash": "sha256:4c4c6ffe1e941982f148f52ebf668de6b57ae8988ef74bd5d588f03082533626"
+   "content_hash": "sha256:42de6fcad4fb407f613f92facc50c0653f7e5762aa7a55bdd28318f0cafeb388"
   },
   {
    "id": "stale-travel-before-cooldown-stop",
@@ -398,7 +398,7 @@
    "status": "draft",
    "fix": "accepted set {wait -> stop (-> travel), keep harvesting + wake}; fail only travel-before-stop or strand",
    "reason": "B audit: with the accepted set {wait -> stop (-> travel), keep harvesting + wake} it scores 95%.",
-   "content_hash": "sha256:a11a0ee888104e7186e4427b1fd85868f26b0b4df3d105266330506fe9459fb5"
+   "content_hash": "sha256:0538b22868baf42f787d4490a263831dd50d59fc47a1a5da7fe06ae580fa74e0"
   },
   {
    "id": "stall-no-kami",

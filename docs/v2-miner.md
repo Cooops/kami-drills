@@ -17,6 +17,7 @@ scorer** (`kami_drills/spec`, [v2-spec.md](v2-spec.md)): the simulator, rules li
 
 ```bash
 # the split key ($KAMI_DRILLS_SPLIT_KEY, or an untracked .split-key at the repo root) is needed to split and to freeze
+# KAMI_DRILLS_S1_RUNS: the final Season 1 copy, kamiarena/runs/s1-final (runs/s1 is the interim copy)
 uv run kami-drills mine "$KAMI_DRILLS_S1_RUNS" --out out/candidates.jsonl --stats out/stats.md [--bank bank/v2.0-rcN]   # a new version: never overwrite a frozen bank
 ```
 
@@ -40,7 +41,7 @@ repo cannot be committed by accident (H review M4).
 Otherwise the command exits 1 and writes nothing (F review m3).
 
 **Speed and determinism.** The 27 final Season 1 runs (2,172 sessions) take about 50 s with `--jobs 10`. Output is byte-identical
-for any `--jobs` and any input order (`sha256[:16] b5869d7e3b57293a` for miner 3.6.0, bank rc9, with the owner's key).
+for any `--jobs` and any input order (`sha256[:16] ca9cfc5168f12000` for miner 3.6.0, bank rc9 as rebuilt for name-less records, with the owner's key).
 
 **Untrusted input.** Transcripts are parsed as JSON only.
 
@@ -413,7 +414,11 @@ prefix and tightens the name pass. All nine are release candidates; nothing was 
 **Personal data.** Public specs embed S1 transcript prefixes. Since rc3 (and in v1.1) every third-party wallet address
 becomes `0x00000000` + 32 hex of an HMAC and every third-party player record `{index, name}` becomes
 `{10^7 + hmac, player-<hmac6>}` (`spec/pseudonymize.py`). This includes records inside truncated tool results that
-lead with their `id`. The owner's own handle is a third party like any other (owner decision, 2026-11-03). The same
+lead with their `id`, and a name-less account record (`"account": {"index": N}` in a node read, `"maker": {"index":
+N}` in an order, a record whose name a truncated result cut off) and every `*_account_index` or `account_key` field:
+the same `10^7 + hmac` alias, so records, name-less records and free text agree (PR #3 review). Kept raw: the drill's
+own index and kamis, the 27 S1 run accounts (`palaestra_s1_agent_indices` in the allowlist) and `0` (no account).
+The owner's own handle is a third party like any other (owner decision, 2026-11-03). The same
 wallet as a decimal 160-bit account id gets that alias as an integer, and a wallet cut to 36-39 hex gets a
 same-length pseudonym. `tests/test_pseudonymize.py` checks every committed spec with a detector independent of the
 tool: it harvests the player records from the S1 transcripts when they sit next to the repo, and otherwise uses fixed
@@ -426,8 +431,8 @@ public, so those aliases can be reversed by hashing a list of wallets; their raw
 Every pseudonymized spec keeps every reference-play and battery verdict of its original, or the split fails.
 `drills_v2/polluted/` is outside this scope: it is identical to the public base it was built from (`drills/`).
 
-**Names in free text** (rc6, revised in rc7). Notes, prose and truncated results name players too ("acct 3413
-ShadowFox9", "(someseller listing)"). The free-text pass replaces three kinds of name:
+**Names in free text** (rc6, revised in rc7). Notes, prose and truncated results name players too ("acct 9101
+ShadowFox9", "(someseller listing)"; made-up). The free-text pass replaces three kinds of name:
 - those in the spec's own records;
 - the drill's own name (the owner's handle in v1.1), from its own account record only (not a registry or quest record
   that shares the index); its index stays, because scoring reads it;
@@ -446,7 +451,7 @@ The rule:
   `account`, `player`, `user`, `seller`, `buyer`, `maker`, `taker`, `owner`, `idx`), with or without an index, or
   before what it sells ("Bramble: kamiIndex …"). A colon never joins a context: `"account": "main"` is a tool argument.
 - An account index next to a name gets the record's alias. So does one after an account word with no name ("(acct
-  3413, kami 2383)", "user index 729", "acct #2704"; rc9 rebuild): 3+ digits, or a 2-digit known third party, and after
+  9101, kami 9898)", "user index 909", "acct #9303"; rc9 rebuild; made-up numbers): 3+ digits, or a 2-digit known third party, and after
   `idx` only a known 3+ digit index. The drill's own index and kamis and the S1 run accounts' indices stay.
 - S1 agent names stay, like their wallets.
 
@@ -455,8 +460,12 @@ A plain-word name in prose with no such context is the known gap. The tests chec
 - every v1.1 and `drills_v2/spec` native prefix differs from its frozen v1 drill only at names, their indices and
   wallets or ids. Every alias in them is the alias of a recorded name, and a record name that `real_name` rejects is
   aliased at its record sites only;
+- in every public spec (no private data needed, so CI runs it): every index in an account record, named or not, every
+  `*_account_index` or `account_key` field and every 3+ digit number after an account word is an alias, the drill's
+  own index or kami, an S1 run account or 0;
 - with the transcripts present, no harvested S1 name is left in the bank's free text, and no S1 third-party account
-  index beside an account word.
+  index beside an account word in any public spec. Point `KAMI_DRILLS_S1_RUNS` at the final copy
+  (`kamiarena/runs/s1-final`); the default `../kamiarena/runs/s1` is the interim copy, which misses the last sessions.
 
 ## Candidate schema (`kami-drills/candidate@3`)
 
