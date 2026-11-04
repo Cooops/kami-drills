@@ -5,10 +5,30 @@ many sessions) and memory (writing, trusting and repairing notes). These are the
 
 ## v1.1 — gap-free drills from snapshot runs
 
+Status: the v1.1 specs and the mined bank v2.0-rc9 (from the final 7-day Season 1 logs) are built (README, v2 section). What is still open is listed under "deferred" below.
+
+**At Season 1 close (2026-11-04 06:51 UTC), in order:**
+- [ ] **Grade the registered S1 forecast** (H1/H3 on day-7 quests, as pre-registered) after all 27 runs complete.
+  Done = grading published with the Palaestra Season 1 results.
+- [x] **Re-mine on the full 7-day logs**: re-sync the S1 logs, then `kami-drills mine ... --bank bank/v2.0-rcN` (a new
+  version; rc8 is since removed for a free-text index leak). Done = the new bank passes `spec check` and an independent review. Mined as
+  `bank/v2.0-rc9` (2026-11-04; [v2-changelog.md](v2-changelog.md)): `spec check` 0 failing; rebuilt in place for the free-text index fix; the independent review is pending.
+- [ ] **Cross-benchmark check**: collect public agent-benchmark scores (e.g. Vending-Bench, τ-bench) for the 10 S1
+  models; test which drill families track which benchmarks and what they add beyond overall model strength; pre-register
+  it as an S2 hypothesis. Done = an analysis note and an S2 pre-registration entry.
+
 [Palaestra Season 1](https://palaestra.run/research/season-1) logs a full state snapshot at every session start (account, roster, every kami, quest states,
 inventory, gas, lens status) without the agent seeing it. Drills forked from those runs can answer any read truthfully,
 which removes most replay gaps. New drills come from the mistakes those runs make, mined with the same pipeline as
 v1.0 (see CONTRIBUTING.md). Low-information drills found by the item analysis are retired or replaced.
+
+## v1.1 specs and the v2 scorer: deferred
+
+- **Early-stop emulation.** `decision_point.early_stop` is unread by the spec agent, so v1's early stop (the overpaid
+  stop in onboard-first-kami-vendor) is not emulated.
+- **A pre-4.7 KamiBench adapter.** The harness-bound `repeat-pool-swap-retry` (bare `Reverted`) is not administered
+  anywhere until one exists.
+- **`use_item_batch count n`** becomes n feed intents, while v1 matched it once (quest19).
 
 ## Memory
 

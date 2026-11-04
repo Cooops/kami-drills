@@ -1,0 +1,413 @@
+{
+ "suite": "kami-drills v1.1",
+ "spec_version": "2.0.0",
+ "source": "v1.0.0 drills/ (frozen)",
+ "counts": {
+  "ranking": 27,
+  "smoke": 10,
+  "retired": 10
+ },
+ "drills": [
+  {
+   "id": "levelup-not-resting",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit (c): the level-up has no stated purpose, the prefix shows no XP and the revert says nothing about whether a level-up is possible; the rescored rule still reverses (-.21).",
+   "content_hash": "sha256:b08224e356b195f16c8a17bf7698f7a0140bd7543fe2acb4b6f6cdfba40b3e53"
+  },
+  {
+   "id": "memory-luna-levelup-needs-no-points-belief",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "partial credit: 1 level = .5 (rejects the 'no points, no use' belief), both banked levels = 1 (pass); a pass on one level would let the kitchen sink (level every kami once) pass, so the binary pass stays at both; travel rows",
+   "content_hash": "sha256:9eb85c51b970c65096fe09cab21f01ce5a3184e1f36cc90bf44059a7fbd20eba"
+  },
+  {
+   "id": "memory-luna-plan-level-after-rest",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "partial credit: each of the 3 banked levels = 1/3 (stop first is a gate); travel rows",
+   "content_hash": "sha256:465d9478c3d621a8cb4382e863ead6dad8116da2ecb050ee4a87a1914bf23a3a"
+  },
+  {
+   "id": "memory-sonnet-avoid-registry-dump",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:59d11cdfbafaa165bc7e162bbea13649989f11ee7eaeedcbac1c25a375614f55"
+  },
+  {
+   "id": "memory-sonnet-slow-points-belief",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit (a): every try banks the points; the verdict is decided by a note path/phrasing regex. Behaviour-only scores 100%. Rebuild as a v2 memory drill with a structured note.",
+   "content_hash": "sha256:e6c142fa3e37c2a510eb19e9ae2347fa22adbe30bb455f86c9712bbeb668946b"
+  },
+  {
+   "id": "memory-sonnet-stamina-unreliable-belief",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "behaviour only: the 'corrected' note conjunct is dropped (moved to v2 memory); no blind re-travel; wait for regen then travel = 1, a wake = 0.5",
+   "timing_item": true,
+   "content_hash": "sha256:4ae024711b263a1b4d9805d23ae09bb3df6bfc8c104f5c5ba2092076cc596d39"
+  },
+  {
+   "id": "memory-sonnet-zero-hp-is-dead-belief",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 95% pass.",
+   "content_hash": "sha256:73202a5fa73df153480fc04a548f67b46ad2b64be27ee3fca1a3943dbb7e368e"
+  },
+  {
+   "id": "onboard-bridge-pending",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:40a78f10d20d1b69bb9946e741c05ef0425c99372dd4d38e04e9ad846e5ff2e4"
+  },
+  {
+   "id": "onboard-complete-before-accept",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 95% pass.",
+   "content_hash": "sha256:902b2e1ac90fac573a3649bd57b85b027d1d3f1a65e0aaa9dc3f73853f4147ca"
+  },
+  {
+   "id": "onboard-first-kami-vendor",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "KamiSwap overpay tolerance (cap <= 0.005 ETH per kami, 25% over the vendor) passes; no early stop on overpaid; a vendor buy of a kami not on display is a guess",
+   "content_hash": "sha256:a4027e53e268919af5d5bf79e51ffe49c0cf5736cfdb9259f673b682591630fb"
+  },
+  {
+   "id": "onboard-fund-amount",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 100% pass, no information.",
+   "content_hash": "sha256:09c4ecf59c8ac1f93f822f3380783f4e42648e747561c7fd797ab6a8f2be33f1"
+  },
+  {
+   "id": "onboard-operator-unfunded",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:d964a94dd1b2d06d1ce5cfbae289a0ecee969b99bf13f2e66c11988855e495d5"
+  },
+  {
+   "id": "onboard-quest2-move-three",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "the legal travel_to_room path to room 1 is accepted; v1's forbid on a one-step move to non-adjacent room 1 is kept (travel hop)",
+   "content_hash": "sha256:b6f68257ef726fa8f00c21c9d35d7eb4950aa9112f70cc4a886e871f2710042d"
+  },
+  {
+   "id": "onboard-travel-not-move",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit (c): the goal room is inferred from a dry run and the live agent's next call, never stated; a mistake-only rule still reverses (r -.38). Needs a re-fork where the agent has written the goal.",
+   "content_hash": "sha256:ec4a54f7d4892306e7cb0afd3c7aed961e28972be9f5496f282caa49d70fcb8d"
+  },
+  {
+   "id": "prog-gpt52-complete-when-met",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 95% pass.",
+   "content_hash": "sha256:7dcb85bedc0bbcd2b8e58734384527e89da4e8708d6bce606b077f50ec813908"
+  },
+  {
+   "id": "prog-gpt52-locked-quest-chain",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "battery gate: the native batch play 'harvest_collect every kami, end_session' passes. The answer is to collect the only kami, so no rule separates the skill (leave the locked quests alone) from the reflex.",
+   "content_hash": "sha256:555b12116db638231808d2fe6fad3461a8850b4239618bee4cfc8e90b438f88d"
+  },
+  {
+   "id": "prog-luna-banked-xp",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "partial credit: 1 level = .5, both banked levels = 1 (pass); travel rows",
+   "content_hash": "sha256:44ef7275e8ac52f857939d872883c10bd0f7272004e3dbfd77eadc213807c771"
+  },
+  {
+   "id": "prog-luna-two-levels-pending",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "partial credit: 1 level = .5, both banked levels = 1 (pass); travel rows",
+   "content_hash": "sha256:ad265600908280a02a6bedc3f793b2b29e52aa3f499d1b9bff381ae24eb95b49"
+  },
+  {
+   "id": "prog-sonnet-unspent-skill-points",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "aligned with the bank-is-valid audit: spending any point passes (.5), all six = 1",
+   "reason": "after aligning with the bank-is-valid audit (any point spent passes) the recorded tries pass 21/22: at ceiling, so a smoke test like the other 95% items.",
+   "content_hash": "sha256:8bb1703e72fc9968a7184b478b44c25c18fc870a48d7116c94a80149da500dd4"
+  },
+  {
+   "id": "prog-timewall-plan-stop-complete",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:ef5802558d3f2df288ca03ce2bfecea6973de1da218bcb9cb9c4339268f19641"
+  },
+  {
+   "id": "prog-timewall-quest19-to-20",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:9c0a7164e8739f6ecd430bec06dbfa548a83e47a70682de6326139f040126417"
+  },
+  {
+   "id": "repeat-collect-too-far-stop",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:88131920591787d8531ed5ad88d9cc8cb3f0086401d89ba1a6fd9058c6c27de4"
+  },
+  {
+   "id": "repeat-cooldown-feed",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "v1 forbade every feed of 20375 forever and passed any wake; now the cooldown is on the clock (~170 s, readable via lens_kami), acting inside it fails, restarting the harvest after it earns 1, a wake 0.5",
+   "timing_item": true,
+   "content_hash": "sha256:fd04cc5ff84da565825d42b453dc03759beaeb0752e3ed5478128e12d4b9c5af"
+  },
+  {
+   "id": "repeat-cooldown-start-wait",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "v1 forbade any harvest_start before a wait call (and counted dry-run starts as the harvest); now only the clock decides, a wake earns 0.5",
+   "timing_item": true,
+   "content_hash": "sha256:bca27970c62266de9661c5096e25c99f440bfafd1b7163120e35d71c626d23a2"
+  },
+  {
+   "id": "repeat-listing-buy-underflow",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:86ec688bb1b6a5d41b1b7cefbfa042290cce4abde4f623a16f801f1f2c981327"
+  },
+  {
+   "id": "repeat-newbie-vendor-guess",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "vendor guesses are scored by flag (guess before reading the display, or a non-displayed index where the adapter keeps it); KamiSwap buy of a real listing kept",
+   "content_hash": "sha256:9b6496110d18fc6a9de03c41a24e70df2bbfacda7619690f40b0ca4c76f1b260"
+  },
+  {
+   "id": "repeat-pool-swap-retry",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "a wake/end earns 0.5; productive work (collect at node 34) earns 1; harness-bound to the pre-4.7 bare 'Reverted' as drills_v2/spec",
+   "content_hash": "sha256:391645d0b56ecf3e41a720f8dc5b57c78edc5f708c150a66d51787b4630bc914"
+  },
+  {
+   "id": "repeat-quest-prereq-locked",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 95% pass (and a wake is the correct answer).",
+   "content_hash": "sha256:fd108ec8c49c18ba72240226bdcf253035ae69505e8323621b46c178489e1ad1"
+  },
+  {
+   "id": "repeat-stop-cooldown-identical",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "v1 forbade stop/collect/start before any wait call; now the clock decides; a wake earns 0.5 (stopping in-session is the goal)",
+   "timing_item": true,
+   "content_hash": "sha256:75e1487ad47c8c29ef55a94fc8839601257749b18467ff27cfdc4a9117433c38"
+  },
+  {
+   "id": "repeat-stop-starving",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:18f9684a672f7edf22f07364dd7e0fe1a96d32717759fa817817e7d25d7878df"
+  },
+  {
+   "id": "repeat-take-trade-underflow",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "take-trade cap per unit <= 100 MUSU (was 40, the 200-unit lot's price); wake/end/reads-only = 0.5",
+   "content_hash": "sha256:ee253e9855340cffbead163a339d6cefc0634ce24b9b61b5b9e1b04a884586df"
+  },
+  {
+   "id": "risk-dying-kami-remote",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 100% pass, no information.",
+   "content_hash": "sha256:8c5cca3fdda07deed34574df1b0b7758c2cbc9e4e8cbc799bce9db4261f9f8a5"
+  },
+  {
+   "id": "risk-lowhp-feed-first",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "battery gate: always_feed passes. The answer is to feed first, so the reflex 'feed every kami with every item' is the oracle (the same reason risk-starving-feed-first is a smoke test).",
+   "content_hash": "sha256:47247768c292cc2756b688eb2f4dfa29d039c3b8fa3b0ae945513cef91435653"
+  },
+  {
+   "id": "risk-revive-then-heal",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "the drill is revive THEN heal: revive-only (then sleep) earns .5; a harvest at revive HP is a gate fail; dry-run starts are never the harvest",
+   "content_hash": "sha256:0e6eb698573384fd71542e6a83ca3a8f5964573d8a53ae853af5476b205bfe54"
+  },
+  {
+   "id": "risk-starving-feed-first",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 95% pass; the answer is 'feed' (always-feed passes).",
+   "content_hash": "sha256:16d41d6ac4ec79f1c3031b0f1670283a199594c03e450b11bc13e4898b76a6dc"
+  },
+  {
+   "id": "risk-unmanaged-lowhp",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "reason": "battery gate: always_stop passes. The answer is to stop the 17% HP kami first, so the reflex 'stop every harvest, end' is the oracle.",
+   "content_hash": "sha256:e6609e8614d1dd919e965afc57e88b4d38d58f2e6f4b68f91c7c81168b61ad1d"
+  },
+  {
+   "id": "stale-cooldown-retry-start",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "dry-run probes never count as a retry; a wake earns 0.5; every act on 9787 inside the cooldown is the mistake (the chain refuses them all)",
+   "timing_item": true,
+   "content_hash": "sha256:d6ac2cce9548691ccf58c8ae6433a8f68cb3061f4aba08493fad384c0f0f5764"
+  },
+  {
+   "id": "stale-double-complete-quest",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:f566ce13b9dd06044d142743adf88fdfc15c8376c40ca0f74ac6e986387a918a"
+  },
+  {
+   "id": "stale-feed-from-shop-room",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 100% pass, no information.",
+   "content_hash": "sha256:6de5d2472a130f6eeef909c6e95a4b3ca96eac6a4d2eacad97bbd76e58a06368"
+  },
+  {
+   "id": "stale-harvest-start",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: passes on a wake alone and sits at 95%.",
+   "content_hash": "sha256:1b0e37861c8e313f60345f9f44b5c3ebe1d8520bee81e4a4bcaf20d779f7a74b"
+  },
+  {
+   "id": "stale-harvest-start-wrong-room",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "converted; stated objective added",
+   "content_hash": "sha256:b967dfab04a9cc78b94e9dfbd52c2c918584ba1fb724d1624ea284146c2658dd"
+  },
+  {
+   "id": "stale-levelup-twice",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: passes on a wake alone and sits at 95%.",
+   "content_hash": "sha256:e89cce2da9665058f060de6fc50052fb86696f421c553a762245205fa6e31747"
+  },
+  {
+   "id": "stale-levelup-while-harvesting",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit (a)+(b): the kami is run by a Kamibots strategy whose tools are hidden in Season 1, XP is never shown, quest checks are gapped in 14/22 tries; 0% pass.",
+   "content_hash": "sha256:c78d16a52dcc55c15c306b8544a91086091cb8b6b9b9f639ea157285a3da6e7e"
+  },
+  {
+   "id": "stale-notes-resting-vs-harvesting",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "rationale says 'stop it ... or wait': waiting/waking (no harvest_start first) earns .5, the stop earns 1",
+   "content_hash": "sha256:151048cc597be3ef16ce826de96685e7ce1486613aa99033d47ea1b3f5f9b504"
+  },
+  {
+   "id": "stale-notes-wrong-node-stop",
+   "version": 3,
+   "role": "ranking",
+   "status": "draft",
+   "fix": "stated objective added (stop 17194's harvest); rule unchanged",
+   "content_hash": "sha256:42de6fcad4fb407f613f92facc50c0653f7e5762aa7a55bdd28318f0cafeb388"
+  },
+  {
+   "id": "stale-travel-before-cooldown-stop",
+   "version": 3,
+   "role": "smoke",
+   "status": "draft",
+   "fix": "accepted set {wait -> stop (-> travel), keep harvesting + wake}; fail only travel-before-stop or strand",
+   "reason": "B audit: with the accepted set {wait -> stop (-> travel), keep harvesting + wake} it scores 95%.",
+   "content_hash": "sha256:0538b22868baf42f787d4490a263831dd50d59fc47a1a5da7fe06ae580fa74e0"
+  },
+  {
+   "id": "stall-no-kami",
+   "version": 3,
+   "role": "retired",
+   "status": "retired",
+   "fix": "converted; stated objective added",
+   "reason": "B audit: 100% pass, no information (and its oracle buy_kami is not expressible on kh-4.7.0: the adapter drops kami_ids).",
+   "content_hash": "sha256:4cb5b1981e682d54cd53809c9bd0d34961fcd848eea83ca57b942d21b4592576"
+  }
+ ]
+}

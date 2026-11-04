@@ -1,0 +1,47 @@
+{
+ "about": "Skill areas for `kami-drills profile` (docs/v2-profile.md). A drill's family is its miner detector (bank items, `provenance.mined_by.detector` without the @version) or its v1 `category` (v1.1 specs). Every drill gets ONE primary area: no weight is split, so each area's bootstrap resamples whole drills. `drills` overrides the family where the drill's scoring rule rewards another area's skill; the family is kept otherwise.",
+ "areas": {
+  "survival": "feed, revive and heal; avoid liquidation and starving",
+  "economic": "earn and spend MUSU and ETH well: prices, swaps, the market",
+  "progression": "levels, skill points and the quest chain",
+  "cadence": "persistence: wake on time, keep a plan and the state straight across sessions",
+  "recovery": "get out of a bad state; retry correctly after a refusal or a cooldown"
+ },
+ "families": {
+  "risk": {"area": "survival", "why": "low-HP, starving and dead kamis: the answer is feed, revive or stop before harvesting on"},
+  "hp-liquidated": {"area": "survival", "why": "a kami left harvesting into liquidation range"},
+  "levelup": {"area": "progression", "why": "a level-up the agent could claim"},
+  "progression": {"area": "progression", "why": "banked levels, unspent points and quest-chain steps"},
+  "onboarding": {"area": "progression", "why": "quests 1-3 of the new-account chain"},
+  "levelup-left": {"area": "progression", "why": "a session ended with a level-up left unclaimed"},
+  "quest-left": {"area": "progression", "why": "a session ended with a completable quest left"},
+  "memory": {"area": "cadence", "why": "acting on, or correcting, a plan or belief carried in notes from an earlier session"},
+  "stale_state": {"area": "cadence", "why": "notes or earlier reads disagree with the live state; the drill is keeping the state straight over time"},
+  "repeat_failed": {"area": "recovery", "why": "a call was refused; the drill is what the agent does next"},
+  "cooldown-repeat": {"area": "recovery", "why": "an act repeated inside its cooldown after the chain refused it"},
+  "stalling": {"area": "recovery", "why": "an account stuck with no kami or no funds"},
+  "stuck-broke": {"area": "recovery", "why": "an account out of gas or MUSU: get out of the broke state (tier B)"},
+  "discovery-swap": {"area": "economic", "why": "a swap that pays, found from the pool reads (tier B)"},
+  "market-price": {"area": "economic", "why": "the same usable HP for far less MUSU at the same merchant (tier B)"},
+  "reckless-convert": {"area": "economic", "why": "a deposit over the agent's cap or a swap with no slippage floor (tier B)"},
+  "node-choice": {"area": "economic", "why": "a harvest node that pays much more within reach (experimental, not shipped)"}
+ },
+ "drills": {
+  "repeat-take-trade-underflow": {"area": "economic", "why": "forbids the retry and any Scrap bid above 100 MUSU/unit; the price cap is what separates the plays"},
+  "repeat-listing-buy-underflow": {"area": "economic", "why": "the rule scores buying from a venue the account can afford"},
+  "onboard-first-kami-vendor": {"area": "economic", "why": "the pass is a price tolerance (<= 0.005 ETH per kami); overpaying fails. repeat-newbie-vendor-guess stays recovery: it has no price cap, it scores not guessing again after the refusal"},
+  "onboard-bridge-pending": {"area": "cadence", "why": "the answer is to wait (a wake >= 5 min) for the bridge already in flight, not bridge again"},
+  "onboard-operator-unfunded": {"area": "recovery", "why": "accept_quest was refused for gas; the answer is to fix the cause (fund), then retry"},
+  "stale-cooldown-retry-start": {"area": "recovery", "why": "a start already refused twice on cooldown; the answer is to wait it out, then retry"},
+  "repeat-stop-starving": {"area": "survival", "why": "the stop is refused because the kami is starving; the rule rewards feeding it first"},
+  "memory-luna-levelup-needs-no-points-belief": {"area": "progression", "why": "the rule only counts level_up calls (1 level = .5, both = 1)"},
+  "memory-sonnet-stamina-unreliable-belief": {"area": "recovery", "why": "the rule forbids a blind retry of the stalled travel; waiting for stamina is the answer"}
+ },
+ "competency_exceptions": {
+  "about": "Families whose area is not one their specs' competency tags name (tests/test_profile.py checks the rest). Drills in `drills` carry their own reason.",
+  "levelup": "tagged state_tracking; the scored act is claiming the level",
+  "stalling": "tagged persistence; the drill is getting out of a no-kami stall",
+  "cooldown-repeat": "tagged state_tracking by the miner; the scored act is the retry after the chain's refusal",
+  "stuck-broke": "tagged economy and risk_survival; the drill is getting out of the broke state (tier B, unscored)"
+ }
+}

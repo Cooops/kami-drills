@@ -3,3 +3,10 @@ __pycache__/
 .env
 logs/
 *.eval
+
+# private drill material: never commit (docs/v2-miner.md "Held-out policy")
+.split-key
+bank/*/private/
+*.heldout.jsonl
+*.unsplit.jsonl
+*.rejections.jsonl

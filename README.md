@@ -28,8 +28,34 @@ Kamigotchi never resets and every agent action is public and replayable, so each
 exact, repeatable test. A full pass over all 47 drills finishes in minutes and costs about $1–135 per model,
 depending on the model's price.
 
+The question underneath is general: **can cheap offline drills, cut from an agent's own live failures, forecast how it
+does over a long live run?** Kamigotchi is the testbed because its chain hands over the log, the state and the rules
+for free (below). The method, the spec and the miner carry to any world that logs enough state:
+[docs/adapting.md](docs/adapting.md).
+
 The drills sit inside a loop: live runs produce mistakes, mistakes become drills, and a model's drill score is used
 to forecast how it will do in the next live run. Whether that forecast holds is tested in [Palaestra Season 1](https://palaestra.run/research/season-1), live now.
+
+### Why drills, and why on-chain
+
+Real-world training turns logged failures into repeatable drills. Waymo replays logged drives and simulates reactive
+variants of them; aviation's evidence-based training tags each drill by competency; Lichess builds puzzles from real
+games, keeping only positions with a clear best move (a value swing and an only-move margin); military teams run
+after-action reviews. The expensive parts are the same four everywhere: a complete log, the exact state at the
+decision, what everyone else did, and a faithful simulator. On a chain each comes with the game:
+
+1. **The log.** The chain is a complete, public, append-only record of every player's actions, human and agent.
+2. **The state.** The world state is readable at any block. A drill's fork is built from what the agent read at
+   that block, and every value in it can be checked against the chain at that block.
+3. **Everyone else.** Other players' actions are on the same log, which is what a reactive world model (for
+   example, of liquidations) can be fitted on. The drills that depend on other players are not scored until such a
+   model beats a constant rate out of sample and passes review.
+4. **The rules.** The game contracts are the rules. The Python simulator is the fast approximation; replaying a
+   decision against the real contracts on a fork at the decision block is the future verification path.
+
+It is also public and reproducible, so anyone can rebuild and audit a drill, and the stakes are real. The limits:
+agent transcripts (stated intent, what was read) come from the harness logs, not the chain, and other players'
+future behaviour still has to be modelled. How a drill is built: [docs/method.md](docs/method.md).
 
 ## Quickstart
 
@@ -88,8 +114,9 @@ OpenRouter list prices, for the whole suite and both tries ([method](docs/method
 
 - **Replay gaps.** A recording only holds what the original agent looked at; anything else
   gets an explicit "not available in this drill". 48–81% of attempts hit at least one,
-  mostly reads. Every model faces the same replay. v1.1 forks drills from runs that log full
-  state at each session start.
+  mostly reads. Every model faces the same replay. The v2 bank forks from session-start
+  snapshots of runs that log full state; v1.1 (KamiBench mid-session forks) serves missing reads from the
+  simulated state (below).
 - **Scale.** 47 drills give wide intervals; report tiers, not ranks.
 - **Hand-written rules.** Each is checked against a correct play, an empty play and
   scripted alternatives, then reviewed; an unanticipated correct play can still fail.
@@ -101,34 +128,21 @@ stamina (decisions late in long sessions and across sessions).
 
 ## v2 (experimental, for Season 2)
 
-v1 is the frozen Season 1 forecast suite: nothing below touches `drills/`, the v1 loader or the judge hash, and
-the default `--suite v1` path of `kami-drills run` is unchanged. v2 is a draft for Season 2, set out in [docs/v2-proposal.md](docs/v2-proposal.md) with the
-literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md). The pieces so far, all offline:
+v1 is the frozen Season 1 forecast suite: `drills/`, the judge hash and the default `kami-drills run --suite v1` are
+unchanged by everything below. v2 is a draft for Season 2 ([docs/v2-proposal.md](docs/v2-proposal.md); literature in
+[docs/v2-research-digest.md](docs/v2-research-digest.md)). **No real model has been run on any v2 drill.**
 
-- **Cadence** ([docs/v2-cadence.md](docs/v2-cadence.md), `kami_drills/cadence.py`): schedule drills score the chosen
-  wake time against the game clock; the budget-use drill pairs a forced-budget arm with a free one.
-- **Memory** ([docs/v2-memory.md](docs/v2-memory.md), `kami_drills/memory.py`): 11 prototype drills (don't-repeat,
-  stale-note with a "dated newer" variant, notes-first) from KamiBench-era v1 data, materialised as v1-shaped drills;
-  the real bank comes from Season 1 after close. They fail passive play (no calls, a bare wake, `end_session`) but
-  not always a long wake: the cooldown drills pass by waiting, because waiting is right there
-  (table in the memory doc).
-- **Polluted context** ([docs/v2-polluted.md](docs/v2-polluted.md), `kami_drills/polluted.py`): 12 static prototype
-  variants that test robustness to earlier failures from the same source run (not the model's own errors, so not
-  self-conditioning), and `own_error_variants(log)`, which builds per-model variants for every drill from the model's
-  own failures on other drills (never the scored one, no replay gaps, no selection on outcome; the injected dose per
-  model is recorded); score the delta against the same
-  drills' clean results. All items are prototypes.
-- **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
-  over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
+| piece | what it is | docs |
+|---|---|---|
+| Drill spec | Harness-agnostic drill format and game-clock simulator; `kami-drills spec check DIR...` runs oracle, null, source-mistake and a lazy/degenerate battery. Adapter for kami-harness 4.7.0. | [v2-spec](docs/v2-spec.md) |
+| Miner | `kami-drills mine RUN_DIR...` turns live runs into candidate drills from session-start snapshots: value swing, accepted actions, provenance, held-out split. | [v2-miner](docs/v2-miner.md) |
+| v1.1 | The 47 v1 drills as specs with the audit fixes: 27 ranking, 10 smoke, 10 retired. Agrees with v1 on 1027 of 1034 recorded tries; the 7 are v1 errors (reproducing it needs the private rc2 plays, `KAMI_DRILLS_PLAYS`). | [v1.1](docs/v1.1.md) |
+| Bank | `bank/v2.0-rc9/` (mined from the final 7-day Season 1 logs): 50 mined items, 6 controls, 24 traps; 59 public, 21 held out as perturbed variants (hash only). | [v2-changelog](docs/v2-changelog.md) |
+| Profile | `kami-drills profile RESULTS...`: per skill area (survival, economic, progression, cadence, recovery) with bootstrap intervals over drills, beside an equal-weight headline, as HELM reports scenarios beside its aggregate. | [v2-profile](docs/v2-profile.md) |
+| Scoring | pass^k, bootstrap over snapshot families, pre-registered gap coding, ranked probability score over tiers. | [v2-gap-coding](docs/v2-gap-coding.md) |
+| Cadence, memory, polluted | Prototype suites: wake timing and budget use, stale and repaired notes, robustness to earlier failures. `kami-drills run --suite v2-schedule\|v2-memory\|v2-polluted\|v2-budget`. | [cadence](docs/v2-cadence.md) · [memory](docs/v2-memory.md) · [polluted](docs/v2-polluted.md) |
 
-Run a v2 suite with `kami-drills run --model <model> --suite v2-memory|v2-schedule|v2-polluted` (default `v1`; v2
-suites print a per-drill pass table). `tests/test_e2e_mock.py` runs all three through Inspect on the built-in
-`mockllm/model` with scripted plays (oracle-like and null): the tests use the mock model only, with no network, key or cost.
-
-The budget-use runner is implemented (`v2-budget` suite). No real model has been run on any v2 drill
-and there are no v2 results. `uv run kami-drills check` runs the v1 script checks and the v2 pytest tests
-(pytest is in the `dev` dependency group, which `uv sync` installs). Building drills for another environment:
-[docs/adapting.md](docs/adapting.md).
+`uv run kami-drills check` runs the v1 script checks and the v2 tests (mock model only: no network, key or cost).
 
 ## Licence and credits
 

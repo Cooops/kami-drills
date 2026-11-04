@@ -1,0 +1,2754 @@
+{
+ "source": "kamigotchi-gdd 3c6f4f9: catalogs/items/items.csv (Food/Revive/Potion rows), catalogs/rooms/nodes.csv (level caps, affinities, yield items), catalogs/quests/quests.csv + objectives.csv (objectives and the nodes and items they tie to), catalogs/rooms/rooms.csv (adjacency as kami-harness rooms_graph.py), catalogs/rooms/gates.csv (gated rooms); scripts/build_kami_world.py",
+ "items": {
+  "11001": {
+   "name": "Red Ribbon Gummy",
+   "type": "REVIVE",
+   "for": "KAMI",
+   "hp": 10,
+   "revives": true
+  },
+  "11002": {
+   "name": "Melkarth's Heroic Awakening Spell Card",
+   "type": "REVIVE",
+   "for": "KAMI",
+   "hp": 50,
+   "revives": true
+  },
+  "11003": {
+   "name": "Djed Pillar",
+   "type": "CONSUMABLE",
+   "for": "KAMI",
+   "hp": 5,
+   "revives": true
+  },
+  "11004": {
+   "name": "Pale Potion",
+   "type": "POTION",
+   "for": "KAMI",
+   "hp": 75,
+   "revives": true
+  },
+  "11110": {
+   "name": "Gaokerena Mochi",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11120": {
+   "name": "Sunset Apple Mochi",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11130": {
+   "name": "Kami Mochi",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11140": {
+   "name": "Mana Mochi",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11201": {
+   "name": "XP Candy (Small)",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 5,
+   "revives": false
+  },
+  "11202": {
+   "name": "XP Candy (Medium)",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 10,
+   "revives": false
+  },
+  "11203": {
+   "name": "XP Candy (Large)",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 20,
+   "revives": false
+  },
+  "11204": {
+   "name": "XP Candy (Huge)",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 50,
+   "revives": false
+  },
+  "11211": {
+   "name": "Cultivation I Spell Card",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 20,
+   "revives": false
+  },
+  "11212": {
+   "name": "Cultivation II Spell Card",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 50,
+   "revives": false
+  },
+  "11213": {
+   "name": "Cultivation III Spell Card",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 100,
+   "revives": false
+  },
+  "11214": {
+   "name": "Cultivation IV Spell Card",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 100,
+   "revives": false
+  },
+  "11221": {
+   "name": "Full Heart Crystal",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11222": {
+   "name": "Half Heart Crystal",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11223": {
+   "name": "Great Heart Crystal",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11224": {
+   "name": "Inverted Teardrop Jewel",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11225": {
+   "name": "Teardrop Jewel",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11226": {
+   "name": "Ash Pearl",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11227": {
+   "name": "Fetid Egg",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 35,
+   "revives": false
+  },
+  "11233": {
+   "name": "Gingerbread Cookie",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 25,
+   "revives": false
+  },
+  "11301": {
+   "name": "Maple-Flavor Ghost Gum",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 25,
+   "revives": false
+  },
+  "11302": {
+   "name": "Cheeseburger",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 50,
+   "revives": false
+  },
+  "11303": {
+   "name": "Pom-Pom Fruit Candy",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 50,
+   "revives": false
+  },
+  "11304": {
+   "name": "Gakki Cookie Sticks",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 100,
+   "revives": false
+  },
+  "11305": {
+   "name": "Paeon's Field of Flowers Spell Card",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 100,
+   "revives": false
+  },
+  "11311": {
+   "name": "Resin",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 35,
+   "revives": false
+  },
+  "11312": {
+   "name": "Honeydew Scale",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 75,
+   "revives": false
+  },
+  "11313": {
+   "name": "Golden Apple",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 150,
+   "revives": false
+  },
+  "11314": {
+   "name": "Blue Pansy",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 25,
+   "revives": false
+  },
+  "11401": {
+   "name": "XP Potion",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11402": {
+   "name": "Greater XP Potion",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11404": {
+   "name": "Grace Potion",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11405": {
+   "name": "Bless Potion",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11406": {
+   "name": "Apology Letter",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11407": {
+   "name": "MUSU Magnet",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11408": {
+   "name": "Festival Chime",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11409": {
+   "name": "Energy Drink",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11410": {
+   "name": "Hostility Potion",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "11413": {
+   "name": "Mistletoe",
+   "type": "FOOD",
+   "for": "KAMI",
+   "hp": 0,
+   "revives": false
+  },
+  "21201": {
+   "name": "Ice Cream",
+   "type": "FOOD",
+   "for": "ACCOUNT",
+   "hp": 0,
+   "revives": false
+  },
+  "21202": {
+   "name": "Better Ice Cream",
+   "type": "FOOD",
+   "for": "ACCOUNT",
+   "hp": 0,
+   "revives": false
+  },
+  "21203": {
+   "name": "Best Ice Cream",
+   "type": "FOOD",
+   "for": "ACCOUNT",
+   "hp": 0,
+   "revives": false
+  },
+  "21204": {
+   "name": "Neith's River of Life Spell Card",
+   "type": "FOOD",
+   "for": "ACCOUNT",
+   "hp": 0,
+   "revives": false
+  },
+  "21205": {
+   "name": "Rock Candyfloss",
+   "type": "FOOD",
+   "for": "ACCOUNT",
+   "hp": 0,
+   "revives": false
+  }
+ },
+ "nodes": {
+  "1": {
+   "name": "Misty Riverside",
+   "level_cap": 15,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "2": {
+   "name": "Tunnel of Trees",
+   "level_cap": 15,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "3": {
+   "name": "Torii Gate",
+   "level_cap": 15,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "5": {
+   "name": "Restricted Area",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "6": {
+   "name": "Labs Entrance",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 2
+  },
+  "9": {
+   "name": "Forest: Old Growth",
+   "level_cap": null,
+   "affinity": [
+    "INSECT",
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "10": {
+   "name": "Forest: Insect Node",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "12": {
+   "name": "Scrap Confluence",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "15": {
+   "name": "Temple Cave",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "16": {
+   "name": "Techno Temple",
+   "level_cap": null,
+   "affinity": [
+    "EERIE",
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "18": {
+   "name": "Cave Crossroads",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 2
+  },
+  "19": {
+   "name": "Temple of the Wheel",
+   "level_cap": null,
+   "affinity": [
+    "EERIE",
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "25": {
+   "name": "Lost Skeleton",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "26": {
+   "name": "Trash-Strewn Graves",
+   "level_cap": null,
+   "affinity": [
+    "EERIE",
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "29": {
+   "name": "Misty Forest Path",
+   "level_cap": 15,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "30": {
+   "name": "Scrapyard Entrance",
+   "level_cap": 15,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "31": {
+   "name": "Scrapyard Exit",
+   "level_cap": 35,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "32": {
+   "name": "Road To Labs",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "33": {
+   "name": "Forest Entrance",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "34": {
+   "name": "Deeper Into Scrap",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "35": {
+   "name": "Elder Path",
+   "level_cap": 35,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "36": {
+   "name": "Parting Path",
+   "level_cap": 35,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "37": {
+   "name": "Hollow Path",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "47": {
+   "name": "Scrap Paths",
+   "level_cap": 35,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "48": {
+   "name": "Murky Forest Path",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 2
+  },
+  "49": {
+   "name": "Clearing",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 2
+  },
+  "50": {
+   "name": "Ancient Forest Entrance",
+   "level_cap": 35,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "51": {
+   "name": "Scrap-Littered Undergrowth",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP",
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "52": {
+   "name": "Airplane Crash",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 2
+  },
+  "53": {
+   "name": "Blooming Tree",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "55": {
+   "name": "Shady Path",
+   "level_cap": 15,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "56": {
+   "name": "Butterfly Forest",
+   "level_cap": 35,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "57": {
+   "name": "River Crossing",
+   "level_cap": 35,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "58": {
+   "name": "Mouth of Scrap",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 2
+  },
+  "59": {
+   "name": "Black Pool",
+   "level_cap": 35,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "60": {
+   "name": "Scrap Trees",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 2
+  },
+  "61": {
+   "name": "Musty Forest Path",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 2
+  },
+  "62": {
+   "name": "Centipedes",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 2
+  },
+  "63": {
+   "name": "Deeper Forest Path",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "65": {
+   "name": "Forest Hut",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 2
+  },
+  "67": {
+   "name": "Boulder Tunnel",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "68": {
+   "name": "Slippery Pit",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "69": {
+   "name": "Lotus Pool",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "70": {
+   "name": "Still Stream",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "71": {
+   "name": "Shabby Deck",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "72": {
+   "name": "Hatch to Nowhere",
+   "level_cap": null,
+   "affinity": [
+    "INSECT",
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "73": {
+   "name": "Broken Tube",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 2
+  },
+  "74": {
+   "name": "Engraved Door",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "75": {
+   "name": "Flood Mural",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 2
+  },
+  "76": {
+   "name": "Fungus Garden",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "77": {
+   "name": "Thriving Mushrooms",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "78": {
+   "name": "Toadstool Platforms",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "79": {
+   "name": "Abandoned Campsite",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 2
+  },
+  "80": {
+   "name": "Radiant Crystal",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "81": {
+   "name": "Flower Mural",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "82": {
+   "name": "Geometric Cliffs",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "83": {
+   "name": "Canyon Bridge",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 2
+  },
+  "84": {
+   "name": "Reinforced Tunnel",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 1
+  },
+  "85": {
+   "name": "Giant's Palm",
+   "level_cap": null,
+   "affinity": [
+    "NORMAL"
+   ],
+   "yield_item": 1
+  },
+  "86": {
+   "name": "Guardian Skull",
+   "level_cap": null,
+   "affinity": [
+    "EERIE",
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "87": {
+   "name": "Sacrarium",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  },
+  "88": {
+   "name": "Treasure Hoard",
+   "level_cap": null,
+   "affinity": [
+    "SCRAP"
+   ],
+   "yield_item": 2
+  },
+  "89": {
+   "name": "Trophies of the Hunt",
+   "level_cap": null,
+   "affinity": [
+    "INSECT"
+   ],
+   "yield_item": 1
+  },
+  "90": {
+   "name": "Scenic View",
+   "level_cap": null,
+   "affinity": [
+    "EERIE"
+   ],
+   "yield_item": 1
+  }
+ },
+ "quests": {
+  "1": {
+   "title": "Welcome to Kamigotchi World",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  },
+  "2": {
+   "title": "Beginning Your Journey",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3": {
+   "title": "Your First Kami",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "4": {
+   "title": "What Kami Do: Harvesting",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [],
+   "harvest_any_node": true
+  },
+  "5": {
+   "title": "What Kami Do: Scavenging",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "6": {
+   "title": "What Kami Do: Liquidating",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [],
+   "liquidate": true
+  },
+  "7": {
+   "title": "Making $MUSU",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1
+   ]
+  },
+  "8": {
+   "title": "Supporting Local Businesses",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [],
+   "shop": true
+  },
+  "9": {
+   "title": "Building a Reputation",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1005
+   ]
+  },
+  "10": {
+   "title": "Having a Normal One",
+   "has_objectives": true,
+   "nodes": [
+    2,
+    3,
+    5,
+    32,
+    33,
+    35,
+    37,
+    49,
+    55,
+    57,
+    61,
+    63,
+    67,
+    68,
+    70,
+    79,
+    81,
+    83,
+    85
+   ],
+   "items": []
+  },
+  "11": {
+   "title": "That Eerie Feeling",
+   "has_objectives": true,
+   "nodes": [
+    1,
+    6,
+    9,
+    16,
+    19,
+    25,
+    26,
+    52,
+    53,
+    59,
+    65,
+    69,
+    74,
+    75,
+    80,
+    86,
+    87,
+    90
+   ],
+   "items": []
+  },
+  "12": {
+   "title": "Insects in the Miasma",
+   "has_objectives": true,
+   "nodes": [
+    9,
+    10,
+    18,
+    29,
+    36,
+    48,
+    50,
+    51,
+    56,
+    62,
+    71,
+    72,
+    76,
+    77,
+    78,
+    86,
+    89
+   ],
+   "items": []
+  },
+  "13": {
+   "title": "Tossed in the Scrap Heap",
+   "has_objectives": true,
+   "nodes": [
+    12,
+    15,
+    16,
+    19,
+    26,
+    30,
+    31,
+    34,
+    47,
+    51,
+    58,
+    60,
+    72,
+    73,
+    82,
+    84,
+    88
+   ],
+   "items": []
+  },
+  "14": {
+   "title": "Identifying Materials: Wood",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1001
+   ]
+  },
+  "15": {
+   "title": "Identifying Materials: Stone",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1002
+   ]
+  },
+  "16": {
+   "title": "Identifying Materials: Metal",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1005
+   ]
+  },
+  "17": {
+   "title": "Exploring Other Options",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "18": {
+   "title": "Harvesting Data I",
+   "has_objectives": true,
+   "nodes": [
+    12
+   ],
+   "items": []
+  },
+  "19": {
+   "title": "Harvesting Data II",
+   "has_objectives": true,
+   "nodes": [
+    6
+   ],
+   "items": []
+  },
+  "20": {
+   "title": "Harvesting Data III",
+   "has_objectives": true,
+   "nodes": [
+    37
+   ],
+   "items": []
+  },
+  "21": {
+   "title": "Squaring the Circle I",
+   "has_objectives": true,
+   "nodes": [
+    60
+   ],
+   "items": []
+  },
+  "22": {
+   "title": "Squaring the Circle II",
+   "has_objectives": true,
+   "nodes": [
+    62
+   ],
+   "items": []
+  },
+  "23": {
+   "title": "Squaring the Circle III",
+   "has_objectives": true,
+   "nodes": [
+    53
+   ],
+   "items": []
+  },
+  "24": {
+   "title": "Squaring the Circle IV",
+   "has_objectives": true,
+   "nodes": [
+    52
+   ],
+   "items": []
+  },
+  "25": {
+   "title": "Squaring the Circle V",
+   "has_objectives": true,
+   "nodes": [
+    49
+   ],
+   "items": []
+  },
+  "26": {
+   "title": "Squaring the Circle VI",
+   "has_objectives": true,
+   "nodes": [
+    6
+   ],
+   "items": []
+  },
+  "27": {
+   "title": "A Forgotten Friend",
+   "has_objectives": true,
+   "nodes": [
+    25
+   ],
+   "items": []
+  },
+  "28": {
+   "title": "Deeper Understanding",
+   "has_objectives": true,
+   "nodes": [
+    12
+   ],
+   "items": []
+  },
+  "29": {
+   "title": "Computer Blues",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "30": {
+   "title": "Humility",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1
+   ]
+  },
+  "31": {
+   "title": "Pyramid Power",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    100005
+   ]
+  },
+  "32": {
+   "title": "Safe Hex",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1202
+   ]
+  },
+  "33": {
+   "title": "Holier Than Thou",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1201
+   ]
+  },
+  "34": {
+   "title": "Taking Great Pains",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1110
+   ]
+  },
+  "35": {
+   "title": "Steel Your Heart",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1005
+   ]
+  },
+  "36": {
+   "title": "The Sanctuary Caves",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "37": {
+   "title": "Into the Depths",
+   "has_objectives": true,
+   "nodes": [
+    15
+   ],
+   "items": []
+  },
+  "38": {
+   "title": "Feeling in the Dark",
+   "has_objectives": true,
+   "nodes": [
+    15
+   ],
+   "items": []
+  },
+  "39": {
+   "title": "Where It Stems From",
+   "has_objectives": true,
+   "nodes": [
+    18,
+    69,
+    72,
+    76,
+    77,
+    78,
+    79,
+    80,
+    84
+   ],
+   "items": [
+    1016
+   ]
+  },
+  "40": {
+   "title": "Better Than Chopping Wood?",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "41": {
+   "title": "Throw Me a Bone!",
+   "has_objectives": true,
+   "nodes": [
+    67,
+    68,
+    70,
+    74,
+    75,
+    77,
+    81,
+    82,
+    83,
+    85,
+    86,
+    87
+   ],
+   "items": [
+    1020
+   ]
+  },
+  "42": {
+   "title": "Learning From a Master",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "43": {
+   "title": "Sound of One Hand Clapping",
+   "has_objectives": true,
+   "nodes": [
+    16
+   ],
+   "items": [
+    6001
+   ]
+  },
+  "44": {
+   "title": "Mystery Machines",
+   "has_objectives": true,
+   "nodes": [
+    16
+   ],
+   "items": []
+  },
+  "45": {
+   "title": "Can’t Stop With Just One",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "46": {
+   "title": "Sweet As Honey",
+   "has_objectives": true,
+   "nodes": [
+    18,
+    48,
+    71,
+    77,
+    86
+   ],
+   "items": [
+    11312
+   ]
+  },
+  "47": {
+   "title": "Ringing Any Bells I",
+   "has_objectives": true,
+   "nodes": [
+    18
+   ],
+   "items": []
+  },
+  "48": {
+   "title": "Pipe Dream",
+   "has_objectives": true,
+   "nodes": [
+    15,
+    16,
+    19,
+    59,
+    70,
+    71,
+    72,
+    73,
+    80,
+    83
+   ],
+   "items": [
+    1017
+   ]
+  },
+  "49": {
+   "title": "You Smelt It…",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "50": {
+   "title": "Community Service",
+   "has_objectives": true,
+   "nodes": [
+    15,
+    19,
+    59,
+    67,
+    68,
+    69,
+    71,
+    73,
+    74,
+    78,
+    79,
+    81,
+    82,
+    84
+   ],
+   "items": [
+    1018
+   ]
+  },
+  "51": {
+   "title": "Ringing Any Bells II",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    6001
+   ]
+  },
+  "52": {
+   "title": "Ringing Any Bells III",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1301
+   ]
+  },
+  "53": {
+   "title": "Flash Back",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11412
+   ]
+  },
+  "54": {
+   "title": "Out of the Blue",
+   "has_objectives": true,
+   "nodes": [
+    67,
+    68,
+    70,
+    79,
+    81,
+    83,
+    85
+   ],
+   "items": [
+    11314
+   ]
+  },
+  "55": {
+   "title": "Stop and Smell the Lotus",
+   "has_objectives": true,
+   "nodes": [
+    69
+   ],
+   "items": [
+    6002
+   ]
+  },
+  "56": {
+   "title": "Feel Like a Mushroom Myself",
+   "has_objectives": true,
+   "nodes": [
+    77
+   ],
+   "items": []
+  },
+  "57": {
+   "title": "Top 10 Smoke Spots in Kamigotchi World",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1018
+   ]
+  },
+  "58": {
+   "title": "Flower of the Flock",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11314
+   ]
+  },
+  "59": {
+   "title": "Ordinary Intermediate Potion Crafting (Very Boring) I",
+   "has_objectives": true,
+   "nodes": [
+    15,
+    19,
+    59,
+    67,
+    68,
+    69,
+    71,
+    73,
+    74,
+    78,
+    79,
+    81,
+    82,
+    84
+   ],
+   "items": [
+    1018
+   ]
+  },
+  "60": {
+   "title": "Ordinary Intermediate Potion Crafting (Very Boring) II",
+   "has_objectives": true,
+   "nodes": [
+    76
+   ],
+   "items": [
+    6004
+   ]
+  },
+  "61": {
+   "title": "Ordinary Intermediate Potion Crafting (Very Boring) III",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "62": {
+   "title": "Ordinary Intermediate Potion Crafting (Very Boring) IV",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "63": {
+   "title": "Ordinary Intermediate Potion Crafting (Very Boring) V",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    21206
+   ]
+  },
+  "64": {
+   "title": "Full Flood",
+   "has_objectives": true,
+   "nodes": [
+    75
+   ],
+   "items": []
+  },
+  "65": {
+   "title": "Old Fiends",
+   "has_objectives": true,
+   "nodes": [
+    70
+   ],
+   "items": []
+  },
+  "66": {
+   "title": "First Contact",
+   "has_objectives": true,
+   "nodes": [
+    74
+   ],
+   "items": []
+  },
+  "67": {
+   "title": "Soaked to the Bone",
+   "has_objectives": true,
+   "nodes": [
+    71
+   ],
+   "items": []
+  },
+  "68": {
+   "title": "On the Fringes",
+   "has_objectives": true,
+   "nodes": [
+    72
+   ],
+   "items": []
+  },
+  "69": {
+   "title": "The Doors of Perception",
+   "has_objectives": true,
+   "nodes": [
+    72
+   ],
+   "items": [
+    6005
+   ]
+  },
+  "70": {
+   "title": "Reach Out And Touch Faith",
+   "has_objectives": true,
+   "nodes": [
+    73
+   ],
+   "items": []
+  },
+  "71": {
+   "title": "A Turn of the Screw",
+   "has_objectives": true,
+   "nodes": [
+    73
+   ],
+   "items": []
+  },
+  "72": {
+   "title": "Platforming Game",
+   "has_objectives": true,
+   "nodes": [
+    78
+   ],
+   "items": []
+  },
+  "73": {
+   "title": "What Lies Beneath",
+   "has_objectives": true,
+   "nodes": [
+    78
+   ],
+   "items": []
+  },
+  "74": {
+   "title": "Operator Goes To Camp",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "75": {
+   "title": "Digging Up Clues",
+   "has_objectives": true,
+   "nodes": [
+    79
+   ],
+   "items": []
+  },
+  "76": {
+   "title": "Get Some Fresh Air",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "77": {
+   "title": "Yep, That’s Wood",
+   "has_objectives": true,
+   "nodes": [
+    84
+   ],
+   "items": []
+  },
+  "78": {
+   "title": "Plasmatics 101",
+   "has_objectives": true,
+   "nodes": [
+    84
+   ],
+   "items": []
+  },
+  "79": {
+   "title": "Fringe Theories",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "80": {
+   "title": "The Great Divide",
+   "has_objectives": true,
+   "nodes": [
+    83
+   ],
+   "items": []
+  },
+  "81": {
+   "title": "Edge of the Abyss",
+   "has_objectives": true,
+   "nodes": [
+    83
+   ],
+   "items": []
+  },
+  "82": {
+   "title": "Blue Light Special",
+   "has_objectives": true,
+   "nodes": [
+    82
+   ],
+   "items": []
+  },
+  "83": {
+   "title": "Vision of Life",
+   "has_objectives": true,
+   "nodes": [
+    82
+   ],
+   "items": [
+    6003
+   ]
+  },
+  "84": {
+   "title": "Soot and Ash",
+   "has_objectives": true,
+   "nodes": [
+    81
+   ],
+   "items": []
+  },
+  "85": {
+   "title": "Sigil Magic",
+   "has_objectives": true,
+   "nodes": [
+    81
+   ],
+   "items": []
+  },
+  "86": {
+   "title": "Sigil Magic II",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1011,
+    1103,
+    11314
+   ]
+  },
+  "87": {
+   "title": "The Crystal Set",
+   "has_objectives": true,
+   "nodes": [
+    80
+   ],
+   "items": []
+  },
+  "88": {
+   "title": "The Crystal Set II",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "89": {
+   "title": "The Crystal Set III",
+   "has_objectives": true,
+   "nodes": [
+    80
+   ],
+   "items": [
+    1021
+   ]
+  },
+  "90": {
+   "title": "The Crystal Set IV",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1021
+   ]
+  },
+  "91": {
+   "title": "The Crystal Set V",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "92": {
+   "title": "Beyond the Pale",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "93": {
+   "title": "Tracing Your Roots",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1021,
+    1303,
+    6003
+   ]
+  },
+  "94": {
+   "title": "Rhabdomancy",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "95": {
+   "title": "Bitter Fruits",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "96": {
+   "title": "Into the Canyon",
+   "has_objectives": true,
+   "nodes": [
+    85
+   ],
+   "items": []
+  },
+  "97": {
+   "title": "Back of my Hand",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11409
+   ]
+  },
+  "98": {
+   "title": "Heartwood",
+   "has_objectives": true,
+   "nodes": [
+    53
+   ],
+   "items": []
+  },
+  "99": {
+   "title": "Hypersensitivity",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "100": {
+   "title": "Prima Facie",
+   "has_objectives": true,
+   "nodes": [
+    86
+   ],
+   "items": []
+  },
+  "101": {
+   "title": "Pillars of the Earth",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11501
+   ]
+  },
+  "102": {
+   "title": "Axis Mundi",
+   "has_objectives": true,
+   "nodes": [
+    87
+   ],
+   "items": []
+  },
+  "103": {
+   "title": "Sealed Fate",
+   "has_objectives": true,
+   "nodes": [
+    87
+   ],
+   "items": []
+  },
+  "104": {
+   "title": "An Ounce of Sense",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "105": {
+   "title": "The Turning of the Wheel",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "106": {
+   "title": "Two Faces Under One Hood",
+   "has_objectives": true,
+   "nodes": [
+    19
+   ],
+   "items": []
+  },
+  "107": {
+   "title": "Get a Foot In The Door",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1013
+   ]
+  },
+  "108": {
+   "title": "Treat Yourself",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11312
+   ]
+  },
+  "109": {
+   "title": "Remain Unburdened of Attachments",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11001
+   ]
+  },
+  "2001": {
+   "title": "Grand Opening",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "2002": {
+   "title": "Customer Loyalty Program",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1
+   ]
+  },
+  "2003": {
+   "title": "Early Market Research - I",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1005
+   ]
+  },
+  "2004": {
+   "title": "Early Market Research - II",
+   "has_objectives": true,
+   "nodes": [
+    10
+   ],
+   "items": []
+  },
+  "2005": {
+   "title": "Early Market Research - III",
+   "has_objectives": true,
+   "nodes": [
+    26
+   ],
+   "items": []
+  },
+  "2006": {
+   "title": "Community Outreach",
+   "has_objectives": true,
+   "nodes": [
+    25
+   ],
+   "items": []
+  },
+  "2007": {
+   "title": "Restocking",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1003,
+    1004
+   ]
+  },
+  "2008": {
+   "title": "Offering an Apprenticeship",
+   "has_objectives": true,
+   "nodes": [
+    1,
+    6,
+    9,
+    10,
+    16,
+    18,
+    19,
+    25,
+    26,
+    33,
+    35,
+    37,
+    50,
+    51,
+    52,
+    53,
+    55,
+    57,
+    60,
+    61,
+    63,
+    65,
+    72,
+    76,
+    79
+   ],
+   "items": [
+    1003,
+    1004,
+    1011,
+    1013
+   ]
+  },
+  "2009": {
+   "title": "Basics of Hex - Extracts",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "2010": {
+   "title": "Basics of Hex - Potions",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "2011": {
+   "title": "Hex Education",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "2012": {
+   "title": "Eye of the White Snake",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1007
+   ]
+  },
+  "2013": {
+   "title": "Memorial for the Forgotten",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1011
+   ]
+  },
+  "2014": {
+   "title": "To Whom It May Concern",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1001,
+    1113,
+    1202
+   ]
+  },
+  "2015": {
+   "title": "A Matter of Import",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1
+   ]
+  },
+  "2016": {
+   "title": "Misogi",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3001": {
+   "title": "Rejecting Fate",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3002": {
+   "title": "Health & Safety",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3003": {
+   "title": "There Are Levels to This",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3004": {
+   "title": "Skill Issue",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3005": {
+   "title": "Spring Rites",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  },
+  "3006": {
+   "title": "What’s In a Name?",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3007": {
+   "title": "Land Survey",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3008": {
+   "title": "Peregrination",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3009": {
+   "title": "Tips Help The Most Right Now",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1
+   ]
+  },
+  "3010": {
+   "title": "Hex Education II",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3011": {
+   "title": "Hex Education III",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3012": {
+   "title": "Customer Loyalty Program II",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1
+   ]
+  },
+  "3013": {
+   "title": "Going Out For a Coffee",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3014": {
+   "title": "Teatime",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1012
+   ]
+  },
+  "3015": {
+   "title": "The Wages of Sin",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1015
+   ]
+  },
+  "3016": {
+   "title": "Go Suck An Egg",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    21003
+   ]
+  },
+  "3017": {
+   "title": "Rearview Mirror",
+   "has_objectives": true,
+   "nodes": [
+    88
+   ],
+   "items": []
+  },
+  "3018": {
+   "title": "One Man’s Trash",
+   "has_objectives": true,
+   "nodes": [
+    88,
+    89,
+    90
+   ],
+   "items": [
+    1019
+   ]
+  },
+  "3019": {
+   "title": "Happy Hunting Ground",
+   "has_objectives": true,
+   "nodes": [
+    89
+   ],
+   "items": []
+  },
+  "3020": {
+   "title": "Better to Light a Candle",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    19301
+   ]
+  },
+  "3021": {
+   "title": "Castle in the Air",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3022": {
+   "title": "Sweet Deal",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    21205
+   ]
+  },
+  "3028": {
+   "title": "The More the Merrier",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  },
+  "3029": {
+   "title": "Let’s Have a Look",
+   "has_objectives": true,
+   "nodes": [
+    5
+   ],
+   "items": []
+  },
+  "3030": {
+   "title": "Container Deposit",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1003
+   ]
+  },
+  "3031": {
+   "title": "More Than a Fair Exchange",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1011
+   ]
+  },
+  "3032": {
+   "title": "Unfettered",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1301
+   ]
+  },
+  "3033": {
+   "title": "Trading Lunches",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11227
+   ]
+  },
+  "3034": {
+   "title": "Not Right Now",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3035": {
+   "title": "Rookie Training I",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [],
+   "harvest_any_node": true
+  },
+  "3036": {
+   "title": "Rookie Training II",
+   "has_objectives": true,
+   "nodes": [
+    3
+   ],
+   "items": []
+  },
+  "3037": {
+   "title": "Old Acquaintance",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11303
+   ]
+  },
+  "3038": {
+   "title": "Push it to the Limit",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [],
+   "harvest_any_node": true
+  },
+  "3039": {
+   "title": "Danger Lies Ahead…",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  },
+  "3040": {
+   "title": "A Cautionary Note",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  },
+  "3041": {
+   "title": "The Rot Creeps",
+   "has_objectives": true,
+   "nodes": [
+    62
+   ],
+   "items": []
+  },
+  "3042": {
+   "title": "Some Alien Vastness",
+   "has_objectives": true,
+   "nodes": [
+    6
+   ],
+   "items": []
+  },
+  "3043": {
+   "title": "Ringing Other Bells",
+   "has_objectives": true,
+   "nodes": [
+    12
+   ],
+   "items": []
+  },
+  "3044": {
+   "title": "Resonant Drip",
+   "has_objectives": true,
+   "nodes": [
+    19
+   ],
+   "items": []
+  },
+  "3045": {
+   "title": "Resonant Flow",
+   "has_objectives": true,
+   "nodes": [
+    59
+   ],
+   "items": []
+  },
+  "3100": {
+   "title": "Get On the Other Side",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3101": {
+   "title": "Don’t Look Back",
+   "has_objectives": true,
+   "nodes": [
+    59
+   ],
+   "items": []
+  },
+  "3102": {
+   "title": "Find a Needle in the Haystack",
+   "has_objectives": true,
+   "nodes": [
+    58
+   ],
+   "items": []
+  },
+  "3104": {
+   "title": "Call Your Grandparents",
+   "has_objectives": true,
+   "nodes": [
+    26
+   ],
+   "items": []
+  },
+  "3105": {
+   "title": "Get Blood From a Stone",
+   "has_objectives": true,
+   "nodes": [
+    49
+   ],
+   "items": []
+  },
+  "3107": {
+   "title": "Look Who’s Talking",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    21206
+   ]
+  },
+  "3108": {
+   "title": "My Ears Are Burning",
+   "has_objectives": true,
+   "nodes": [
+    71
+   ],
+   "items": []
+  },
+  "3109": {
+   "title": "Get the Story Straight I",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    23102
+   ]
+  },
+  "3110": {
+   "title": "Get the Story Straight II",
+   "has_objectives": true,
+   "nodes": [
+    79
+   ],
+   "items": []
+  },
+  "3111": {
+   "title": "Get the Story Straight III",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3112": {
+   "title": "See the Glass as Half Full",
+   "has_objectives": true,
+   "nodes": [
+    86
+   ],
+   "items": []
+  },
+  "3113": {
+   "title": "Airing it Out",
+   "has_objectives": true,
+   "nodes": [
+    10
+   ],
+   "items": []
+  },
+  "3114": {
+   "title": "Conditioned Environment",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3115": {
+   "title": "Dry Conversation",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    11312
+   ]
+  },
+  "3116": {
+   "title": "Lost and Found",
+   "has_objectives": true,
+   "nodes": [
+    25
+   ],
+   "items": []
+  },
+  "3117": {
+   "title": "Trash Pickers",
+   "has_objectives": true,
+   "nodes": [
+    32
+   ],
+   "items": []
+  },
+  "3118": {
+   "title": "Janitorial Supplies",
+   "has_objectives": true,
+   "nodes": [
+    16
+   ],
+   "items": []
+  },
+  "3803": {
+   "title": "Never Brought to Mind",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "3900": {
+   "title": "Warm Your Hands",
+   "has_objectives": true,
+   "nodes": [],
+   "items": [
+    1001
+   ]
+  },
+  "3998": {
+   "title": "Hidden GEM",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "10003": {
+   "title": "Condolences on your Recent Liquidations",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  },
+  "2100": {
+   "title": "A Short Pilgrimage",
+   "has_objectives": true,
+   "nodes": [],
+   "items": []
+  },
+  "2101": {
+   "title": "The Fountain of All That Flows",
+   "has_objectives": false,
+   "nodes": [],
+   "items": []
+  }
+ },
+ "rooms": {
+  "1": [
+   29
+  ],
+  "2": [
+   3,
+   13,
+   29,
+   55
+  ],
+  "3": [
+   2,
+   30
+  ],
+  "4": [
+   30,
+   34,
+   47
+  ],
+  "5": [
+   31,
+   32
+  ],
+  "6": [
+   32
+  ],
+  "9": [
+   33,
+   36,
+   48
+  ],
+  "10": [
+   35,
+   50
+  ],
+  "11": [
+   15,
+   37
+  ],
+  "12": [
+   34,
+   58
+  ],
+  "13": [
+   2
+  ],
+  "15": [
+   11,
+   16,
+   18
+  ],
+  "16": [
+   15
+  ],
+  "18": [
+   15,
+   67,
+   76
+  ],
+  "19": [
+   59,
+   74
+  ],
+  "25": [
+   36,
+   37,
+   49
+  ],
+  "26": [
+   31
+  ],
+  "29": [
+   1,
+   2,
+   66
+  ],
+  "30": [
+   3,
+   4
+  ],
+  "31": [
+   5,
+   26,
+   33,
+   47
+  ],
+  "32": [
+   5,
+   6
+  ],
+  "33": [
+   9,
+   31
+  ],
+  "34": [
+   4,
+   12
+  ],
+  "35": [
+   10,
+   48
+  ],
+  "36": [
+   9,
+   25
+  ],
+  "37": [
+   11,
+   25
+  ],
+  "47": [
+   4,
+   31
+  ],
+  "48": [
+   9,
+   35
+  ],
+  "49": [
+   25
+  ],
+  "50": [
+   10,
+   51
+  ],
+  "51": [
+   50,
+   52,
+   53
+  ],
+  "52": [
+   51,
+   54
+  ],
+  "53": [
+   51
+  ],
+  "54": [
+   52
+  ],
+  "55": [
+   2,
+   56
+  ],
+  "56": [
+   55,
+   57
+  ],
+  "57": [
+   56,
+   63
+  ],
+  "58": [
+   12,
+   59
+  ],
+  "59": [
+   19,
+   58
+  ],
+  "60": [
+   65
+  ],
+  "61": [
+   62,
+   65
+  ],
+  "62": [
+   61
+  ],
+  "63": [
+   57,
+   65
+  ],
+  "64": [
+   65
+  ],
+  "65": [
+   60,
+   61,
+   63,
+   64
+  ],
+  "66": [
+   29
+  ],
+  "67": [
+   18,
+   68
+  ],
+  "68": [
+   67,
+   69,
+   75
+  ],
+  "69": [
+   68,
+   70
+  ],
+  "70": [
+   69,
+   71
+  ],
+  "71": [
+   70,
+   72
+  ],
+  "72": [
+   71,
+   73,
+   88
+  ],
+  "73": [
+   72,
+   74
+  ],
+  "74": [
+   19,
+   73,
+   75
+  ],
+  "75": [
+   68,
+   74
+  ],
+  "76": [
+   18,
+   77
+  ],
+  "77": [
+   76,
+   78,
+   84
+  ],
+  "78": [
+   77,
+   79
+  ],
+  "79": [
+   78,
+   80
+  ],
+  "80": [
+   79,
+   81
+  ],
+  "81": [
+   80,
+   82
+  ],
+  "82": [
+   81,
+   83
+  ],
+  "83": [
+   82,
+   84,
+   85
+  ],
+  "84": [
+   77,
+   83
+  ],
+  "85": [
+   83,
+   86
+  ],
+  "86": [
+   85,
+   87
+  ],
+  "87": [
+   86
+  ],
+  "88": [
+   72,
+   89
+  ],
+  "89": [
+   88,
+   90
+  ],
+  "90": [
+   89
+  ]
+ },
+ "gated_rooms": [
+  15,
+  19,
+  31,
+  50,
+  53,
+  58,
+  59,
+  68,
+  78,
+  84,
+  86,
+  88
+ ]
+}
