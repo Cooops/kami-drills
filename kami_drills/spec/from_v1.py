@@ -42,6 +42,6 @@ def equivalence(spec, tries):
         calls = [(s["tool"], s.get("args") or {}) for s in t["steps"] if "tool" in s][:kd.MAX_TOOL_CALLS]
         ep = h47.play_tools(spec, calls)
         r = ep.result()
-        rows.append({"model": t["model"], "try": t["try"], "v1": t["pass"], "v2": r["pass"], "why": r["why"],
+        rows.append({"model": t["model"], "try": t["try"], "v1": t["pass"], "v2": r["pass"], "score": r["score"], "why": r["why"],
                      "intents": [i["verb"] for i in ep.sim.trace]})
     return rows
