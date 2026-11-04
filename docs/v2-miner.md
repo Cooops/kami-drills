@@ -17,7 +17,7 @@ scorer** (`kami_drills/spec`, [v2-spec.md](v2-spec.md)): the simulator, rules li
 
 ```bash
 # the split key ($KAMI_DRILLS_SPLIT_KEY, or an untracked .split-key at the repo root) is needed to split and to freeze
-uv run kami-drills mine "$KAMI_DRILLS_S1_RUNS" --out out/candidates.jsonl --stats out/stats.md [--bank bank/v2.0-rc8]
+uv run kami-drills mine "$KAMI_DRILLS_S1_RUNS" --out out/candidates.jsonl --stats out/stats.md [--bank bank/v2.0-rcN]   # a new version: never overwrite a frozen bank
 ```
 
 **Input.** A run directory (`transcripts/`, `snapshots/`, `telemetry.jsonl`, `config.yaml`) or a directory of them.
@@ -478,8 +478,12 @@ Counts are **items** (mistakes and discoveries) unless they say specs; a spec co
 | market-price | B | 1 (+ trap) | 0 | 3 (2) | 3 quest spend or item, 2 stated plan, 1 no kami HP, 1 dedup, 1 buy-the-cheapest passes (no sticker-proof trap) |
 | node-choice | not shipped | - | - | 0 | see Node choice |
 
-Every lazy and degenerate play (28) passes 0 of 22 ungrouped items, and more than half of 0 of 27 groups. The kitchen
-sink passes 0 of the 56 public specs.
+Every lazy and degenerate play (22 to 29 per spec, 41 distinct over the public specs) passes 0 of the 16 public
+non-trap ungrouped items, and more than half of 0 of the 19 public groups (`check_bank` over `bank/v2.0-rc8/public`).
+Counted with the private held-out variants (needs `private/`, mine-time check): 0 of 22 ungrouped, 0 of 27 groups. The
+other 2 public ungrouped specs are the genuine `reckless-convert` trap controls: they pass by not converting, so several
+lazy plays pass them by design (their pair item gates those plays), and the profile never scores them (`profile.excluded`).
+The kitchen sink passes 0 of the 56 public specs.
 - **The 22 economic pairs:** no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.09.
 - **The market pair:** always buy, buy the cheapest and bulk cheapest 0.00; sticker lo/hi and always sell 0.50.
 - Reading the state averages 1.00 on every pair.

@@ -417,7 +417,8 @@ def test_without_a_key_nothing_is_split_and_a_leak_writes_nothing(tmp_path):
 
 def test_bank_freeze_and_verify(mined):
     result, w, tmp = mined
-    man = bank.freeze(w, tmp / "bank" / "v2.0-rc1", "v2.0-rc1", KEY)
+    man = bank.freeze(w, tmp / "bank" / "v2.0-rc1", "v2.0-rc1", KEY, 3)
+    assert man["source"] == "palaestra/s1 (3 runs)"
     assert man["heldout"]["count"] == len(w["rows"][1]) and man["heldout"]["commitment"].startswith("sha256:")
     assert bank.verify(tmp / "bank" / "v2.0-rc1") == []
     f = tmp / "bank" / "v2.0-rc1" / man["public"][0]["file"]

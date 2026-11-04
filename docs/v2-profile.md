@@ -77,7 +77,7 @@ tier-A items to progression (8) and recovery (3) only: its survival and economic
 
 ## v1.1 on the recorded rc2 tries (sensitivity, not a result)
 
-`KAMI_DRILLS_PLAYS` (11 models × 2 tries × 47 v1 drills, not public) replayed against `specs/v1.1`. As in
+`KAMI_DRILLS_PLAYS` (11 models × 2 tries × 47 v1 drills, not public: the numbers below need it to reproduce) replayed against `specs/v1.1`. As in
 [v1.1.md](v1.1.md) section 5, the tries were generated under v1, so this checks the instrument, not the models. The
 CLI prints the model names as the plays file keys them; the provider prefixes below were added by hand to match the S1
 public results.

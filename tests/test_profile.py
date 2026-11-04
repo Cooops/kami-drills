@@ -119,3 +119,11 @@ def test_cli_on_the_fixture(capsys):
     text = run_cli(FIX, "--bars", capsys=capsys)
     assert "equal-weight all" in text and "drill-weighted" in text and "recovery (n=2, thin)" in text and "[thin]" in text
     assert "tier B items are reported beside a score, never in it" in text
+
+
+def test_a_results_file_per_drill_keeps_its_scores():
+    rows = pf.tries({"model": "m", "per_drill": {"a": [1, 0], "b": [0.5]}})
+    assert rows == [{"model": "m", "drill": "a", "try": 0, "score": 1.0}, {"model": "m", "drill": "a", "try": 1, "score": 0.0},
+                    {"model": "m", "drill": "b", "try": 0, "score": 0.5}]
+    s = next(s for s in V11 if not pf.excluded(s))
+    assert pf.drill_scores([s], [dict(r, drill=s["id"]) for r in rows[:2]]) == {"m": {s["id"]: 0.5}}

@@ -402,6 +402,17 @@ membership did not: 47 items, 5 controls, 24 traps.
   best; mean area-to-area r +.15 ([v2-profile.md](v2-profile.md)).
 - `from_v1.equivalence` rows now also carry the spec score.
 
+## Calldata wallets (PR #3 blocker)
+
+- A third-party wallet survived 552 times as a `0{24}`-padded 32-byte word inside tx `data` hex (7 v1.1 specs and
+  `drills_v2/spec/stale-cooldown-retry-start`), next to its aliased `0x` form. `pseudonymize` now aliases padded
+  address words in `0x` hex data (after a 4-byte selector, or bare words) with the `0x` form's alias. A word counts as
+  an address only when its 40-hex tail has a nonzero byte in its top 4 bytes, so no uint below 2^128 changes and
+  pseudonyms are never re-aliased. A decimal account id cut to 40-45 digits by a truncated result is aliased too.
+- v1.1 rebuilt (`scripts/v11/run.py`), `drills_v2/spec` refreshed (`spec from-v1`): only those substitutions and the
+  content hashes changed. `spec check` 0 failing; `eq.py` 1027/1034. Bank rc8 had no such calldata (unchanged).
+- Not pseudonymized, as before: the frozen `drills/`, `defs/` and the v1-format `drills_v2/polluted/` variants.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single

@@ -114,8 +114,9 @@ OpenRouter list prices, for the whole suite and both tries ([method](docs/method
 
 - **Replay gaps.** A recording only holds what the original agent looked at; anything else
   gets an explicit "not available in this drill". 48–81% of attempts hit at least one,
-  mostly reads. Every model faces the same replay. v1.1 and the v2 bank fork from runs that log
-  full state at each session start (below).
+  mostly reads. Every model faces the same replay. The v2 bank forks from session-start
+  snapshots of runs that log full state; v1.1 (KamiBench mid-session forks) serves missing reads from the
+  simulated state (below).
 - **Scale.** 47 drills give wide intervals; report tiers, not ranks.
 - **Hand-written rules.** Each is checked against a correct play, an empty play and
   scripted alternatives, then reviewed; an unanticipated correct play can still fail.
@@ -135,9 +136,9 @@ unchanged by everything below. v2 is a draft for Season 2 ([docs/v2-proposal.md]
 |---|---|---|
 | Drill spec | Harness-agnostic drill format and game-clock simulator; `kami-drills spec check DIR...` runs oracle, null, source-mistake and a lazy/degenerate battery. Adapter for kami-harness 4.7.0. | [v2-spec](docs/v2-spec.md) |
 | Miner | `kami-drills mine RUN_DIR...` turns live runs into candidate drills from session-start snapshots: value swing, accepted actions, provenance, held-out split. | [v2-miner](docs/v2-miner.md) |
-| v1.1 | The 47 v1 drills as specs with the audit fixes: 27 ranking, 10 smoke, 10 retired. Agrees with v1 on 1027 of 1034 recorded tries; the 7 are v1 errors. | [v1.1](docs/v1.1.md) |
+| v1.1 | The 47 v1 drills as specs with the audit fixes: 27 ranking, 10 smoke, 10 retired. Agrees with v1 on 1027 of 1034 recorded tries; the 7 are v1 errors (reproducing it needs the private rc2 plays, `KAMI_DRILLS_PLAYS`). | [v1.1](docs/v1.1.md) |
 | Bank | `bank/v2.0-rc8/`: 47 mined items, 5 controls, 24 traps; 56 public, 20 held out as perturbed variants (hash only). | [v2-changelog](docs/v2-changelog.md) |
-| Profile | `kami-drills profile RESULTS...`: per skill area (survival, economic, progression, cadence, recovery) with cluster-bootstrap intervals, beside an equal-weight headline, as HELM reports scenarios beside its aggregate. | [v2-profile](docs/v2-profile.md) |
+| Profile | `kami-drills profile RESULTS...`: per skill area (survival, economic, progression, cadence, recovery) with bootstrap intervals over drills, beside an equal-weight headline, as HELM reports scenarios beside its aggregate. | [v2-profile](docs/v2-profile.md) |
 | Scoring | pass^k, bootstrap over snapshot families, pre-registered gap coding, ranked probability score over tiers. | [v2-gap-coding](docs/v2-gap-coding.md) |
 | Cadence, memory, polluted | Prototype suites: wake timing and budget use, stale and repaired notes, robustness to earlier failures. `kami-drills run --suite v2-schedule\|v2-memory\|v2-polluted\|v2-budget`. | [cadence](docs/v2-cadence.md) · [memory](docs/v2-memory.md) · [polluted](docs/v2-polluted.md) |
 

@@ -328,7 +328,7 @@ def cmd_mine(args):
         Path(args.stats).write_text(written["stats"])
     pub, private = written["rows"]
     if args.bank:
-        man = bank.freeze(written, args.bank, Path(args.bank).name, key)
+        man = bank.freeze(written, args.bank, Path(args.bank).name, key, len(dirs))
         print(f"bank {args.bank}: {len(man['public'])} public specs, {man['heldout']['count']} held out; "
               f"root {man['root'][:23]}")
     n_pub = sum(not r.get("redacted") for r in pub)

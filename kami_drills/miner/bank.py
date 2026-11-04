@@ -26,7 +26,7 @@ def commitment(hashes):
     return "sha256:" + _sha("\n".join(sorted(hashes)).encode())
 
 
-def freeze(written, bank_dir, version, key):
+def freeze(written, bank_dir, version, key, runs):
     pub, private = written["rows"]
     d = Path(bank_dir)
     (d / "public").mkdir(parents=True, exist_ok=True)
@@ -42,7 +42,7 @@ def freeze(written, bank_dir, version, key):
     held = [p["variant"] for p in private]
     (d / "private" / "heldout.jsonl").write_text("".join(json.dumps(v, sort_keys=True, ensure_ascii=False) + "\n" for v in held))
     man = {"bank": version, "spec_version": "2.0.0", "rules_library": RULES_LIBRARY, "miner": MINER_VERSION, "canary": CANARY,
-           "source": "palaestra/s1 (27 runs)", "split_key_id": mac(key, "key-id")[:12],
+           "source": f"palaestra/s1 ({runs} runs)", "split_key_id": mac(key, "key-id")[:12],
            "public": entries,
            "heldout": {"count": len(held), "stub_ids": sorted(p["stub"]["id"] for p in private),
                        "commitment": commitment(v["content_hash"] for v in held)}}
