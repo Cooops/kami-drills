@@ -601,3 +601,8 @@ not in `state.quests`, so "accept 3005, complete, revive" was a free gap and nev
    the claim "better" (free, 5 revives). Should the shard route be a lesser play there?
 10. **phantom-principal** is one item (haiku-5.5-2, the only S1 run that waited on a human). Ship it as a family of
    one, or fold it into stuck-broke?
+
+
+## Known issue in bank v2.0-rc9 (merged as is)
+
+Two public `stuck-broke` items (luna-2 s37, grok-1 s7) miss a correct free route in their accepted set. Quest 3005 "Spring Rites" has no objectives, opens after a liquidation, pays one revive card, and was visible at the fork. "Accept 3005, complete it, revive" spends no ETH but scores as wrong. Both items are tier B (unscored), so no published score is affected. Fixed in bank v2.0-rc10: available quests go into the fork state, objective-less quests are met on accept, and free revive routes are in the accepted paths.
