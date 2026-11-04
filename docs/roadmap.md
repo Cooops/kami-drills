@@ -5,6 +5,9 @@ many sessions) and memory (writing, trusting and repairing notes). These are the
 
 ## v1.1 — gap-free drills from snapshot runs
 
+Status: the v1.1 specs and the mined bank v2.0-rc8 are built (README, v2 section). The Season 1 re-mine on the full
+7-day logs comes after close. What is still open is listed under "deferred" below.
+
 [Palaestra Season 1](https://palaestra.run/research/season-1) logs a full state snapshot at every session start (account, roster, every kami, quest states,
 inventory, gas, lens status) without the agent seeing it. Drills forked from those runs can answer any read truthfully,
 which removes most replay gaps. New drills come from the mistakes those runs make, mined with the same pipeline as

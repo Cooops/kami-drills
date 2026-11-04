@@ -146,6 +146,15 @@ literature behind it in [docs/v2-research-digest.md](docs/v2-research-digest.md)
   candidate names the value swing, the accepted actions, the state fields its verdict depends on and its provenance.
 - **v2 scoring** ([docs/v2-gap-coding.md](docs/v2-gap-coding.md), `kami_drills/scoring_v2.py`): pass^k, bootstrap
   over snapshot families, pre-registered gap coding, ranked probability score over tiers, held-out split, item statistics.
+- **Drill spec** ([docs/v2-spec.md](docs/v2-spec.md), `kami_drills/spec/`): a harness-agnostic drill format and a
+  game-clock simulator. `kami-drills spec check DIR...` runs each drill's oracle, null and source-mistake plays plus a
+  lazy/degenerate battery. `kami_drills/adapters/harness_4_7.py` maps it onto kami-harness 4.7.0.
+- **v1.1** ([docs/v1.1.md](docs/v1.1.md), `specs/v1.1/`): the 47 v1 drills as specs with the audit fixes (27 ranking,
+  10 smoke, 10 retired). It agrees with v1 on 1027 of 1034 recorded tries; the 7 are v1 errors.
+- **Bank** (`bank/v2.0-rc8/`): 47 mined items, 5 controls and 24 traps; 56 public, 20 held out (perturbed variants,
+  hash only). Earlier release candidates are kept for the changelog ([docs/v2-changelog.md](docs/v2-changelog.md)).
+- **Profile** ([docs/v2-profile.md](docs/v2-profile.md)): `kami-drills profile RESULTS...` scores a model per skill
+  area with cluster-bootstrap intervals and an equal-weight headline.
 
 Run a v2 suite with `kami-drills run --model <model> --suite v2-memory|v2-schedule|v2-polluted` (default `v1`; v2
 suites print a per-drill pass table). `tests/test_e2e_mock.py` runs all three through Inspect on the built-in
