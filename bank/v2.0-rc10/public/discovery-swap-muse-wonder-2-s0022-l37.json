@@ -26,7 +26,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:57c52b803ddd52043dbb2afef997082b8270980daeacc201ff8c87984f93aa62",
+ "content_hash": "sha256:6c30630e006f031313ae4b8bbbb4884bb59df53d0e179c821a2f1bf835abea68",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -1104,10 +1104,52 @@
   "pools": [
    {
     "fee_bps": 30,
+    "item_a": 2,
+    "item_b": 1,
+    "reserve_a": 5215547,
+    "reserve_b": 5562650
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 100,
+    "item_b": 1,
+    "reserve_a": 51371,
+    "reserve_b": 24135739
+   },
+   {
+    "fee_bps": 30,
     "item_a": 103,
     "item_b": 1,
     "reserve_a": 1000000,
     "reserve_b": 461000000
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1001,
+    "item_b": 1,
+    "reserve_a": 764786,
+    "reserve_b": 1499277
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1002,
+    "item_b": 1,
+    "reserve_a": 239354,
+    "reserve_b": 468769
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1004,
+    "item_b": 1,
+    "reserve_a": 13935,
+    "reserve_b": 5224675
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1005,
+    "item_b": 1,
+    "reserve_a": 78996,
+    "reserve_b": 743998
    }
   ],
   "rules_library": "kami-rules@1.0.0"

@@ -1188,7 +1188,47 @@ def shard_pool(n=None, out=None):
     return {"item_a": SHARD, "item_b": 1, "reserve_a": 10 ** 6, "reserve_b": rate * 10 ** 6, "fee_bps": 30}
 
 
-SHARD_POOL = shard_pool()
+# Every MUSU pool S1 agents quoted or swapped through (pool_swap_quote results: median reserves, fee 30 bps in all of
+# them; n quotes from k runs). Fork-time reserves are not in the state, so these are authored from the season.
+# Revive items have no pool (quotes for 11001, 11003, 11004 failed: "no pool with liquidity").
+S1_POOLS = {      # item: (item reserve, MUSU reserve)
+    2: (5215547, 5562650),      # VIPP, 19 quotes / 7 runs, ~1.07 MUSU
+    100: (51371, 24135739),     # Onyx Shard, 83 / 14, ~470 MUSU
+    SHARD: (56177, 25753754),   # Ether Shard, 58 / 10, ~458 MUSU
+    1001: (764786, 1499277),    # Wooden Stick, 60 / 20, ~1.96 MUSU
+    1002: (239354, 468769),     # Stone, 34 / 13, ~1.96 MUSU
+    1004: (13935, 5224675),     # Pine Cone, 11 / 6, ~375 MUSU
+    1005: (78996, 743998),      # Scrap Metal, 112 / 22, ~9.4 MUSU
+}
+POOL_FEE_BPS = 30
+
+
+def s1_pools(shard=None):
+    """world.pools for a drill: every S1 pool; `shard` replaces the Ether Shard pool (a discovery's recorded price)."""
+    out = [{"item_a": i, "item_b": 1, "reserve_a": a, "reserve_b": b, "fee_bps": POOL_FEE_BPS} for i, (a, b) in S1_POOLS.items()]
+    return [shard if (shard and p["item_a"] == SHARD) else p for p in out]
+
+
+SHARD_POOL = next(p for p in s1_pools() if p["item_a"] == SHARD)
+
+
+def pool_out(item_in, item_out, n):
+    """What `n` of item_in pays in item_out through its S1 pool (the rules library's constant-product rule)."""
+    x = item_in if item_out == 1 else item_out
+    ra, rb = S1_POOLS[x]
+    rx, ry = (ra, rb) if item_out == 1 else (rb, ra)
+    dx = n * (1 - POOL_FEE_BPS / 1e4)
+    return int(ry * dx / (rx + dx))
+
+
+def pool_cost(item_out, units):
+    """MUSU that buys `units` of item_out through its S1 pool, or None if there is no pool."""
+    if item_out not in S1_POOLS:
+        return None
+    a = max(1, math.floor(units * S1_POOLS[item_out][1] / S1_POOLS[item_out][0]))
+    while pool_out(1, item_out, a) < units:
+        a += 1
+    return a
 
 
 def swap_rows():
@@ -1255,7 +1295,7 @@ def discovery_swap(run, s):
         musu = st.account.get("musu")
         yield ("cand", {
             "family": "economic_insight", "responses": swap_rows(), "world_constants": TOKENS,
-            "world_pools": [shard_pool(c.args.get("amount_in"), max(gain, int(c.args.get("min_amount_out") or 0)))],
+            "world_pools": s1_pools(shard_pool(c.args.get("amount_in"), max(gain, int(c.args.get("min_amount_out") or 0)))),
             "fork_line": fork, "fork_kind": "before_call",
             "objective": {"game": (stated_intent(s, first) or {}).get("text"), "source": "agent prose before the fork",
                           "shown_to_model": True},
@@ -1378,10 +1418,17 @@ def revive_quest_routes(run, s, fork, st, k0):
             continue
         met = {(o.get("type"), o.get("index")) for o in a.get("objectives") or [] if o.get("met")} if active else set()
         steps, ok = [] if active else [call("accept_quest", quest_index=q)], True
+        musu = st.account.get("musu")
+        spend = musu.value if musu and musu.value is not None else 0
         for o in WORLD["quests"][str(q)].get("objectives", []):
             if o["type"] == "ITEM_BURN" and ("ITEM_BURN", o["index"]) not in met:
                 held = st.held({o["index"]})
-                ok = ok and held is not None and held.get(o["index"], 0) >= o.get("value", 1)
+                short = o.get("value", 1) - (held or {}).get(o["index"], 0)
+                cost = pool_cost(o["index"], short) if short > 0 else 0
+                ok = ok and held is not None and cost is not None and cost <= spend
+                if short > 0 and ok:  # buy the shortfall with MUSU through the item's S1 pool
+                    spend -= cost
+                    steps.append(call("pool_swap", item_in=1, item_out=o["index"], amount_in=cost, min_amount_out=short))
                 steps.append(call("burn_items", item_indices=[o["index"]], amounts=[o.get("value", 1)]))
         for o in WORLD["quests"][str(q)].get("objectives", []):
             if o["type"] == "ROOM":
@@ -1443,7 +1490,7 @@ def recovery(run, s, fork, st, extra=()):
         return "fine:can_revive_now"
     cap, claim = (deposit_cap(owner, operator) if owner is not None else 0), sq997_open(s)
     k0 = sorted(ks)[0]
-    need = 1 + math.ceil((REVIVE_BUY_MUSU - musu.value) / (0.99 * MUSU_PER_SHARD))  # shards to swap for the gummy
+    need = next(n for n in range(1, 10 ** 4) if musu.value + pool_out(SHARD, 1, n) >= REVIVE_BUY_MUSU)  # shards for a gummy
     n = max(need + shard_tax(need), min(cap, 5))
     shard_ok = cap >= n
     frees = revive_quest_routes(run, s, fork, st, k0)
@@ -1485,7 +1532,7 @@ def _recovery_cand(run, s, fork, fork_kind, r, rid, situation, expected, why, ob
     later = first_later(run, s, rescued)
     dead_h = active_hours(run, s.start, later.start if later else run_end(run))
     return ("cand", {
-        "family": "poverty_recovery", "responses": r["responses"], "world_constants": TOKENS, "world_pools": [SHARD_POOL],
+        "family": "poverty_recovery", "responses": r["responses"], "world_constants": TOKENS, "world_pools": s1_pools(),
         "fork_line": fork, "fork_kind": fork_kind, "objective": objective,
         "agent_action": {"summary": f"session with no conversion, claim or revive ({sum(c.ok and c.write for c in s.calls)} writes)"},
         "situation": situation, "expected": expected,

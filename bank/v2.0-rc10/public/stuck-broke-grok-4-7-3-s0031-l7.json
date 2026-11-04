@@ -41,6 +41,52 @@
    "intents": [
     {
      "args": {
+      "quest": 3900
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "amount_in": 2,
+      "item_in": 1,
+      "item_out": 1001,
+      "min_out": 1
+     },
+     "verb": "swap"
+    },
+    {
+     "args": {
+      "amount": 3,
+      "item": 1001
+     },
+     "verb": "burn"
+    },
+    {
+     "args": {
+      "room": 26
+     },
+     "verb": "travel"
+    },
+    {
+     "args": {
+      "quest": 3900
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 10098,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +112,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:0e0ce5e8f665db018ac4cdda663668fd6eae92cf1dff2504c48e16939a278281",
+ "content_hash": "sha256:55f13d466fb78f6b1e9b8ab73f7836bbc41567c6461a39cb70f9b56bb532370f",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -432,6 +478,7 @@
         "args": {
          "quest": {
           "in": [
+           3900,
            10003
           ]
          }
@@ -919,7 +966,7 @@
    ]
   }
  },
- "situation": "All 1 kami(s) DEAD, 199 MUSU, owner wallet 0.0065 ETH, SQ997 open.",
+ "situation": "All 1 kami(s) DEAD, 199 MUSU, owner wallet 0.0065 ETH, SQ997 open, quest 3900 open (pays a revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -1229,10 +1276,52 @@
   "pools": [
    {
     "fee_bps": 30,
+    "item_a": 2,
+    "item_b": 1,
+    "reserve_a": 5215547,
+    "reserve_b": 5562650
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 100,
+    "item_b": 1,
+    "reserve_a": 51371,
+    "reserve_b": 24135739
+   },
+   {
+    "fee_bps": 30,
     "item_a": 103,
     "item_b": 1,
-    "reserve_a": 1000000,
-    "reserve_b": 440000000
+    "reserve_a": 56177,
+    "reserve_b": 25753754
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1001,
+    "item_b": 1,
+    "reserve_a": 764786,
+    "reserve_b": 1499277
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1002,
+    "item_b": 1,
+    "reserve_a": 239354,
+    "reserve_b": 468769
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1004,
+    "item_b": 1,
+    "reserve_a": 13935,
+    "reserve_b": 5224675
+   },
+   {
+    "fee_bps": 30,
+    "item_a": 1005,
+    "item_b": 1,
+    "reserve_a": 78996,
+    "reserve_b": 743998
    }
   ],
   "rules_library": "kami-rules@1.0.0"

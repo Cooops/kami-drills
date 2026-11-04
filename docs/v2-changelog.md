@@ -645,6 +645,39 @@ not in `state.quests`, so "accept 3005, complete, revive" was a free gap and nev
   above; oracle-on-variant 0 of 15; leak check clean; `bank.verify` []. Output `sha256[:16] e09638e826e8bef5` for
   `--jobs 1` and 10.
 
+## Final-pass review of b6ae565, bank v2.0-rc10 rebuilt
+
+- **Blocker: "buy the sticks with MUSU, then 3900".** S1 had a MUSU ↔ Wooden Stick pool (~2 MUSU a stick; sol-1 6 → 3,
+  sol-2 10 → 5), so 3 sticks cost ~6 MUSU. Fixed systematically:
+  - **Every pool S1 used is in `world.pools`** for the recovery and economic drills (`rules.S1_POOLS`): VIPP (2), Onyx
+    Shard (100), Ether Shard (103), Wooden Stick (1001), Stone (1002), Pine Cone (1004), Scrap Metal (1005). Each is the
+    median reserves of S1's `pool_swap_quote` results (11 to 112 quotes from 6 to 22 runs per pool), fee 30 bps (all
+    quotes). Fork-time reserves are not in the state, so these are authored from the season. A discovery item keeps
+    its Ether Shard pool priced from its own recorded swap. Revive items have no pool (quotes for 11001, 11003, 11004
+    failed: "no pool with liquidity").
+  - **`revive_quest_routes` buys a give's shortfall** through its pool with the fork's MUSU (`pool_cost`).
+  - **Exhaustive route search** (`tests/test_recovery_routes.py`): for every recovery item and trap (public, and the
+    held-out variants when `private/` is present), a breadth-first search to depth 10 over the rules library's acts:
+    one deposit (the least that funds a gummy, or the cap), selling any held item and buying revive items or revive
+    quests' gives through any pool, the merchant gummy, accept and complete of every revive quest and 10003, gives,
+    travel to objective rooms, and every revive whose item is held. Only accepted acts are kept, no act repeats on a
+    path, and a state from which a revive succeeds is not expanded further (minimal routes). Each route must pass the
+    item and fail the trap, and the trap must have none. Coverage: 20 items and 20 traps (11 public, 9 held out),
+    50,687 routes. Before this fix, with the S1 pools put back into the world, the key refused 13,865 of them (17 of
+    the 20 items); now 0.
+- **Traps:** a trap must leave no way to a revive, and the search found two: held items a pool buys (grok-4.7-2 s22:
+  sell the Onyx Shard, buy a gummy) and an accepted 3900 left open in the fork overlay (7 held-out traps). Traps now
+  also remove the items a pool buys (synthetic, labelled) and drop claimed quests from the overlay. A quest the
+  account already completed keeps its real record (luna-2's 3005), and a repeatable's synthetic claim is dated at the
+  last session start before the latest liquidation when its repeat is still not due then.
+- **Changed:** the 6 public items in the review gain the "buy sticks, then 3900" path (flash-1 s19, flash-2 s28, grok-2
+  s22, grok-3 s31, haiku-1 s62, haiku-2 s29); every recovery trap changes state; all economic and recovery specs carry
+  the S1 pools. No item added or dropped; the other 31 public specs are byte-identical.
+- Counts unchanged: 54 items, 6 controls, 28 traps; 63 public, 25 held out. `spec check` 113 specs, 0 failing; battery
+  0/17 ungrouped and 0/22 groups (0/24, 0/32 with the private variants); kitchen sink 0 of 63; economic pairs no calls
+  0.50, kitchen sink 0.00, token move 0.02, always revive 0.01; oracle-on-variant 0 of 15; leak check clean;
+  `bank.verify` []. Output `sha256[:16] a6328eb4cf5981e2` for `--jobs 1` and 10.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single

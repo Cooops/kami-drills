@@ -41,7 +41,7 @@ repo cannot be committed by accident (H review M4).
 Otherwise the command exits 1 and writes nothing (F review m3).
 
 **Speed and determinism.** The 27 final Season 1 runs (2,172 sessions) take about 50 s with `--jobs 10`. Output is byte-identical
-for any `--jobs` and any input order (`sha256[:16] e09638e826e8bef5` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
+for any `--jobs` and any input order (`sha256[:16] a6328eb4cf5981e2` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
 
 **Untrusted input.** Transcripts are parsed as JSON only.
 
@@ -402,15 +402,15 @@ never let every kami stay dead, and every long-dead run held enough ETH for a re
   - a revive quest the agent can take (`REVIVE_QUESTS`: a revive reward and objectives kami-rules meets with every kami
     dead, none or only ROOM and ITEM_BURN): open (the reference/ docs name every one, so visibility is not required),
     accepted and open, or a repeatable whose repeat is due,
-    with its gives held and its room reachable. On S1 these are 3005 "Spring Rites" (no objectives, 1 card) and 3900
+    with its gives held or bought with the fork's MUSU through their S1 pool, and its room reachable. On S1 these are 3005 "Spring Rites" (no objectives, 1 card) and 3900
     "Warm Your Hands" (go to room 26, give 3 Wooden Sticks, 1 card); 3022 qualifies but never came up.
 
   With none, the trigger is `doomed:no_convertible_eth_or_revive_quest`.
 - **The answer.** Full credit is a successful revive. The rules library refuses a revive without its item, and the
   item comes only from a route, each an accepted path:
   - shard route: the portal keeps its import tax (flat 1 + 50 bps, from S1 receipts), the rules library's pool
-    (authored at 440 MUSU a shard, 10^6 shards deep, 30 bps fee as S1's quotes; a discovery item prices it from its
-    own recorded swap) debits
+    (every S1 pool is in `world.pools`, `rules.S1_POOLS`: median reserves of S1's quotes, 30 bps; a discovery item
+    prices the shard pool from its own recorded swap) debits
     the shards, and the gummy row needs and debits 499 MUSU (the dearest S1 gummy);
   - SQ997: authored rows (accept, then complete for 5 Melkarth cards, item 11002; gdd `quests.csv:1831`, and every S1
     claim paid 5);
@@ -430,6 +430,10 @@ never let every kami stay dead, and every long-dead run held enough ETH for a re
   repeatable at this session, so its repeat is not due). There nothing pays for a revive, so a revive attempt scores 0 and any
   constant claim policy fails. The battery adds `claim_all`, `claim_avail_revive_card` and `sq997` on drills with a
   dead kami; each may pass an item but at most half its pair.
+- **Route search** (`tests/test_recovery_routes.py`): every minimal route to a revive (BFS to depth 10 over
+  deposits, every pool, the gummy, revive quests, gives, travel and revives) must pass the item and fail its trap, and
+  the trap must have none. 50,687 routes over 20 items and 20 traps, 0 refused (13,865 before the S1 pools).
+  Traps also remove the items a pool buys (synthetic).
 - **Not accepted:** a kami buy (the newbie vendor sells one per account in its first 24 h; KamiSwap listings are not
   in the state) and selling items (no item pool reserves at the fork). A model that buys a kami scores 0 here.
 - **revive-claim is harness-bound.** On 4.7.0 tool results are cut at 65,536 bytes, so 10003 never showed in the

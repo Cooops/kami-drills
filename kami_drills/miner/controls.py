@@ -15,7 +15,7 @@ The control forbids that one act on that target; anything else passes it.
 import json
 import math
 
-from kami_drills.miner.rules import (NODE_CAP, SHARD, SHARD_POOL, TOKENS, TRAP_OPERATOR, TRAP_OWNER, available_quests, deposit_cap, infra_session,
+from kami_drills.miner.rules import (NODE_CAP, SHARD, TOKENS, s1_pools, TRAP_OPERATOR, TRAP_OWNER, available_quests, deposit_cap, infra_session,
                                      pat, snap_kamis, swap_rows, wrote_kami)
 from kami_drills.miner.trace import state_at
 from kami_drills.spec.from_miner import _id, stamp
@@ -155,9 +155,14 @@ def trap_for(run, item):
     recovery = item.get("family") == "poverty_recovery"
     first_dead = next((x.start for x in run.sessions[:run.sessions.index(s) + 1]
                        if any(k.get("state") == "DEAD" for k in snap_kamis(x).values())), s.start)
-    claimed = _claim_revive_quests(snap, s.start, first_dead) if recovery else set()
+    upto = run.sessions[:run.sessions.index(s) + 1]
+    dead_at = lambda x: {k for k, v in snap_kamis(x).items() if v.get("state") == "DEAD"}
+    kills = [i for i in range(1, len(upto)) if dead_at(upto[i]) - dead_at(upto[i - 1])]  # a kami newly dead at this start
+    before_kill = upto[kills[-1] - 1].start if kills else None
+    claimed = _claim_revive_quests(snap, s.start, first_dead, before_kill) if recovery else set()
+    sold = _drop_sellables(snap) if recovery else []
     raw = {"family": item.get("family") or "economic_insight", "kind": "trap_control", "world_constants": TOKENS,
-           "world_pools": [SHARD_POOL], "responses": swap_rows() if recovery else [],
+           "world_pools": s1_pools(), "responses": swap_rows() if recovery else [],
            "fork_line": s.scaffold_end, "fork_kind": "session_start", "group": item["id"],
            "objective": {"game": None, "source": "trap control", "shown_to_model": False},
            "agent_action": {"summary": "synthetic"}, "situation": "the paired item's session start with ~0.001 ETH liquid in all",
@@ -174,11 +179,17 @@ def trap_for(run, item):
     st = state_at(s, s.scaffold_end)
     if claimed:  # rc10 review M1: a constant "claim the revive quest" policy must fail one half of the pair
         raw["situation"] += f"; synthetic: the revive quests {sorted(claimed)} already claimed"
+    if sold:  # final-pass review: held items a pool buys would fund a gummy
+        raw["situation"] += f"; synthetic: no items a pool buys ({sold} removed)"
     avail = [q for q in available_quests(run, s, s.scaffold_end) if q["index"] not in claimed]
-    cand = candidate(meta, run, s, raw, fork_state(st, s.start) | {"available": avail}, "B", raw["tier_reason"])
+    fs = fork_state(st, s.start)
+    fs = fs | {"available": avail, "accepted_open": [q for q in fs.get("accepted_open") or [] if q not in claimed],
+               **({"completable": [q for q in fs["completable"] if q not in claimed]} if fs.get("completable") is not None else {})}
+    cand = candidate(meta, run, s, raw, fs, "B", raw["tier_reason"])
     cand["id"] = item["id"] + "-trap"
     cand["variant"] = {"origin": "synthetic_param", "group": item["id"], "changes": {
-        "owner_eth": TRAP_OWNER, "operator_eth": TRAP_OPERATOR, **({"/state/quests": f"revive quests claimed: {sorted(claimed)}"} if claimed else {})}}
+        "owner_eth": TRAP_OWNER, "operator_eth": TRAP_OPERATOR, **({"/state/quests": f"revive quests claimed: {sorted(claimed)}"} if claimed else {}),
+        **({"/state/inventory": f"pool-sellable items removed: {sold}"} if sold else {})}}
 
     class _S:  # the session with its snapshot's gas reads rewritten, and the transcript prefix to match
         snapshot, path = snap, s.path
@@ -192,11 +203,24 @@ def trap_for(run, item):
     return gated
 
 
-def _claim_revive_quests(snap, now, first_dead):
+def _drop_sellables(snap):
+    """Remove every held item an S1 pool buys from a trap's snapshot inventory (synthetic). Returns their indices."""
+    from kami_drills.miner.rules import S1_POOLS
+    out = []
+    for c in snap["calls"]:
+        if c["name"] == "lens_inventory" and "response" in c:
+            items = (c["response"].get("data") or {}).get("items") or []
+            out += sorted(r["item"]["index"] for r in items if r["item"]["index"] in S1_POOLS and r.get("balance"))
+            c["response"]["data"]["items"] = [r for r in items if r["item"]["index"] not in S1_POOLS]
+    return out
+
+
+def _claim_revive_quests(snap, now, first_dead, before_kill=None):
     """Mark the revive-paying quests (REVIVE_QUESTS, 10003 included) the account could claim as claimed in a trap's
-    snapshot (synthetic): accepted and complete. Only quests whose requirements are met or that it already accepted. A
-    one-off is claimed at `first_dead` (the first session start that showed a dead kami: after a liquidation, before
-    this one); a repeatable at `now`, so its repeat is not due. Returns the quests changed."""
+    snapshot (synthetic): accepted and complete. Only quests whose requirements are met or that it already accepted; a
+    quest it already completed keeps its real record. A one-off is claimed at `first_dead` (the first session start
+    that showed a dead kami: after a liquidation); a repeatable at `before_kill` (the last session start before the
+    latest liquidation) when its repeat is still not due at `now`, else at `now`. Returns the quests changed."""
     from kami_drills.miner.rules import REVIVE_QUESTS
     out = set()
     for c in snap["calls"]:
@@ -206,7 +230,11 @@ def _claim_revive_quests(snap, now, first_dead):
             a = r.get("account") or {}
             if r["index"] not in REVIVE_QUESTS or not (a.get("requirementsMet") or a.get("accepted")):
                 continue
-            end = now if r.get("repeatable") else first_dead
+            if a.get("complete") and not (r.get("repeatable") and a.get("repeatAvailable")):
+                out.add(r["index"])  # already claimed for real: keep its completion time
+                continue
+            not_due = lambda x: x is not None and x.timestamp() + (r.get("repeatDuration") or 0) > now.timestamp()
+            end = (before_kill if not_due(before_kill) else now) if r.get("repeatable") else first_dead
             r["account"] = {**a, "accepted": True, "complete": True, "repeatAvailable": False,
                             "endTime": int(end.timestamp()) if end else 0}
             acc.setdefault(r["index"], {"index": r["index"], "name": r.get("name")})["complete"] = True
