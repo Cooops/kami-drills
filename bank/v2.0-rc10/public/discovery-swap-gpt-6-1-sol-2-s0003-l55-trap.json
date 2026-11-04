@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:9af365153d36cac0f3440851ed07374230138cc1736de6c06bb2c301453b9bee",
+ "content_hash": "sha256:94a1b12428ac46d191a9ba6e75ad87f6abd307f884003f2113bc74b12b7d60d0",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -254,6 +254,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -269,14 +276,37 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3034,
+    "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "available"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": true,
     "status": "available"
    }
   ]
@@ -343,6 +373,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -356,6 +388,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool accept_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: reqs not met: Reverted'}"
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

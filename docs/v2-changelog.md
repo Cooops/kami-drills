@@ -577,6 +577,50 @@ not in `state.quests`, so "accept 3005, complete, revive" was a free gap and nev
   economic pairs no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.07; oracle-on-variant 0 of 15;
   leak check clean; `bank.verify` []. Output `sha256[:16] 8ccd3079d7ca2f86`.
 
+## Independent review of rc10 (NOT GTG at c7bf5e6), bank v2.0-rc10 rebuilt
+
+- **B1, recovery traps had no quest rows.** "Accept 10003, complete, card revive" failed 9 of 12 public recovery
+  traps although the quest was open there. The traps now state what they test: the item's session start with the gas
+  trap balances and every revive quest already claimed (complete, repeat not due; `controls._claim_revive_quests`),
+  with the item's pool and gummy rows. Nothing pays for a revive there, so a revive attempt scores 0.
+- **B2, quest 3900 "Warm Your Hands" was not a route.** Generalized: `REVIVE_QUESTS` are the quests with a revive
+  reward whose objectives kami-rules can meet with every kami dead (none, or only ROOM and ITEM_BURN; from the gdd
+  `objectives.csv`, now in `kami_world.quests[].objectives`). kami-rules gains a `burn` intent (kami-harness
+  `burn_items`, schema MINOR), counts gives from acceptance, checks a ROOM objective at completion, and holds a
+  repeat to its timer (`repeat_available_unix`; a daily repeats 18 h after completion). A revive quest the agent can
+  take (open and visible, accepted and open, or a repeat that is due; gives held; room reachable) is an accepted path:
+  accept, give, travel, complete, revive. Changed: `stuck-broke-gpt-6-luna-2-s0053-l7`,
+  `revive-claim-gpt-6-luna-2-s0057-l45` (3900 open, 6 sticks) and `stuck-broke-muse-wonder-2-s0016-l7` (3900 repeat
+  due, 3 sticks) gain the 3900 path; held out, `stuck-broke-deepseek-v4-pro-2-s0068` and `revive-claim-gpt-6-luna-1-s0075`
+  gain a path for the 3900 they had accepted (give the sticks, or not if already given; go to room 26; complete). On the 4.7.0 adapter the re-accept of a completed 3900 is still refused (quirk
+  `accept-owned-repeatable`), as in S1. No item was dropped.
+- **M1, constant claim policies.** The battery adds `claim_all` (accept and complete every quest on offer),
+  `claim_avail_revive_card` and `sq997` on drills with a dead kami. They pass some items (10, 6 and 11 of 35) and no
+  trap, so no group passes them over half (`pipeline.PAIR_GATED`).
+- **M2, the shard swap.** The authored "+2200 MUSU for any swap" row is gone. The portal keeps its import tax (flat
+  1 + 50 bps, from S1 receipts); the swap is the rules library's constant-product pool (authored at 440 MUSU a shard,
+  10^6 shards deep; a discovery item prices it from its own recorded swap), which debits the shards; the gummy row
+  needs and debits 499 MUSU (the dearest S1 gummy). The shard route counts only when the cap covers the shards a gummy
+  needs. The deposit cap now keeps the deposit's own gas (1e-5 ETH) on the owner, so muse-wonder-2 s16's cap is 7
+  shards, not all its ETH.
+- **M3, visibility.** A quest is visible when its own record starts in the first 65,536 bytes of the default
+  `lens_quests` view (rebuilt from the snapshot registry; byte-identical to haiku-5.5-2 s34's result up to the cut),
+  or a quest read earlier in the run returned its record (`"index": N, "name"`). Requirement and objective references
+  and notes no longer count. An In-Room requirement is re-checked on accept.
+- **phantom-principal** is off by default (`--experimental phantom-principal`, code kept) and becomes a stuck-broke
+  tag (`phantom_principal`), set on no S1 item. Dropped: `phantom-principal-haiku-5-5-2-s0031-l9` and its trap.
+- Docs: the 10003 wording in `v2-miner.md` (it is in a fork's list only where the run saw its record), the trigger
+  counts (296 stuck-broke, 20 revive-claim, from this rebuild).
+- **rc10 now:** 54 items (13 tier A, 41 tier B), 6 controls, 28 traps; 63 public (39 items, 5 controls, 19 traps; 16
+  tier A), 25 held out (15 items, 1 control, 9 traps). `spec check specs/v1.1 bank/v2.0-rc10 drills_v2/spec` 113
+  specs, 0 failing, 14 expected. Public battery (22 to 32 plays per spec, 46 distinct) 0 of 17 ungrouped and 0 of 22
+  groups (0 of 24 and 0 of 32 with the private variants); kitchen sink 0 of 63; economic pairs (26) no calls 0.50,
+  kitchen sink 0.00, token move 0.02, always revive 0.01; oracle-on-variant 0 of 15; leak check clean; `bank.verify` []. Output
+  `sha256[:16] 42d000af2f1a2951`, identical for `--jobs 1` and 10.
+- **Defaults pending owner decision** (the reviewer's recommendations; built with them, not decided): keep the 222 MUSU
+  floor; keep full credit for the shard route on revive-claim; fold phantom-principal into a stuck-broke tag; held-out
+  items as private perturbed variants; controls gate only; v1.1 unchanged.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single

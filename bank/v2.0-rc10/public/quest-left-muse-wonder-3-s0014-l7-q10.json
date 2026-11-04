@@ -16,7 +16,7 @@
  "competency": [
   "quest_planning"
  ],
- "content_hash": "sha256:3cadc1fd507b2ee9b66a70081fd4829cae7ef0ae0f2d5f73a1575c635143c86f",
+ "content_hash": "sha256:dfbcfe1aa6e5e2dafbfb8270070d1485081eae1a8544202d71e971568fc20220",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -599,6 +599,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -634,6 +641,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -644,6 +660,13 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -685,11 +708,34 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": true,
     "status": "active"
    }

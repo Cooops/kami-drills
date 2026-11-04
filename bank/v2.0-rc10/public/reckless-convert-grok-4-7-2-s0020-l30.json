@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:0380bcf919ef6afe874cb9f90ca56b0ebc9c1c3c2825ac01bc1101849cdffb3f",
+ "content_hash": "sha256:a4a4fa4cb6d32d8782074efce49d15cca9a138c1741c083ac837d8ee2d31c601",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -770,6 +770,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -805,6 +812,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -815,11 +831,19 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -840,14 +864,26 @@
    {
     "index": 3005,
     "objectives": [],
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3006,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": false,
     "status": "available"
    }
   ]
@@ -933,6 +969,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }

@@ -22,7 +22,7 @@
  "competency": [
   "risk_survival"
  ],
- "content_hash": "sha256:ca3515586deca0db1afda603bdc2ac7690731eed3a940e9a4cef6cb3b7df1fb1",
+ "content_hash": "sha256:8b3f2048ca92d4fd8345290e421e8ed3579525fb0254609f84b13fb306c97a69",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -1059,6 +1059,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1094,6 +1101,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1114,6 +1130,13 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1124,6 +1147,15 @@
    },
    {
     "index": 2003,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1175,17 +1207,46 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 3016,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 21003,
+      "met": false,
+      "required": 1,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -1200,11 +1261,35 @@
    },
    {
     "index": 3037,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 11303,
+      "met": false,
+      "required": 1,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeat_available_unix": null,
     "repeatable": true,
     "status": "complete"
    }

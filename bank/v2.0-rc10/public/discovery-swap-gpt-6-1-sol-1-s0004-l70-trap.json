@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:e4921b90598e4d34bee772e314011633f799afc9e3de88cc3c5180362d6d8a23",
+ "content_hash": "sha256:81c9e20dd51a7cca94d32b4ee19d47079b8f5f36d204194a2b063a7811608e42",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -263,6 +263,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -278,12 +285,19 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3028,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 5,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -294,6 +308,12 @@
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -305,16 +325,43 @@
     "index": 3039,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 4,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3040,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 55,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": true,
     "status": "available"
    }
   ]
@@ -385,6 +432,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -398,6 +447,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}"
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

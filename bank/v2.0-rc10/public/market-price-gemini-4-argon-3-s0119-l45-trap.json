@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:75b15444128309694421458e82faf72e9992b7eb0aaa8c611666f9c87f0e0baf",
+ "content_hash": "sha256:6f00d9043e713b1376b0b390d7023dabc3f4491064cc6c2c9ceb3167c997e770",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -787,6 +787,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -822,6 +829,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -847,16 +863,43 @@
    },
    {
     "index": 14,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 15,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1002,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 16,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -882,6 +925,13 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -892,6 +942,15 @@
    },
    {
     "index": 2003,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -958,6 +1017,15 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
@@ -965,6 +1033,12 @@
     "index": 3028,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 5,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -974,17 +1048,41 @@
    },
    {
     "index": 3030,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1003,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 3031,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1011,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -999,6 +1097,15 @@
    },
    {
     "index": 3037,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 11303,
+      "met": false,
+      "required": 1,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1011,16 +1118,43 @@
     "index": 3039,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 4,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3040,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 55,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeat_available_unix": null,
     "repeatable": true,
     "status": "complete"
    },

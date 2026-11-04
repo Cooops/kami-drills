@@ -195,6 +195,9 @@ def to_intents(tool, args, sim=None):
         out = [I("bridge", amount_eth=a.get("amount_eth"))]
     elif tool in ("fund_operator", "withdraw_operator"):
         out = [I(tool, amount_eth=a.get("amount_eth"))]
+    elif tool == "burn_items":
+        amounts = list(a.get("amounts") or [])
+        out = [I("burn", item=it, amount=amounts[i] if i < len(amounts) else None) for i, it in enumerate(a.get("item_indices") or [])]
     elif tool in ("craft_item", "speed_craft_batch"):
         out = [I("craft", recipe=a.get("recipe_index"), amount=a.get("amount", a.get("count", 1)))]
     elif tool in ("scavenge_claim", "scavenge_claim_and_reveal"):
@@ -270,6 +273,7 @@ def from_intent(intent):
               "accept_quest": lambda: ("accept_quest", {"quest_index": a["quest"]}),
               "complete_quest": lambda: ("complete_quest", {"quest_index": a["quest"]}),
               "drop_quest": lambda: ("drop_quest", {"quest_index": a["quest"]}),
+              "burn": lambda: ("burn_items", {"item_indices": [a["item"]], "amounts": [a.get("amount", 1)]}),
               "swap": lambda: ("pool_swap", {"item_in": a["item_in"], "item_out": a["item_out"], "amount_in": a.get("amount_in"),
                                              "min_amount_out": a.get("min_out")}),
               "portal_deposit": lambda: ("portal_deposit", {"item": a["item"], "amount": a.get("amount")}),
@@ -691,15 +695,60 @@ def objectiveless(q):
     return (sp_rules.WORLD["quests"].get(str(q)) or {}).get("has_objectives") is False
 
 
+LIVE_OBJECTIVES = ("ROOM", "ITEM_BURN")  # the objective types kami-rules meets itself (room at completion, gives since accept)
+
+
+def quest_entry(r, status):
+    """A state.quests row for registry record `r`: objectives only when kami-rules can meet them all (none, or ROOM and
+    ITEM_BURN from the gdd), In-Room requirements, and the repeat timer of a completed repeatable."""
+    w = sp_rules.WORLD["quests"].get(str(r["index"])) or {}
+    a = r.get("account") or {}
+    e = {"index": r["index"], "status": status, "repeatable": r.get("repeatable", False)}
+    objs = w.get("objectives") or []
+    if w.get("has_objectives") is False:
+        e["objectives"] = []
+    elif objs and all(o["type"] in LIVE_OBJECTIVES and "index" in o for o in objs):
+        done = status == "active" and {(o.get("type"), o.get("index")) for o in a.get("objectives") or [] if o.get("met")}
+        e["objectives"] = [{"type": "ROOM", "index": o["index"], "met": False} if o["type"] == "ROOM" else
+                           {"type": "ITEM_BURN", "index": o["index"], "required": o.get("value", 1),
+                            "current": o.get("value", 1) if done and ("ITEM_BURN", o["index"]) in done else 0, "met": False}
+                           for o in objs]
+    rooms = [{"type": "ROOM", "index": x["index"]} for x in r.get("requirements") or [] if x.get("type") == "ROOM" and "index" in x]
+    if rooms:
+        e["requirements"] = rooms
+    if status == "complete" and r.get("repeatable"):
+        e["repeat_available_unix"] = None if a.get("repeatAvailable") else (a.get("endTime") or 0) + (r.get("repeatDuration") or 0)
+    return e
+
+
+def default_quest_view(lens_quests):
+    """The default `lens_quests` result (view "status") rebuilt from a full registry read: S1 transcripts match it byte
+    for byte up to the 4.7.0 cut (haiku-5.5-2 s34)."""
+    d = lens_quests.get("data") or {}
+    qs = []
+    for q in d.get("registry") or []:
+        a = q.get("account") or {}
+        row = {"index": q["index"], "name": q.get("name"), "accepted": bool(a.get("accepted")), "complete": bool(a.get("complete")),
+               "requirementsMet": bool(a.get("requirementsMet"))}
+        if "objectivesMet" in a:
+            row["objectivesMet"] = a["objectivesMet"]
+        unmet = [x for x in q.get("requirements") or [] if not x.get("met")]
+        if unmet and not a.get("requirementsMet"):
+            row["unmetRequirements"] = unmet
+        qs.append(row)
+    return {"data": {"view": "status", "questsTotal": len(qs), "account": d.get("account"), "quests": qs}}
+
+
 def visible_available(lens_quests):
-    """Registry quests open to the account (requirements met, not accepted, not complete) that a full lens_quests shows
-    on 4.7.0: the record starts inside the first tool_result_max_bytes of the result (quirk quest-list-truncated)."""
-    text = json.dumps(lens_quests, indent=2)
+    """Registry quests open to the account (requirements met, not accepted, not complete) that the default lens_quests
+    shows on 4.7.0: the quest's own record starts inside the first tool_result_max_bytes (quirk quest-list-truncated)."""
+    text = json.dumps(default_quest_view(lens_quests), indent=2, ensure_ascii=False)
     out = []
     for r in ((lens_quests.get("data") or {}).get("registry") or []):
         a = r.get("account") or {}
-        if a.get("requirementsMet") and not a.get("accepted") and not a.get("complete") \
-                and 0 <= text.find(f'"index": {r["index"]},\n') < CAPS["tool_result_max_bytes"]:
+        at = text.find(f'{{\n        "index": {r["index"]},\n')
+        if a.get("requirementsMet") and not a.get("accepted") and not a.get("complete") and 0 <= at \
+                and len(text[:at].encode()) < CAPS["tool_result_max_bytes"]:  # the cut is in bytes
             out.append(r)
     return out
 
@@ -736,11 +785,10 @@ def normalize_snapshot(calls):
     q = (by.get("lens_quests") or {}).get("data") or {}
     if q.get("accepted") is not None:
         rep = {r["index"]: r.get("repeatable", False) for r in q.get("registry", [])}
-        state["quests"] = [{"index": a["index"], "status": "complete" if a["complete"] else "active", "repeatable": rep.get(a["index"], False),
-                            **({"objectives": []} if objectiveless(a["index"]) else {})} for a in q["accepted"]]
-        state["quests"] += [{"index": r["index"], "status": "available", "repeatable": r.get("repeatable", False),
-                             **({"objectives": []} if objectiveless(r["index"]) else {})}
-                            for r in visible_available(by["lens_quests"])]
+        reg = {r["index"]: r for r in q.get("registry", [])}
+        state["quests"] = [quest_entry(reg.get(a["index"]) or {"index": a["index"], "repeatable": rep.get(a["index"], False)},
+                                       "complete" if a["complete"] else "active") for a in q["accepted"]]
+        state["quests"] += [quest_entry(r, "available") for r in visible_available(by["lens_quests"])]
     reads = {}
     for c in calls:
         if "response" not in c:  # a snapshot read that failed (S1: lens outages) has no response to replay

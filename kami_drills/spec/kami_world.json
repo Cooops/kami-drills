@@ -873,13 +873,25 @@
    "items": [],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 3
+    }
+   ]
   },
   "3": {
    "title": "Your First Kami",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "KAMI_NUM_OWNED",
+     "value": 1
+    }
+   ]
   },
   "4": {
    "title": "What Kami Do: Harvesting",
@@ -889,20 +901,38 @@
    "harvest_any_node": true,
    "rewards": {
     "11211": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "value": 300
+    }
+   ]
   },
   "5": {
    "title": "What Kami Do: Scavenging",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "value": 1
+    }
+   ]
   },
   "6": {
    "title": "What Kami Do: Liquidating",
    "has_objectives": true,
    "nodes": [],
    "items": [],
-   "liquidate": true
+   "liquidate": true,
+   "objectives": [
+    {
+     "type": "LIQUIDATE_TOTAL",
+     "value": 1
+    }
+   ]
   },
   "7": {
    "title": "Making $MUSU",
@@ -913,14 +943,27 @@
    ],
    "rewards": {
     "11211": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_TOTAL",
+     "index": 1,
+     "value": 500
+    }
+   ]
   },
   "8": {
    "title": "Supporting Local Businesses",
    "has_objectives": true,
    "nodes": [],
    "items": [],
-   "shop": true
+   "shop": true,
+   "objectives": [
+    {
+     "type": "LISTING_BUY_TOTAL",
+     "value": 1
+    }
+   ]
   },
   "9": {
    "title": "Building a Reputation",
@@ -931,7 +974,14 @@
    ],
    "rewards": {
     "11305": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1005,
+     "value": 3
+    }
+   ]
   },
   "10": {
    "title": "Having a Normal One",
@@ -960,7 +1010,13 @@
    "items": [],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_AFFINITY_NORMAL",
+     "value": 3
+    }
+   ]
   },
   "11": {
    "title": "That Eerie Feeling",
@@ -985,7 +1041,13 @@
     87,
     90
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_AFFINITY_EERIE",
+     "value": 3
+    }
+   ]
   },
   "12": {
    "title": "Insects in the Miasma",
@@ -1009,7 +1071,13 @@
     86,
     89
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_AFFINITY_INSECT",
+     "value": 3
+    }
+   ]
   },
   "13": {
    "title": "Tossed in the Scrap Heap",
@@ -1036,7 +1104,13 @@
    "items": [],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_AFFINITY_SCRAP",
+     "value": 3
+    }
+   ]
   },
   "14": {
    "title": "Identifying Materials: Wood",
@@ -1044,6 +1118,13 @@
    "nodes": [],
    "items": [
     1001
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1001,
+     "value": 5
+    }
    ]
   },
   "15": {
@@ -1052,6 +1133,13 @@
    "nodes": [],
    "items": [
     1002
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1002,
+     "value": 5
+    }
    ]
   },
   "16": {
@@ -1060,6 +1148,13 @@
    "nodes": [],
    "items": [
     1005
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1005,
+     "value": 5
+    }
    ]
   },
   "17": {
@@ -1069,7 +1164,13 @@
    "items": [],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "MOVE",
+     "value": 100
+    }
+   ]
   },
   "18": {
    "title": "Harvesting Data I",
@@ -1080,7 +1181,14 @@
    "items": [],
    "rewards": {
     "11305": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 12,
+     "value": 43200
+    }
+   ]
   },
   "19": {
    "title": "Harvesting Data II",
@@ -1091,7 +1199,14 @@
    "items": [],
    "rewards": {
     "11305": 2
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 6,
+     "value": 43200
+    }
+   ]
   },
   "20": {
    "title": "Harvesting Data III",
@@ -1103,7 +1218,14 @@
    "rewards": {
     "11305": 1,
     "11002": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 37,
+     "value": 43200
+    }
+   ]
   },
   "21": {
    "title": "Squaring the Circle I",
@@ -1111,7 +1233,14 @@
    "nodes": [
     60
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 60,
+     "value": 2
+    }
+   ]
   },
   "22": {
    "title": "Squaring the Circle II",
@@ -1119,7 +1248,14 @@
    "nodes": [
     62
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 62,
+     "value": 3
+    }
+   ]
   },
   "23": {
    "title": "Squaring the Circle III",
@@ -1127,7 +1263,14 @@
    "nodes": [
     53
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 53,
+     "value": 3
+    }
+   ]
   },
   "24": {
    "title": "Squaring the Circle IV",
@@ -1135,7 +1278,14 @@
    "nodes": [
     52
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 52,
+     "value": 3
+    }
+   ]
   },
   "25": {
    "title": "Squaring the Circle V",
@@ -1143,7 +1293,14 @@
    "nodes": [
     49
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 49,
+     "value": 3
+    }
+   ]
   },
   "26": {
    "title": "Squaring the Circle VI",
@@ -1151,7 +1308,14 @@
    "nodes": [
     6
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 6,
+     "value": 9
+    }
+   ]
   },
   "27": {
    "title": "A Forgotten Friend",
@@ -1159,7 +1323,14 @@
    "nodes": [
     25
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 25,
+     "value": 5
+    }
+   ]
   },
   "28": {
    "title": "Deeper Understanding",
@@ -1167,13 +1338,26 @@
    "nodes": [
     12
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 12,
+     "value": 2
+    }
+   ]
   },
   "29": {
    "title": "Computer Blues",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 66
+    }
+   ]
   },
   "30": {
    "title": "Humility",
@@ -1181,6 +1365,17 @@
    "nodes": [],
    "items": [
     1
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1,
+     "value": 3000
+    },
+    {
+     "type": "ROOM",
+     "index": 13
+    }
    ]
   },
   "31": {
@@ -1189,6 +1384,17 @@
    "nodes": [],
    "items": [
     100005
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 100005,
+     "value": 1
+    },
+    {
+     "type": "ROOM",
+     "index": 25
+    }
    ]
   },
   "32": {
@@ -1197,6 +1403,13 @@
    "nodes": [],
    "items": [
     1202
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1202,
+     "value": 5000
+    }
    ]
   },
   "33": {
@@ -1205,6 +1418,13 @@
    "nodes": [],
    "items": [
     1201
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1201,
+     "value": 1000
+    }
    ]
   },
   "34": {
@@ -1213,6 +1433,13 @@
    "nodes": [],
    "items": [
     1110
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1110,
+     "value": 1000
+    }
    ]
   },
   "35": {
@@ -1221,13 +1448,26 @@
    "nodes": [],
    "items": [
     1005
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1005,
+     "value": 25
+    }
    ]
   },
   "36": {
    "title": "The Sanctuary Caves",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 15
+    }
+   ]
   },
   "37": {
    "title": "Into the Depths",
@@ -1235,7 +1475,14 @@
    "nodes": [
     15
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 15,
+     "value": 43200
+    }
+   ]
   },
   "38": {
    "title": "Feeling in the Dark",
@@ -1243,7 +1490,14 @@
    "nodes": [
     15
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 15,
+     "value": 7
+    }
+   ]
   },
   "39": {
    "title": "Where It Stems From",
@@ -1261,13 +1515,27 @@
    ],
    "items": [
     1016
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1016,
+     "value": 5
+    }
    ]
   },
   "40": {
    "title": "Better Than Chopping Wood?",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 1302,
+     "value": 1
+    }
+   ]
   },
   "41": {
    "title": "Throw Me a Bone!",
@@ -1288,13 +1556,27 @@
    ],
    "items": [
     1020
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1020,
+     "value": 5
+    }
    ]
   },
   "42": {
    "title": "Learning From a Master",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 1301,
+     "value": 1
+    }
+   ]
   },
   "43": {
    "title": "Sound of One Hand Clapping",
@@ -1304,6 +1586,13 @@
    ],
    "items": [
     6001
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 6001,
+     "value": 1
+    }
    ]
   },
   "44": {
@@ -1312,13 +1601,26 @@
    "nodes": [
     16
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 16,
+     "value": 43200
+    }
+   ]
   },
   "45": {
    "title": "Can’t Stop With Just One",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 25
+    }
+   ]
   },
   "46": {
    "title": "Sweet As Honey",
@@ -1332,6 +1634,13 @@
    ],
    "items": [
     11312
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 11312,
+     "value": 5
+    }
    ]
   },
   "47": {
@@ -1340,7 +1649,14 @@
    "nodes": [
     18
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 18,
+     "value": 43200
+    }
+   ]
   },
   "48": {
    "title": "Pipe Dream",
@@ -1359,13 +1675,27 @@
    ],
    "items": [
     1017
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1017,
+     "value": 5
+    }
    ]
   },
   "49": {
    "title": "You Smelt It…",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 1303,
+     "value": 1
+    }
+   ]
   },
   "50": {
    "title": "Community Service",
@@ -1391,7 +1721,14 @@
    ],
    "rewards": {
     "11002": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1018,
+     "value": 15
+    }
+   ]
   },
   "51": {
    "title": "Ringing Any Bells II",
@@ -1399,6 +1736,13 @@
    "nodes": [],
    "items": [
     6001
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 6001,
+     "value": 1
+    }
    ]
   },
   "52": {
@@ -1407,6 +1751,17 @@
    "nodes": [],
    "items": [
     1301
+   ],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 18
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1301,
+     "value": 1
+    }
    ]
   },
   "53": {
@@ -1415,6 +1770,13 @@
    "nodes": [],
    "items": [
     11412
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11412,
+     "value": 1
+    }
    ]
   },
   "54": {
@@ -1431,6 +1793,13 @@
    ],
    "items": [
     11314
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 11314,
+     "value": 10
+    }
    ]
   },
   "55": {
@@ -1441,6 +1810,13 @@
    ],
    "items": [
     6002
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 6002,
+     "value": 1
+    }
    ]
   },
   "56": {
@@ -1449,7 +1825,14 @@
    "nodes": [
     77
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 77,
+     "value": 43200
+    }
+   ]
   },
   "57": {
    "title": "Top 10 Smoke Spots in Kamigotchi World",
@@ -1457,6 +1840,17 @@
    "nodes": [],
    "items": [
     1018
+   ],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 68
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1018,
+     "value": 1
+    }
    ]
   },
   "58": {
@@ -1465,6 +1859,13 @@
    "nodes": [],
    "items": [
     11314
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11314,
+     "value": 20
+    }
    ]
   },
   "59": {
@@ -1488,6 +1889,13 @@
    ],
    "items": [
     1018
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1018,
+     "value": 20
+    }
    ]
   },
   "60": {
@@ -1498,19 +1906,39 @@
    ],
    "items": [
     6004
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 6004,
+     "value": 1
+    }
    ]
   },
   "61": {
    "title": "Ordinary Intermediate Potion Crafting (Very Boring) III",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 13
+    }
+   ]
   },
   "62": {
    "title": "Ordinary Intermediate Potion Crafting (Very Boring) IV",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 21206,
+     "value": 1
+    }
+   ]
   },
   "63": {
    "title": "Ordinary Intermediate Potion Crafting (Very Boring) V",
@@ -1518,6 +1946,17 @@
    "nodes": [],
    "items": [
     21206
+   ],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 3
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 21206,
+     "value": 1
+    }
    ]
   },
   "64": {
@@ -1526,7 +1965,14 @@
    "nodes": [
     75
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 75,
+     "value": 43200
+    }
+   ]
   },
   "65": {
    "title": "Old Fiends",
@@ -1534,7 +1980,14 @@
    "nodes": [
     70
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 70,
+     "value": 43200
+    }
+   ]
   },
   "66": {
    "title": "First Contact",
@@ -1542,7 +1995,14 @@
    "nodes": [
     74
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 74,
+     "value": 43200
+    }
+   ]
   },
   "67": {
    "title": "Soaked to the Bone",
@@ -1550,7 +2010,14 @@
    "nodes": [
     71
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 71,
+     "value": 43200
+    }
+   ]
   },
   "68": {
    "title": "On the Fringes",
@@ -1558,7 +2025,14 @@
    "nodes": [
     72
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 72,
+     "value": 43200
+    }
+   ]
   },
   "69": {
    "title": "The Doors of Perception",
@@ -1568,6 +2042,13 @@
    ],
    "items": [
     6005
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 6005,
+     "value": 1
+    }
    ]
   },
   "70": {
@@ -1576,7 +2057,14 @@
    "nodes": [
     73
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 73,
+     "value": 43200
+    }
+   ]
   },
   "71": {
    "title": "A Turn of the Screw",
@@ -1584,7 +2072,14 @@
    "nodes": [
     73
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 73,
+     "value": 7
+    }
+   ]
   },
   "72": {
    "title": "Platforming Game",
@@ -1592,7 +2087,14 @@
    "nodes": [
     78
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 78,
+     "value": 3
+    }
+   ]
   },
   "73": {
    "title": "What Lies Beneath",
@@ -1600,13 +2102,26 @@
    "nodes": [
     78
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 78,
+     "value": 21600
+    }
+   ]
   },
   "74": {
    "title": "Operator Goes To Camp",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 79
+    }
+   ]
   },
   "75": {
    "title": "Digging Up Clues",
@@ -1614,13 +2129,26 @@
    "nodes": [
     79
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 79,
+     "value": 6
+    }
+   ]
   },
   "76": {
    "title": "Get Some Fresh Air",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 5
+    }
+   ]
   },
   "77": {
    "title": "Yep, That’s Wood",
@@ -1628,7 +2156,14 @@
    "nodes": [
     84
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 84,
+     "value": 3
+    }
+   ]
   },
   "78": {
    "title": "Plasmatics 101",
@@ -1636,13 +2171,26 @@
    "nodes": [
     84
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 84,
+     "value": 21600
+    }
+   ]
   },
   "79": {
    "title": "Fringe Theories",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 72
+    }
+   ]
   },
   "80": {
    "title": "The Great Divide",
@@ -1650,7 +2198,14 @@
    "nodes": [
     83
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 83,
+     "value": 21600
+    }
+   ]
   },
   "81": {
    "title": "Edge of the Abyss",
@@ -1658,7 +2213,14 @@
    "nodes": [
     83
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 83,
+     "value": 3
+    }
+   ]
   },
   "82": {
    "title": "Blue Light Special",
@@ -1666,7 +2228,14 @@
    "nodes": [
     82
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 82,
+     "value": 1
+    }
+   ]
   },
   "83": {
    "title": "Vision of Life",
@@ -1676,6 +2245,13 @@
    ],
    "items": [
     6003
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 6003,
+     "value": 1
+    }
    ]
   },
   "84": {
@@ -1684,7 +2260,14 @@
    "nodes": [
     81
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 81,
+     "value": 3
+    }
+   ]
   },
   "85": {
    "title": "Sigil Magic",
@@ -1692,7 +2275,14 @@
    "nodes": [
     81
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 81,
+     "value": 43200
+    }
+   ]
   },
   "86": {
    "title": "Sigil Magic II",
@@ -1702,6 +2292,23 @@
     1011,
     1103,
     11314
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11314,
+     "value": 5
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1011,
+     "value": 5
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1103,
+     "value": 2500
+    }
    ]
   },
   "87": {
@@ -1710,13 +2317,26 @@
    "nodes": [
     80
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 80,
+     "value": 3
+    }
+   ]
   },
   "88": {
    "title": "The Crystal Set II",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 84
+    }
+   ]
   },
   "89": {
    "title": "The Crystal Set III",
@@ -1726,6 +2346,13 @@
    ],
    "items": [
     1021
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1021,
+     "value": 3
+    }
    ]
   },
   "90": {
@@ -1734,19 +2361,40 @@
    "nodes": [],
    "items": [
     1021
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1021,
+     "value": 1
+    }
    ]
   },
   "91": {
    "title": "The Crystal Set V",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 1121,
+     "value": 500
+    }
+   ]
   },
   "92": {
    "title": "Beyond the Pale",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 11004,
+     "value": 1
+    }
+   ]
   },
   "93": {
    "title": "Tracing Your Roots",
@@ -1756,19 +2404,49 @@
     1021,
     1303,
     6003
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1303,
+     "value": 1
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 6003,
+     "value": 1
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1021,
+     "value": 1
+    }
    ]
   },
   "94": {
    "title": "Rhabdomancy",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 100010,
+     "value": 1
+    }
+   ]
   },
   "95": {
    "title": "Bitter Fruits",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 66
+    }
+   ]
   },
   "96": {
    "title": "Into the Canyon",
@@ -1776,7 +2454,14 @@
    "nodes": [
     85
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 85,
+     "value": 43200
+    }
+   ]
   },
   "97": {
    "title": "Back of my Hand",
@@ -1784,6 +2469,13 @@
    "nodes": [],
    "items": [
     11409
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11409,
+     "value": 1
+    }
    ]
   },
   "98": {
@@ -1792,13 +2484,26 @@
    "nodes": [
     53
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 53,
+     "value": 1
+    }
+   ]
   },
   "99": {
    "title": "Hypersensitivity",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 2
+    }
+   ]
   },
   "100": {
    "title": "Prima Facie",
@@ -1806,7 +2511,14 @@
    "nodes": [
     86
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 86,
+     "value": 259200
+    }
+   ]
   },
   "101": {
    "title": "Pillars of the Earth",
@@ -1814,6 +2526,17 @@
    "nodes": [],
    "items": [
     11501
+   ],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 86
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 11501,
+     "value": 1
+    }
    ]
   },
   "102": {
@@ -1822,7 +2545,14 @@
    "nodes": [
     87
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 87,
+     "value": 3
+    }
+   ]
   },
   "103": {
    "title": "Sealed Fate",
@@ -1830,19 +2560,39 @@
    "nodes": [
     87
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 87,
+     "value": 43200
+    }
+   ]
   },
   "104": {
    "title": "An Ounce of Sense",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 6007,
+     "value": 1
+    }
+   ]
   },
   "105": {
    "title": "The Turning of the Wheel",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 19
+    }
+   ]
   },
   "106": {
    "title": "Two Faces Under One Hood",
@@ -1850,7 +2600,14 @@
    "nodes": [
     19
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 19,
+     "value": 3
+    }
+   ]
   },
   "107": {
    "title": "Get a Foot In The Door",
@@ -1858,6 +2615,13 @@
    "nodes": [],
    "items": [
     1013
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1013,
+     "value": 10
+    }
    ]
   },
   "108": {
@@ -1869,7 +2633,14 @@
    ],
    "rewards": {
     "11212": 3
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11312,
+     "value": 10
+    }
+   ]
   },
   "109": {
    "title": "Remain Unburdened of Attachments",
@@ -1877,13 +2648,26 @@
    "nodes": [],
    "items": [
     11001
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11001,
+     "value": 10
+    }
    ]
   },
   "2001": {
    "title": "Grand Opening",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 13
+    }
+   ]
   },
   "2002": {
    "title": "Customer Loyalty Program",
@@ -1894,7 +2678,14 @@
    ],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_SPEND",
+     "index": 1,
+     "value": 1000
+    }
+   ]
   },
   "2003": {
    "title": "Early Market Research - I",
@@ -1905,7 +2696,14 @@
    ],
    "rewards": {
     "11212": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1005,
+     "value": 5
+    }
+   ]
   },
   "2004": {
    "title": "Early Market Research - II",
@@ -1916,7 +2714,14 @@
    "items": [],
    "rewards": {
     "11211": 2
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 10,
+     "value": 43200
+    }
+   ]
   },
   "2005": {
    "title": "Early Market Research - III",
@@ -1927,7 +2732,14 @@
    "items": [],
    "rewards": {
     "21204": 2
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 26,
+     "value": 86400
+    }
+   ]
   },
   "2006": {
    "title": "Community Outreach",
@@ -1938,7 +2750,14 @@
    "items": [],
    "rewards": {
     "11212": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME_MOONSIDE",
+     "index": 25,
+     "value": 43200
+    }
+   ]
   },
   "2007": {
    "title": "Restocking",
@@ -1950,7 +2769,19 @@
    ],
    "rewards": {
     "11213": 2
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1003,
+     "value": 5
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1004,
+     "value": 5
+    }
+   ]
   },
   "2008": {
    "title": "Offering an Apprenticeship",
@@ -1987,25 +2818,68 @@
     1004,
     1011,
     1013
+   ],
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1004,
+     "value": 1
+    },
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1011,
+     "value": 1
+    },
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1013,
+     "value": 1
+    },
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1003,
+     "value": 2
+    }
    ]
   },
   "2009": {
    "title": "Basics of Hex - Extracts",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 1104,
+     "value": 500
+    }
+   ]
   },
   "2010": {
    "title": "Basics of Hex - Potions",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 11401,
+     "value": 1
+    }
+   ]
   },
   "2011": {
    "title": "Hex Education",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 11405,
+     "value": 1
+    }
+   ]
   },
   "2012": {
    "title": "Eye of the White Snake",
@@ -2013,6 +2887,13 @@
    "nodes": [],
    "items": [
     1007
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1007,
+     "value": 1
+    }
    ]
   },
   "2013": {
@@ -2021,6 +2902,17 @@
    "nodes": [],
    "items": [
     1011
+   ],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 26
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1011,
+     "value": 15
+    }
    ]
   },
   "2014": {
@@ -2031,6 +2923,23 @@
     1001,
     1113,
     1202
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1001,
+     "value": 2
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1113,
+     "value": 125
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1202,
+     "value": 125
+    }
    ]
   },
   "2015": {
@@ -2039,19 +2948,38 @@
    "nodes": [],
    "items": [
     1
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1,
+     "value": 9999
+    }
    ]
   },
   "2016": {
    "title": "Misogi",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 11
+    }
+   ]
   },
   "3001": {
    "title": "Rejecting Fate",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "KAMI_GACHA_REROLL",
+     "value": 1
+    }
+   ]
   },
   "3002": {
    "title": "Health & Safety",
@@ -2060,7 +2988,13 @@
    "items": [],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "KAMI_ITEM_USE",
+     "value": 1
+    }
+   ]
   },
   "3003": {
    "title": "There Are Levels to This",
@@ -2069,13 +3003,25 @@
    "items": [],
    "rewards": {
     "11211": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "KAMI_LEVELS_TOTAL",
+     "value": 1
+    }
+   ]
   },
   "3004": {
    "title": "Skill Issue",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SKILL_POINTS_USE",
+     "value": 1
+    }
+   ]
   },
   "3005": {
    "title": "Spring Rites",
@@ -2090,7 +3036,13 @@
    "title": "What’s In a Name?",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "KAMI_NAME",
+     "value": 1
+    }
+   ]
   },
   "3007": {
    "title": "Land Survey",
@@ -2099,7 +3051,13 @@
    "items": [],
    "rewards": {
     "21204": 2
-   }
+   },
+   "objectives": [
+    {
+     "type": "MOVE",
+     "value": 500
+    }
+   ]
   },
   "3008": {
    "title": "Peregrination",
@@ -2108,7 +3066,13 @@
    "items": [],
    "rewards": {
     "21204": 3
-   }
+   },
+   "objectives": [
+    {
+     "type": "MOVE",
+     "value": 1000
+    }
+   ]
   },
   "3009": {
    "title": "Tips Help The Most Right Now",
@@ -2116,19 +3080,40 @@
    "nodes": [],
    "items": [
     1
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1,
+     "value": 5000
+    }
    ]
   },
   "3010": {
    "title": "Hex Education II",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 11404,
+     "value": 1
+    }
+   ]
   },
   "3011": {
    "title": "Hex Education III",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 11403,
+     "value": 1
+    }
+   ]
   },
   "3012": {
    "title": "Customer Loyalty Program II",
@@ -2136,13 +3121,27 @@
    "nodes": [],
    "items": [
     1
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_SPEND",
+     "index": 1,
+     "value": 15000
+    }
    ]
   },
   "3013": {
    "title": "Going Out For a Coffee",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "CRAFT_ITEM",
+     "index": 11410,
+     "value": 1
+    }
+   ]
   },
   "3014": {
    "title": "Teatime",
@@ -2150,6 +3149,13 @@
    "nodes": [],
    "items": [
     1012
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1012,
+     "value": 1
+    }
    ]
   },
   "3015": {
@@ -2158,6 +3164,13 @@
    "nodes": [],
    "items": [
     1015
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1015,
+     "value": 5
+    }
    ]
   },
   "3016": {
@@ -2166,6 +3179,17 @@
    "nodes": [],
    "items": [
     21003
+   ],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 13
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 21003,
+     "value": 1
+    }
    ]
   },
   "3017": {
@@ -2174,7 +3198,14 @@
    "nodes": [
     88
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 88,
+     "value": 21600
+    }
+   ]
   },
   "3018": {
    "title": "One Man’s Trash",
@@ -2189,7 +3220,14 @@
    ],
    "rewards": {
     "11002": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "DROPTABLE_ITEM_TOTAL",
+     "index": 1019,
+     "value": 25
+    }
+   ]
   },
   "3019": {
    "title": "Happy Hunting Ground",
@@ -2197,7 +3235,14 @@
    "nodes": [
     89
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 89,
+     "value": 3
+    }
+   ]
   },
   "3020": {
    "title": "Better to Light a Candle",
@@ -2205,13 +3250,26 @@
    "nodes": [],
    "items": [
     19301
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 19301,
+     "value": 1
+    }
    ]
   },
   "3021": {
    "title": "Castle in the Air",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 89
+    }
+   ]
   },
   "3022": {
    "title": "Sweet Deal",
@@ -2222,7 +3280,14 @@
    ],
    "rewards": {
     "11002": 3
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 21205,
+     "value": 3
+    }
+   ]
   },
   "3028": {
    "title": "The More the Merrier",
@@ -2239,7 +3304,14 @@
    "items": [],
    "rewards": {
     "11002": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 5,
+     "value": 1800
+    }
+   ]
   },
   "3030": {
    "title": "Container Deposit",
@@ -2247,6 +3319,13 @@
    "nodes": [],
    "items": [
     1003
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1003,
+     "value": 3
+    }
    ]
   },
   "3031": {
@@ -2255,6 +3334,13 @@
    "nodes": [],
    "items": [
     1011
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1011,
+     "value": 3
+    }
    ]
   },
   "3032": {
@@ -2263,6 +3349,13 @@
    "nodes": [],
    "items": [
     1301
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 1301,
+     "value": 1
+    }
    ]
   },
   "3033": {
@@ -2274,7 +3367,14 @@
    ],
    "rewards": {
     "11410": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11227,
+     "value": 1
+    }
+   ]
   },
   "3034": {
    "title": "Not Right Now",
@@ -2283,7 +3383,13 @@
    "items": [],
    "rewards": {
     "21204": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "MOVE",
+     "value": 4
+    }
+   ]
   },
   "3035": {
    "title": "Rookie Training I",
@@ -2293,7 +3399,13 @@
    "harvest_any_node": true,
    "rewards": {
     "11305": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "value": 900
+    }
+   ]
   },
   "3036": {
    "title": "Rookie Training II",
@@ -2304,7 +3416,14 @@
    "items": [],
    "rewards": {
     "11002": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 3,
+     "value": 1
+    }
+   ]
   },
   "3037": {
    "title": "Old Acquaintance",
@@ -2315,7 +3434,14 @@
    ],
    "rewards": {
     "11211": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11303,
+     "value": 1
+    }
+   ]
   },
   "3038": {
    "title": "Push it to the Limit",
@@ -2325,7 +3451,13 @@
    "harvest_any_node": true,
    "rewards": {
     "11211": 3
-   }
+   },
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "value": 3600
+    }
+   ]
   },
   "3039": {
    "title": "Danger Lies Ahead…",
@@ -2351,7 +3483,14 @@
    "nodes": [
     62
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 62,
+     "value": 43200
+    }
+   ]
   },
   "3042": {
    "title": "Some Alien Vastness",
@@ -2359,7 +3498,14 @@
    "nodes": [
     6
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 6,
+     "value": 43200
+    }
+   ]
   },
   "3043": {
    "title": "Ringing Other Bells",
@@ -2367,7 +3513,14 @@
    "nodes": [
     12
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 12,
+     "value": 43200
+    }
+   ]
   },
   "3044": {
    "title": "Resonant Drip",
@@ -2375,7 +3528,14 @@
    "nodes": [
     19
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 19,
+     "value": 43200
+    }
+   ]
   },
   "3045": {
    "title": "Resonant Flow",
@@ -2383,13 +3543,26 @@
    "nodes": [
     59
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 59,
+     "value": 43200
+    }
+   ]
   },
   "3100": {
    "title": "Get On the Other Side",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 59
+    }
+   ]
   },
   "3101": {
    "title": "Don’t Look Back",
@@ -2397,7 +3570,14 @@
    "nodes": [
     59
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 59,
+     "value": 5
+    }
+   ]
   },
   "3102": {
    "title": "Find a Needle in the Haystack",
@@ -2405,7 +3585,14 @@
    "nodes": [
     58
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 58,
+     "value": 50
+    }
+   ]
   },
   "3104": {
    "title": "Call Your Grandparents",
@@ -2413,7 +3600,14 @@
    "nodes": [
     26
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 26,
+     "value": 86400
+    }
+   ]
   },
   "3105": {
    "title": "Get Blood From a Stone",
@@ -2421,7 +3615,14 @@
    "nodes": [
     49
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 49,
+     "value": 20
+    }
+   ]
   },
   "3107": {
    "title": "Look Who’s Talking",
@@ -2429,6 +3630,13 @@
    "nodes": [],
    "items": [
     21206
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 21206,
+     "value": 1
+    }
    ]
   },
   "3108": {
@@ -2437,7 +3645,14 @@
    "nodes": [
     71
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 71,
+     "value": 604800
+    }
+   ]
   },
   "3109": {
    "title": "Get the Story Straight I",
@@ -2445,6 +3660,13 @@
    "nodes": [],
    "items": [
     23102
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 23102,
+     "value": 1
+    }
    ]
   },
   "3110": {
@@ -2453,13 +3675,26 @@
    "nodes": [
     79
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 79,
+     "value": 30
+    }
+   ]
   },
   "3111": {
    "title": "Get the Story Straight III",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 25
+    }
+   ]
   },
   "3112": {
    "title": "See the Glass as Half Full",
@@ -2467,7 +3702,14 @@
    "nodes": [
     86
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 86,
+     "value": 259200
+    }
+   ]
   },
   "3113": {
    "title": "Airing it Out",
@@ -2475,13 +3717,26 @@
    "nodes": [
     10
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "HARVEST_TIME",
+     "index": 10,
+     "value": 864000
+    }
+   ]
   },
   "3114": {
    "title": "Conditioned Environment",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 71
+    }
+   ]
   },
   "3115": {
    "title": "Dry Conversation",
@@ -2489,6 +3744,13 @@
    "nodes": [],
    "items": [
     11312
+   ],
+   "objectives": [
+    {
+     "type": "ITEM_BURN",
+     "index": 11312,
+     "value": 30
+    }
    ]
   },
   "3116": {
@@ -2497,7 +3759,14 @@
    "nodes": [
     25
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 25,
+     "value": 5
+    }
+   ]
   },
   "3117": {
    "title": "Trash Pickers",
@@ -2505,7 +3774,14 @@
    "nodes": [
     32
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 32,
+     "value": 70
+    }
+   ]
   },
   "3118": {
    "title": "Janitorial Supplies",
@@ -2513,7 +3789,14 @@
    "nodes": [
     16
    ],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "SCAV_CLAIM_NODE",
+     "index": 16,
+     "value": 20
+    }
+   ]
   },
   "3803": {
    "title": "Never Brought to Mind",
@@ -2522,7 +3805,13 @@
    "items": [],
    "rewards": {
     "11302": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 5
+    }
+   ]
   },
   "3900": {
    "title": "Warm Your Hands",
@@ -2533,13 +3822,31 @@
    ],
    "rewards": {
     "11002": 1
-   }
+   },
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 26
+    },
+    {
+     "type": "ITEM_BURN",
+     "index": 1001,
+     "value": 3
+    }
+   ],
+   "repeat_s": 64800
   },
   "3998": {
    "title": "Hidden GEM",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 72
+    }
+   ]
   },
   "10003": {
    "title": "Condolences on your Recent Liquidations",
@@ -2554,7 +3861,13 @@
    "title": "A Short Pilgrimage",
    "has_objectives": true,
    "nodes": [],
-   "items": []
+   "items": [],
+   "objectives": [
+    {
+     "type": "ROOM",
+     "index": 31
+    }
+   ]
   },
   "2101": {
    "title": "The Fountain of All That Flows",

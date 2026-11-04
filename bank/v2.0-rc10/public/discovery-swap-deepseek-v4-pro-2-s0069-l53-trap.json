@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:12f6239345cdaa3a86d2efecaeb28c94b31884469a5d638ec4e245035b9dc93d",
+ "content_hash": "sha256:9801029b146c01bb73134b8b9312574cb0c8aca72a71d563ca68f60c0ccb8de4",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -265,6 +265,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -300,6 +307,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -325,16 +341,43 @@
    },
    {
     "index": 14,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 15,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1002,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 16,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -350,6 +393,13 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -360,6 +410,15 @@
    },
    {
     "index": 2003,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
@@ -401,12 +460,27 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -423,16 +497,42 @@
     "index": 3039,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 4,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3040,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 55,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 3,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": true,
     "status": "active"
    }
@@ -520,6 +620,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -530,6 +632,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool get_item_orderbook: Trade-ID bootstrap cache missing (/opt/kami-harness/executor/.cache/kwob_trades.json). The public RPC keeps about 1M blocks of logs (log retention), so a log scan alone cannot see older trades. Run `python3 executor/kwob_bootstrap.py` once to seed the cache from the Kamigaze state snapshot, then retry."
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

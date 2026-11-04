@@ -103,8 +103,7 @@ def apply_fork_state(state, fs, mid_session):
     for q in fs.get("uncompletable") or []:  # complete refused while the check said completable: do not trust the check
         quests.setdefault(q, {"index": q, "status": "active"})["requirements_met"] = False
     for q in fs.get("available") or []:  # open to the account and visible by the fork (miner rules.available_quests)
-        if q not in quests:
-            quests[q] = {"index": q, "status": "available", **({"objectives": []} if h47.objectiveless(q) else {})}
+        quests.setdefault(q["index"], dict(q))
     if quests:
         state["quests"] = sorted(quests.values(), key=lambda q: q["index"])
     return rows
@@ -257,7 +256,8 @@ def convert(c, runs=None, snapshot=None, lines=None):
                  "clock": {"unix": clock, "iso": dp["time"], "block": dp.get("block")}},
         "state": state,
         "world": {"gdd_commit": (prov["pins"].get("gdd_sha") or "unknown")[:7], "rules_library": R.NAME, "constants": constants,
-                  "catalog": {"items": items}, **({"native_text": nt} if (nt := native_text(cont)) else {})},
+                  "catalog": {"items": items}, **({"native_text": nt} if (nt := native_text(cont)) else {}),
+                  **({"pools": c["world_pools"]} if c.get("world_pools") else {})},
         "decision_point": {"closing": None, "budget": {"tool_calls": 50, "turns": 30}},
         "responses": c.get("responses") or [],
         "accepted": [{"id": "oracle", "intents": oracle}] + [{"id": f"also-{i}", "intents": split_waits(_intents(a))}

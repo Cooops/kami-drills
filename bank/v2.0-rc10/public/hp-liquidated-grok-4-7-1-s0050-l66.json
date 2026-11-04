@@ -22,7 +22,7 @@
  "competency": [
   "risk_survival"
  ],
- "content_hash": "sha256:864510f1d3633485e7467902fe1047e08d23bcb06cde1c6d0bc6166c5b2b5278",
+ "content_hash": "sha256:9872d334b56c30a251b20ef22bda32f5f0d3bd95be5c449f93d84bf3978728b7",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -969,6 +969,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1004,6 +1011,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1024,11 +1040,19 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 2002,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -1059,16 +1083,33 @@
    },
    {
     "index": 3006,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3028,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 5,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -1078,6 +1119,21 @@
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeat_available_unix": null,
     "repeatable": true,
     "status": "complete"
    }

@@ -22,7 +22,7 @@
  "competency": [
   "risk_survival"
  ],
- "content_hash": "sha256:091b8c6fb481075f3f01c2f2181f1dd5472cbaab463cddf172841ea1001af0a5",
+ "content_hash": "sha256:9c954d68f615db1d39c514e8d96e81c8a08fe6b589d65ea72e4e8221f01f8569",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -725,6 +725,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -760,6 +767,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -775,11 +791,19 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 2002,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -810,10 +834,21 @@
    },
    {
     "index": 3006,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": false,
     "status": "available"
    }
   ]

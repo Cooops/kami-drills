@@ -16,7 +16,7 @@
  "competency": [
   "quest_planning"
  ],
- "content_hash": "sha256:c01abcb1a2b6ef6df7cd2deb07a337cda915eb119c49d4f1e26881647fe90f6b",
+ "content_hash": "sha256:56013765ba51a071b8e64a71010ea6a4ce67fd626093bf19311a072b7f8cc2b0",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -661,6 +661,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -696,6 +703,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -711,6 +727,13 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -752,6 +775,15 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
@@ -759,6 +791,12 @@
     "index": 3028,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 5,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -769,6 +807,12 @@
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -780,10 +824,31 @@
     "index": 3039,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 4,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeat_available_unix": null,
     "repeatable": true,
     "status": "complete"
    },

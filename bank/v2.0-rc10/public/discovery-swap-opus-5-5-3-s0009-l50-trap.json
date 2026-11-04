@@ -9,7 +9,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:e2df7914717f0b80e4941818df4191cab4a61bef5d3c65fb150f30a69a7c9913",
+ "content_hash": "sha256:399ff0feac5692c95d63986fe05c39d028e68d094c80cc7207fd4ab0c9407d77",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -278,6 +278,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -313,11 +320,27 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -328,6 +351,7 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -358,6 +382,15 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
@@ -365,6 +398,12 @@
     "index": 3028,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 5,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -375,6 +414,12 @@
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -386,16 +431,42 @@
     "index": 3039,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 4,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3040,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 55,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": true,
     "status": "active"
    }
@@ -502,6 +573,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -512,6 +585,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool complete_quest: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: quest objs not met: Reverted'}"
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

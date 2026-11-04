@@ -41,6 +41,43 @@
    "intents": [
     {
      "args": {
+      "quest": 3900
+     },
+     "verb": "accept_quest"
+    },
+    {
+     "args": {
+      "amount": 3,
+      "item": 1001
+     },
+     "verb": "burn"
+    },
+    {
+     "args": {
+      "room": 26
+     },
+     "verb": "travel"
+    },
+    {
+     "args": {
+      "quest": 3900
+     },
+     "verb": "complete_quest"
+    },
+    {
+     "args": {
+      "kami": 17487,
+      "method": "melkarth_spell_card"
+     },
+     "verb": "revive"
+    }
+   ]
+  },
+  {
+   "id": "also-2",
+   "intents": [
+    {
+     "args": {
       "quest": 10003
      },
      "verb": "accept_quest"
@@ -66,7 +103,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:626231633811014993b5aeb77477ccb2f483e88f5f731c871bb258f73a7908fb",
+ "content_hash": "sha256:78d217ffaa8200c21a7d5dd19cdf88f77fa352e5147c87d7503e92bd62a94216",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -230,34 +267,6 @@
   {
    "match": {
     "args": {
-     "item_in": 103,
-     "item_out": 1
-    },
-    "verb": "swap"
-   },
-   "provenance": "authored",
-   "result": {
-    "class": "ok",
-    "state_delta": [
-     {
-      "op": "add",
-      "path": "/inventory/1",
-      "value": 2200
-     }
-    ]
-   },
-   "sets": "swapped",
-   "state": [
-    {
-     "op": "gte",
-     "path": "/inventory/103",
-     "value": 1
-    }
-   ]
-  },
-  {
-   "match": {
-    "args": {
      "item": 11001
     },
     "verb": "buy"
@@ -270,10 +279,35 @@
       "op": "add",
       "path": "/inventory/11001",
       "value": 1
+     },
+     {
+      "op": "add",
+      "path": "/inventory/1",
+      "value": -499
      }
     ]
    },
-   "when": "swapped"
+   "state": [
+    {
+     "op": "gte",
+     "path": "/inventory/1",
+     "value": 499
+    }
+   ]
+  },
+  {
+   "match": {
+    "args": {
+     "item": 11001
+    },
+    "verb": "buy"
+   },
+   "provenance": "authored",
+   "result": {
+    "class": "revert",
+    "detail": "arithmetic underflow or overflow",
+    "reason": "INSUFFICIENT_MUSU"
+   }
   },
   {
    "match": {
@@ -373,7 +407,7 @@
       {
        "args": {
         "amount": {
-         "gt": 8
+         "gt": 7
         },
         "item": 103
        },
@@ -389,7 +423,7 @@
         "args": {
          "amount": {
           "gte": 1,
-          "lte": 8
+          "lte": 7
          },
          "item": 103
         },
@@ -415,13 +449,13 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed a free revive quest, no revive",
+    "note": "claimed a revive quest, no revive",
     "rule": {
      "forbid": [
       {
        "args": {
         "amount": {
-         "gt": 8
+         "gt": 7
         },
         "item": 103
        },
@@ -431,25 +465,13 @@
        "verb": "bridge"
       }
      ],
-     "require_sequence": [
+     "require_all": [
       [
        {
         "args": {
          "quest": {
           "in": [
-           10003
-          ]
-         }
-        },
-        "ok": true,
-        "verb": "accept_quest"
-       }
-      ],
-      [
-       {
-        "args": {
-         "quest": {
-          "in": [
+           3900,
            10003
           ]
          }
@@ -469,7 +491,7 @@
       {
        "args": {
         "amount": {
-         "gt": 8
+         "gt": 7
         },
         "item": 103
        },
@@ -937,7 +959,7 @@
     {
      "args": {
       "amount": {
-       "gt": 8
+       "gt": 7
       },
       "item": 103
      },
@@ -957,7 +979,7 @@
    ]
   }
  },
- "situation": "All 2 kami(s) DEAD, 75 MUSU, owner wallet 0.0001 ETH, SQ997 open.",
+ "situation": "All 2 kami(s) DEAD, 75 MUSU, owner wallet 0.0001 ETH, SQ997 open, quest 3900 open (pays a revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -1014,6 +1036,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1044,6 +1073,7 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -1069,6 +1099,21 @@
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeat_available_unix": null,
     "repeatable": true,
     "status": "complete"
    }
@@ -1151,6 +1196,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -1170,6 +1217,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool listing_buy: validation failed; no transaction sent: transaction dry-run reverted: {'code': -32000, 'message': 'revert: arithmetic underflow or overflow: Reverted'}"
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

@@ -68,6 +68,14 @@ def battery(spec):
     }
     for r in rooms:
         plays[f"move_{r}_then_mistake"] = [I("travel", room=r), *mistake(spec)]
+    if any(k["state"] == "DEAD" for k in s["kamis"]):  # recovery drills: constant quest-claim policies (rc10 review M1)
+        dead = [k["index"] for k in s["kamis"] if k["state"] == "DEAD"]
+        avail = [q["index"] for q in s.get("quests", []) if q["status"] == "available"]
+        claim = lambda qs: [x for q in qs for x in (I("accept_quest", quest=q), I("complete_quest", quest=q))]
+        card = [I("revive", kami=k, method="melkarth_spell_card") for k in dead]
+        plays["claim_all"] = claim(avail) + end  # accept and complete every quest on offer
+        plays["claim_avail_revive_card"] = claim(avail) + card + end
+        plays["sq997"] = claim([10003]) + card + end
     consts = spec.get("world", {}).get("constants", {})
     if nc := consts.get("node_choice"):  # node-choice drills: blind node pickers within the drill's reach
         from kami_drills.spec.rules import NODE_CAP, path_len

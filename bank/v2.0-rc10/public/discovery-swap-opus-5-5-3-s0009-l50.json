@@ -12,7 +12,7 @@
     },
     {
      "args": {
-      "amount_in": 299,
+      "amount_in": 298,
       "item_in": 103,
       "item_out": 1,
       "min_out": 2
@@ -26,7 +26,7 @@
  "competency": [
   "economy"
  ],
- "content_hash": "sha256:bf5937d0c021822292ca5d9c8f9f221f69dfbd382ef5ba7258252bbce1c30ef2",
+ "content_hash": "sha256:b44a29b37efa9f8973bc5b9a39492335360e58929895aa1fddb282a913c960c5",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -641,34 +641,6 @@
   {
    "match": {
     "args": {
-     "item_in": 103,
-     "item_out": 1
-    },
-    "verb": "swap"
-   },
-   "provenance": "authored",
-   "result": {
-    "class": "ok",
-    "state_delta": [
-     {
-      "op": "add",
-      "path": "/inventory/1",
-      "value": 2200
-     }
-    ]
-   },
-   "sets": "swapped",
-   "state": [
-    {
-     "op": "gte",
-     "path": "/inventory/103",
-     "value": 1
-    }
-   ]
-  },
-  {
-   "match": {
-    "args": {
      "item": 11001
     },
     "verb": "buy"
@@ -681,10 +653,35 @@
       "op": "add",
       "path": "/inventory/11001",
       "value": 1
+     },
+     {
+      "op": "add",
+      "path": "/inventory/1",
+      "value": -499
      }
     ]
    },
-   "when": "swapped"
+   "state": [
+    {
+     "op": "gte",
+     "path": "/inventory/1",
+     "value": 499
+    }
+   ]
+  },
+  {
+   "match": {
+    "args": {
+     "item": 11001
+    },
+    "verb": "buy"
+   },
+   "provenance": "authored",
+   "result": {
+    "class": "revert",
+    "detail": "arithmetic underflow or overflow",
+    "reason": "INSUFFICIENT_MUSU"
+   }
   }
  ],
  "scoring": {
@@ -760,7 +757,7 @@
      },
      {
       "args": {
-       "amount_in": 299,
+       "amount_in": 298,
        "item_in": 103,
        "item_out": 1,
        "min_out": 2
@@ -917,6 +914,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -952,11 +956,27 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -967,6 +987,7 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -997,6 +1018,15 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    },
@@ -1004,6 +1034,12 @@
     "index": 3028,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 5,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -1014,6 +1050,12 @@
    {
     "index": 3034,
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 3,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
@@ -1025,16 +1067,42 @@
     "index": 3039,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 4,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3040,
     "objectives": [],
     "repeatable": false,
+    "requirements": [
+     {
+      "index": 55,
+      "type": "ROOM"
+     }
+    ],
     "status": "complete"
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": true,
     "status": "active"
    }
@@ -1130,11 +1198,22 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
   },
   "gdd_commit": "3c6f4f9",
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 443000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

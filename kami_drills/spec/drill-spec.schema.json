@@ -282,7 +282,8 @@
         "repeat_available_unix": {"type": ["number", "null"], "description": "When a repeatable quest can be accepted again; null if now."},
         "objectives": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["type", "met"],
                        "properties": {"type": {"type": "string"}, "index": {"type": "integer"}, "required": {"type": "number"}, "current": {"type": "number"}, "met": {"type": "boolean"}}}},
-        "requirements_met": {"type": "boolean"}
+        "requirements_met": {"type": "boolean"},
+        "requirements": {"type": "array", "description": "Requirements the rules library re-checks on accept: an In-Room requirement needs the account in that room.", "items": {"type": "object", "additionalProperties": false, "required": ["type", "index"], "properties": {"type": {"enum": ["ROOM"]}, "index": {"type": "integer"}}}}
       }
     },
     "pool": {
@@ -301,7 +302,7 @@
         "verb": {"enum": [
           "travel", "feed", "revive", "harvest_start", "harvest_stop", "harvest_collect", "level_up", "upgrade_skill", "respec",
           "accept_quest", "complete_quest", "drop_quest", "buy", "sell", "swap", "portal_deposit", "portal_withdraw", "bridge",
-          "fund_operator", "withdraw_operator", "craft", "use_item", "equip", "unequip", "scavenge_claim", "liquidate", "trade",
+          "fund_operator", "withdraw_operator", "craft", "burn", "use_item", "equip", "unequip", "scavenge_claim", "liquidate", "trade",
           "transfer", "gacha", "register", "name",
           "wait", "schedule_wake", "end_session", "note_write", "note_read", "delegate",
           "read", "quote", "other_act", "unknown"]},

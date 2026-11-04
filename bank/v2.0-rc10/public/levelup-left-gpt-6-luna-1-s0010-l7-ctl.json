@@ -10,7 +10,7 @@
   "economy",
   "quest_planning"
  ],
- "content_hash": "sha256:2764f5b2569c18972855afdc0a6c89be701a8100fe7644db09512efda5a56549",
+ "content_hash": "sha256:06f7344239c53a43c81c4f82c755c5f52ed9ff51a4b7144204fb31135ef02882",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -252,6 +252,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -302,6 +309,15 @@
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "active"
    }

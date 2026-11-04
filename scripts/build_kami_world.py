@@ -74,8 +74,18 @@ def main(gdd):
             if (i := by_name.get(norm(m.group(2)))) is not None:
                 out[str(i)] = out.get(str(i), 0) + int(m.group(1))
         return {"rewards": out} if out else {}
+    def objectives(text):  # each objective's type, index and value (the rules library meets ROOM and ITEM_BURN itself)
+        out = []
+        for d in (x.strip() for x in (text or "").split(",") if x.strip()):
+            o = objs.get(d) or {}
+            out.append({"type": o.get("Type") or "UNKNOWN",
+                        **({"index": int(o["Index"])} if (o.get("Index") or "").strip().isdigit() else {}),
+                        **({"value": int(o["Value"])} if (o.get("Value") or "").strip().isdigit() else {})})
+        return {"objectives": out} if out else {}
     quests = {r["Index"]: {"title": r["Title"], "has_objectives": bool(r["Objectives"].strip()), **ties(r["Objectives"]),
-                           **rewards(r["Rewards"])}
+                           **rewards(r["Rewards"]), **objectives(r["Objectives"]),
+                           # a daily repeats 18 h after completion (S1 lens_quests registry: repeatDuration 64800)
+                           **({"repeat_s": 64800} if r["Daily"].strip() == "Yes" else {})}
               for r in rows(gdd / "catalogs/quests/quests.csv") if r["Status"] == "In Game"}
     rooms = {int(r["Index"]): r for r in rows(gdd / "catalogs/rooms/rooms.csv") if r["Status"] == "In Game" and r["Index"] != "0"}
     pos = {i: (int(r["X"]), int(r["Y"]), int(r["Z"])) for i, r in rooms.items()}

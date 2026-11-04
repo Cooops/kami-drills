@@ -90,7 +90,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:489003621fd1035e20002ebf8247b72a8647be89520718331e3886b9c6d5d486",
+ "content_hash": "sha256:1ee0c89bf93999431aff4e4814c7ec4a0c8650232988c85afd00897ca5970da2",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -254,34 +254,6 @@
   {
    "match": {
     "args": {
-     "item_in": 103,
-     "item_out": 1
-    },
-    "verb": "swap"
-   },
-   "provenance": "authored",
-   "result": {
-    "class": "ok",
-    "state_delta": [
-     {
-      "op": "add",
-      "path": "/inventory/1",
-      "value": 2200
-     }
-    ]
-   },
-   "sets": "swapped",
-   "state": [
-    {
-     "op": "gte",
-     "path": "/inventory/103",
-     "value": 1
-    }
-   ]
-  },
-  {
-   "match": {
-    "args": {
      "item": 11001
     },
     "verb": "buy"
@@ -294,10 +266,35 @@
       "op": "add",
       "path": "/inventory/11001",
       "value": 1
+     },
+     {
+      "op": "add",
+      "path": "/inventory/1",
+      "value": -499
      }
     ]
    },
-   "when": "swapped"
+   "state": [
+    {
+     "op": "gte",
+     "path": "/inventory/1",
+     "value": 499
+    }
+   ]
+  },
+  {
+   "match": {
+    "args": {
+     "item": 11001
+    },
+    "verb": "buy"
+   },
+   "provenance": "authored",
+   "result": {
+    "class": "revert",
+    "detail": "arithmetic underflow or overflow",
+    "reason": "INSUFFICIENT_MUSU"
+   }
   },
   {
    "match": {
@@ -397,7 +394,7 @@
       {
        "args": {
         "amount": {
-         "gt": 98
+         "gt": 97
         },
         "item": 103
        },
@@ -413,7 +410,7 @@
         "args": {
          "amount": {
           "gte": 1,
-          "lte": 98
+          "lte": 97
          },
          "item": 103
         },
@@ -439,13 +436,13 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed a free revive quest, no revive",
+    "note": "claimed a revive quest, no revive",
     "rule": {
      "forbid": [
       {
        "args": {
         "amount": {
-         "gt": 98
+         "gt": 97
         },
         "item": 103
        },
@@ -455,21 +452,7 @@
        "verb": "bridge"
       }
      ],
-     "require_sequence": [
-      [
-       {
-        "args": {
-         "quest": {
-          "in": [
-           3005,
-           10003
-          ]
-         }
-        },
-        "ok": true,
-        "verb": "accept_quest"
-       }
-      ],
+     "require_all": [
       [
        {
         "args": {
@@ -495,7 +478,7 @@
       {
        "args": {
         "amount": {
-         "gt": 98
+         "gt": 97
         },
         "item": 103
        },
@@ -689,7 +672,7 @@
     {
      "args": {
       "amount": {
-       "gt": 98
+       "gt": 97
       },
       "item": 103
      },
@@ -709,7 +692,7 @@
    ]
   }
  },
- "situation": "All 1 kami(s) DEAD, 118 MUSU, owner wallet 0.0010 ETH, SQ997 open, quest 3005 open (a free revive).",
+ "situation": "All 1 kami(s) DEAD, 118 MUSU, owner wallet 0.0010 ETH, SQ997 open, quest 3005 open (pays a revive).",
  "spec_version": "2.0.0",
  "state": {
   "account": {
@@ -752,6 +735,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -788,6 +778,7 @@
    {
     "index": 3005,
     "objectives": [],
+    "repeatable": false,
     "status": "available"
    }
   ]
@@ -847,6 +838,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -857,6 +850,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool revive_kami: validation failed; no transaction sent: account 'main' holds 0 of item 100 (Onyx Shard); revive_kami requires 33"
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

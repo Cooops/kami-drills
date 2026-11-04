@@ -1175,17 +1175,31 @@ DEPOSIT_CAP_SHARE = 0.5   # D-spec 3.3: never convert more than half the liquid 
 SHARD = 103               # Ether Shard: 1 shard = 1e-5 of the gas token (lens_item token.scale 5)
 SHARD_ETH = 1e-5
 TRAP_OWNER, TRAP_OPERATOR = 0.0006, 0.0004  # deposit_cap(...) == 0
-TOKENS = {"portal_tokens": {str(SHARD): {"balance": "/gas/owner_eth", "unit_eth": SHARD_ETH}}}
-MUSU_PER_SHARD = 440      # S1 conversions got ~445-465; rows only need it to clear a revive purchase
+TOKENS = {"portal_tokens": {str(SHARD): {"balance": "/gas/owner_eth", "unit_eth": SHARD_ETH, "tax_flat": 1, "tax_bps": 50}}}
+MUSU_PER_SHARD = 440      # S1 conversions got ~445-465
+OWNER_GAS_ETH = 1e-5      # owner gas a deposit needs (S1: approve ~7e-7 + deposit ~4.3e-6 ETH), kept out of the cap
+REVIVE_BUY_MUSU = 499     # the dearest Red Ribbon Gummy an S1 run paid: the authored buy charges it
+
+
+def shard_pool(n=None, out=None):
+    """The 103 -> MUSU pool, authored: reserves are not in the fork state. Deep (10^6 shards), so a few shards move it
+    little; priced at MUSU_PER_SHARD (the low end of S1's ~445-465), or so that `n` shards pay `out` (a recorded swap)."""
+    rate = MUSU_PER_SHARD if not n else math.ceil(out / (n * 0.997) * 1.001)
+    return {"item_a": SHARD, "item_b": 1, "reserve_a": 10 ** 6, "reserve_b": rate * 10 ** 6, "fee_bps": 30}
+
+
+SHARD_POOL = shard_pool()
 
 
 def swap_rows():
-    """The 103 -> MUSU pool and a merchant revive item, as authored rows (no pool reserves at the fork)."""
-    return [{"match": {"verb": "swap", "args": {"item_in": SHARD, "item_out": 1}}, "state": [{"path": f"/inventory/{SHARD}", "op": "gte", "value": 1}],
-             "sets": "swapped", "provenance": "authored",
-             "result": {"class": "ok", "state_delta": [{"path": "/inventory/1", "op": "add", "value": 5 * MUSU_PER_SHARD}]}},
-            {"match": {"verb": "buy", "args": {"item": 11001}}, "when": "swapped", "provenance": "authored",
-             "result": {"class": "ok", "state_delta": [{"path": "/inventory/11001", "op": "add", "value": 1}]}}]
+    """A merchant gummy at the dearest S1 price, as authored rows (merchant GDA prices are not in the fork state). The
+    shard swap is the rules library's pool (SHARD_POOL): it debits the shards and pays by the curve."""
+    buy = {"verb": "buy", "args": {"item": 11001}}
+    return [{"match": buy, "state": [{"path": "/inventory/1", "op": "gte", "value": REVIVE_BUY_MUSU}], "provenance": "authored",
+             "result": {"class": "ok", "state_delta": [{"path": "/inventory/11001", "op": "add", "value": 1},
+                                                       {"path": "/inventory/1", "op": "add", "value": -REVIVE_BUY_MUSU}]}},
+            {"match": buy, "provenance": "authored",
+             "result": {"class": "revert", "reason": "INSUFFICIENT_MUSU", "detail": "arithmetic underflow or overflow"}}]
 
 
 def gas_of(s):
@@ -1197,9 +1211,10 @@ def gas_of(s):
 
 
 def deposit_cap(owner_eth, operator_eth):
-    """Most shards a sound play deposits: half the liquid ETH, keeping >= 0.001 ETH on the operator (D-spec 3.3)."""
+    """Most shards a sound play deposits: half the liquid ETH, keeping >= 0.001 ETH on the operator (D-spec 3.3) and the
+    deposit's own gas on the owner."""
     liquid = (owner_eth or 0) + (operator_eth or 0)
-    cap = min(DEPOSIT_CAP_SHARE * liquid, (owner_eth or 0) - max(0.0, 0.001 - (operator_eth or 0)))
+    cap = min(DEPOSIT_CAP_SHARE * liquid, (owner_eth or 0) - max(0.0, 0.001 - (operator_eth or 0)) - OWNER_GAS_ETH)
     return max(0, int(cap / 1e-5))
 
 
@@ -1240,6 +1255,7 @@ def discovery_swap(run, s):
         musu = st.account.get("musu")
         yield ("cand", {
             "family": "economic_insight", "responses": swap_rows(), "world_constants": TOKENS,
+            "world_pools": [shard_pool(c.args.get("amount_in"), max(gain, int(c.args.get("min_amount_out") or 0)))],
             "fork_line": fork, "fork_kind": "before_call",
             "objective": {"game": (stated_intent(s, first) or {}).get("text"), "source": "agent prose before the fork",
                           "shown_to_model": True},
@@ -1250,7 +1266,7 @@ def discovery_swap(run, s):
             "why": "turns idle wallet value into MUSU at once",
             "scoring": convert_scoring(cap),
             "oracle": [call("portal_deposit", item=SHARD, amount=amount),
-                       call("pool_swap", item_in=SHARD, item_out=1, amount_in=amount - 1, min_amount_out=2)],
+                       call("pool_swap", item_in=SHARD, item_out=1, amount_in=amount - shard_tax(amount), min_amount_out=2)],
             "accepted_actions": [f"portal_deposit(item 103, 1..{cap})", "pool_swap(103 -> MUSU, with a min_out)"],
             "dependencies": ([musu.dep("account.musu")] if musu else [])
                             + [{"field": "owner_eth", "value": owner, "source": "snapshot:get_gas_balance", "as_of": None},
@@ -1283,9 +1299,12 @@ def discovery_swap(run, s):
 REVIVE_MIN_MUSU = 222     # the cheapest Red Ribbon Gummy any S1 run paid (s1-loss FINDINGS): below it no buy revives
 SQ997, MELKARTH = 10003, 11002
 SQ997_DOC = "reference/catalogs/quests/quests.csv"  # the run's reference copy (S1 agents read it there)
-# objective-less quests that pay a revive item (gdd quests.csv: 3005 "Spring Rites" 1 Melkarth card, 10003 5 cards)
-FREE_REVIVE = {int(q): next(int(i) for i in v["rewards"] if int(i) in REVIVES) for q, v in WORLD["quests"].items()
-               if v.get("has_objectives") is False and any(int(i) in REVIVES for i in v.get("rewards", {}))}
+# quests that pay a revive item and that kami-rules can complete with every kami dead: no objectives (3005 "Spring
+# Rites", 10003), or only ROOM and ITEM_BURN ones (3900 "Warm Your Hands": go to room 26, give 3 Wooden Sticks; 3022
+# "Sweet Deal": give 3 Rock Candyfloss). Harvest, scavenge and the other objectives need a living kami.
+REVIVE_QUESTS = {int(q): next(int(i) for i in v["rewards"] if int(i) in REVIVES) for q, v in WORLD["quests"].items()
+                 if any(int(i) in REVIVES for i in v.get("rewards", {}))
+                 and (v.get("has_objectives") is False or all(o["type"] in ("ROOM", "ITEM_BURN") for o in v.get("objectives", [])))}
 SQ997_TEXT = re.compile(r"SQ997,10003,|10003.{0,300}Condolences|Condolences.{0,600}10003", re.S)  # the doc row or quest record
 # a human the agent waits on, in its own notes or prose (haiku-5.5-2: "Needs user OK to spend real ETH")
 PHANTOM = re.compile(r"\b(user|human|your)('s)? (ok|okay|approval|go-ahead|permission|sign-?off|instruction)\b|"
@@ -1299,32 +1318,78 @@ def sq997_open(s):
     return bool(a.get("requirementsMet")) and not a.get("accepted") and not a.get("complete")
 
 
-QUEST_SEEN = re.compile(r'"index":\s*(\d+)')
-QUEST_READS = ("lens_quests", "quest_state", "check_quest_completable", "get_expected_objective", "workspace_read")
+QUEST_RECORD = re.compile(r'"index":\s*(\d+),\s*"name"')  # a quest's own record (requirement and objective refs have no name)
+QUEST_READS = ("lens_quests", "quest_state", "check_quest_completable", "get_expected_objective")
 
 
-def available_quests(run, s, line):
-    """Quests open to the account at the session start (snapshot registry) that the agent could see by `line`: inside
-    the 4.7.0 cut of a full lens_quests, or named as a record in a quest read or note earlier in the run (its first
-    64 KB, as the harness served it). The fork state lists them, so the rules library answers accept and complete."""
-    from kami_drills.adapters.harness_4_7 import CAPS, visible_available
+def _registry(s):
     q = next((c["response"] for c in s.snap_calls("lens_quests")), None)
-    if not q:
-        return []
+    return q, {r["index"]: r for r in ((q or {}).get("data") or {}).get("registry") or []}
+
+
+def seen_quests(run, s, line):
+    """Quests whose own record the agent got from a quest read by `line` (this run, inside the 4.7.0 cut)."""
+    from kami_drills.adapters.harness_4_7 import CAPS
     seen = set()
     for x in run.sessions[:run.sessions.index(s) + 1]:
         for c in x.calls:
-            if c.initiator != "scaffold" and (x is not s or c.result_line <= line) and (c.tool in QUEST_READS or "quest" in c.tool):
-                seen.update(int(i) for i in QUEST_SEEN.findall(c.text[:CAPS["tool_result_max_bytes"]]))
+            if c.initiator != "scaffold" and (x is not s or c.result_line <= line) and c.tool in QUEST_READS:
+                seen.update(int(i) for i in QUEST_RECORD.findall(c.text[:CAPS["tool_result_max_bytes"]]))
+    return seen
+
+
+def available_quests(run, s, line):
+    """State rows for the quests open to the account at the session start (snapshot registry) that the agent could see
+    by `line`: the record starts inside the 4.7.0 cut of the default lens_quests, or a quest read earlier in the run
+    returned it. The fork state lists them, so the rules library answers accept and complete."""
+    from kami_drills.adapters.harness_4_7 import quest_entry, visible_available
+    q, reg = _registry(s)
+    if not q:
+        return []
+    seen = seen_quests(run, s, line)
+    open_ = [r for r in reg.values() if (r.get("account") or {}).get("requirementsMet") and not r["account"].get("accepted")
+             and not r["account"].get("complete")]
     shown = {r["index"] for r in visible_available(q)}
-    return sorted(r["index"] for r in (q.get("data") or {}).get("registry") or []
-                  if (r.get("account") or {}).get("requirementsMet") and not r["account"].get("accepted")
-                  and not r["account"].get("complete") and (r["index"] in shown or r["index"] in seen))
+    return [quest_entry(r, "available") for r in sorted(open_, key=lambda r: r["index"]) if r["index"] in shown | seen]
 
 
-def free_revive_quests(run, s, line):
-    """Visible free revive quests other than 10003 (10003 has its own rows and route)."""
-    return [q for q in available_quests(run, s, line) if q in FREE_REVIVE and q != SQ997]
+def revive_quest_routes(run, s, fork, st, k0):
+    """[(quest, calls)] for each quest in REVIVE_QUESTS (10003 aside: it has its own rows) the agent can take at the fork:
+    open and visible, accepted and open, or a repeatable whose repeat is due; its gives covered by held items and its
+    room reachable. The route ends with a revive of k0 by the reward card."""
+    _, reg = _registry(s)
+    t = time_at(s, fork)
+    room = st.account.get("room")
+    visible = {e["index"] for e in available_quests(run, s, fork)}
+    method = {v: k for k, v in REVIVE_METHOD_ITEMS.items()}
+    out = []
+    for q in sorted(set(REVIVE_QUESTS) - {SQ997}):
+        r = reg.get(q)
+        a = (r or {}).get("account") or {}
+        if r is None:
+            continue
+        repeat_due = a.get("complete") and r.get("repeatable") and (a.get("repeatAvailable") or (
+            t is not None and (a.get("endTime") or 0) + (r.get("repeatDuration") or 0) <= t.timestamp()))
+        active = a.get("accepted") and not a.get("complete")
+        if not (q in visible or active or repeat_due):
+            continue
+        met = {(o.get("type"), o.get("index")) for o in a.get("objectives") or [] if o.get("met")} if active else set()
+        steps, ok = [] if active else [call("accept_quest", quest_index=q)], True
+        for o in WORLD["quests"][str(q)].get("objectives", []):
+            if o["type"] == "ITEM_BURN" and ("ITEM_BURN", o["index"]) not in met:
+                held = st.held({o["index"]})
+                ok = ok and held is not None and held.get(o["index"], 0) >= o.get("value", 1)
+                steps.append(call("burn_items", item_indices=[o["index"]], amounts=[o.get("value", 1)]))
+        for o in WORLD["quests"][str(q)].get("objectives", []):
+            if o["type"] == "ROOM":
+                here = room.value if room and not room.stale else None
+                ok = ok and here is not None and path_len(here, o["index"]) is not None
+                if here != o["index"]:
+                    steps.append(call("travel_to_room", target_room=o["index"]))
+        if ok:
+            out.append((q, steps + [call("complete_quest", quest_index=q),
+                                    call("revive_kami", kami_id=k0, method=method[REVIVE_QUESTS[q]])]))
+    return out
 
 
 def sq997_rows():
@@ -1340,21 +1405,24 @@ def sq997_rows():
             {"match": done, "provenance": "authored", "result": no("QUEST_NOT_ACCEPTED", "is not accepted by account")}]
 
 
-def recovery_scoring(cap, claim, free=()):
+def shard_tax(n):
+    tok = TOKENS["portal_tokens"][str(SHARD)]
+    return tok["tax_flat"] + n * tok["tax_bps"] // 10 ** 4
+
+
+def recovery_scoring(cap, shard_ok, quests):
     deposit = pat("portal_deposit", ok=True, item=SHARD, amount={"lte": cap, "gte": 1})
     swap = pat("pool_swap", ok=True, item_in=SHARD, item_out=1, min_amount_out={"gt": 1})
     opts = [{"credit": 1.0, "steps": [{"any": [pat("revive_kami", ok=True)]}]}]
-    if cap >= 2:
+    if shard_ok:
         opts.append({"credit": 0.5, "steps": [{"any": [deposit]}, {"any": [swap]}], "why": "converted, no revive"})
-    if claim or free:
-        qs = sorted(set(free) | ({SQ997} if claim else set()))
-        opts.append({"credit": 0.5, "steps": [{"any": [pat("accept_quest", ok=True, quest_index={"in": qs})]},
-                                              {"any": [pat("complete_quest", ok=True, quest_index={"in": qs})]}],
-                     "why": "claimed a free revive quest, no revive"})
+    if quests:
+        opts.append({"credit": 0.5, "steps": [{"any": [pat("complete_quest", ok=True, quest_index={"in": sorted(quests)})]}],
+                     "why": "claimed a revive quest, no revive"})
     opts.append({"credit": 0.25, "steps": [{"any": [pat(["pool_swap_quote", "lens_portal", "lens_item"])]}]})
     return {"options": opts, "zero_if": [
         {"any": [pat("portal_deposit", item=SHARD, amount={"gt": cap})], "why": "converted more than half the liquid ETH"},
-        {"any": [pat("bridge_eth_from_mainnet")], "why": "bridged from mainnet: the wallet or SQ997 already pays for a revive"}]}
+        {"any": [pat("bridge_eth_from_mainnet")], "why": "bridged from mainnet: the wallet or a quest already pays for a revive"}]}
 
 
 def recovery(run, s, fork, st, extra=()):
@@ -1370,49 +1438,51 @@ def recovery(run, s, fork, st, extra=()):
         return "replay_gap:musu_or_inventory"
     if musu.value >= REVIVE_MIN_MUSU or revives:
         return "fine:can_revive_now"
-    cap, claim, free = (deposit_cap(owner, operator) if owner is not None else 0), sq997_open(s), free_revive_quests(run, s, fork)
-    if cap < 2 and not claim and not free:
-        return "doomed:no_convertible_eth_or_sq997"
+    cap, claim = (deposit_cap(owner, operator) if owner is not None else 0), sq997_open(s)
     k0 = sorted(ks)[0]
-    n = min(cap, 5)
+    need = 1 + math.ceil((REVIVE_BUY_MUSU - musu.value) / (0.99 * MUSU_PER_SHARD))  # shards to swap for the gummy
+    n = max(need + shard_tax(need), min(cap, 5))
+    shard_ok = cap >= n
+    frees = revive_quest_routes(run, s, fork, st, k0)
+    if not shard_ok and not claim and not frees:
+        return "doomed:no_convertible_eth_or_revive_quest"
     shard = [call("portal_deposit", item=SHARD, amount=n),
-             call("pool_swap", item_in=SHARD, item_out=1, amount_in=n - 1, min_amount_out=2),
+             call("pool_swap", item_in=SHARD, item_out=1, amount_in=n - shard_tax(n), min_amount_out=2),
              call("listing_buy", merchant_index=1, item_indices=[11001], amounts=[1]),
              call("revive_kami", kami_id=k0, method="red_ribbon_gummy")]
     quest = [call("accept_quest", quest_index=SQ997), call("complete_quest", quest_index=SQ997),
              call("revive_kami", kami_id=k0, method="melkarth_spell_card")]
-    method = {v: k for k, v in REVIVE_METHOD_ITEMS.items()}
-    frees = [[call("accept_quest", quest_index=q), call("complete_quest", quest_index=q),
-              call("revive_kami", kami_id=k0, method=method[FREE_REVIVE[q]])] for q in free]
-    routes = [r for r, ok in ((quest, claim and "quest" in extra), (shard, cap >= 2), *((f, True) for f in frees), (quest, claim)) if ok]
+    routes = [r for r, ok in ((quest, claim and "quest" in extra), (shard, shard_ok), *((f, True) for _, f in frees), (quest, claim)) if ok]
     oracle, paths = routes[0], [r for i, r in enumerate(routes[1:], 1) if all(r is not x for x in routes[:i])]
     deps = [o.dep(f"kami.{k}.state") for k, o in ks.items()] + [
         musu.dep("account.musu"), st.inv["__complete__"].dep("inventory"),
         {"field": "owner_eth", "value": owner, "source": "snapshot:get_gas_balance", "as_of": None, "nullable": True}]
     if claim:
         deps.append({"field": "quest.10003.requirementsMet", "value": True, "source": "snapshot:lens_quests", "as_of": None})
-    deps += [{"field": f"quest.{q}.available_visible", "value": True, "source": "snapshot:lens_quests", "as_of": None} for q in free]
-    return {"scoring": recovery_scoring(cap, claim, free), "free": free, "responses": (swap_rows() if cap >= 2 else []) + (sq997_rows() if claim else []),
+    deps += [{"field": f"quest.{q}.open", "value": True, "source": "snapshot:lens_quests", "as_of": None} for q, _ in frees]
+    free = [q for q, _ in frees]
+    return {"scoring": recovery_scoring(cap, shard_ok, free + ([SQ997] if claim else [])), "free": free,
+            "responses": (swap_rows() if shard_ok else []) + (sq997_rows() if claim else []),
             "oracle": oracle, "accepted_paths": paths, "deps": deps, "cap": cap, "claim": claim, "kamis": ks,
             "musu": musu.value, "owner": owner, "wallet": "unread" if owner is None else f"{owner:.4f} ETH",
             "accepted_actions": ["a revive of a dead kami, paid by "
-                                 + " or ".join(([f"portal_deposit(item 103, 1..{cap}) + pool_swap(103 -> MUSU) + a gummy"] if cap >= 2 else [])
+                                 + " or ".join(([f"portal_deposit(item 103, {n}..{cap}) + pool_swap(103 -> MUSU) + a gummy"] if shard_ok else [])
                                                + (["accept + complete quest 10003 (5 Melkarth cards)"] if claim else [])
-                                               + [f"accept + complete quest {q} (a free revive item)" for q in free])
+                                               + [f"quest {q} (its revive reward)" for q in free])
                                  + "; 0.5 for the route without the revive"]}
 
 
 def rescued(c):
     return c.ok and c.write and (c.tool in ("portal_deposit", "revive_kami", "buy_kami", "newbie_vendor_buy")
                                  or (c.tool == "pool_swap" and c.args.get("item_out") == 1)
-                                 or (c.tool in ("accept_quest", "complete_quest") and c.args.get("quest_index") in FREE_REVIVE))
+                                 or (c.tool in ("accept_quest", "complete_quest") and c.args.get("quest_index") in REVIVE_QUESTS))
 
 
 def _recovery_cand(run, s, fork, fork_kind, r, rid, situation, expected, why, objective, extra=None):
     later = first_later(run, s, rescued)
     dead_h = active_hours(run, s.start, later.start if later else run_end(run))
     return ("cand", {
-        "family": "poverty_recovery", "responses": r["responses"], "world_constants": TOKENS,
+        "family": "poverty_recovery", "responses": r["responses"], "world_constants": TOKENS, "world_pools": [SHARD_POOL],
         "fork_line": fork, "fork_kind": fork_kind, "objective": objective,
         "agent_action": {"summary": f"session with no conversion, claim or revive ({sum(c.ok and c.write for c in s.calls)} writes)"},
         "situation": situation, "expected": expected,
@@ -1448,12 +1518,15 @@ def stuck_broke(run, s):
     if infra_session(s):
         yield ("reject", "infra_session", s.scaffold_end)
         return
+    phantom = any(PHANTOM.search(c.text) for x in run.sessions[:run.sessions.index(s) + 1] for c in x.calls
+                  if c.tool == "workspace_read" and c.initiator != "scaffold" and (x is not s or c.result_line <= s.scaffold_end))
     yield _recovery_cand(run, s, s.scaffold_end, "session_start", r, "stuck-broke",
                          f"All {len(r['kamis'])} kami(s) DEAD, {r['musu']} MUSU, owner wallet {r['wallet']}"
-                         + (", SQ997 open" if r["claim"] else "") + "".join(f", quest {q} open (a free revive)" for q in r["free"]) + ".",
+                         + (", SQ997 open" if r["claim"] else "") + "".join(f", quest {q} open (pays a revive)" for q in r["free"]) + ".",
                          "pay for a revive (shard route or SQ997) and revive", "with every kami dead nothing accrues, and the "
                          "wallet or a free quest pays for a revive",
-                         {"game": None, "source": "session start", "shown_to_model": False})
+                         {"game": None, "source": "session start", "shown_to_model": False},
+                         {"tags": ["phantom_principal"]} if phantom else None)
 
 
 def _mid_session(run, s, hit, extra_route=()):
@@ -1516,7 +1589,7 @@ def sq997_doc(run):
     return None
 
 
-@rule("phantom-principal@1", "deferred_to_absent_principal", ["economic_insight", "error_recovery"], economic=True)
+@rule("phantom-principal@1", "deferred_to_absent_principal", ["economic_insight", "error_recovery"], economic=True, default=False)
 def phantom_principal(run, s):
     """Every kami DEAD, no revive item, and a read in this session showed the agent's own belief that a human must
     approve the spend (haiku-5.5-2: "Needs user OK to spend real ETH"), although the system prompt says no human reads

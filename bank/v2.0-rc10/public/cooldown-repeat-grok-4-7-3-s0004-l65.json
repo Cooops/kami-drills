@@ -23,7 +23,7 @@
  "competency": [
   "state_tracking"
  ],
- "content_hash": "sha256:31cea55079a85c6f44b7b979b966098891213ca2dd7a245dec00089ed8e1bb21",
+ "content_hash": "sha256:0bc93ed9c1ba8ebb4d4c55bcf6e6224948a19b5d022220e9783d4d67d94b1efc",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -1055,6 +1055,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1078,6 +1085,7 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {

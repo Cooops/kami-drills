@@ -66,7 +66,7 @@
   "economy",
   "risk_survival"
  ],
- "content_hash": "sha256:b54267f354a1ea3f5155b431f66cb2240fc18c9e377ae6d7467a76ec5e7d692d",
+ "content_hash": "sha256:c2aff305a46501dd63a9a046160ed589b7a897b3ddc7138fa3c9b6f8b12f1f1d",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -228,34 +228,6 @@
   {
    "match": {
     "args": {
-     "item_in": 103,
-     "item_out": 1
-    },
-    "verb": "swap"
-   },
-   "provenance": "authored",
-   "result": {
-    "class": "ok",
-    "state_delta": [
-     {
-      "op": "add",
-      "path": "/inventory/1",
-      "value": 2200
-     }
-    ]
-   },
-   "sets": "swapped",
-   "state": [
-    {
-     "op": "gte",
-     "path": "/inventory/103",
-     "value": 1
-    }
-   ]
-  },
-  {
-   "match": {
-    "args": {
      "item": 11001
     },
     "verb": "buy"
@@ -268,10 +240,35 @@
       "op": "add",
       "path": "/inventory/11001",
       "value": 1
+     },
+     {
+      "op": "add",
+      "path": "/inventory/1",
+      "value": -499
      }
     ]
    },
-   "when": "swapped"
+   "state": [
+    {
+     "op": "gte",
+     "path": "/inventory/1",
+     "value": 499
+    }
+   ]
+  },
+  {
+   "match": {
+    "args": {
+     "item": 11001
+    },
+    "verb": "buy"
+   },
+   "provenance": "authored",
+   "result": {
+    "class": "revert",
+    "detail": "arithmetic underflow or overflow",
+    "reason": "INSUFFICIENT_MUSU"
+   }
   },
   {
    "match": {
@@ -413,7 +410,7 @@
    },
    {
     "credit": 0.5,
-    "note": "claimed a free revive quest, no revive",
+    "note": "claimed a revive quest, no revive",
     "rule": {
      "forbid": [
       {
@@ -429,20 +426,7 @@
        "verb": "bridge"
       }
      ],
-     "require_sequence": [
-      [
-       {
-        "args": {
-         "quest": {
-          "in": [
-           10003
-          ]
-         }
-        },
-        "ok": true,
-        "verb": "accept_quest"
-       }
-      ],
+     "require_all": [
       [
        {
         "args": {
@@ -929,6 +913,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -964,6 +955,15 @@
    },
    {
     "index": 9,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1005,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -974,15 +974,24 @@
    },
    {
     "index": 2001,
+    "objectives": [
+     {
+      "index": 13,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
    {
     "index": 2002,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -1008,10 +1017,21 @@
    },
    {
     "index": 3006,
+    "repeatable": false,
     "status": "available"
    },
    {
     "index": 3015,
+    "objectives": [
+     {
+      "current": 0,
+      "index": 1015,
+      "met": false,
+      "required": 5,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeatable": false,
     "status": "available"
    }
   ]
@@ -1094,6 +1114,8 @@
    "portal_tokens": {
     "103": {
      "balance": "/gas/owner_eth",
+     "tax_bps": 50,
+     "tax_flat": 1,
      "unit_eth": 1e-05
     }
    }
@@ -1107,6 +1129,15 @@
     "kami-harness 4.7.0 df7129f": "Error executing tool get_item_orderbook: Trade-ID bootstrap cache missing (/opt/kami-harness/executor/.cache/kwob_trades.json). The public RPC keeps about 1M blocks of logs (log retention), so a log scan alone cannot see older trades. Run `python3 executor/kwob_bootstrap.py` once to seed the cache from the Kamigaze state snapshot, then retry."
    }
   },
+  "pools": [
+   {
+    "fee_bps": 30,
+    "item_a": 103,
+    "item_b": 1,
+    "reserve_a": 1000000,
+    "reserve_b": 440000000
+   }
+  ],
   "rules_library": "kami-rules@1.0.0"
  }
 }

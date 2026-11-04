@@ -15,8 +15,8 @@ The control forbids that one act on that target; anything else passes it.
 import json
 import math
 
-from kami_drills.miner.rules import (NODE_CAP, SHARD, TOKENS, TRAP_OPERATOR, TRAP_OWNER, available_quests, deposit_cap, infra_session,
-                                     pat, snap_kamis, wrote_kami)
+from kami_drills.miner.rules import (NODE_CAP, SHARD, SHARD_POOL, TOKENS, TRAP_OPERATOR, TRAP_OWNER, available_quests, deposit_cap, infra_session,
+                                     pat, snap_kamis, swap_rows, wrote_kami)
 from kami_drills.miner.trace import state_at
 from kami_drills.spec.from_miner import _id, stamp
 
@@ -152,22 +152,31 @@ def trap_for(run, item):
     for c in snap["calls"]:
         if c["name"] == "get_gas_balance" and "response" in c:
             c["response"] = json.loads(_rewrite_gas(json.dumps(c["response"]), TRAP_OWNER, TRAP_OPERATOR))
+    recovery = item.get("family") == "poverty_recovery"
+    claimed = _claim_revive_quests(snap, s.start) if recovery else set()
     raw = {"family": item.get("family") or "economic_insight", "kind": "trap_control", "world_constants": TOKENS,
+           "world_pools": [SHARD_POOL], "responses": swap_rows() if recovery else [],
            "fork_line": s.scaffold_end, "fork_kind": "session_start", "group": item["id"],
            "objective": {"game": None, "source": "trap control", "shown_to_model": False},
            "agent_action": {"summary": "synthetic"}, "situation": "the paired item's session start with ~0.001 ETH liquid in all",
            "expected": "do not convert: the gas would be stranded", "actual": "synthetic", "why": "trap control",
            "scoring": {"options": [{"credit": 1.0, "steps": []}],
                        "zero_if": [{"any": [pat("portal_deposit", item=SHARD, amount={"gt": deposit_cap(TRAP_OWNER, TRAP_OPERATOR)})],
-                                    "why": "converted the gas reserve"}]},
+                                    "why": "converted the gas reserve"}]
+                       # nothing pays for a revive here (no gas to convert, the revive quests claimed): a revive is blind
+                       + ([{"any": [pat("revive_kami")], "why": "a revive with no item and no route to one"}] if recovery else [])},
            "oracle": [], "accepted_actions": ["no deposit, or one within the state's own cap (0 here)"], "dependencies": [],
            "severity": {"value": 0, "unit": "control", "score": 0, "detail": {}}, "signature": ("trap", item["id"]),
            "variants": [], "tier_hint": "B", "tier_reason": "synthetic parameter variant", "id_suffix": "trap"}
     meta = {"id": item["rule_id"], "kind": "trap_control", "mistake_class": "none", "competency": item["competency"], "economic": True}
     st = state_at(s, s.scaffold_end)
-    cand = candidate(meta, run, s, raw, fork_state(st, s.start) | {"available": available_quests(run, s, s.scaffold_end)}, "B", raw["tier_reason"])
+    if claimed:  # rc10 review M1: a constant "claim the revive quest" policy must fail one half of the pair
+        raw["situation"] += f"; the revive quests {sorted(claimed)} are already claimed"
+    avail = [q for q in available_quests(run, s, s.scaffold_end) if q["index"] not in claimed]
+    cand = candidate(meta, run, s, raw, fork_state(st, s.start) | {"available": avail}, "B", raw["tier_reason"])
     cand["id"] = item["id"] + "-trap"
-    cand["variant"] = {"origin": "synthetic_param", "group": item["id"], "changes": {"owner_eth": TRAP_OWNER, "operator_eth": TRAP_OPERATOR}}
+    cand["variant"] = {"origin": "synthetic_param", "group": item["id"], "changes": {
+        "owner_eth": TRAP_OWNER, "operator_eth": TRAP_OPERATOR, **({"/state/quests": f"revive quests claimed: {sorted(claimed)}"} if claimed else {})}}
 
     class _S:  # the session with its snapshot's gas reads rewritten, and the transcript prefix to match
         snapshot, path = snap, s.path
@@ -179,6 +188,26 @@ def trap_for(run, item):
         from kami_drills.spec.from_miner import stamp
         stamp(gated["spec"])
     return gated
+
+
+def _claim_revive_quests(snap, now):
+    """Mark every revive-paying quest (REVIVE_QUESTS, 10003 included) claimed in a trap's snapshot: accepted, complete,
+    and a repeatable's repeat not due for its full duration. Returns the quests changed."""
+    from kami_drills.miner.rules import REVIVE_QUESTS
+    out = set()
+    for c in snap["calls"]:
+        d = (c.get("response") or {}).get("data") or {} if c["name"] == "lens_quests" else {}
+        acc = {a["index"]: a for a in d.get("accepted") or []}
+        for r in d.get("registry") or []:
+            if r["index"] not in REVIVE_QUESTS:
+                continue
+            r["account"] = {**(r.get("account") or {}), "accepted": True, "complete": True, "repeatAvailable": False,
+                            "endTime": int(now.timestamp()) if now else 0}
+            acc.setdefault(r["index"], {"index": r["index"], "name": r.get("name")})["complete"] = True
+            out.add(r["index"])
+        if "accepted" in d:
+            d["accepted"] = sorted(acc.values(), key=lambda a: a["index"])
+    return out
 
 
 # ------------------------------------------------------------------ trap controls for market-price

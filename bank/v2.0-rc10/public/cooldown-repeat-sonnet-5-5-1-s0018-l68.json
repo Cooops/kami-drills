@@ -23,7 +23,7 @@
  "competency": [
   "state_tracking"
  ],
- "content_hash": "sha256:b6b3b542adf83c7ab9ead2083474cf6d81e31a21a0fab21e396c73b317a06147",
+ "content_hash": "sha256:4b1c3e047ce7aa24dc69c9261926e4c00a81bc3a9a06b43ae1924b2296dd654d",
  "decision_point": {
   "budget": {
    "tool_calls": 50,
@@ -1075,6 +1075,13 @@
    },
    {
     "index": 2,
+    "objectives": [
+     {
+      "index": 3,
+      "met": false,
+      "type": "ROOM"
+     }
+    ],
     "repeatable": false,
     "status": "complete"
    },
@@ -1109,6 +1116,7 @@
    },
    {
     "index": 3001,
+    "repeatable": false,
     "status": "available"
    },
    {
@@ -1134,6 +1142,21 @@
    },
    {
     "index": 3900,
+    "objectives": [
+     {
+      "index": 26,
+      "met": false,
+      "type": "ROOM"
+     },
+     {
+      "current": 0,
+      "index": 1001,
+      "met": false,
+      "required": 3,
+      "type": "ITEM_BURN"
+     }
+    ],
+    "repeat_available_unix": null,
     "repeatable": true,
     "status": "complete"
    }
