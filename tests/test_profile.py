@@ -27,6 +27,25 @@ def test_every_drill_maps_to_an_area():
     assert set(pf.MAPPING["drills"]) <= ids  # no override for a drill that does not exist
 
 
+COMPETENCY_AREA = {"risk_survival": "survival", "economy": "economic", "quest_planning": "progression",
+                   "error_recovery": "recovery", "state_tracking": "cadence", "memory": "cadence", "persistence": "cadence"}
+
+
+def test_area_agrees_with_the_competency_tags_or_says_why():
+    """A drill's area must be one its spec's competency tags name, unless the drill has an override (with its reason) or
+    its family is a listed exception (with its reason). tool_use names no area."""
+    exc = pf.MAPPING["competency_exceptions"]
+    assert all(exc[f] for f in exc)
+    bad = []
+    for s in ALL:
+        if pf.family(s) == "control":
+            continue
+        tagged = {COMPETENCY_AREA[c] for c in s.get("competency", []) if c in COMPETENCY_AREA}
+        if tagged and pf.area(s) not in tagged and s["id"] not in pf.MAPPING["drills"] and pf.family(s) not in exc:
+            bad.append((s["id"], pf.area(s), s["competency"]))
+    assert not bad
+
+
 def test_unknown_family_is_an_error():
     with pytest.raises(ValueError, match="no skill area"):
         pf.area({"id": "x", "category": "nope", "provenance": {}})
@@ -43,12 +62,17 @@ def test_area_and_aggregate_math():
     scored = [s for s in V11 if not pf.excluded(s)]
     assert sum(out["n_by_area"].values()) == len(scored) == 27
     assert out["excluded"] == {"smoke": 10, "retired": 10}
+    full = [a for a in pf.AREAS if out["n_by_area"][a] >= pf.MIN_N]
+    assert full and len(full) < len(pf.AREAS)  # v1.1 has thin areas
     for a in pf.AREAS:
         c = m["areas"][a]
         assert c["n"] == out["n_by_area"][a] and c["score"] == pytest.approx(val[a])
         assert c["thin"] == (c["n"] < pf.MIN_N)
-        assert c["ci95"] is None if c["n"] < 2 else c["ci95"] == pytest.approx([val[a], val[a]])
-    assert m["equal_weight"] == pytest.approx(statistics.mean(val.values()))  # each area counts the same
+        assert c["ci95"] is None if c["thin"] else c["ci95"] == pytest.approx([val[a], val[a]])
+    assert m["equal_weight"] == pytest.approx(statistics.mean(val[a] for a in full))  # each non-thin area counts the same
+    assert m["areas_in_equal_weight"] == full and m["thin_areas_excluded"] == [a for a in pf.AREAS if a not in full]
+    assert m["equal_weight_all"] == pytest.approx(statistics.mean(val.values()))
+    assert pf.profile(V11, scored_rows(V11, lambda s: 1.0), n_boot=10, min_n=99)["models"]["m"]["equal_weight"] is None
     assert m["drill_weighted"] == pytest.approx(statistics.mean(val[pf.area(s)] for s in scored))
     assert m["equal_weight"] != pytest.approx(m["drill_weighted"])
 
@@ -90,7 +114,8 @@ def test_cli_on_the_fixture(capsys):
     got = pf.drill_scores([spec], rows)[m][spec["id"]]
     assert got == pytest.approx(statistics.mean(r["score"] for r in want if r["model"] == m))
     p = out["models"][m]
-    assert p["equal_weight"] == p["areas"]["recovery"]["score"] and p["areas_in_equal_weight"] == 1
+    assert p["equal_weight"] is None and p["areas_in_equal_weight"] == []  # recovery n=2 is thin: no headline
+    assert p["equal_weight_all"] == p["areas"]["recovery"]["score"] and p["areas"]["recovery"]["ci95"] is None
     text = run_cli(FIX, "--bars", capsys=capsys)
-    assert "equal-weight" in text and "drill-weighted" in text and "recovery (n=2, thin)" in text
+    assert "equal-weight all" in text and "drill-weighted" in text and "recovery (n=2, thin)" in text and "[thin]" in text
     assert "tier B items are reported beside a score, never in it" in text
