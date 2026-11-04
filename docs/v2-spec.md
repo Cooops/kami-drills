@@ -201,12 +201,13 @@ the bank specs (74 in bank v2.0-rc2 and rc3, 88 in rc4, 82 in rc5, 76 in rc6 to 
 suite directory's `*.json` (not `MANIFEST.json`), searches a directory with neither recursively (never `private/`),
 and raises when a path yields no spec. `spec check` reports a lazy pass on a smoke or retired item, or on a
 verdict-equivalent v1 conversion (`drills_v2/spec`), as `expected` and exits 0 on it; any other failure exits 1.
-`kami-drills spec check specs/v1.1 bank/v2.0-rc8 drills_v2/spec` → 106 specs, 0 failing, 14 expected, exit 0.
+`kami-drills spec check specs/v1.1 bank/v2.0-rc9 drills_v2/spec` → 109 specs, 0 failing, 14 expected, exit 0.
 
 **Pseudonymization** (`spec/pseudonymize.py`; applied since 2026-11-03, owner decision). Every 40-hex address outside
 the allowlist (harness surface, game contracts and tokens, the Palaestra S1 agents' own wallets:
 `spec/pseudonym_allowlist.json`) becomes `0x00000000` + 32 hex of an HMAC, and every third-party player account (name
-and index in its record) becomes `player-<hmac6>` with an index above 10^7. The drill's own account index, kami and
+and index in its record) becomes `player-<hmac6>` with an index above 10^7; the same index after an account word in free
+text gets the same alias. The drill's own account index, kami and
 quest ids stay. Pseudonyms are recognizable, so a second pass is a no-op. It runs where specs are made: `from_v1.convert`
 (v1.1, `drills_v2/spec`; public key `V1_KEY`, since the raw text is in the frozen `drills/`) and the miner's split
 (bank; a key derived from the split key). By hand: `kami-drills spec pseudonymize PATHS --key-env VAR --out DIR`, which

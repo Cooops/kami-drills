@@ -467,7 +467,7 @@ def main(argv=None):
                    "never commit it")
     s.add_argument("--experimental", help="comma-separated rule families that are researched, not shipped (node-choice); "
                    "off by default, never for a bank")
-    s.add_argument("--bank", help="also freeze a bank here (e.g. bank/v2.0-rc8): public specs + manifest; private/ is gitignored")
+    s.add_argument("--bank", help="also freeze a bank here (e.g. bank/v2.0-rcN): public specs + manifest; private/ is gitignored")
     s.set_defaults(fn=cmd_mine)
 
     args = p.parse_args(argv)

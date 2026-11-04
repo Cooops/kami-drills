@@ -225,7 +225,7 @@ def test_cli_spec_check(capsys):
 
 
 def test_load_follows_a_bank_manifest():
-    root = sorted((ROOT / "bank").glob("v2.0-rc*/manifest.json"))[-1].parent
+    root = max((ROOT / "bank").glob("v2.0-rc*/manifest.json"), key=lambda p: int(p.parent.name.rsplit("rc", 1)[1])).parent
     man = json.loads((root / "manifest.json").read_text())
     assert [s["id"] for s in sp.load([root])] == [e["id"] for e in man["public"]]
 

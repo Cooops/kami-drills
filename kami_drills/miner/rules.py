@@ -439,7 +439,9 @@ def _hp_loss(run, s, liquidation):
             "actual": f"{ends[0].tool}; kami {k} was {'DEAD' if dead else 'at 0 HP'} at the next session start",
             "why": ("HP reaches 0 before the chosen wake: the kami starves and anyone can liquidate it" if not liquidation
                     else f"left harvesting at ~{100 * hp_wake / total:.0f}% HP at the wake; it was liquidated (another "
-                         "player's action, so the loss is not certain from the log)"),
+                         "player's action, so the loss is not certain from the log)" if dead
+                    else f"left harvesting at ~{100 * hp_wake / total:.0f}% HP at the wake; it starved to 0 HP before the "
+                         "next session (no kill: the drain outran the recorded rate, so the loss is not certain from the log)"),
             "scoring": {"options": options},
             "oracle": prep + [call("harvest_stop", kami_ids=[k])],
             "accepted_actions": names,
@@ -454,7 +456,8 @@ def _hp_loss(run, s, liquidation):
                                     "to_zero_h": round(to_zero_h, 2), "scheduled_wake_min": sched,
                                     "hp_at_wake": round(hp_wake, 1), "cooldown_wait_s": wait_s}},
             "tier_hint": "B" if liquidation else "A",
-            "tier_reason": "liquidation is another player's action (reactive)" if liquidation else
+            "tier_reason": ("liquidation is another player's action (reactive)" if dead else
+                            "0 HP before the projected time, without a kill (the drain is not certain from the log)") if liquidation else
                            "starvation follows from the agent's own wake choice and the HP rate (log replay valid)",
             "signature": ("hp-liquidated" if liquidation else "hp-starve", bucket(hp / total, [0.1, 0.25, 0.5]),
                           bucket(to_zero_h, [1, 3, 8]), bool(good_food), wait_s > 0),

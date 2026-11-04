@@ -366,6 +366,9 @@ otherwise committed specs are checked by the fixed regexes.
 
 ## Pre-publication cleanup of rc7, miner 3.6.0, bank v2.0-rc8
 
+(rc8 was removed from the tree with the rc9 rebuild: its free text leaked third-party account indices, see "Free-text
+account indices" below. It is in the history.)
+
 1. **The name pass left non-names alone again.**
    - A player named "0x00" had turned 16 `maxPriorityFeePerGas {"hex":"0x00"}` into an alias in
      `specs/v1.1/repeat-quest-prereq-locked.json`. Hex and number literals are never names now.
@@ -434,6 +437,34 @@ source model); only the input and the bank version changed. rc8 stays in the tre
   variants hit no raw wallet, player record, harvested name or broken alias. 46 S1 agent wallets appear.
 - No fork session overlaps the indexer halt (2026-10-23 15:49 to 11-02 01:14 UTC).
 - Output `sha256[:16] b5869d7e3b57293a`, identical for `--jobs 1` and 10.
+
+## Free-text account indices (PR #3 blocker), bank v2.0-rc9 rebuilt
+
+- Agents' notes and tool prose kept other players' raw account indices beside their aliases ("player-40b0a7 (acct
+  3413, kami 2383)", "user index 729", a bare "acct 2704"), which re-identifies the alias. The context rule only fired
+  on "acct N Name". `pseudonymize.free_indices` now aliases a number after an account word (`acct`, `account`,
+  `account index`, `user`, `user index`, `player`, `owner`, `killer`, `victim`, `seller`, `buyer`, `maker`, `taker`;
+  space, `#`, `(` or `:` between, same line) whatever follows it, with the record alias (`10^7 + hmac`). Kept: the
+  drill's own index and kamis, the 27 S1 run accounts' indices (harvested at mine time, in memory only), aliases. Only
+  a plausible index changes: 3+ digits, or a 2-digit index known as a third party (harvested or recorded in the spec);
+  after `idx`, which also names quests, only a known 3+ digit index. "user 2 options", "account for 3 quests" and
+  numbered lists stay.
+- `tests/test_pseudonymize.py`: an independent detector for raw S1 third-party indices beside an account word
+  (red on rc9 at 9163cec: 2 specs, 4 indices) and a synthetic regression test both ways.
+- Bank rc9 rebuilt in place with the same command (not merged): only 2 public specs changed (the 4 aliases above and
+  "user index 729"), plus content hashes, the manifest and the held-out commitments. Output `sha256[:16]
+  c1f787319daab1bb` for `--jobs 1` and 10 (was `b5869d7e3b57293a`). v1.1 rebuilt (`scripts/v11/run.py`) and `drills_v2/spec` refreshed:
+  "idx 3376", "account 3374" and the like in 3 v1.1 and 2 `drills_v2/spec` specs now carry their record alias.
+- `hp-liquidated-grok-4-7-1-s0050-l66`: the kami starved (0 HP, still HARVESTING, no kill in `chain/kills.jsonl`).
+  The family is "at 0 HP or DEAD" at the next session, so it stays; its tier reason no longer says liquidation for a
+  kami that was not DEAD (tier B kept).
+- `bank/v2.0-rc8` removed from the tree: it carried the same leak and rc9 supersedes it.
+- Independent scan of every tracked file outside the frozen v1 (`drills/`, `defs/`, `drills_v2/polluted/`): 0 S1
+  third-party wallets (whole or inside longer hex), 0 harvested S1 third-party indices beside an account word in the
+  public bank (5 in 3 files before, rc8 included).
+- `spec check bank/v2.0-rc9 specs/v1.1` 106 specs, 0 failing; with `drills_v2/spec` 109, 0 failing, 14 expected.
+  `check_bank` 0 failures. Kitchen sink 0 of 59 public; battery 0/17 public ungrouped items and 0/20 groups (0/24 and
+  0/28 with the private variants); economic pairs unchanged. `bank.verify` [].
 
 ## Open questions for the owner
 

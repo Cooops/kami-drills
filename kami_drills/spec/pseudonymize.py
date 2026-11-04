@@ -20,6 +20,9 @@ What changes, consistently across every spec under one key (the same input alway
   never replaced again (the tool is idempotent);
 - a third-party player account (a recorded {index, name} under maker/owner/account/... or with a 40-hex id, not the
   drill's own account): its name -> player-<hmac6> and its index in that record -> a fresh index above 10**7.
+- in free text, an account index after an account word ("(acct 3413, kami 2383)", "user index 729", a bare "acct
+  2704") -> the same alias as in a record, unless it is the drill's own index or kami or a season run account's index;
+  only a plausible index (3+ digits, or a harvested third-party index), so "user 2 options" stays (review rc9).
 
 What stays: the drill's own account index, kami ids and quest ids (scoring reads them), tx hashes and entity ids.
 Each output spec must keep every reference-play and battery verdict of its input (perturb.check_equivalent), else
@@ -126,19 +129,20 @@ def real_name(name):
 
 # The season's player names, built at mine time from the transcripts (a private input; nothing about them is
 # committed: review rc6 F4). split.py sets it before pseudonymizing the bank; v1-derived specs leave it empty.
-SEASON = {"anywhere": set(), "plain": set(), "agents": set()}
+SEASON = {"anywhere": set(), "plain": set(), "agents": set(), "agent_indices": set(), "player_indices": set()}
 WORDS = Path("/usr/share/dict/words")  # web2: English words and first names; without it every name counts as plain
 
 
 def harvest_players(run_dirs, agent_wallets):
-    """{"anywhere", "plain", "agents"} name sets from a season's transcripts and snapshots. A player name is the name of
+    """{"anywhere", "plain", "agents"} name sets and {"agent_indices", "player_indices"} account indices from a
+    season's transcripts and snapshots. A player name is the name of
     a record with its account wallet (ownerAddress, a 40-hex id, a decimal 160-bit id) or under a trade-party key.
     Names whose wallet is an agent's are agents (kept). A player name that is an English word or first name (web2)
     is plain: replaced in name contexts only."""
     q, sep = r'\\*"', r'(?:\s|\\+n)*'
-    with_id = re.compile(rf'{q}id{q}{sep}:{sep}{q}(0x[0-9a-fA-F]{{40}}|\d{{46,49}}){q},{sep}{q}index{q}{sep}:{sep}\d+,{sep}{q}name{q}{sep}:{sep}{q}([^"\\]+){q}')
+    with_id = re.compile(rf'{q}id{q}{sep}:{sep}{q}(0x[0-9a-fA-F]{{40}}|\d{{46,49}}){q},{sep}{q}index{q}{sep}:{sep}(\d+),{sep}{q}name{q}{sep}:{sep}{q}([^"\\]+){q}')
     party = re.compile(rf'(?:maker|taker|seller|buyer|owner){q}{sep}:{sep}\{{{sep}{q}index{q}{sep}:{sep}\d+,{sep}{q}name{q}{sep}:{sep}{q}([^"\\]+){q}')
-    wallets, parties = {}, set()
+    wallets, parties, indices = {}, set(), {}
 
     def walk(o):
         if isinstance(o, dict):
@@ -151,6 +155,8 @@ def harvest_players(run_dirs, agent_wallets):
                 w = i.lower()
             if isinstance(n, str) and n and w:
                 wallets.setdefault(n, set()).add(w)
+                if isinstance(o.get("index"), int):
+                    indices.setdefault(o["index"], set()).add(w)
             for v in o.values():
                 walk(v)
         elif isinstance(o, list):
@@ -164,8 +170,10 @@ def harvest_players(run_dirs, agent_wallets):
     for d in map(Path, run_dirs):
         for f in sorted(d.glob("transcripts/*.jsonl")) + sorted(d.glob("snapshots/*.json")):
             text = f.read_text(encoding="utf-8", errors="replace")
-            for w, n in with_id.findall(text):
-                wallets.setdefault(n, set()).add(w.lower() if w.startswith("0x") else f"0x{int(w):040x}")
+            for w, i, n in with_id.findall(text):
+                w = w.lower() if w.startswith("0x") else f"0x{int(w):040x}"
+                wallets.setdefault(n, set()).add(w)
+                indices.setdefault(int(i), set()).add(w)
             parties |= set(party.findall(text))
             for line in text.splitlines() if f.suffix == ".jsonl" else [text]:
                 try:
@@ -176,7 +184,9 @@ def harvest_players(run_dirs, agent_wallets):
     players = {n for n in ({n for n, w in wallets.items() if not w & agent_wallets} | parties) - agents if real_name(n)}
     words = {w.strip().lower() for w in WORDS.open(encoding="utf-8", errors="replace")} if WORDS.exists() else None
     plain = {n for n in players if words is None or n.lower() in words}
-    return {"anywhere": players - plain, "plain": plain, "agents": agents}
+    agent_indices = {i for i, w in indices.items() if w & agent_wallets}
+    return {"anywhere": players - plain, "plain": plain, "agents": agents, "agent_indices": agent_indices,
+            "player_indices": set(indices) - agent_indices}
 
 
 def season_names(blob):
@@ -194,14 +204,46 @@ def distinctive(name):
     return name in SEASON["anywhere"] or bool(re.search(r"[^A-Za-z]", name)) or bool(re.search(r"[a-z][A-Z]", name)) or len(name) >= 9
 
 
-def free_text(blob, names, key, own, anywhere=()):
+IDX_CONTEXT = r"(?i:acct|account|user|player|owner|killer|victim|seller|buyer|maker|taker|idx)(?:\s+(?i:index))?"
+
+
+def index_alias(key, i):
+    """The record alias of a third-party account index (the same in records and free text)."""
+    return 10 ** 7 + int(_mac(key, f"idx|{i}")[:6], 16)
+
+
+def free_indices(blob, key, keep=(), known=()):
+    """Alias an account index after an account word in free text ("(acct 3413, kami 2383)", "user index 729", "acct
+    #2704") whatever follows it. Kept: the drill's own index and kamis (`keep`), the season's run accounts, aliases
+    (>= 10**7). Only a plausible index on the same line changes: 3+ digits, or a 2-digit known third-party index,
+    so "user 2 options" and a numbered list ("account\\n2. Kami ...") stay. After "idx", which also names quests and
+    items ("MIN004 (idx 2004)"), only a known index of 3+ digits changes: harvested, or a third-party record in the spec
+    (`known`)."""
+    known = set(known) | SEASON["player_indices"]
+
+    def sub(m):
+        d = m.group("d")
+        i = int(d)
+        if i in keep or i in SEASON["agent_indices"] or i >= 10 ** 7:
+            return m.group(0)
+        if m.group("w").lower().startswith("idx") and not (len(d) >= 3 and i in known):
+            return m.group(0)
+        if not (len(d) >= 3 or (len(d) == 2 and i in known)):
+            return m.group(0)
+        return m.group("w") + str(index_alias(key, i))
+    return re.sub(rf"(?P<w>{B}{IDX_CONTEXT}{E}[ #(:]{{1,3}})(?P<d>\d+){E}", sub, blob)
+
+
+def free_text(blob, names, key, own, anywhere=(), keep=(), known=()):
     """Replace player names in free text. Every name is replaced next to an account word, with or without an index
     ("acct 3413 ShadowFox9", "(acct 807 \"today\")", "seller someseller"), and the index becomes the record alias (the
     drill's own index stays), or followed by a kami, listing or account ("Bramble: kamiIndex 21629"). A distinctive name
-    is also replaced anywhere it stands as a whole word; a plain word ("today", "Bramble") only in those contexts."""
+    is also replaced anywhere it stands as a whole word; a plain word ("today", "Bramble") only in those contexts. Then
+    every account index after an account word becomes its alias too (free_indices; `keep` and `own` stay)."""
+    keep = {own, *keep}
     names = [n for n in names if real_name(n) and (n in blob or json.dumps(n)[1:-1] in blob)]  # gone, or never there
     if not names:
-        return blob
+        return free_indices(blob, key, keep, known)
     alias = {n: f"player-{_mac(key, 'name|' + n)[:6]}" for n in names}
     canon = lambda t: re.sub(r"\\+u([0-9a-fA-F]{4})", lambda u: chr(int(u.group(1), 16)), t)
     alt = lambda ns: "|".join("".join(_char(ch) for ch in n) for n in ns)
@@ -210,7 +252,8 @@ def free_text(blob, names, key, own, anywhere=()):
         num = m.group("num")
         if num:
             digits = num.lstrip("#")
-            new = digits if int(digits) == own else str(10 ** 7 + int(_mac(key, f"idx|{digits}")[:6], 16))
+            i = int(digits)
+            new = digits if i in keep or i in SEASON["agent_indices"] or i >= 10 ** 7 else str(index_alias(key, i))
             num = num[:len(num) - len(digits)] + new
         return m.group("w") + m.group("s1") + (num or "") + (m.group("s2") or "") + alias.get(canon(m.group("n")), m.group(0))
     sp = r"(?:\\+|[^A-Za-z0-9_:\\]){1,6}"
@@ -220,7 +263,7 @@ def free_text(blob, names, key, own, anywhere=()):
                   lambda m: alias.get(canon(m.group("n")), m.group(0)), blob)
     if anywhere := [n for n in names if distinctive(n) or n in anywhere]:  # the drill's own name: the owner's handle
         blob = re.sub(rf"{B}(?P<n>{alt(anywhere)}){E}", lambda m: alias.get(canon(m.group("n")), m.group(0)), blob)
-    return blob
+    return free_indices(blob, key, keep, known)
 
 
 def _char(ch):
@@ -261,7 +304,7 @@ def pseudonymize(spec, key, allow=None):
         name = re.sub(r"\\+u([0-9a-fA-F]{4})", lambda u: chr(int(u.group(1), 16)), raw)
         if (idx, name) not in rename:
             return m.group(0)
-        new_idx = idx if idx == own else 10 ** 7 + int(_mac(key, f"idx|{idx}")[:6], 16)  # the drill's own index stays
+        new_idx = idx if idx == own else index_alias(key, idx)  # the drill's own index stays
         return m.group(1) + str(new_idx) + m.group(3) + f"player-{_mac(key, 'name|' + name)[:6]}" + m.group(5)
     blob = re.sub(rf'(index{q}{sep}:{sep})(\d+)(,{sep}{q}name{q}{sep}:{sep}{q})((?:[^"\\]|\\+u[0-9a-fA-F]{{4}})+)({q})', record, blob)
     # free text (notes, prose, truncated results): the record names above, the drill's own name, and any harvested S1
@@ -272,7 +315,9 @@ def pseudonymize(spec, key, allow=None):
     native = (held.get("world") or {}).pop("native_text", None)
     blob = json.dumps(held, ensure_ascii=False)
     blob = free_text(blob, sorted(names - SEASON["agents"], key=lambda x: (-len(x), x)), key, own,
-                     anywhere={n for n in own_names if len(n) >= 4 and not n.isdigit()})
+                     anywhere={n for n in own_names if len(n) >= 4 and not n.isdigit()},
+                     keep={k["index"] for k in spec["state"].get("kamis") or [] if isinstance(k.get("index"), int)},
+                     known={i for i, _ in accounts})
     if native is not None:
         held = json.loads(blob)
         held["world"]["native_text"] = native

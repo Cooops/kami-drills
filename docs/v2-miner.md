@@ -398,7 +398,8 @@ pass writes a new bank version and never reselects this one (F review m1, E revi
 
 `v2.0-rc9` is the current bank: miner 3.6.0, unchanged flags (3 per run, max(2, 30%) per source model), re-run on
 the final 7-day Season 1 logs (27 runs, 2,172 sessions; rc3 to rc8 used an interim copy with 1,924). It adds 3
-items and 1 control to rc8 and keeps every rc8 spec byte-identical (changelog). rc8 stays in the tree, frozen.
+items and 1 control to rc8 and keeps every rc8 spec byte-identical (changelog). It was rebuilt in place for the
+free-text index pass, and rc8, which leaked those indices, is removed from the tree.
 `v2.0-rc8` replaced `v2.0-rc7`, which replaced `v2.0-rc6`, `v2.0-rc5`, `v2.0-rc4`, `v2.0-rc3`, `v2.0-rc2` and `v2.0-rc1` (all removed from the tree; they are in the
 history and the changelog). rc1 held the two invalid collect-then-stop items and two held-out variants that kept an original kami id;
 rc2 dropped the family, fixed the perturbation and kept quest-left public. rc3 mines the same 27 runs with miner 3.1:
@@ -419,7 +420,7 @@ tool: it harvests the player records from the S1 transcripts when they sit next 
 regexes. (rc3 and rc4 left 39 player records in two discovery-swap specs, and 73 decimal account ids.)
 
 Kept as recorded: game contracts and tokens, and the 54 Palaestra S1 agent owner and operator wallets
-(`spec/pseudonym_allowlist.json`; 46 of them appear in rc8 and rc9). The key is derived from the split key, so aliases are
+(`spec/pseudonym_allowlist.json`; 46 of them appear in rc9). The key is derived from the split key, so aliases are
 stable across rebuilds and banks, and differ from the v1.1 aliases. The v1.1 and `drills_v2/spec` key `V1_KEY` is
 public, so those aliases can be reversed by hashing a list of wallets; their raw text is public in `drills/` anyway.
 Every pseudonymized spec keeps every reference-play and battery verdict of its original, or the split fails.
@@ -444,7 +445,9 @@ The rule:
 - **In name contexts only:** a plain-word name ("today", "Bramble") is replaced only after an account word (`acct`,
   `account`, `player`, `user`, `seller`, `buyer`, `maker`, `taker`, `owner`, `idx`), with or without an index, or
   before what it sells ("Bramble: kamiIndex …"). A colon never joins a context: `"account": "main"` is a tool argument.
-- An account index next to a name gets the record's alias.
+- An account index next to a name gets the record's alias. So does one after an account word with no name ("(acct
+  3413, kami 2383)", "user index 729", "acct #2704"; rc9 rebuild): 3+ digits, or a 2-digit known third party, and after
+  `idx` only a known 3+ digit index. The drill's own index and kamis and the S1 run accounts' indices stay.
 - S1 agent names stay, like their wallets.
 
 A plain-word name in prose with no such context is the known gap. The tests check that:
@@ -452,7 +455,8 @@ A plain-word name in prose with no such context is the known gap. The tests chec
 - every v1.1 and `drills_v2/spec` native prefix differs from its frozen v1 drill only at names, their indices and
   wallets or ids. Every alias in them is the alias of a recorded name, and a record name that `real_name` rejects is
   aliased at its record sites only;
-- with the transcripts present, no harvested S1 name is left in the bank's free text.
+- with the transcripts present, no harvested S1 name is left in the bank's free text, and no S1 third-party account
+  index beside an account word.
 
 ## Candidate schema (`kami-drills/candidate@3`)
 

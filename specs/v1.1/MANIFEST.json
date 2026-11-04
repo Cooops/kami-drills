@@ -210,7 +210,7 @@
    "status": "draft",
    "fix": "v1 forbade any harvest_start before a wait call (and counted dry-run starts as the harvest); now only the clock decides, a wake earns 0.5",
    "timing_item": true,
-   "content_hash": "sha256:c24e8996fa8e96b93a61ed03ffa139efa17cb07481d2a5e2fe216891c727363e"
+   "content_hash": "sha256:bca27970c62266de9661c5096e25c99f440bfafd1b7163120e35d71c626d23a2"
   },
   {
    "id": "repeat-listing-buy-underflow",
@@ -321,7 +321,7 @@
    "status": "draft",
    "fix": "dry-run probes never count as a retry; a wake earns 0.5; every act on 9787 inside the cooldown is the mistake (the chain refuses them all)",
    "timing_item": true,
-   "content_hash": "sha256:f0c112a26deb44350ffe48cbebcfb71ecc3feed04ff44064c34ed75802811cc1"
+   "content_hash": "sha256:d6ac2cce9548691ccf58c8ae6433a8f68cb3061f4aba08493fad384c0f0f5764"
   },
   {
    "id": "stale-double-complete-quest",

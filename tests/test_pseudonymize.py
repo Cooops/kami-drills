@@ -15,7 +15,7 @@ from kami_drills.spec import perturb
 from kami_drills.spec import pseudonymize as P
 
 ROOT = Path(__file__).parents[1]
-BANK = sorted((ROOT / "bank").glob("v2.0-rc*"))[-1]
+BANK = max((ROOT / "bank").glob("v2.0-rc*"), key=lambda p: int(p.name.rsplit("rc", 1)[1]))
 
 
 def bank_specs():
@@ -117,6 +117,7 @@ def raw_people(spec):
 
 
 CTX = re.compile(r"(?i:acct|account|player|user|seller|buyer|maker|taker|owner|idx)")
+IDX_CTX = r"(?i:acct|account|user|player|owner|killer|victim|seller|buyer|maker|taker|idx)(?:\s+(?i:index))?"
 WORDS = Path("/usr/share/dict/words")
 
 
@@ -235,6 +236,58 @@ def test_public_specs_carry_no_raw_name_in_free_text(spec):
     if S1.is_dir() and "v1_id" not in (spec.get("provenance", {}).get("source") or {}):  # S1 names: the S1 bank
         assert raw_names_in_text(spec) == set()
     assert {n for n in own_names(spec) if re.search(rf"(?<![A-Za-z0-9_]){re.escape(n)}(?![A-Za-z0-9_])", text)} == set()
+
+
+@functools.lru_cache(maxsize=1)
+def s1_third_party_indices():
+    """Account indices of S1 player records that are not a run agent's (by name: agents keep their raw index)."""
+    agents = free_text_agents()
+    return frozenset(i for i, n in s1_players() if n not in agents)
+
+
+@functools.lru_cache(maxsize=1)
+def free_text_agents():
+    agents = {a.lower() for a in json.loads(P.ALLOWLIST.read_text())["palaestra_s1_agents"]}
+    return frozenset(P.harvest_players(sorted(S1.glob("s1-*")), agents)["agents"])
+
+
+def raw_indices_in_text(text, own, third):
+    """Third-party account indices left raw after an account word on the same line of free text: "(acct 3413", "user
+    index 729". A one-digit number is not checked ("user 2 options")."""
+    found = re.findall(rf"(?:(?<=\\[nrt])|(?<![A-Za-z0-9_])){IDX_CTX}(?![A-Za-z0-9_])[ #(:]{{1,3}}(\d{{2,}})(?![A-Za-z0-9_])", text)
+    return {f"idx:{i}" for i in map(int, found) if i != own and i in third}
+
+
+@pytest.mark.parametrize("spec", public_specs(), ids=lambda s: s["id"])
+def test_public_specs_carry_no_raw_index_in_free_text(spec):
+    """No S1 third-party account index is left beside an account word in free text (review rc9): it would re-identify
+    the alias next to it. The S1 bank only (v1-derived specs are another season)."""
+    if not S1.is_dir() or "v1_id" in (spec.get("provenance", {}).get("source") or {}):
+        pytest.skip("S1 runs not next to the repo, or a v1-derived spec")
+    own = spec["state"]["account"]["index"]
+    assert raw_indices_in_text(json.dumps(spec, ensure_ascii=False), own, s1_third_party_indices()) == set()
+
+
+def test_free_text_indices_are_aliased_and_ordinary_numbers_are_not(monkeypatch):
+    monkeypatch.setitem(P.SEASON, "agent_indices", {3429})
+    monkeypatch.setitem(P.SEASON, "player_indices", {3413, 729, 2704, 77, 2, 1, 3})
+    s = {"state": {"account": {"index": 1}, "kamis": [{"index": 14708}]},
+         "x": ["NightOwl (acct 3413, kami 2383) liquidated 14708", "- user index 729: kamiIndex 2424", "a bare acct 2704.",
+               "Account 3429 Cinderpath is a run account", "victim 14708 was ours", "user 2 options", "account for 3 quests",
+               "player 1 of 4", "caller's account\n2. Kami", "acct #3413 again", "acct: 77 then", "MIN004 (idx 2004) open", "Account idx 3413", "MSQ016 (idx 77)"]}
+    out = P.pseudonymize(s, b"k")[0]["x"]
+    a = lambda i: str(P.index_alias(b"k", i))
+    assert out[0] == f"NightOwl (acct {a(3413)}, kami 2383) liquidated 14708"
+    assert out[1] == f"- user index {a(729)}: kamiIndex 2424" and out[2] == f"a bare acct {a(2704)}."
+    assert out[3:9] == s["x"][3:9]  # a run account, the drill's own kami, ordinary numbers: unchanged
+    assert out[9] == f"acct #{a(3413)} again" and out[10] == f"acct: {a(77)} then"
+    assert out[11] == "MIN004 (idx 2004) open" and out[12] == f"Account idx {a(3413)}"  # idx: a known index only
+    assert out[13] == "MSQ016 (idx 77)"  # ... of 3+ digits: a quest index can share a short account index
+    assert raw_indices_in_text(json.dumps(s), 1, {3413, 729, 2704}) == {"idx:3413", "idx:729", "idx:2704"}
+    assert raw_indices_in_text(json.dumps(out), 1, {3413, 729, 2704}) == set()
+    rec = json.dumps({"maker": {"index": 3413, "name": "NightOwl"}})  # the same alias as the structured record
+    assert json.loads(P.pseudonymize({**s, "x": [rec]}, b"k")[0]["x"][0])["maker"]["index"] == int(a(3413))
+    assert P.pseudonymize({**s, "x": out}, b"k")[0]["x"] == out  # idempotent
 
 
 @pytest.mark.parametrize("spec", public_specs(), ids=lambda s: s["id"])
