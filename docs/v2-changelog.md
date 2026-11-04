@@ -515,3 +515,7 @@ source model); only the input and the bank version changed. rc8 stays in the tre
 7. **v1.1 and the refusal penalty.** v1.1 keeps v1's replay rows and does not opt into `refusal_penalty`. Opting in
    (0.15) changes 81 ranking try-verdicts on the rc2 tries, and the battery gate still holds. Decide before a v1.1
    administration.
+
+## Known issue in bank v2.0-rc9 (merged as is)
+
+Two public `stuck-broke` items (luna-2 s37, grok-1 s7) miss a correct free route in their accepted set. Quest 3005 "Spring Rites" has no objectives, opens after a liquidation, pays one revive card, and was visible at the fork. "Accept 3005, complete it, revive" spends no ETH but scores as wrong. Both items are tier B (unscored), so no published score is affected. Fixed in bank v2.0-rc10: available quests go into the fork state, objective-less quests are met on accept, and free revive routes are in the accepted paths.
