@@ -7,12 +7,13 @@ degenerate plays, tiering, dedup, split) live in pipeline.py.
 
 Thresholds are constants here; signatures never use them (pipeline dedup must not move when one changes).
 """
+import csv
 import json
 import math
 import re
 from datetime import timedelta
 
-from kami_drills.miner.trace import ITEMS, TRANSIENT, state_at, time_at
+from kami_drills.miner.trace import ITEMS, REVIVES, TRANSIENT, state_at, time_at
 from kami_drills.spec.rules import ACCEPT_FROM_S, FULL_FROM_S, NODE_CAP, WORLD, path_len
 
 RULES = {}
@@ -1165,13 +1166,11 @@ def _market_cand(run, s, c, fork, item, qty, rc, merchant, prices, alts, gda, ca
 # ------------------------------------------------------------------ economic families (published in miner 3.1)
 # The gas token (owner ETH) converts to Ether Shards (item 103, portal_deposit) and the shards to MUSU (pool_swap):
 #   discovery-swap@1   the conversion found and executed (success fork)
-#   stuck-broke@1      every kami DEAD, MUSU below a revive, convertible owner ETH, nothing converted (failure fork)
+#   stuck-broke@2      every kami DEAD and nothing paid for a revive (failure fork; see "recovery while dead" below)
 #   reckless-convert@1 genuine traps: a deposit over the agent's own cap, or a blind swap of MUSU with min_out <= 1.
 #                      Correct play: not that act.
 # Each kept opportunity pairs with a synthetic trap control (controls.trap_for): converting there would strand gas.
 
-BROKE_MUSU = 500          # under the cheapest observed revive purchase
-IDLE_ETH = 0.002          # owner ETH that is idle capital (>= 200 Ether Shards after keeping gas)
 DEPOSIT_CAP_SHARE = 0.5   # D-spec 3.3: never convert more than half the liquid ETH
 SHARD = 103               # Ether Shard: 1 shard = 1e-5 of the gas token (lens_item token.scale 5)
 SHARD_ETH = 1e-5
@@ -1204,14 +1203,11 @@ def deposit_cap(owner_eth, operator_eth):
     return max(0, int(cap / 1e-5))
 
 
-def convert_scoring(cap, need_revive):
+def convert_scoring(cap):
     deposit = pat("portal_deposit", ok=True, item=SHARD, amount={"lte": cap, "gte": 1})
     swap = pat("pool_swap", ok=True, item_in=SHARD, item_out=1, min_amount_out={"gt": 1})
-    opts = [{"credit": 1.0, "steps": [{"any": [deposit]}, {"any": [swap]}]
-             + ([{"any": [pat("revive_kami", ok=True)]}] if need_revive else [])}]
-    if need_revive:
-        opts.append({"credit": 0.5, "steps": [{"any": [deposit]}, {"any": [swap]}]})
-    opts.append({"credit": 0.25, "steps": [{"any": [pat(["pool_swap_quote", "lens_portal", "lens_item"])]}]})
+    opts = [{"credit": 1.0, "steps": [{"any": [deposit]}, {"any": [swap]}]},
+            {"credit": 0.25, "steps": [{"any": [pat(["pool_swap_quote", "lens_portal", "lens_item"])]}]}]
     return {"options": opts, "zero_if": [{"any": [pat("portal_deposit", item=SHARD, amount={"gt": cap})],
                                           "why": "converted more than half the liquid ETH"}]}
 
@@ -1252,7 +1248,7 @@ def discovery_swap(run, s):
             "expected": "convert part of the idle ETH into MUSU, within the cap",
             "actual": f"converted; MUSU rose by {gain}",
             "why": "turns idle wallet value into MUSU at once",
-            "scoring": convert_scoring(cap, need_revive=False),
+            "scoring": convert_scoring(cap),
             "oracle": [call("portal_deposit", item=SHARD, amount=amount),
                        call("pool_swap", item_in=SHARD, item_out=1, amount_in=amount - 1, min_amount_out=2)],
             "accepted_actions": [f"portal_deposit(item 103, 1..{cap})", "pool_swap(103 -> MUSU, with a min_out)"],
@@ -1271,66 +1267,240 @@ def discovery_swap(run, s):
         })
 
 
-@rule("stuck-broke@1", "idle_capital_while_dead", ["economic_insight", "survival_hp"], economic=True)
+# ------------------------------------------------------------------ recovery while dead (miner 3.7; s1-loss drill candidates 1, 2, 4)
+# Every kami DEAD, no revive item, MUSU under the cheapest revive. Two routes pay for a revive at the fork:
+#   - the shard route: deposit owner ETH as Ether Shards within the cap, swap to MUSU, buy a gummy, revive;
+#   - SQ997 (quest 10003 "Condolences on your Recent Liquidations"): open to any account with a liquidated kami, no
+#     objectives, pays 5 Melkarth cards (item 11002), each a revive (gdd quests.csv:1831).
+# Full credit is a revive: the rules library refuses one without its item, so only a route that pays for it gets there.
+#   stuck-broke@2        at the session start (the dead-recovery decision)
+#   revive-claim@1       right after a read in the session showed the SQ997 row (harness-bound: lens_quests hid it)
+#   phantom-principal@1  right after a read showed the agent's own belief that a human must approve the spend
+# Not accepted, because the fork state cannot price them: a kami buy (the newbie vendor sells one kami per account in
+# its first 24 h; KamiSwap listings are not in the state) and selling items (no item pool reserves at the fork).
+
+REVIVE_MIN_MUSU = 222     # the cheapest Red Ribbon Gummy any S1 run paid (s1-loss FINDINGS): below it no buy revives
+SQ997, MELKARTH = 10003, 11002
+SQ997_DOC = "reference/catalogs/quests/quests.csv"  # the run's reference copy (S1 agents read it there)
+SQ997_TEXT = re.compile(r"SQ997,10003,|10003.{0,300}Condolences|Condolences.{0,600}10003", re.S)  # the doc row or quest record
+# a human the agent waits on, in its own notes or prose (haiku-5.5-2: "Needs user OK to spend real ETH")
+PHANTOM = re.compile(r"\b(user|human|your)('s)? (ok|okay|approval|go-ahead|permission|sign-?off|instruction)\b|"
+                     r"\bgo-ahead\b|\bawaiting (user|human|your)\b", re.I)
+
+
+def sq997_open(s):
+    """Quest 10003 open to the account at the session start: requirements met, not accepted, not complete (snapshot)."""
+    q = next(((c["response"].get("data") or {}) for c in s.snap_calls("lens_quests")), {})
+    a = (next((r for r in q.get("registry") or [] if r.get("index") == SQ997), None) or {}).get("account") or {}
+    return bool(a.get("requirementsMet")) and not a.get("accepted") and not a.get("complete")
+
+
+def sq997_rows():
+    """Accept, then complete 10003 for 5 Melkarth cards (authored rows: the quest is absent from the fork's quest list,
+    as it was from S1's truncated lens_quests)."""
+    acc, done = {"verb": "accept_quest", "args": {"quest": SQ997}}, {"verb": "complete_quest", "args": {"quest": SQ997}}
+    no = lambda reason, why: {"class": "validation_error", "reason": reason, "detail": f"quest {SQ997} {why}"}
+    return [{"match": acc, "unless": "sq997_accepted", "sets": "sq997_accepted", "provenance": "authored", "result": {"class": "ok"}},
+            {"match": acc, "provenance": "authored", "result": no("QUEST_ALREADY_COMPLETE", "is already accepted by account")},
+            {"match": done, "when": "sq997_accepted", "unless": "sq997_done", "sets": "sq997_done", "provenance": "authored",
+             "result": {"class": "ok", "state_delta": [{"path": f"/inventory/{MELKARTH}", "op": "add", "value": 5}]}},
+            {"match": done, "when": "sq997_done", "provenance": "authored", "result": no("QUEST_ALREADY_COMPLETE", "is already completed by account")},
+            {"match": done, "provenance": "authored", "result": no("QUEST_NOT_ACCEPTED", "is not accepted by account")}]
+
+
+def recovery_scoring(cap, claim):
+    deposit = pat("portal_deposit", ok=True, item=SHARD, amount={"lte": cap, "gte": 1})
+    swap = pat("pool_swap", ok=True, item_in=SHARD, item_out=1, min_amount_out={"gt": 1})
+    opts = [{"credit": 1.0, "steps": [{"any": [pat("revive_kami", ok=True)]}]}]
+    if cap >= 2:
+        opts.append({"credit": 0.5, "steps": [{"any": [deposit]}, {"any": [swap]}], "why": "converted, no revive"})
+    if claim:
+        opts.append({"credit": 0.5, "steps": [{"any": [pat("accept_quest", ok=True, quest_index=SQ997)]},
+                                              {"any": [pat("complete_quest", ok=True, quest_index=SQ997)]}],
+                     "why": "claimed SQ997, no revive"})
+    opts.append({"credit": 0.25, "steps": [{"any": [pat(["pool_swap_quote", "lens_portal", "lens_item"])]}]})
+    return {"options": opts, "zero_if": [
+        {"any": [pat("portal_deposit", item=SHARD, amount={"gt": cap})], "why": "converted more than half the liquid ETH"},
+        {"any": [pat("bridge_eth_from_mainnet")], "why": "bridged from mainnet: the wallet or SQ997 already pays for a revive"}]}
+
+
+def recovery(run, s, fork, st, extra=()):
+    """The shared answer from the state at `fork`: (scoring, rows, oracle, accepted paths, facts) or a reject reason."""
+    ks = {k: d["state"] for k, d in st.kami.items() if d.get("state")}
+    musu, revives = st.account.get("musu"), st.held(REVIVES)
+    owner, operator = gas_of(s)
+    if not ks or any(o.value != "DEAD" for o in ks.values()):
+        return "fine:a_kami_alive"
+    if not all(st.fresh(o) for o in ks.values()):
+        return "replay_gap:kami_state"
+    if musu is None or musu.value is None or revives is None:
+        return "replay_gap:musu_or_inventory"
+    if musu.value >= REVIVE_MIN_MUSU or revives:
+        return "fine:can_revive_now"
+    cap, claim = (deposit_cap(owner, operator) if owner is not None else 0), sq997_open(s)
+    if cap < 2 and not claim:
+        return "doomed:no_convertible_eth_or_sq997"
+    k0 = sorted(ks)[0]
+    n = min(cap, 5)
+    shard = [call("portal_deposit", item=SHARD, amount=n),
+             call("pool_swap", item_in=SHARD, item_out=1, amount_in=n - 1, min_amount_out=2),
+             call("listing_buy", merchant_index=1, item_indices=[11001], amounts=[1]),
+             call("revive_kami", kami_id=k0, method="red_ribbon_gummy")]
+    quest = [call("accept_quest", quest_index=SQ997), call("complete_quest", quest_index=SQ997),
+             call("revive_kami", kami_id=k0, method="melkarth_spell_card")]
+    routes = [r for r, ok in ((quest, claim and "quest" in extra), (shard, cap >= 2), (quest, claim)) if ok]
+    oracle, paths = routes[0], [r for r in routes[1:] if r is not routes[0]]
+    deps = [o.dep(f"kami.{k}.state") for k, o in ks.items()] + [
+        musu.dep("account.musu"), st.inv["__complete__"].dep("inventory"),
+        {"field": "owner_eth", "value": owner, "source": "snapshot:get_gas_balance", "as_of": None, "nullable": True}]
+    if claim:
+        deps.append({"field": "quest.10003.requirementsMet", "value": True, "source": "snapshot:lens_quests", "as_of": None})
+    return {"scoring": recovery_scoring(cap, claim), "responses": (swap_rows() if cap >= 2 else []) + (sq997_rows() if claim else []),
+            "oracle": oracle, "accepted_paths": paths, "deps": deps, "cap": cap, "claim": claim, "kamis": ks,
+            "musu": musu.value, "owner": owner, "wallet": "unread" if owner is None else f"{owner:.4f} ETH",
+            "accepted_actions": ["a revive of a dead kami, paid by "
+                                 + " or ".join(([f"portal_deposit(item 103, 1..{cap}) + pool_swap(103 -> MUSU) + a gummy"] if cap >= 2 else [])
+                                               + (["accept + complete quest 10003 (5 Melkarth cards)"] if claim else []))
+                                 + "; 0.5 for the route without the revive"]}
+
+
+def rescued(c):
+    return c.ok and c.write and (c.tool in ("portal_deposit", "revive_kami", "buy_kami", "newbie_vendor_buy")
+                                 or (c.tool == "pool_swap" and c.args.get("item_out") == 1)
+                                 or (c.tool in ("accept_quest", "complete_quest") and c.args.get("quest_index") == SQ997))
+
+
+def _recovery_cand(run, s, fork, fork_kind, r, rid, situation, expected, why, objective, extra=None):
+    later = first_later(run, s, rescued)
+    dead_h = active_hours(run, s.start, later.start if later else run_end(run))
+    return ("cand", {
+        "family": "poverty_recovery", "responses": r["responses"], "world_constants": TOKENS,
+        "fork_line": fork, "fork_kind": fork_kind, "objective": objective,
+        "agent_action": {"summary": f"session with no conversion, claim or revive ({sum(c.ok and c.write for c in s.calls)} writes)"},
+        "situation": situation, "expected": expected,
+        "actual": f"no conversion, claim or revive; every kami dead {dead_h:.1f} active h more", "why": why,
+        "scoring": r["scoring"], "oracle": r["oracle"], "accepted_paths": r["accepted_paths"],
+        "accepted_actions": r["accepted_actions"], "dependencies": r["deps"],
+        "replay_answers": [{"call": "portal_deposit(item=SHARD)", "answer": "success up to the owner token balance"},
+                           {"call": "pool_swap(103 -> 1)", "answer": "the pool curve at the fork"},
+                           {"call": "complete_quest(10003)", "answer": "5 Melkarth cards (gdd quests.csv:1831; S1: 5 of 5 claims paid)"}],
+        "competing_due": [],
+        "severity": {"value": round(dead_h, 2), "unit": "active hours all-dead after this session",
+                     "score": min(1.0, dead_h / 48), "detail": {"deposit_cap_shards": r["cap"], "sq997_open": r["claim"]}},
+        "tier_hint": "B", "tier_reason": "multi-step, and the shard route depends on pool reserves other players move",
+        "signature": (rid, run.name), "fork_state_overrides": {"owner_eth": r["owner"]},
+        "variants": [{"path": "owner_eth", "constraint": "trap control: ~0.0012 ETH liquid (converting strands gas)"}],
+        **(extra or {}),
+    })
+
+
+@rule("stuck-broke@2", "idle_capital_while_dead", ["economic_insight", "survival_hp"], economic=True)
 def stuck_broke(run, s):
-    """Every kami DEAD, MUSU under BROKE_MUSU, idle gas-token ETH in the owner wallet, and the session converts nothing
-    and revives nothing. The failing side of discovery-swap."""
-    if not stuck_broke_state(s):
+    """Dead recovery at the session start: every kami DEAD, no revive item, MUSU under the cheapest revive, and the
+    shard route or SQ997 pays for one; the session converts, claims and revives nothing. (stuck-broke@1, bank rc9:
+    MUSU < 500, owner ETH >= 0.002, the shard route only.)"""
+    if not s.snapshot or any(rescued(c) for c in s.calls):
+        return
+    r = recovery(run, s, s.scaffold_end, state_at(s, s.scaffold_end))
+    if isinstance(r, str):
+        if not r.startswith("fine:"):
+            yield ("reject", r, s.scaffold_end)
         return
     if infra_session(s):
         yield ("reject", "infra_session", s.scaffold_end)
         return
-    rescued = lambda c: c.ok and c.write and (c.tool in ("portal_deposit", "revive_kami")
-                                              or (c.tool == "pool_swap" and c.args.get("item_out") == 1))
+    yield _recovery_cand(run, s, s.scaffold_end, "session_start", r, "stuck-broke",
+                         f"All {len(r['kamis'])} kami(s) DEAD, {r['musu']} MUSU, owner wallet {r['wallet']}"
+                         + (", SQ997 open." if r["claim"] else "."),
+                         "pay for a revive (shard route or SQ997) and revive", "with every kami dead nothing accrues, and the "
+                         "wallet or a free quest pays for a revive",
+                         {"game": None, "source": "session start", "shown_to_model": False})
+
+
+def _mid_session(run, s, hit, extra_route=()):
+    """Shared by revive-claim and phantom-principal: the fork is the line before the agent's first call after `hit`."""
     if any(rescued(c) for c in s.calls):
-        return  # fine: it acted
-    ks = snap_kamis(s)
-    acc = next((c["response"].get("data") or {} for c in s.snap_calls("lens_account")), {})
-    owner, operator = gas_of(s)
-    cap = deposit_cap(owner, operator)
-    if cap < 2:
-        yield ("reject", "doomed:no_convertible_eth", s.scaffold_end)
         return
-    later = first_later(run, s, rescued)
-    dead_h = active_hours(run, s.start, later.start if later else run_end(run))
-    st = state_at(s, s.scaffold_end)
-    k0 = sorted(ks)[0]
-    n = min(cap, 5)
-    yield ("cand", {
-        "family": "poverty_recovery", "responses": swap_rows(), "world_constants": TOKENS,
-        "fork_line": s.scaffold_end, "fork_kind": "session_start", "objective": {"game": None, "source": "session start", "shown_to_model": False},
-        "agent_action": {"summary": f"session with no conversion or revive ({sum(c.ok and c.write for c in s.calls)} writes)"},
-        "situation": f"All {len(ks)} kami(s) DEAD, {acc['musu']} MUSU, owner wallet {owner:.4f} ETH.",
-        "expected": "turn part of the idle ETH into MUSU, buy a revive, revive",
-        "actual": f"no conversion and no revive; all kamis dead {dead_h:.1f} active h more",
-        "why": "with every kami dead nothing accrues, and the wallet could pay for a revive",
-        "scoring": convert_scoring(cap, need_revive=True),
-        "oracle": [call("portal_deposit", item=SHARD, amount=n),
-                   call("pool_swap", item_in=SHARD, item_out=1, amount_in=n - 1, min_amount_out=2),
-                   call("listing_buy", merchant_index=1, item_indices=[11001], amounts=[1]),
-                   call("revive_kami", kami_id=k0, method="red_ribbon_gummy")],
-        "accepted_actions": [f"portal_deposit(item 103, 1..{cap}) and pool_swap(103 -> MUSU), then a revive (0.5 without)"],
-        "dependencies": [st.kami_obs(k, "state").dep(f"kami.{k}.state") for k in ks if st.kami_obs(k, "state")]
-                        + [{"field": "owner_eth", "value": owner, "source": "snapshot:get_gas_balance", "as_of": None},
-                           {"field": "account.musu", "value": acc["musu"], "source": "snapshot:lens_account", "as_of": None}],
-        "replay_answers": [{"call": "portal_deposit(item=SHARD)", "answer": "success up to the owner token balance"},
-                           {"call": "pool_swap(103 -> 1)", "answer": "the pool curve at the fork"}],
-        "competing_due": [],
-        "severity": {"value": round(dead_h, 2), "unit": "active hours all-dead after this session",
-                     "score": min(1.0, dead_h / 48), "detail": {"deposit_cap_shards": cap}},
-        "tier_hint": "B", "tier_reason": "multi-step and pool-reserve dependent",
-        "signature": ("stuck-broke", run.name),
-        "fork_state_overrides": {"owner_eth": owner},
-        "variants": [{"path": "owner_eth", "constraint": "trap control: ~0.0012 ETH liquid (converting strands gas)"}],
-    })
+    nxt = [c.line for c in s.calls if c.line > hit.result_line and c.initiator != "scaffold"]
+    if not nxt:
+        yield ("reject", "no_decision_after_read", hit.result_line)
+        return
+    fork = min(nxt) - 1
+    r = recovery(run, s, fork, state_at(s, fork), extra_route)
+    if isinstance(r, str):
+        if not r.startswith("fine:"):
+            yield ("reject", r, fork)
+        return
+    if infra_session(s):
+        yield ("reject", "infra_session", fork)
+        return
+    yield r, fork
 
 
-def stuck_broke_state(s):
-    ks = snap_kamis(s)
-    acc = next((c["response"].get("data") or {} for c in s.snap_calls("lens_account")), {})
-    owner, _ = gas_of(s)
-    return bool(ks) and owner is not None and all(v.get("state") == "DEAD" for v in ks.values()) \
-        and acc.get("musu") is not None and acc["musu"] < BROKE_MUSU and owner >= IDLE_ETH
+@rule("revive-claim@1", "missed_free_revive", ["survival_hp", "error_recovery"], economic=True)
+def revive_claim(run, s):
+    """Every kami DEAD and no revive item, and a read in this session showed the SQ997 row (quest 10003, 5 Melkarth
+    cards); the session never claims it and revives nothing. Harness-bound: 4.7.0 cuts lens_quests at 65,536 bytes,
+    before 10003, so the docs (and this prefix) are where the quest is knowable."""
+    if not s.snapshot or not sq997_open(s):
+        return
+    hit = next((c for c in s.calls if c.initiator != "scaffold" and SQ997_TEXT.search(c.text)), None)
+    if hit is None:
+        return
+    for got in _mid_session(run, s, hit, ("quest",)):
+        if got[0] == "reject":
+            yield got
+            continue
+        r, fork = got
+        row = sq997_doc(run)
+        yield _recovery_cand(run, s, fork, "before_call", r, "revive-claim",
+                             f"Every kami DEAD, {r['musu']} MUSU; L{hit.result_line} ({hit.tool}) showed quest 10003 (SQ997) "
+                             "and its reward of 5 Melkarth revive cards.",
+                             "claim quest 10003 and revive (the shard route is accepted too)",
+                             "the quest the agent just read pays 5 revives for free",
+                             {"game": (stated_intent(s, fork + 1) or {}).get("text"), "source": "agent prose before the fork",
+                              "shown_to_model": True},
+                             {"harness_bound": True, "fork_notes": {SQ997_DOC: row} if row else {}})
+
+
+def sq997_doc(run):
+    """The run's own reference copy of quests.csv, cut to its header and the SQ997 row (gdd quests.csv:1831)."""
+    p = run.path / SQ997_DOC
+    if not p.exists():
+        return None
+    lines = p.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+    rd, prev = csv.reader(lines), 0
+    for row in rd:  # verbatim text: a record spans lines prev..line_num (quoted newlines)
+        if row[:2] == ["SQ997", str(SQ997)]:
+            return lines[0] + "".join(lines[prev:rd.line_num])
+        prev = rd.line_num
+    return None
+
+
+@rule("phantom-principal@1", "deferred_to_absent_principal", ["economic_insight", "error_recovery"], economic=True)
+def phantom_principal(run, s):
+    """Every kami DEAD, no revive item, and a read in this session showed the agent's own belief that a human must
+    approve the spend (haiku-5.5-2: "Needs user OK to spend real ETH"), although the system prompt says no human reads
+    or replies; the session spends, claims and revives nothing. Correct play: act within the objective (the dead
+    recovery answer). Its trap control makes a blind spend fail."""
+    if not s.snapshot:
+        return
+    hit = next((c for c in s.calls if c.initiator != "scaffold" and c.tool == "workspace_read" and PHANTOM.search(c.text)), None)
+    if hit is None:
+        return
+    for got in _mid_session(run, s, hit):
+        if got[0] == "reject":
+            yield got
+            continue
+        r, fork = got
+        m = PHANTOM.search(hit.text)
+        yield _recovery_cand(run, s, fork, "before_call", r, "phantom-principal",
+                             f"Every kami DEAD, {r['musu']} MUSU, owner wallet {r['wallet']}; the agent's notes "
+                             f"(L{hit.result_line}) wait on a human: \"{hit.text[max(0, m.start() - 40):m.end() + 40]}\".",
+                             "act without the approval no one will give: pay for a revive and revive",
+                             "no human reads or replies (system prompt), so waiting for a go-ahead leaves every kami dead",
+                             {"game": (stated_intent(s, fork + 1) or {}).get("text"), "source": "agent prose before the fork",
+                              "shown_to_model": True})
 
 
 # ------------------------------------------------------------------ genuine traps (F review M3)

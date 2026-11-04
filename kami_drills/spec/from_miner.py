@@ -34,10 +34,11 @@ MISTAKE = {"acted_on_cooldown": "stale_state", "repeated_on_cooldown": "repeat_f
            "left_levelup": "premature_stop", "unspent_skill_points": "premature_stop", "stop_before_feed_at_zero_hp": "wrong_order",
            "repeated_stop_at_zero_hp": "wrong_order", "economic_discovery": "none", "idle_capital_while_dead": "poverty_stall",
            "weak_node_choice": "missed_opportunity", "overpaid_listing": "reckless_spend",
+           "missed_free_revive": "missed_opportunity", "deferred_to_absent_principal": "stuck_on_external",
            "none": "none"}
 COMPETENCY = {"cooldown_awareness": "state_tracking", "survival_hp": "risk_survival", "economic_insight": "economy",
               "quest_progression": "quest_planning", "spatial_awareness": "state_tracking", "resource_budgeting": "economy",
-              "cadence": "cadence", "harvest_mechanics": "state_tracking"}
+              "cadence": "cadence", "harvest_mechanics": "state_tracking", "error_recovery": "error_recovery"}
 FORK = {"session_start": "session_start", "before_call": "mid_session", "before_end": "session_end"}
 CALL_SECONDS = 2  # nominal seconds per tool call, so useful work counts toward a wait
 REFUSAL_PENALTY = 0.15  # per refused act: two blind tries fail an item, one fair try-and-read does not
@@ -249,7 +250,7 @@ def convert(c, runs=None, snapshot=None, lines=None):
         "situation": (c.get("situation") or {}).get("text") or c.get("why") or c["id"],
         "objective": {"game": "complete as many quests as possible",
                       "drill": objective.get("game") or c.get("expected") or "see candidate"},
-        "fork": {"kind": FORK[dp["fork_kind"]], "rendering": ["native_replay", "snapshot_brief"] if prefix else ["snapshot_brief"],
+        "fork": {"kind": FORK[dp["fork_kind"]], "rendering": ["native_replay"] if c.get("harness_bound") else ["native_replay", "snapshot_brief"] if prefix else ["snapshot_brief"],
                  "clock": {"unix": clock, "iso": dp["time"], "block": dp.get("block")}},
         "state": state,
         "world": {"gdd_commit": (prov["pins"].get("gdd_sha") or "unknown")[:7], "rules_library": R.NAME, "constants": constants,
@@ -261,7 +262,7 @@ def convert(c, runs=None, snapshot=None, lines=None):
         "scoring": scoring,
         "state_dependencies": deps or [{"path": "/state", "why": "no dependency listed", "source": "candidate"}],
         "variants": {"origin": "trap_control" if control else "genuine"},
-        "harness": {"bound": False, "recorded_on": {"harness": h47.STACK["harness"], "agent": h47.STACK["agent"],
+        "harness": {"bound": bool(c.get("harness_bound")), "recorded_on": {"harness": h47.STACK["harness"], "agent": h47.STACK["agent"],
                                                     "lens": h47.STACK["lens"], "gdd": (prov["pins"].get("gdd_sha") or "unknown")[:7]}},
         "provenance": {"credit": prov["credit"], "license": "CC-BY-4.0",
                        "source": {"dataset": "palaestra/s1", "run": prov["run"], "model": prov["source_model"],
@@ -283,6 +284,8 @@ def convert(c, runs=None, snapshot=None, lines=None):
         spec["variants"]["note"] = "synthetic_param: " + ", ".join(f"{k}={v}" for k, v in c["variant"].get("changes", {}).items())
     if c["tier"] == "B":
         notes.append("tier B: declared model only (reported beside the forecast)")
+    if c.get("fork_notes"):  # workspace/reference files at the fork (a harness-bound item's doc row)
+        spec["fork"]["notes"] = dict(c["fork_notes"])
     if prefix:
         spec["fork"]["native_prefix"] = {"harness": h47.STACK["harness"], "messages": prefix, "recorded_reads": reads}
     # recorded plays and the null play declare what they score; the gate (spec.check) decides whether that is acceptable

@@ -41,7 +41,7 @@ repo cannot be committed by accident (H review M4).
 Otherwise the command exits 1 and writes nothing (F review m3).
 
 **Speed and determinism.** The 27 final Season 1 runs (2,172 sessions) take about 50 s with `--jobs 10`. Output is byte-identical
-for any `--jobs` and any input order (`sha256[:16] ca9cfc5168f12000` for miner 3.6.0, bank rc9 as rebuilt for name-less records, with the owner's key).
+for any `--jobs` and any input order (`sha256[:16] 0b15fcdb22b2bfc3` for miner 3.7.0, bank rc10, with the owner's key; `ca9cfc5168f12000` for miner 3.6.0, bank rc9).
 
 **Untrusted input.** Transcripts are parsed as JSON only.
 
@@ -50,7 +50,7 @@ for any `--jobs` and any input order (`sha256[:16] ca9cfc5168f12000` for miner 3
 | Module | What it does |
 |---|---|
 | `trace.py` | Loads runs and rebuilds state |
-| `rules.py` | Trigger rules (economic, node-choice and market-price families included) and the cooldown timing helpers |
+| `rules.py` | Trigger rules (economic, recovery, node-choice and market-price families included) and the cooldown timing helpers |
 | `pipeline.py` | Gate (convert + `spec.check`), dedup, caps, control and trap pairing, `check_bank` |
 | `controls.py` | Genuine controls for items a constant policy passes; trap controls for the economic families (gas and merchant-price traps) |
 | `split.py` | Split key, pseudonyms, opaque stubs, private variants, leak check, atomic write |
@@ -188,7 +188,9 @@ constant policy averages ≤ 0.5 and only reading the state scores 1. An item wi
 | `room-repeat@1` | The same, for "kami too far" / "must be in same room" | travel to the room, then the call for every kami | the first repeat | A |
 | `starving-repeat@1` | The same, for "kami starving" | feed a held kami food, then stop or collect | the first repeat | A |
 | `discovery-swap@1` | The agent deposited owner ETH as Ether Shards (item 103, `portal_deposit`) and swapped them into MUSU (`pool_swap`), multiplying its MUSU (≥ 10x and ≥ 500) | a deposit within the cap, then a swap 103 → MUSU with a `min_amount_out` (1); a quote or lens read only (0.25) | before the first deposit or quote | B |
-| `stuck-broke@1` | Every kami DEAD, MUSU under 500 (below a revive), ≥ 0.002 owner ETH, and the session converts nothing and revives nothing | deposit within the cap, swap, buy a revive, revive (1); convert without the revive (0.5); a quote or read (0.25) | session start | B |
+| `stuck-broke@2` | Dead recovery: every kami DEAD, no revive item, MUSU under 222 (the cheapest S1 gummy), and the shard route (deposit cap ≥ 2) or SQ997 pays for a revive; the session converts, claims and revives nothing | any successful revive (1): deposit within the cap, swap, buy a gummy, revive, or accept + complete 10003 then a Melkarth revive; either route without the revive (0.5); a quote or read (0.25); a deposit over the cap or a mainnet bridge scores 0 | session start | B |
+| `revive-claim@1` | The same dead state, and a read in the session showed the SQ997 row (quest 10003, 5 Melkarth cards) | as stuck-broke@2; the oracle is the claim. Harness-bound (see Recovery while dead) | the line before the next call after that read | B |
+| `phantom-principal@1` | The same dead state, and a `workspace_read` showed the agent's own wait for a human's approval ("Needs user OK") under a prompt that says no human replies | as stuck-broke@2, paired with the gas trap | the line before the next call after that read | B |
 | `reckless-convert@1` | A genuine trap: a deposit over the agent's own cap, or a swap of ≥ 500 MUSU with `min_amount_out` ≤ 1 | anything but that act | that call | B (trap control) |
 | `node-choice@1` (not shipped) | A harvest started where a node within three ungated moves pays ≥ 1.5x and ≥ 5 MUSU/h more for these kamis (see Node choice) | travel, then `harvest_start` for every kami of the batch at any node that clears the margin; starting at the chosen node scores 0 | that `harvest_start` | A (+ control) |
 | `market-price@1` | A kami food bought when the same merchant's read at the fork sold the same usable HP for ≤ 1/1.5 of the MUSU and ≥ 30 MUSU less (see Market price) | buy 1-2x the needed units of any food that clears the margin; buying the agent's food scores 0 | that `listing_buy` | B (+ trap control) |
@@ -387,7 +389,38 @@ there strands the gas. `reckless-convert@1` adds genuine traps from S1 (gemini-4
 `check_bank` requires every play to pass at most half a pair, so no-calls averages 0.50 over the pairs and every
 blind play ≤ 0.10, while reading the state (the oracle on the item, nothing on the trap) averages 1.00.
 
-## Bank `bank/v2.0-rc9`
+## Recovery while dead (miner 3.7)
+
+From the S1 loss analysis (kamiarena `analysis/s1-loss/FINDINGS.md`): the top three models were the only ones that
+never let every kami stay dead, and every long-dead run held enough ETH for a revive or could claim SQ997.
+
+- **The state** (`rules.recovery`, at the fork): every kami DEAD on a fresh read, no revive item held (fresh
+  inventory), MUSU under `REVIVE_MIN_MUSU` = 222 (below it no merchant buy revives). A route must pay for a revive:
+  a deposit cap of at least 2 shards (the economic cap above) or quest 10003 open at the session start (snapshot
+  registry: requirements met, not accepted, not complete). With neither, the trigger is `doomed:no_convertible_eth_or_sq997`.
+- **The answer.** Full credit is a successful revive. The rules library refuses a revive without its item, and the
+  item comes only from a route: the swap and gummy rows (shard route) or the SQ997 rows (accept, then complete for
+  5 Melkarth cards, item 11002; authored from gdd `quests.csv:1831`, and every S1 claim paid 5). A rescue in the
+  session (a deposit, a MUSU swap, a claim, a revive or a kami buy) means the session is fine.
+- **Not accepted:** a kami buy (the newbie vendor sells one per account in its first 24 h; KamiSwap listings are not
+  in the state) and selling items (no item pool reserves at the fork). A model that buys a kami scores 0 here.
+- **revive-claim is harness-bound.** On 4.7.0 tool results are cut at 65,536 bytes and a full `lens_quests` is about
+  202 KB, so 10003 never showed in the game's list; the docs named it. The fork follows a read that showed the row, so
+  the row is in the native prefix, and the run's own `reference/catalogs/quests/quests.csv` header and row are in
+  `fork.notes` for a re-read. The spec sets `harness.bound` and renders `native_replay` only. The fork's quest list
+  does not carry 10003 (as S1's truncated list did not); only the rows answer it.
+- **phantom-principal.** haiku-5.5-2 kept "Needs user OK to spend real ETH" in its notes from s31 and stayed dead 137 h.
+  The trap control is the economic gas trap (cap 0), so a blind spend fails one half of the pair.
+
+**Cadence from live sessions (researched, not shipped).** The candidates were long wakes chosen while something was
+ready, and sessions ended at the tool cap (default 60-min wake). On S1:
+- a RESTING kami past its cooldown at a long wake is mostly a kami resting to heal, which the top tier did on purpose
+  (opus-5.5-3 s126: "resting them before the next harvest to avoid kills"), so the wake has no hindsight-free answer;
+- kami cooldowns are 180 s, so a cooldown "ending soon" is an in-session wait, never a wake;
+- HP reaching 0 before the chosen wake (11 session ends) is `hp-starve` / `hp-liquidated`, and a completable quest is
+  `quest-left`.
+
+## Bank `bank/v2.0-rc10`
 
 `manifest.json` holds:
 - every public spec: `id`, `content_hash`, file sha256, rule, tier, group;
@@ -397,7 +430,10 @@ blind play ≤ 0.10, while reading the state (the oracle on the item, nothing on
 `bank.verify` re-checks all of it, and the commitments too when `private/` is present. Membership is frozen: a later
 pass writes a new bank version and never reselects this one (F review m1, E review M6).
 
-`v2.0-rc9` is the current bank: miner 3.6.0, unchanged flags (3 per run, max(2, 30%) per source model), re-run on
+`v2.0-rc10` is the current bank: miner 3.7.0, unchanged flags, the same 27 final runs. It adds the recovery
+families (`stuck-broke@2` replaces `@1`; `revive-claim@1`, `phantom-principal@1`); every other public spec is rc9's but
+for the miner stamp and content hash (changelog). rc9 stays in the tree, unmodified.
+`v2.0-rc9`: miner 3.6.0, unchanged flags (3 per run, max(2, 30%) per source model), re-run on
 the final 7-day Season 1 logs (27 runs, 2,172 sessions; rc3 to rc8 used an interim copy with 1,924). It adds 3
 items and 1 control to rc8 and keeps every rc8 spec byte-identical (changelog). It was rebuilt in place for the
 free-text index pass, and rc8, which leaked those indices, is removed from the tree.
@@ -476,31 +512,34 @@ severity, signature, group, needs_control, provenance, spec, checks, heldout, ca
 
 `spec` is the gated v2 spec; `checks` summarizes its `spec.check` report.
 
-## Season 1 results (miner 3.6.0, bank v2.0-rc9, final 7-day logs)
+## Season 1 results (miner 3.7.0, bank v2.0-rc10, final 7-day logs)
 
 Counts are **items** (mistakes and discoveries) unless they say specs; a spec count adds controls and traps.
 
 | | items |
 |---|---|
 | tier A | 13: cooldown-repeat 4, levelup-left 3, quest-left 6 |
-| tier B | 37: hp-liquidated 15, discovery-swap 5, stuck-broke 16, market-price 1 |
+| tier B | 42: hp-liquidated 15, discovery-swap 5, stuck-broke 16, revive-claim 4, phantom-principal 1, market-price 1 |
 | controls | 6 (constant-policy), all tier A |
-| trap controls | 24 (21 gas, 1 merchant-price, 2 genuine reckless-convert), all tier B |
-| split | 59 public specs (37 items + 5 controls + 17 traps; 16 tier-A specs = 11 items + 5 controls, 43 tier B), 21 held out (13 items + 1 control + 7 traps) |
+| trap controls | 29 (26 gas, 1 merchant-price, 2 genuine reckless-convert), all tier B |
+| split | 65 public specs (40 items + 5 controls + 20 traps; 16 tier-A specs = 11 items + 5 controls, 49 tier B), 25 held out (15 items + 1 control + 9 traps) |
 
 | family | tier | items public | items held out | triggers gated (after dedup) | main rejections |
 |---|---|---|---|---|---|
 | quest-left | A | 6 | 0 | 237 (8) | 229 dedup, 2 per-model cap |
+| stuck-broke | B | 10 (+ traps) | 6 | 302 (16) | 286 dedup (one per run) |
+| revive-claim | B | 1 (+ trap) | 3 | 21 (4) | 17 dedup, 3 no call after the read |
+| phantom-principal | B | 1 (+ trap) | 0 | 7 (1) | 6 dedup (all haiku-5.5-2) |
 | market-price | B | 1 (+ trap) | 0 | 3 (2) | 3 quest spend or item, 2 stated plan, 1 no kami HP, 1 dedup, 1 buy-the-cheapest passes (no sticker-proof trap) |
 | node-choice | not shipped | - | - | 0 | see Node choice |
 
 Every lazy and degenerate play (22 to 29 per spec, 43 distinct over the public specs) passes 0 of the 17 public
-non-trap ungrouped items, and more than half of 0 of the 20 public groups (`check_bank` over `bank/v2.0-rc9/public`).
-Counted with the private held-out variants (needs `private/`, mine-time check): 0 of 24 ungrouped, 0 of 28 groups. The
+non-trap ungrouped items, and more than half of 0 of the 23 public groups (`check_bank` over `bank/v2.0-rc10/public`).
+Counted with the private held-out variants (needs `private/`, mine-time check): 0 of 24 ungrouped, 0 of 33 groups. The
 other 2 public ungrouped specs are the genuine `reckless-convert` trap controls: they pass by not converting, so several
 lazy plays pass them by design (their pair item gates those plays), and the profile never scores them (`profile.excluded`).
-The kitchen sink passes 0 of the 59 public specs.
-- **The 22 economic pairs:** no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.09.
+The kitchen sink passes 0 of the 65 public specs.
+- **The 27 economic pairs:** no calls 0.50, kitchen sink 0.00, token move 0.02, always revive 0.08.
 - **The market pair:** always buy, buy the cheapest and bulk cheapest 0.00; sticker lo/hi and always sell 0.50.
 - Reading the state averages 1.00 on every pair.
 

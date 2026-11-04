@@ -498,6 +498,54 @@ source model); only the input and the bank version changed. rc8 stays in the tre
   `check_bank` 0 failures. Kitchen sink 0 of 59 public; battery 0/17 public ungrouped items and 0/20 groups (0/24 and
   0/28 with the private variants); economic pairs unchanged. `bank.verify` [].
 
+## Recovery while dead, miner 3.7.0, bank v2.0-rc10
+
+From the S1 loss analysis (kamiarena `analysis/s1-loss/FINDINGS.md`, "Drill candidates" 1, 2 and 4): the top three
+were the only models that never let every kami stay dead, and the others had the means. Bank `v2.0-rc10` is mined from
+the same 27 final runs with the same flags (3 per run, max(2, 30%) per source model); rc9 stays in the tree, unmodified.
+
+- **`stuck-broke@2` (dead recovery)** replaces `stuck-broke@1`. Trigger: every kami DEAD (fresh read), no revive item,
+  MUSU under 222 (the cheapest gummy any S1 run paid; was 500, which a 222-499 MUSU gummy could beat), and a route
+  that pays for a revive: a deposit cap of at least 2 shards (half the liquid ETH, keeping 0.001 on the operator; the
+  0.002 owner-ETH floor is gone) or quest 10003 (SQ997) open in the snapshot. The session converts, claims and revives
+  nothing. Full credit is any successful revive: the rules library refuses one without its item, so only the shard
+  route (deposit, swap, gummy) or the claim (accept + complete 10003, 5 Melkarth cards from authored rows) gets there.
+  0.5 for either route without the revive, 0.25 for a quote or read. Zero for a deposit over the cap or a mainnet
+  bridge. Repeated revives without the item cost 0.15 each (refusal penalty).
+- **`revive-claim@1` (new, harness-bound).** Every kami DEAD with no revive item, 10003 open, and a read in the session
+  showed the SQ997 row (the docs' `quests.csv` row, or a quest record naming 10003). The fork is the line before the
+  agent's next call, so the row is in the prefix; the run's own `reference/catalogs/quests/quests.csv` header and row
+  are also in `fork.notes`. Same scoring; the oracle is the claim. `harness.bound: true`, rendering `native_replay`
+  only: on 4.7.0 a full `lens_quests` is cut at 65,536 bytes before 10003 (adapter quirk note
+  `quest-list-truncated`), so the docs are where the quest is knowable.
+- **`phantom-principal@1` (new).** The same dead state, and a `workspace_read` in the session showed the agent's own
+  belief that a human must approve the spend ("Needs user OK to spend real ETH"), although the system prompt says no
+  human reads or replies. Same scoring and the gas trap control, so a blind spend fails one half of the pair.
+- Not accepted on any of the three: a kami buy (the newbie vendor sells one kami per account in its first 24 h, and
+  KamiSwap listings are not in the fork state) and selling items (no item pool reserves at the fork).
+- **Cadence from live sessions: not shipped.** Long wakes with a RESTING kami ready are mostly kamis resting to heal
+  (the top tier did it on purpose: opus-5.5-3 s126 "resting them before the next harvest to avoid kills"), so waking at
+  the cooldown is not a hindsight-free answer; cooldowns are 180 s, so "a cooldown ending soon" is an in-session act,
+  not a wake. The other ready signals are covered: starvation before the wake (11 S1 session ends) is `hp-starve` /
+  `hp-liquidated`, a completable quest is `quest-left`. The tool-cap default wake (60 min) is wrong only against one of
+  those signals.
+- Miner 3.7.0 also: `candidate.harness_bound` and `fork_notes` pass through `from_miner`; spec competency
+  `error_recovery` from the miner tag of the same name; mistake classes `missed_free_revive` → `missed_opportunity`,
+  `deferred_to_absent_principal` → `stuck_on_external`. `skill_areas.json`: `revive-claim` and `phantom-principal` →
+  recovery (`stuck-broke` already was).
+- **rc10:** 55 items (13 tier A, 42 tier B), 6 controls, 29 traps: 90 specs, 65 public (40 items, 5 controls, 20
+  traps; 16 tier A) and 25 held out (15 items, 1 control, 9 traps).
+  - stuck-broke 16 items (10 public, 6 held out) from 302 gated triggers (16 after dedup); revive-claim 4 (1, 3) from
+    21 (4); phantom-principal 1 (1, 0) from 7 (1), all haiku-5.5-2.
+  - The other 41 public specs are rc9's, identical except the miner version stamp and content hash. rc9's
+    deepseek-v4-pro-1/-2/-3 stuck-broke items are gone (MUSU 222-499 at every all-dead start), and 6 runs' items move
+    to a later session or come in new (flash-1, haiku-1, haiku-2, sonnet-1).
+- `spec check specs/v1.1 bank/v2.0-rc10 drills_v2/spec`: 115 specs, 0 failing, 14 expected. `check_bank` over the
+  public specs: kitchen sink 0 of 65; every play passes 0 of 17 ungrouped non-trap items and more than half of 0 of
+  23 groups (with the private variants: 0 of 24 and 0 of 33). Economic pairs (27): no calls 0.50, kitchen sink 0.00,
+  token move 0.02, always revive 0.08; state reading 1.00. Oracle-on-variant 0 of 15. Leak check clean, `bank.verify`
+  []. Output `sha256[:16] 0b15fcdb22b2bfc3`, identical for `--jobs 1`, 4 and 10.
+
 ## Open questions for the owner
 
 1. ~~Publish the sealed families?~~ **Decided 2026-11-03: published** (bank rc3, above). Still push only the single
@@ -515,3 +563,10 @@ source model); only the input and the bank version changed. rc8 stays in the tre
 7. **v1.1 and the refusal penalty.** v1.1 keeps v1's replay rows and does not opt into `refusal_penalty`. Opting in
    (0.15) changes 81 ranking try-verdicts on the rc2 tries, and the battery gate still holds. Decide before a v1.1
    administration.
+8. **Dead recovery, MUSU threshold.** rc10 mines only below 222 MUSU (no buy can revive). Between 222 and 499 a
+   gummy may or may not be affordable: its GDA price is not in the session-start state. Keep the floor, or read
+   `lens_merchant` when the prefix has one?
+9. **revive-claim credit.** The shard route earns full credit on revive-claim items too (it revives). FINDINGS calls
+   the claim "better" (free, 5 revives). Should the shard route be a lesser play there?
+10. **phantom-principal** is one item (haiku-5.5-2, the only S1 run that waited on a human). Ship it as a family of
+   one, or fold it into stuck-broke?

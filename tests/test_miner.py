@@ -480,7 +480,7 @@ def _econ(root):
 def test_trap_cap_is_zero_and_gas_reads_are_rewritten(tmp_path):
     assert R.deposit_cap(R.TRAP_OWNER, R.TRAP_OPERATOR) == 0
     r = P.mine([_econ(tmp_path)])
-    (c,) = [x for x in r["candidates"] if x["rule_id"] == "stuck-broke@1"]
+    (c,) = [x for x in r["candidates"] if x["rule_id"] == "stuck-broke@2"]
     (t,) = [x for x in r["traps"] if x["group"] == c["id"]]
     assert t["spec"]["state"]["gas"]["owner_eth"].startswith("0.0006")
     for m in t["spec"]["fork"].get("native_prefix", {}).get("messages", []):
@@ -491,6 +491,90 @@ def test_trap_cap_is_zero_and_gas_reads_are_rewritten(tmp_path):
     assert CK.check_bank([c["spec"], t["spec"]])[0]["failures"] == []
     over = [{"verb": "portal_deposit", "args": {"item": R.SHARD, "amount": R.deposit_cap(0.006, 0.0036) + 1}}]
     assert sp.play(c["spec"], over)["score"] == 0  # over half the liquid gas: zero
+
+
+# ---------- recovery while dead (miner 3.7: stuck-broke@2, revive-claim@1, phantom-principal@1)
+
+SQ_ROW = ('SQ997,10003,In Game,Condolences on your Recent Liquidations,No,SIDE,MENU,"MENU: hi",bye,At least 1 Kami liquidated,,'
+          '5x "Melkarth\'s Heroic Awakening" spell card')
+
+
+def _dead_snap(n, start, musu=50, eth="0.0060", sq997=True, items=(), notes=None):
+    snap = snapshot(n, start, [kami(state="DEAD", hp=0)], musu=musu, eth=eth, op_eth="0.0036", items=items, notes=notes)
+    q = next(c for c in snap["calls"] if c["name"] == "lens_quests")
+    q["response"]["data"]["registry"] = [{"index": R.SQ997, "repeatable": False, "account": {
+        "accepted": False, "complete": False, "requirementsMet": sq997}}]
+    return snap
+
+
+def _dead_run(root, steps=(), **kw):
+    d = Builder(root).session(1, T0, _dead_snap(1, T0, **kw), [*steps, *END(50)]).done()
+    (d / "reference/catalogs/quests").mkdir(parents=True)
+    (d / R.SQ997_DOC).write_text("Key,Index,Title,Rewards\n" + SQ_ROW + "\ntest-0,1000000,x,y\n")
+    return d
+
+
+def _plays(spec, *plays):
+    return [sp.play(spec, p)["pass"] for p in plays]
+
+
+SHARD_ROUTE = [{"verb": "portal_deposit", "args": {"item": 103, "amount": 5}},
+               {"verb": "swap", "args": {"item_in": 103, "item_out": 1, "amount_in": 4, "min_out": 2}},
+               {"verb": "buy", "args": {"item": 11001, "qty": 1, "venue": "merchant:1"}},
+               {"verb": "revive", "args": {"kami": 7, "method": "red_ribbon_gummy"}}]
+CLAIM_ROUTE = [{"verb": "accept_quest", "args": {"quest": 10003}}, {"verb": "complete_quest", "args": {"quest": 10003}},
+               {"verb": "revive", "args": {"kami": 7, "method": "melkarth_spell_card"}}]
+
+
+def test_dead_recovery_accepts_every_route_that_pays_for_a_revive(tmp_path):
+    c, why = gated(_dead_run(tmp_path), "stuck-broke@2")
+    assert why is None, why
+    spec = c["spec"]
+    blind_revive = [{"verb": "revive", "args": {"kami": 7, "method": "melkarth_spell_card"}}]
+    claim_only = CLAIM_ROUTE[:2]
+    bridge = [{"verb": "bridge", "args": {"amount_eth": "0.01"}}, *SHARD_ROUTE]
+    over = [dict(SHARD_ROUTE[0], args={"item": 103, "amount": R.deposit_cap(0.006, 0.0036) + 1}), *SHARD_ROUTE[1:]]
+    assert _plays(spec, SHARD_ROUTE, CLAIM_ROUTE, [], blind_revive, claim_only, bridge, over) == [True, True, False, False, False, False, False]
+    assert sp.play(spec, claim_only)["score"] == 0.5  # the claim without the revive: lesser credit
+    assert sp.play(spec, CLAIM_ROUTE + CLAIM_ROUTE[:1])["score"] < 1  # a second accept is refused
+    # no SQ997 and no convertible ETH: nothing pays for a revive, so the session is doomed, not a mistake
+    run, s, f = findings(_dead_run(tmp_path / "b", sq997=False, eth="0.00001"), "stuck-broke@2")
+    assert f == [("reject", "doomed:no_convertible_eth_or_sq997", s.scaffold_end)]
+
+
+def test_dead_recovery_is_not_mined_when_a_revive_is_already_affordable(tmp_path):
+    held = {"balance": 1, "item": {"index": 11001, "name": "Red Ribbon Gummy", "type": "REVIVE"}}
+    assert findings(_dead_run(tmp_path / "a", musu=R.REVIVE_MIN_MUSU), "stuck-broke@2")[2] == []
+    assert findings(_dead_run(tmp_path / "b", items=(held,)), "stuck-broke@2")[2] == []
+    done = [("accept_quest", {"quest_index": 10003}, {"ok": True}, True, 5)]
+    assert findings(_dead_run(tmp_path / "c", steps=done), "stuck-broke@2")[2] == []  # it claimed: fine
+
+
+def test_revive_claim_forks_after_the_doc_read_and_is_harness_bound(tmp_path):
+    read = [("workspace_read", {"path": R.SQ997_DOC}, SQ_ROW, True, 5)]
+    c, why = gated(_dead_run(tmp_path, steps=read, eth="0.0001"), "revive-claim@1")
+    assert why is None, why
+    spec = c["spec"]
+    assert c["decision_point"]["fork_line"] == 3  # the prefix ends with the read's result
+    assert spec["harness"]["bound"] and spec["fork"]["rendering"] == ["native_replay"]
+    assert SQ_ROW in spec["fork"]["notes"][R.SQ997_DOC] and spec["fork"]["notes"][R.SQ997_DOC].startswith("Key,Index")
+    assert [i["verb"] for i in spec["scoring"]["reference_plays"][0]["intents"]] == ["accept_quest", "complete_quest", "revive"]
+    assert _plays(spec, CLAIM_ROUTE, []) == [True, False]
+    assert findings(_dead_run(tmp_path / "b"), "revive-claim@1")[2] == []  # no read showed the row: not knowable here
+
+
+def test_phantom_principal_needs_the_agents_own_wait_for_a_human(tmp_path):
+    note = [("workspace_read", {"path": "workspace/state.md"}, "- Session 32: blocked. Needs user OK to spend real ETH.", True, 5)]
+    c, why = gated(_dead_run(tmp_path, steps=note), "phantom-principal@1")
+    assert why is None, why
+    assert c["mistake_class"] == "deferred_to_absent_principal" and c["spec"]["mistake_class"] == "stuck_on_external"
+    assert _plays(c["spec"], SHARD_ROUTE, []) == [True, False]
+    plain = [("workspace_read", {"path": "workspace/state.md"}, "- Session 32: kami dead, MUSU 47.", True, 5)]
+    assert findings(_dead_run(tmp_path / "b", steps=plain), "phantom-principal@1")[2] == []
+    r = P.mine([_dead_run(tmp_path / "c", steps=note)])  # paired with a trap control where spending strands gas
+    (item,) = [x for x in r["candidates"] if x["rule_id"] == "phantom-principal@1"]
+    (trap,) = [x for x in r["traps"] if x["group"] == item["id"]]
+    assert not sp.play(trap["spec"], SHARD_ROUTE)["pass"] and sp.play(trap["spec"], [])["pass"]
 
 
 # ---------- node choice and market price (miner 3.2)

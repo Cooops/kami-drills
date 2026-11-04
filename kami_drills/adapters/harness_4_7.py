@@ -49,6 +49,9 @@ QUIRKS = {
     "completable-ignores-room": "check_quest_completable reports objectives only and ignores room requirements "
         "(S1 sol-3 s4: true for 3039 while complete_quest reverted; that revert was chain lag right after the accept, and "
         "S1 completed 3039 from rooms 10, 33 and 62).",
+    "quest-list-truncated": "tool results are cut at 65,536 bytes (tool_result_max_bytes) and a full lens_quests runs to "
+        "~202 KB, so quest 10003 (SQ997, near byte 199,700) was never listed in S1; the docs named it. Not reproduced: "
+        "revive-claim items carry the doc read in their native prefix and are harness-bound instead.",
 }
 
 READ_TOOLS = {"get_status", "workspace_list", "list_accounts", "get_gas_balance", "bridge_status", "get_item_orderbook", "check_quest_completable", "quest_state",

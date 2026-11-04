@@ -169,7 +169,7 @@ def candidate(meta, run, s, raw, fs, tier, tier_reason):
                            "time": t.isoformat() if t else None, **block_at(s, fork)},
         "agent_action": agent, "expected": raw["expected"], "actual": raw["actual"], "why": raw["why"],
         "scoring": raw["scoring"], "oracle": raw["oracle"], "accepted_actions": raw["accepted_actions"],
-        "accepted_paths": raw.get("accepted_paths", []), **{k: raw[k] for k in ("market", "node") if raw.get(k)},
+        "accepted_paths": raw.get("accepted_paths", []), **{k: raw[k] for k in ("market", "node", "harness_bound", "fork_notes") if raw.get(k)},
         "fork_state": fs, "world_constants": raw.get("world_constants"), "dependencies": raw["dependencies"],
         "depends_on_non_snapshot": sorted({d["field"] for d in raw["dependencies"]
                                            if not str(d.get("source")).startswith("snapshot:")}),
