@@ -339,6 +339,7 @@ def cmd_profile(args):
     from kami_drills import profile as pf
     from kami_drills import spec as sp
 
+    args.min_n = pf.MIN_N if args.min_n is None else args.min_n
     try:
         specs = sp.load(args.specs)
         rows = [r for f in args.results for r in pf.tries(json.loads(Path(f).expanduser().read_text()))]
@@ -348,18 +349,23 @@ def cmd_profile(args):
     if not out["models"]:
         fail("no scored drill has a recorded try in " + " ".join(args.results))
     if args.json:
-        return print(json.dumps(out, indent=1))
+        print(json.dumps(out, indent=1))
+        return 0
     n = out["n_by_area"]
     head = [f"{a} (n={n[a]}{', thin' if n[a] < args.min_n else ''})" for a in pf.AREAS]
-    ci = lambda c: f"[{c['ci95'][0]:.2f}-{c['ci95'][1]:.2f}]" if c["ci95"] else "[no CI]"
+    ci = lambda c: f"[{c['ci95'][0]:.2f}-{c['ci95'][1]:.2f}]" if c["ci95"] else "[thin]"
     cell = lambda c, a: "-" if c["score"] is None else f"{c['score']:.2f} {ci(c)}" + ("" if c["n"] == n[a] else f" n={c['n']}")
-    ms = sorted(out["models"].items(), key=lambda kv: -kv[1]["equal_weight"])
-    table(["model", "equal-weight", "drill-weighted", *head],
-          [[m, f"{p['equal_weight']:.2f}", f"{p['drill_weighted']:.2f}", *(cell(p["areas"][a], a) for a in pf.AREAS)]
-           for m, p in ms])
-    print(f"\nequal-weight: mean of the {len(pf.AREAS)} area scores (each area counts the same). drill-weighted: mean over "
-          f"all {sum(n.values())} scored drills. [ ]: bootstrap 95% CI over the area's drills (none for one drill). "
-          f"thin: n < {args.min_n}, read the CI.")
+    f2 = lambda v: "-" if v is None else f"{v:.2f}"
+    ms = sorted(out["models"].items(), key=lambda kv: (kv[1]["equal_weight"] is None, -(kv[1]["equal_weight"] or 0),
+                                                       -kv[1]["equal_weight_all"]))
+    table(["model", "equal-weight", "equal-weight all", "drill-weighted", *head],
+          [[m, f2(p["equal_weight"]), f2(p["equal_weight_all"]), f2(p["drill_weighted"]),
+            *(cell(p["areas"][a], a) for a in pf.AREAS)] for m, p in ms])
+    thin = [a for a in pf.AREAS if n[a] < args.min_n]
+    print(f"\nequal-weight: mean of the area scores with n >= {args.min_n}, each counting the same"
+          f"{' (thin areas left out: ' + ', '.join(thin) + ')' if thin else ''}. equal-weight all: every area. "
+          f"drill-weighted: mean over all {sum(n.values())} scored drills. [ ]: bootstrap 95% CI over the area's drills; "
+          f"[thin]: n < {args.min_n}, too few drills for a CI, treat as anecdotal.")
     print("not scored: " + (", ".join(f"{k} {v}" for k, v in sorted(out["excluded"].items())) or "none")
           + ". Controls and traps are gate-only; tier B items are reported beside a score, never in it.")
     if out["not_administered"]:
@@ -371,7 +377,7 @@ def cmd_profile(args):
         for m, p in ms:
             print(f"\n{m}")
             for a in [*pf.AREAS, "equal_weight"]:
-                v = p["equal_weight"] if a == "equal_weight" else p["areas"][a]["score"]
+                v = p[a] if a == "equal_weight" else p["areas"][a]["score"]
                 print(f"  {a:12s} {'' if v is None else '#' * round(20 * v):20s} {'-' if v is None else f'{v:.2f}'}")
     return 0
 
@@ -414,7 +420,8 @@ def main(argv=None):
                    "results/<suite>/models/*.json (v1 verdicts as recorded)")
     s.add_argument("--specs", nargs="+", default=[str(ROOT / "specs" / "v1.1")], help="spec files, directories or a bank "
                    "root (default specs/v1.1)")
-    s.add_argument("--min-n", type=int, default=5, help="flag areas with fewer scored drills as thin (default 5)")
+    s.add_argument("--min-n", type=int, default=None, help="areas with fewer scored drills are thin: no CI, left out of "
+                   "the headline aggregate (default: kami_drills.profile.MIN_N, 5)")
     s.add_argument("--seed", type=int, default=0, help="bootstrap seed (default 0)")
     s.add_argument("--bars", action="store_true", help="also print a text bar chart per model")
     s.add_argument("--json", action="store_true", help="machine-readable output")
